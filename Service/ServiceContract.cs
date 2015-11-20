@@ -6,27 +6,39 @@ namespace SinclairCC.MakeMeAdmin
 {
     using System;
     using System.Collections.Generic;
-    using System.DirectoryServices.AccountManagement;
     using System.ServiceModel;
+    using System.Security.Principal;
 
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class ServiceContract : IServiceContract
     {
-        public void AddPrincipalToAdministratorsGroup(ContextType contextType, string contextName, string principalSID)
+        public void AddPrincipalToAdministratorsGroup(string principalSID)
         {
-            PrincipalContext userContext = new PrincipalContext(contextType, contextName);
-            UserPrincipal user = UserPrincipal.FindByIdentity(userContext, IdentityType.Sid, principalSID);
-            if ((user != null) && Shared.UserIsAuthorized(user))
+#if DEBUG
+            ApplicationLog.WriteInformationEvent("In Service.ServiceContract.AddPrincipalToAdministratorsGroup.", EventID.DebugMessage);
+#endif
+            if (!string.IsNullOrEmpty(principalSID) /*&& Shared.UserIsAuthorized(WindowsIdentity.GetCurrent())*/)
             {
-                LocalAdministratorGroup.AddPrincipal(contextType, contextName, principalSID);
+#if DEBUG
+                ApplicationLog.WriteInformationEvent("SID is not null or empty, and user is authorized.", EventID.DebugMessage);
+#endif
+                LocalAdministratorGroup.AddPrincipal(principalSID);
             }
-            user.Dispose();
-            userContext.Dispose();
+
+#if DEBUG
+            ApplicationLog.WriteInformationEvent("Leaving Service.ServiceContract.AddPrincipalToAdministratorsGroup.", EventID.DebugMessage);
+#endif
         }
 
-        public void RemoveUserFromAdministratorsGroup(string principalSID)
+        public void RemovePrincipalFromAdministratorsGroup(string principalSID)
         {
+#if DEBUG
+            ApplicationLog.WriteInformationEvent("In Service.ServiceContract.RemovePrincipalFromAdministratorsGroup", EventID.DebugMessage);
+#endif
             LocalAdministratorGroup.RemovePrincipal(principalSID);
+#if DEBUG
+            ApplicationLog.WriteInformationEvent("Leaving Service.ServiceContract.RemovePrincipalFromAdministratorsGroup", EventID.DebugMessage);
+#endif
         }
     }
 }

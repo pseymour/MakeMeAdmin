@@ -29,6 +29,8 @@ namespace SinclairCC.MakeMeAdmin
         /// <summary>
         /// The application failed to remove a user from the Administrators group.
         /// </summary>
-        UserRemovedFromAdminsFailure
+        UserRemovedFromAdminsFailure,
+
+        DebugMessage
     }
 }

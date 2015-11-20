@@ -93,4 +93,38 @@
 	<Target Name="AfterBuild">
 	</Target>
 	-->
+  <Target Name="BeforeBuild">
+
+    <!-- Get the assembly version of the service .exe file. -->
+    <GetAssemblyIdentity AssemblyFiles="..\Service\bin\$(Configuration) $(Platform)\Service.exe">
+      <Output TaskParameter="Assemblies" ItemName="AsmInfo" />
+    </GetAssemblyIdentity>
+
+    <CreateProperty Value="%(AsmInfo.Version)">
+      <Output TaskParameter="Value" PropertyName="FullVersionNumber" />
+    </CreateProperty>
+
+    <!-- Create a shortened version number, using just the major and minor parts. -->
+    <CreateProperty Value="$([System.Text.RegularExpressions.Regex]::Match($(FullVersionNumber), '(\d+)\.(\d+)'))">
+      <Output TaskParameter="Value" PropertyName="ShortVersionNumber" />
+    </CreateProperty>
+
+    <!-- In debug configuration, name the .msi file after the solution platform, shortened version
+         number, platform and configuration, e.g., MakeMeAdmin 2.0 x64 Debug.msi. -->
+    <CreateProperty Condition=" '$(Configuration)' == 'Debug' " Value="$(SolutionName) $(ShortVersionNumber) $(Platform) $(Configuration)">
+      <Output TaskParameter="Value" PropertyName="TargetName" />
+    </CreateProperty>
+
+    <!-- In non-debug (release) configuration, name the .msi file after the solution platform,
+         shortened version number and platform, e.g., MakeMeAdmin 2.0 x64.msi. -->
+    <CreateProperty Condition=" '$(Configuration)' != 'Debug' " Value="$(SolutionName) $(ShortVersionNumber) $(Platform)">
+      <Output TaskParameter="Value" PropertyName="TargetName" />
+    </CreateProperty>
+
+    <!-- Name the .wixpdb file after the .msi file, e.g., [MSI file base name].wixpdb. -->
+    <CreateProperty Value="$(TargetName)$(TargetPdbExt)">
+      <Output TaskParameter="Value" PropertyName="TargetPdbName" />
+    </CreateProperty>
+
+  </Target>
 </Project>

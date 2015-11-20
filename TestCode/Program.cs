@@ -5,6 +5,10 @@
 namespace SinclairCC.MakeMeAdmin
 {
     using System;
+    using System.Collections.Generic;
+    using System.Reflection;
+    using System.Security.Principal;
+    using System.ServiceModel;
 
     /// <summary>
     /// This class defines the main entry point for the application.
@@ -16,36 +20,16 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         internal static void Main()
         {
-            /*
-            string[] sids = new string[] { "S-1-5-21-149779583-363096731-646672791-5361", "S-1-5-21-149779583-363096731-646672791-5360", "S-1-5-21-149779583-363096731-646672791" };
-            foreach (string sidString in sids)
-            {
-                string ntAccountName = string.Empty;
-                Console.WriteLine(sidString);
-                System.Security.Principal.SecurityIdentifier sid = new System.Security.Principal.SecurityIdentifier(sidString);
-                if (sid.IsValidTargetType(typeof(System.Security.Principal.NTAccount)))
-                {
-                    try
-                    {
-                        System.Security.Principal.NTAccount ntAccount = (System.Security.Principal.NTAccount)sid.Translate(typeof(System.Security.Principal.NTAccount));
-                        ntAccountName = ntAccount.Value;
-                    }
-                    catch (System.Security.Principal.IdentityNotMappedException)
-                    {
-                    }
-                    catch (Exception)
-                    {
-                    }
-                }
+            string mySid = "S-1-5-21-149779583-363096731-64667279X";
+            SecurityIdentifier sid = new SecurityIdentifier(mySid);
+            System.Security.Principal.NTAccount account = (NTAccount)sid.Translate(typeof(NTAccount));
+            //System.Security.Principal.WindowsIdentity ident = new WindowsIdentity (
+            
 
-                Console.WriteLine(ntAccountName);
-
-                Console.WriteLine();
-            }
-            */            
-
+            Console.WriteLine(sid.Value);
+            //Console.WriteLine(WindowsIdentity.GetCurrent().User.Value);
 #if DEBUG
-            Console.Write("`n`nPress <ENTER> to close this program.");
+            Console.Write("\n\nPress <ENTER> to close this program.");
             Console.ReadLine();
 #endif
         }

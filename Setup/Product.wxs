@@ -49,7 +49,7 @@
       <ComponentRef Id="AppProgramMenu"/>
       <Component Id="UserManual" Guid="99F0D159-BB2D-47BD-B96F-A05712FD62C3">
         <File Id="UserManualPdf" Name="Make Me Admin 2.0 User Manual.pdf" Source="Make Me Admin 2.0 User Manual.pdf" KeyPath="no">
-          <Shortcut Id="UserManualPdfShortcut" Directory="AppProgramMenu" Name="User Manual" WorkingDirectory="INSTALLDIR" Advertise="no" />
+          <Shortcut Id="UserManualPdfShortcut" Directory="AppProgramMenu" Name="Make Me Admin User Manual" WorkingDirectory="INSTALLDIR" Advertise="no" />
         </File>
         <RegistryValue Root="HKMU" Key="Software\Sinclair Community College\Make Me Admin" Name="ManualShortcutInstalled" Type="integer" Value="1" KeyPath="yes" />
       </Component>

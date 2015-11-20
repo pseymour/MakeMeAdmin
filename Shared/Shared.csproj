@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LocalAdministratorGroup.cs" />
+    <Compile Include="NativeMethods.cs" />
     <Compile Include="PrincipalList.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Shared.cs" />

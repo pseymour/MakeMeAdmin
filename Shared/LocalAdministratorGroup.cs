@@ -7,6 +7,7 @@ namespace SinclairCC.MakeMeAdmin
     using System;
     using System.Collections.Generic;
     using System.DirectoryServices.AccountManagement;
+    using System.Security.Principal;
     using System.Linq;
 
     public static class LocalAdministratorGroup
@@ -22,119 +23,147 @@ namespace SinclairCC.MakeMeAdmin
             localAdminGroup = GroupPrincipal.FindByIdentity(localMachineContext, IdentityType.Sid, localAdminsGroupSid.Value);
         }
 
-        public static void AddPrincipal(ContextType contextType, string contextName, string principalSID)
+        public static void AddPrincipal(string principalSID)
         {
-            PrincipalContext userContext = new PrincipalContext(contextType, contextName);
-            UserPrincipal user = UserPrincipal.FindByIdentity(userContext, IdentityType.Sid, principalSID);
-            if ((localAdminGroup != null) && (user != null) && (!user.IsMemberOf(localAdminGroup)))
-            {
-                localAdminGroup.Members.Add(user);
-                localAdminGroup.Save();
-                PrincipalList.AddSID(principalSID);
-                ApplicationLog.WriteInformationEvent(string.Format("User \"{0}\" added to the Administrators group.", user.SamAccountName), EventID.UserAddedToAdminsSuccess);                
-            }
-        }
-        
-        /*
-        public static void AddUser(UserPrincipal user)
-        {
-            if ((localAdminGroup != null) && (user != null) && (!user.IsMemberOf(localAdminGroup)))
-            {
-                localAdminGroup.Members.Add(user);
-                localAdminGroup.Save();
-            }
-        }
-        */
+            // TODO: Only do this if the principal is not a member of the group?
 
-        /*
-        public static void RemovePrincipal(ContextType contextType, string contextName, string principalSID)
-        {
-            PrincipalContext userContext = new PrincipalContext(contextType, contextName);
-            UserPrincipal user = UserPrincipal.FindByIdentity(userContext, IdentityType.Sid, principalSID);
-            if ((localAdminGroup != null) && (user != null) && (user.IsMemberOf(localAdminGroup)))
+            if ((localAdminGroup != null) && (!string.IsNullOrEmpty(principalSID)))
             {
-                localAdminGroup.Members.Remove(user);
-                localAdminGroup.Save();
+                int result = AddLocalGroupMembers(null, localAdminGroup.SamAccountName, new SecurityIdentifier(principalSID));
+                if (result == 0)
+                {
+                    PrincipalList.AddSID(principalSID);
+                    ApplicationLog.WriteInformationEvent(string.Format("Principal \"{0}\" added to the Administrators group.", principalSID), EventID.UserAddedToAdminsSuccess);
+                }
+                else
+                {
+                    ApplicationLog.WriteWarningEvent(string.Format("Adding principal \"{0}\" to the Administrators group returned error code {1}.", principalSID, result), EventID.UserAddedToAdminsFailure);
+                }
             }
         }
-        */
 
         public static void RemovePrincipal(string principalSID)
         {
-            bool groupModified = false;
-            /*
-            bool principalWasInGroupInitially = false;
-            bool principalIsInGroupNow = false;
-            */
-            if (localAdminGroup != null)
+            // TODO: Only do this if the principal is a member of the group?
+
+            if ((localAdminGroup != null) && (!string.IsNullOrEmpty(principalSID)))
             {
-                PrincipalSearchResult<Principal> administrators = localAdminGroup.GetMembers(false);
-                foreach (Principal p in administrators)
+                System.Security.Principal.SecurityIdentifier[] localAdminSids = GetLocalGroupMembers(null, localAdminGroup.SamAccountName);
+
+                foreach (SecurityIdentifier sid in localAdminSids)
                 {
-                    if (string.Compare(p.Sid.Value, principalSID, true) == 0)
+                    if (string.Compare(sid.Value, principalSID, true) == 0)
                     {
-                        /*
-                        principalWasInGroupInitially = true;
-                        */
-                        localAdminGroup.Members.Remove(p);
-                        groupModified = true;
-                    }
-                }
-                if (groupModified)
-                {
-                    ApplicationLog.WriteInformationEvent(string.Format("Principal \"{0}\" removed from the Administrators group.", principalSID), EventID.UserRemovedFromAdminsSuccess);
-                    localAdminGroup.Save();
-                    PrincipalList.RemoveSID(principalSID);
-                    administrators = localAdminGroup.GetMembers(false);
-                    foreach (Principal p in administrators)
-                    {
-                        if (string.Compare(p.Sid.Value, principalSID, true) == 0)
+                        int result = RemoveLocalGroupMembers(null, localAdminGroup.SamAccountName, new SecurityIdentifier(principalSID));
+                        if (result == 0)
                         {
-                            /*
-                            principalIsInGroupNow = true;
-                            */
-                            break;
+                            PrincipalList.RemoveSID(principalSID);
+                            ApplicationLog.WriteInformationEvent(string.Format("Principal \"{0}\" removed from the Administrators group.", principalSID), EventID.UserRemovedFromAdminsSuccess);
+                        }
+                        else
+                        {
+                            ApplicationLog.WriteWarningEvent(string.Format("Removing principal \"{0}\" from the Administrators group returned error code {1}.", principalSID, result), EventID.UserRemovedFromAdminsFailure);
                         }
                     }
                 }
             }
-
-            /*return (!principalWasInGroupInitially) | (!principalIsInGroupNow);*/
         }
 
+        /*
         public static bool CurrentUserIsMember()
         {
             bool isMember = false;
 
-            List<Principal> authGroups = Shared.GetAuthorizationGroups(UserPrincipal.Current) /*.GetAuthorizationGroups()*/;
-            foreach (Principal p in authGroups)
+            List<SecurityIdentifier> userSids = Shared.GetAuthorizationGroups(WindowsIdentity.GetCurrent(TokenAccessLevels.Read));
+
+            foreach (SecurityIdentifier sid in userSids)
             {
-                isMember = p.Sid.Equals(localAdminsGroupSid);
+                isMember = sid.Equals(localAdminsGroupSid);
                 if (isMember) { break; }
             }
-            
-            /*
-            authGroups.Dispose();
-            */
 
             return isMember;
+        }
+        */
 
-            /*
-            return UserPrincipal.Current.GetAuthorizationGroups().Where(p => p.Sid.Equals(localAdminsGroupSid)).Count<Principal>() >= 1;
-            */
+        private static int AddLocalGroupMembers(string ServerName, string GroupName, System.Security.Principal.SecurityIdentifier memberSid)
+        {
+            int returnValue = -1;
+            NativeMethods.LOCALGROUP_MEMBERS_INFO_0 newMemberInfo = new NativeMethods.LOCALGROUP_MEMBERS_INFO_0();
+            byte[] binarySid = new byte[memberSid.BinaryLength];
+            memberSid.GetBinaryForm(binarySid, 0);
+
+            IntPtr unmanagedPointer = System.Runtime.InteropServices.Marshal.AllocHGlobal(binarySid.Length);
+            System.Runtime.InteropServices.Marshal.Copy(binarySid, 0, unmanagedPointer, binarySid.Length);
+            newMemberInfo.lgrmi0_sid = unmanagedPointer;
+            returnValue = NativeMethods.NetLocalGroupAddMembers(ServerName, GroupName, 0, ref newMemberInfo, 1);
+            System.Runtime.InteropServices.Marshal.FreeHGlobal(unmanagedPointer);
+            return returnValue;
         }
 
-        // TODO: This function could probably be made faster.
+        private static int RemoveLocalGroupMembers(string ServerName, string GroupName, System.Security.Principal.SecurityIdentifier memberSid)
+        {
+            int returnValue = -1;
+            NativeMethods.LOCALGROUP_MEMBERS_INFO_0 memberInfo = new NativeMethods.LOCALGROUP_MEMBERS_INFO_0();
+            byte[] binarySid = new byte[memberSid.BinaryLength];
+            memberSid.GetBinaryForm(binarySid, 0);
+
+            IntPtr unmanagedPointer = System.Runtime.InteropServices.Marshal.AllocHGlobal(binarySid.Length);
+            System.Runtime.InteropServices.Marshal.Copy(binarySid, 0, unmanagedPointer, binarySid.Length);
+            memberInfo.lgrmi0_sid = unmanagedPointer;
+            returnValue = NativeMethods.NetLocalGroupDelMembers(ServerName, GroupName, 0, ref memberInfo, 1);
+            System.Runtime.InteropServices.Marshal.FreeHGlobal(unmanagedPointer);
+            return returnValue;
+        }
+
+        private static System.Security.Principal.SecurityIdentifier[] GetLocalGroupMembers(string ServerName, string GroupName)
+        {
+            System.Security.Principal.SecurityIdentifier[] returnValue = null;
+
+            int EntriesRead;
+            int TotalEntries;
+            IntPtr buffer = IntPtr.Zero;
+            IntPtr Resume = IntPtr.Zero;
+
+            int val = NativeMethods.NetLocalGroupGetMembers(ServerName, GroupName, 0, out buffer, -1, out EntriesRead, out TotalEntries, Resume);
+            if (EntriesRead > 0)
+            {
+                returnValue = new System.Security.Principal.SecurityIdentifier[EntriesRead];
+                NativeMethods.LOCALGROUP_MEMBERS_INFO_0[] Members = new NativeMethods.LOCALGROUP_MEMBERS_INFO_0[EntriesRead];
+                IntPtr iter = buffer;
+                for (int i = 0; i < EntriesRead; i++)
+                {
+                    Members[i] = (NativeMethods.LOCALGROUP_MEMBERS_INFO_0)System.Runtime.InteropServices.Marshal.PtrToStructure(iter, typeof(NativeMethods.LOCALGROUP_MEMBERS_INFO_0));
+                    iter = (IntPtr)((long)iter + System.Runtime.InteropServices.Marshal.SizeOf(typeof(NativeMethods.LOCALGROUP_MEMBERS_INFO_0)));
+                    if (Members[i].lgrmi0_sid != IntPtr.Zero)
+                    {
+                        System.Security.Principal.SecurityIdentifier sid = new System.Security.Principal.SecurityIdentifier(Members[i].lgrmi0_sid);
+                        returnValue[i] = sid;
+                    }
+                    else
+                    {
+                        returnValue[i] = null;
+                    }
+                }
+                NativeMethods.NetApiBufferFree(buffer);
+            }
+            return returnValue;
+        }
+
         public static bool CurrentUserIsMemberOfAdministratorsDirectly()
         {
-            bool returnValue = false;
+            System.Security.Principal.SecurityIdentifier[] localAdminSids = GetLocalGroupMembers(null, localAdminGroup.SamAccountName);
+            System.Security.Principal.WindowsIdentity currentIdentity = System.Security.Principal.WindowsIdentity.GetCurrent();
 
-            if (UserPrincipal.Current != null)
+            bool isMember = false;
+
+            foreach (SecurityIdentifier sid in localAdminSids)
             {
-                returnValue = UserPrincipal.Current.IsMemberOf(localAdminGroup);
+                isMember = sid.Equals(currentIdentity.User);
+                if (isMember) { break; }
             }
 
-            return returnValue;
+            return isMember;
         }
     }
 }

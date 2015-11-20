@@ -5,16 +5,15 @@
 namespace SinclairCC.MakeMeAdmin
 {
     using System;
-    using System.DirectoryServices.AccountManagement;
     using System.ServiceModel;
 
     [ServiceContract(Namespace = "http://apps.sinclair.edu")]
     public interface IServiceContract
     {
         [OperationContract]
-        void AddPrincipalToAdministratorsGroup(ContextType contextType, string contextName, string sidToAdd);
+        void AddPrincipalToAdministratorsGroup(string principalSid);
 
         [OperationContract]
-        void RemoveUserFromAdministratorsGroup(string sidToRemove);
+        void RemovePrincipalFromAdministratorsGroup(string principalSid);
     }    
 }

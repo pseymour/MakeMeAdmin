@@ -17,7 +17,13 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         static void Main()
         {
+#if DEBUG
+            ApplicationLog.WriteInformationEvent("In Service.Program.Main.", EventID.DebugMessage);
+#endif
             ServiceBase.Run(new MakeMeAdminService());
+#if DEBUG
+            ApplicationLog.WriteInformationEvent("Leaving Service.Program.Main.", EventID.DebugMessage);
+#endif
         }
     }
 }

@@ -15,14 +15,54 @@ namespace SinclairCC.MakeMeAdmin
         private System.ComponentModel.IContainer components = null;
         
         /// <summary>
-        /// The "Submit Request" button.
+        /// The "add me" button.
         /// </summary>
-        private System.Windows.Forms.Button submitButton;
+        private System.Windows.Forms.Button addMeButton;
 
         /// <summary>
         /// The exit button.
         /// </summary>
         private System.Windows.Forms.Button exitButton;
+
+        /// <summary>
+        /// A tooltip to explain other controls.
+        /// </summary>
+        private System.Windows.Forms.ToolTip toolTip;
+
+        /// <summary>
+        /// The "remove me" button.
+        /// </summary>
+        private System.Windows.Forms.Button removeMeButton;
+
+        /// <summary>
+        /// A status bar strip.
+        /// </summary>
+        private System.Windows.Forms.StatusStrip statusStrip1;
+
+        /// <summary>
+        /// A label to display application status in the strip.
+        /// </summary>
+        private System.Windows.Forms.ToolStripStatusLabel appStatus;
+
+        /// <summary>
+        /// A background worker to control the state of the various buttons.
+        /// </summary>
+        private System.ComponentModel.BackgroundWorker buttonStateWorker;
+
+        /// <summary>
+        /// A background workr to add the current user to the Administrators group.
+        /// </summary>
+        private System.ComponentModel.BackgroundWorker addUserBackgroundWorker;
+
+        /// <summary>
+        /// A background workr to remove the current user from the Administrators group.
+        /// </summary>
+        private System.ComponentModel.BackgroundWorker removeUserBackgroundWorker;
+
+        /// <summary>
+        /// notification area icon
+        /// </summary>
+        private System.Windows.Forms.NotifyIcon notifyIcon;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -47,7 +87,7 @@ namespace SinclairCC.MakeMeAdmin
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.submitButton = new System.Windows.Forms.Button();
+            this.addMeButton = new System.Windows.Forms.Button();
             this.exitButton = new System.Windows.Forms.Button();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.removeMeButton = new System.Windows.Forms.Button();
@@ -60,18 +100,18 @@ namespace SinclairCC.MakeMeAdmin
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // submitButton
+            // addMeButton
             // 
-            this.submitButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.addMeButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.submitButton.Location = new System.Drawing.Point(12, 12);
-            this.submitButton.Name = "submitButton";
-            this.submitButton.Size = new System.Drawing.Size(232, 30);
-            this.submitButton.TabIndex = 0;
-            this.submitButton.Text = "&Grant Me Administrator Rights";
-            this.toolTip.SetToolTip(this.submitButton, "Add the current Windows user to the Administrators group.");
-            this.submitButton.UseVisualStyleBackColor = true;
-            this.submitButton.Click += new System.EventHandler(this.ClickSubmitButton);
+            this.addMeButton.Location = new System.Drawing.Point(12, 12);
+            this.addMeButton.Name = "addMeButton";
+            this.addMeButton.Size = new System.Drawing.Size(232, 30);
+            this.addMeButton.TabIndex = 0;
+            this.addMeButton.Text = "&Grant Me Administrator Rights";
+            this.toolTip.SetToolTip(this.addMeButton, "Add the current Windows user to the Administrators group.");
+            this.addMeButton.UseVisualStyleBackColor = true;
+            this.addMeButton.Click += new System.EventHandler(this.ClickSubmitButton);
             // 
             // exitButton
             // 
@@ -150,7 +190,7 @@ namespace SinclairCC.MakeMeAdmin
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.removeMeButton);
             this.Controls.Add(this.exitButton);
-            this.Controls.Add(this.submitButton);
+            this.Controls.Add(this.addMeButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -168,14 +208,6 @@ namespace SinclairCC.MakeMeAdmin
 
         #endregion
 
-        private System.Windows.Forms.ToolTip toolTip;
-        private System.Windows.Forms.Button removeMeButton;
-        private System.ComponentModel.BackgroundWorker buttonStateWorker;
-        private System.Windows.Forms.StatusStrip statusStrip1;
-        private System.Windows.Forms.ToolStripStatusLabel appStatus;
-        private System.ComponentModel.BackgroundWorker addUserBackgroundWorker;
-        private System.ComponentModel.BackgroundWorker removeUserBackgroundWorker;
-        private System.Windows.Forms.NotifyIcon notifyIcon;
     }
 }
 
