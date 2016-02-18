@@ -12,7 +12,7 @@ namespace SinclairCC.MakeMeAdmin
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class ServiceContract : IServiceContract
     {
-        public void AddPrincipalToAdministratorsGroup(string principalSID)
+        public void AddPrincipalToAdministratorsGroup(string principalSID, DateTime expirationTime)
         {
 #if DEBUG
             ApplicationLog.WriteInformationEvent("In Service.ServiceContract.AddPrincipalToAdministratorsGroup.", EventID.DebugMessage);
@@ -22,7 +22,7 @@ namespace SinclairCC.MakeMeAdmin
 #if DEBUG
                 ApplicationLog.WriteInformationEvent("SID is not null or empty, and user is authorized.", EventID.DebugMessage);
 #endif
-                LocalAdministratorGroup.AddPrincipal(principalSID);
+                LocalAdministratorGroup.AddPrincipal(principalSID, expirationTime);
             }
 
 #if DEBUG

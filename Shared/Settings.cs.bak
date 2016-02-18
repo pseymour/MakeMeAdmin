@@ -4,9 +4,9 @@
 
 namespace SinclairCC.MakeMeAdmin
 {
-    using System;
     using Microsoft.Win32;
-    
+    using System;
+
     /// <summary>
     /// This class manages application settings.
     /// </summary>
@@ -21,20 +21,30 @@ namespace SinclairCC.MakeMeAdmin
         {
             get
             {
-                string[] policyAllowedEntities = GetMultiString(PolicyRegistryKeyPath, null, "Allowed Entities");
-                string[] preferenceAllowedEntities = GetMultiString(PreferenceRegistryKeyPath, null, "Allowed Entities");
-                if (policyAllowedEntities != null)
+                string[] policyAllowedEntities = GetMultiString(
+
+
+                return GetMultiString(null, "Allowed Entities");
+
+
+                int? policyShutdownSetting = GetDWord(PolicyRegistryKeyPath, null, "No User Logon Threshold");
+                int? preferenceShutdownSetting = GetDWord(PreferenceRegistryKeyPath, null, "No User Logon Threshold");
+                if (policyShutdownSetting.HasValue)
                 { // The policy setting has a value. Go with whatever it says.
-                    return policyAllowedEntities;
+                    return policyShutdownSetting.Value;
+                }
+                else if (preferenceShutdownSetting.HasValue)
+                { // The preference setting has a value. Go with whatever it says.
+                    return preferenceShutdownSetting.Value;
                 }
                 else
-                { // The preference setting has a value. Go with whatever it says.
-                    return preferenceAllowedEntities;
+                { // Neither the policy nor the preference registry entries had a value. Return a default timeout value of 30 minutes.
+                    return 30;
                 }
             }
             set
             {
-                SetMultiString(PreferenceRegistryKeyPath, null, "Allowed Entities", value);
+                SetMultiString(null, "Allowed Entities", value);
             }
         }
 
@@ -42,58 +52,23 @@ namespace SinclairCC.MakeMeAdmin
         {
             get
             {
-                string[] policyDeniedEntities = GetMultiString(PolicyRegistryKeyPath, null, "Denied Entities");
-                string[] preferenceDeniedEntities = GetMultiString(PreferenceRegistryKeyPath, null, "Denied Entities");
-                if (policyDeniedEntities != null)
-                { // The policy setting has a value. Go with whatever it says.
-                    return policyDeniedEntities;
-                }
-                else
-                { // The preference setting has a value. Go with whatever it says.
-                    return preferenceDeniedEntities;
-                }
+                return GetMultiString(null, "Denied Entities");
             }
             set
             {
-                SetMultiString(PreferenceRegistryKeyPath, null, "Denied Entities", value);
+                SetMultiString(null, "Denied Entities", value);
             }
         }
-
-        public static System.Collections.Generic.Dictionary<string, string> TimeoutOverrides
-        {
-            get
-            {
-                System.Collections.Generic.Dictionary<string, string> policyTimeoutOverrides = GetKeyValuePairs(PolicyRegistryKeyPath, "Timeout Overrides");
-                System.Collections.Generic.Dictionary<string, string> preferenceTimeoutOverrides = GetKeyValuePairs(PreferenceRegistryKeyPath, "Timeout Overrides");
-                if (policyTimeoutOverrides.Count > 0)
-                { // The policy setting has a value. Go with whatever it says.
-                    return policyTimeoutOverrides;
-                }
-                else
-                { // The preference setting has a value. Go with whatever it says.
-                    return preferenceTimeoutOverrides;
-                }
-            }
-            // TODO: Implement this set.
-            /*
-            set
-            {
-                SetMultiString(PreferenceRegistryKeyPath, null, "Denied Entities", value);
-            }
-            */
-        }
-
-        //private static System.Collections.Generic.Dictionary<string, string> GetKeyValuePairs(string keyPath, string subkeyName)
 
         public static string[] SIDs
         {
             get
             {
-                return GetMultiString(PreferenceRegistryKeyPath, null, "Added SIDs");
+                return GetMultiString(null, "Added SIDs");
             }
             set
             {
-                SetMultiString(PreferenceRegistryKeyPath, null, "Added SIDs", value);
+                SetMultiString(null, "Added SIDs", value);
             }
         }
 
@@ -101,52 +76,22 @@ namespace SinclairCC.MakeMeAdmin
         {
             get
             {
-                int? policyTimeoutSetting = GetDWord(PolicyRegistryKeyPath, null, "Admin Rights Timeout");
-                int? preferenceTimeoutSetting = GetDWord(PreferenceRegistryKeyPath, null, "Admin Rights Timeout");
-                if (policyTimeoutSetting.HasValue)
-                { // The policy setting has a value. Go with whatever it says.
-                    return policyTimeoutSetting.Value;
-                }
-                else if (preferenceTimeoutSetting.HasValue)
-                { // The preference setting has a value. Go with whatever it says.
-                    return preferenceTimeoutSetting.Value;
+                int? timeout = GetDWord(null, "Admin Rights Timeout");
+                if (timeout.HasValue)
+                {
+                    return timeout.Value;
                 }
                 else
-                { // Neither the policy nor the preference registry entries had a value. Return a default timeout value of 2 minutes.
+                {
                     return 2;
                 }
             }
             set
             {
-                SetDWord(PreferenceRegistryKeyPath, null, "Admin Rights Timeout", value);
+                SetDWord(null, "Admin Rights Timeout", value);
             }
         }
 
-        public static bool RemoveAdminRightsOnLogout
-        {
-            get
-            {
-                int? policyTimeoutSetting = GetDWord(PolicyRegistryKeyPath, null, "Remove Admin Rights On Logout");
-                int? preferenceTimeoutSetting = GetDWord(PreferenceRegistryKeyPath, null, "Remove Admin Rights On Logout");
-                if (policyTimeoutSetting.HasValue)
-                { // The policy setting has a value. Go with whatever it says.
-                    
-                    return Convert.ToBoolean(policyTimeoutSetting.Value);
-                }
-                else if (preferenceTimeoutSetting.HasValue)
-                { // The preference setting has a value. Go with whatever it says.
-                    return Convert.ToBoolean(preferenceTimeoutSetting.Value);
-                }
-                else
-                { // Neither the policy nor the preference registry entries had a value. Return a default value of true.
-                    return false;
-                }
-            }
-            set
-            {
-                SetDWord(PreferenceRegistryKeyPath, null, "Remove Admin Rights On Logout", Convert.ToInt32(value));
-            }
-        }
 
         /// <summary>
         /// Removes from the computer all of the settings related to this application.
@@ -156,23 +101,23 @@ namespace SinclairCC.MakeMeAdmin
             // Attempt to delete the settings registry key.
             try
             {
-                Microsoft.Win32.Registry.LocalMachine.DeleteSubKeyTree(PreferenceRegistryKeyPath);
+                Microsoft.Win32.Registry.LocalMachine.DeleteSubKeyTree(RegistryKeyPath);
             }
 
             // The specified subkey is a null reference.
-            catch (ArgumentNullException) { }
+            catch (System.ArgumentNullException) { }
 
             // Deletion of a root hive is attempted, or the subkey does not specify a valid registry subkey.
-            catch (ArgumentException) { }
+            catch (System.ArgumentException) { }
 
             // The user does not have the permissions required to delete the key.
             catch (System.Security.SecurityException) { }
 
             // The RegistryKey being manipulated is closed (closed keys cannot be accessed).
-            catch (ObjectDisposedException) { }
+            catch (System.ObjectDisposedException) { }
 
             // The user does not have the necessary registry rights.
-            catch (UnauthorizedAccessException) { }
+            catch (System.UnauthorizedAccessException) { }
 
         }
 
@@ -239,40 +184,6 @@ namespace SinclairCC.MakeMeAdmin
                 settingsKey.Flush();
                 settingsKey.Close();
             }
-        }
-
-        private static System.Collections.Generic.Dictionary<string, string> GetKeyValuePairs(string keyPath, string subkeyName)
-        {
-            System.Collections.Generic.Dictionary<string, string> returnData = new System.Collections.Generic.Dictionary<string, string>();
-
-            if (!string.IsNullOrEmpty(subkeyName))
-            {
-                keyPath = System.IO.Path.Combine(keyPath, subkeyName);
-            }
-
-            RegistryKey settingsKey = rootRegistryKey.OpenSubKey(keyPath, false);
-            if (settingsKey != null)
-            {
-                string valueData = string.Empty;
-                string[] valueNames = settingsKey.GetValueNames();
-                foreach (string valueName in valueNames)
-                {
-                    object regValue = settingsKey.GetValue(valueName, null);
-                    if (regValue != null)
-                    {
-                        valueData = System.Convert.ToString(regValue);
-                    }
-                    else
-                    {
-                        valueData = null;
-                    }
-                    returnData.Add(valueName, valueData);
-                }
-
-                settingsKey.Close();
-            }
-
-            return returnData;
         }
 
 

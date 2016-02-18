@@ -11,7 +11,7 @@ namespace SinclairCC.MakeMeAdmin
     public interface IServiceContract
     {
         [OperationContract]
-        void AddPrincipalToAdministratorsGroup(string principalSid);
+        void AddPrincipalToAdministratorsGroup(string principalSid, DateTime expirationTime);
 
         [OperationContract]
         void RemovePrincipalFromAdministratorsGroup(string principalSid);

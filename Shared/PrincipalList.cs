@@ -47,6 +47,7 @@ namespace SinclairCC.MakeMeAdmin
         {
         }
 
+
         /// <summary>
         /// Adds a principal's security ID (SID) to the collection.
         /// </summary>
@@ -55,8 +56,9 @@ namespace SinclairCC.MakeMeAdmin
         /// </param>
         public static void AddSID(string sid)
         {
-            AddSID(sid, DateTime.Now);
+            AddSID(sid, DateTime.Now.AddMinutes(Settings.AdminRightsTimeout));
         }
+
 
         /// <summary>
         /// Adds a principal's security ID (SID) to the collection.
@@ -64,14 +66,14 @@ namespace SinclairCC.MakeMeAdmin
         /// <param name="sid">
         /// The SID to be added to the collection, in SDDL form.
         /// </param>
-        /// <param name="timeAdded">
-        /// The date and time at which the principal's SID is added.
+        /// <param name="expirationTime">
+        /// The date and time at which the principal's administrator rights expire.
         /// </param>
-        public static void AddSID(string sid, DateTime timeAdded)
+        public static void AddSID(string sid, DateTime expirationTime)
         {
             if (!principals.ContainsKey(sid))
             {
-                principals.Add(sid, timeAdded);
+                principals.Add(sid, expirationTime);
                 Settings.SIDs = GetSIDs();
             }
         }
@@ -110,7 +112,13 @@ namespace SinclairCC.MakeMeAdmin
         /// </returns>
         public static string[] GetExpiredSIDs()
         {
+            /*
+            This is what was returned when the principal list held the time at which admin rights were granted.
+            Now, it holds the expiration time.
+
             return principals.Where(p => p.Value <= DateTime.Now.AddMinutes(-1 * Settings.AdminRightsTimeout)).Select(p => p.Key).ToArray<string>();
+            */
+            return principals.Where(p => p.Value <= DateTime.Now).Select(p => p.Key).ToArray<string>();
         }
     }
 }

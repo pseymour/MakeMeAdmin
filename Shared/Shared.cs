@@ -69,6 +69,38 @@ namespace SinclairCC.MakeMeAdmin
             return false;
         }
 
+        public static int GetTimeoutForUser(WindowsIdentity userIdentity)
+        {
+            Dictionary<string, string> overrides = Settings.TimeoutOverrides;
+
+            int overrideMinutes = int.MinValue;
+            int timeoutMinutes = Settings.AdminRightsTimeout;
+
+            if (overrides.ContainsKey(userIdentity.User.Value))
+            {
+                overrideMinutes = int.MinValue;
+                if (int.TryParse(overrides[userIdentity.User.Value], out overrideMinutes))
+                {
+                    timeoutMinutes = Math.Max(timeoutMinutes, overrideMinutes);
+                }
+            }
+
+            List<SecurityIdentifier> authGroups = Shared.GetAuthorizationGroups(userIdentity);
+            foreach (SecurityIdentifier sid in authGroups)
+            {
+                if (overrides.ContainsKey(sid.Value))
+                {
+                    overrideMinutes = int.MinValue;
+                    if (int.TryParse(overrides[sid.Value], out overrideMinutes))
+                    {
+                        timeoutMinutes = Math.Max(timeoutMinutes, overrideMinutes);
+                    }
+                }
+            }
+
+            return timeoutMinutes;
+        }
+
         public static bool UserIsAuthorized(/*SecurityIdentifier principalSid*/ WindowsIdentity userIdentity )
         {
             // Get a list of the user's authorization groups.

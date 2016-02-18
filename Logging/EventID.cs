@@ -4,8 +4,6 @@
 
 namespace SinclairCC.MakeMeAdmin
 {
-    using System;
-
     /// <summary>
     /// This enumeration contains all of the event IDs that are written to the log.
     /// </summary>
@@ -31,6 +29,15 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         UserRemovedFromAdminsFailure,
 
+        /// <summary>
+        /// A principal has been removed from the Administrators group by some
+        /// external (to Make Me Admin) process.
+        /// </summary>
+        PrincipalRemovedByExternalProcess,
+
+        /// <summary>
+        /// Event ID for debug messages.
+        /// </summary>
         DebugMessage
     }
 }

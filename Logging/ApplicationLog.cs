@@ -4,8 +4,9 @@
 
 namespace SinclairCC.MakeMeAdmin
 {
-    using System;
-
+    /// <summary>
+    /// This class allows simple logging of application events.
+    /// </summary>
     public class ApplicationLog
     {        
         /// <summary>
@@ -26,7 +27,6 @@ namespace SinclairCC.MakeMeAdmin
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <remarks>Creates an event source if one does not already exist on the machine.</remarks>
         static ApplicationLog()
         {            
             // Get an EventLog object for this service's log.
@@ -36,6 +36,9 @@ namespace SinclairCC.MakeMeAdmin
             log.Source = SourceName;
         }
 
+        /// <summary>
+        /// Adds an event source to the event log on the local computer.
+        /// </summary>
         public static void CreateSource()
         {
             // If the specified source name does not exist, create it.
@@ -46,7 +49,7 @@ namespace SinclairCC.MakeMeAdmin
         }
 
         /// <summary>
-        /// Removes from the local computer the event log and source for this service.
+        /// Removes, from the local computer, the event source for this service.
         /// </summary>
         public static void RemoveSource()
         {
@@ -61,8 +64,12 @@ namespace SinclairCC.MakeMeAdmin
         /// Writes the specified message to the event log as an information event
         /// with the specified event ID.
         /// </summary>
-        /// <param name="message">The message to be written to the log.</param>
-        /// <param name="id">The event ID to use for the event being written.</param>
+        /// <param name="message">
+        /// The message to be written to the log.
+        /// </param>
+        /// <param name="id">
+        /// The event ID to use for the event being written.
+        /// </param>
         public static void WriteInformationEvent(string message, EventID id)
         {
             log.WriteEntry(message, System.Diagnostics.EventLogEntryType.Information, (int)id);
@@ -72,8 +79,12 @@ namespace SinclairCC.MakeMeAdmin
         /// Writes the specified message to the event log as an error event with the
         /// specified event ID.
         /// </summary>
-        /// <param name="message">The message to be written to the log.</param>
-        /// <param name="id">The event ID to use for the event being written.</param>
+        /// <param name="message">
+        /// The message to be written to the log.
+        /// </param>
+        /// <param name="id">
+        /// The event ID to use for the event being written.
+        /// </param>
         public static void WriteErrorEvent(string message, EventID id)
         {
             log.WriteEntry(message, System.Diagnostics.EventLogEntryType.Error, (int)id);
@@ -83,23 +94,15 @@ namespace SinclairCC.MakeMeAdmin
         /// Writes the specified message to the event log as a warning event with the
         /// specified event ID.
         /// </summary>
-        /// <param name="message">The message to be written to the log.</param>
-        /// <param name="id">The event ID to use for the event being written.</param>
+        /// <param name="message">
+        /// The message to be written to the log.
+        /// </param>
+        /// <param name="id">
+        /// The event ID to use for the event being written.
+        /// </param>
         public static void WriteWarningEvent(string message, EventID id)
         {
             log.WriteEntry(message, System.Diagnostics.EventLogEntryType.Warning, (int)id);
         }
-
-        /*
-        virtual public void WriteSuccessAuditEvent(string Message, EventID ID)
-        {
-            log.WriteEntry(Message, System.Diagnostics.EventLogEntryType.SuccessAudit, (int)ID);
-        }
-
-        virtual public void WriteFailureAuditEvent(string Message, EventID ID)
-        {
-            log.WriteEntry(Message, System.Diagnostics.EventLogEntryType.FailureAudit, (int)ID);
-        }
-        */
     }
 }

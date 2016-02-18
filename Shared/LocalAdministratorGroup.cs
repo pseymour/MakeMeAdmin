@@ -23,21 +23,22 @@ namespace SinclairCC.MakeMeAdmin
             localAdminGroup = GroupPrincipal.FindByIdentity(localMachineContext, IdentityType.Sid, localAdminsGroupSid.Value);
         }
 
-        public static void AddPrincipal(string principalSID)
+        public static void AddPrincipal(string principalSID, DateTime expirationTime)
         {
             // TODO: Only do this if the principal is not a member of the group?
 
             if ((localAdminGroup != null) && (!string.IsNullOrEmpty(principalSID)))
             {
+                string accountName = GetAccountNameFromSID(principalSID);
                 int result = AddLocalGroupMembers(null, localAdminGroup.SamAccountName, new SecurityIdentifier(principalSID));
                 if (result == 0)
                 {
-                    PrincipalList.AddSID(principalSID);
-                    ApplicationLog.WriteInformationEvent(string.Format("Principal \"{0}\" added to the Administrators group.", principalSID), EventID.UserAddedToAdminsSuccess);
+                    PrincipalList.AddSID(principalSID, expirationTime);
+                    ApplicationLog.WriteInformationEvent(string.Format("Principal \"{0}\" ({1}) added to the Administrators group.", principalSID, string.IsNullOrEmpty(accountName) ? "unknown account" : accountName), EventID.UserAddedToAdminsSuccess);
                 }
                 else
                 {
-                    ApplicationLog.WriteWarningEvent(string.Format("Adding principal \"{0}\" to the Administrators group returned error code {1}.", principalSID, result), EventID.UserAddedToAdminsFailure);
+                    ApplicationLog.WriteWarningEvent(string.Format("Adding principal \"{0}\" ({1}) to the Administrators group returned error code {2}.", principalSID, string.IsNullOrEmpty(accountName) ? "unknown account" : accountName, result), EventID.UserAddedToAdminsFailure);
                 }
             }
         }
@@ -54,18 +55,86 @@ namespace SinclairCC.MakeMeAdmin
                 {
                     if (string.Compare(sid.Value, principalSID, true) == 0)
                     {
+                        string accountName = GetAccountNameFromSID(principalSID);
                         int result = RemoveLocalGroupMembers(null, localAdminGroup.SamAccountName, new SecurityIdentifier(principalSID));
                         if (result == 0)
                         {
                             PrincipalList.RemoveSID(principalSID);
-                            ApplicationLog.WriteInformationEvent(string.Format("Principal \"{0}\" removed from the Administrators group.", principalSID), EventID.UserRemovedFromAdminsSuccess);
+                            ApplicationLog.WriteInformationEvent(string.Format("Principal \"{0}\" ({1}) removed from the Administrators group.", principalSID, string.IsNullOrEmpty(accountName) ? "unknown account" : accountName), EventID.UserRemovedFromAdminsSuccess);
                         }
                         else
                         {
-                            ApplicationLog.WriteWarningEvent(string.Format("Removing principal \"{0}\" from the Administrators group returned error code {1}.", principalSID, result), EventID.UserRemovedFromAdminsFailure);
+                            ApplicationLog.WriteWarningEvent(string.Format("Removing principal \"{0}\" ({1}) from the Administrators group returned error code {1}.", principalSID, string.IsNullOrEmpty(accountName) ? "unknown account" : accountName, result), EventID.UserRemovedFromAdminsFailure);
                         }
                     }
                 }
+            }
+        }
+
+        public static void ValidateAllAddedPrincipals()
+        {
+            System.Security.Principal.SecurityIdentifier[] localAdminSids = null;
+            if (localAdminGroup != null)
+            {
+                localAdminSids = GetLocalGroupMembers(null, localAdminGroup.SamAccountName);
+            }
+
+            string[] allSids = PrincipalList.GetSIDs();
+
+            for (int i = 0; i < allSids.Length; i++)
+            {
+                bool sidFoundInAdminsGroup = false;
+                if ((!string.IsNullOrEmpty(allSids[i])) && (localAdminSids != null))
+                {
+                    foreach (SecurityIdentifier sid in localAdminSids)
+                    {
+                        if (string.Compare(sid.Value, allSids[i], true) == 0)
+                        {
+                            sidFoundInAdminsGroup = true;
+                            break;
+                        }
+                    }
+
+                    if (!sidFoundInAdminsGroup)
+                    {
+                        string accountName = GetAccountNameFromSID(allSids[i]);
+                        PrincipalList.RemoveSID(allSids[i]);
+                        ApplicationLog.WriteInformationEvent(string.Format("Principal \"{0}\" ({1}) has been removed from the Administrators group by an outside process. Removing the principal from Make Me Admin's list.", allSids[i], string.IsNullOrEmpty(accountName) ? "unknown account" : accountName), EventID.PrincipalRemovedByExternalProcess);
+                    }
+                }
+            }
+        }
+
+        private static string GetAccountNameFromSID(string sddlSid)
+        {
+            System.Security.Principal.SecurityIdentifier sid = new SecurityIdentifier(sddlSid);
+            if (sid.IsAccountSid() && sid.IsValidTargetType(typeof(System.Security.Principal.NTAccount)))
+            {
+                try
+                {
+                    System.Security.Principal.NTAccount account = (System.Security.Principal.NTAccount)sid.Translate(typeof(System.Security.Principal.NTAccount));
+                    return account.Value;
+                }
+                catch (System.Security.Principal.IdentityNotMappedException)
+                { // Some or all identity references could not be translated.
+                    return null;
+                }
+                catch (System.ArgumentNullException)
+                { // The target translation type is null.
+                    return null;
+                }
+                catch (System.ArgumentException)
+                { // The target translation type is not an IdentityReference type.
+                    return null;
+                }
+                catch (System.SystemException)
+                { // A Win32 error code was returned.
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
             }
         }
 

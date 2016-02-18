@@ -40,6 +40,14 @@
     <Compile Include="Product.wxs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\LogonSessionEnumeration\LsaLogonSessions\LsaLogonSessions.csproj">
+      <Name>LsaLogonSessions</Name>
+      <Project>{a2107c86-7cb5-45ee-89e8-1bc7261f7762}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
     <ProjectReference Include="..\Logging\Logging.csproj">
       <Name>Logging</Name>
       <Project>{f5a53b43-5d6d-48ec-bc44-c0c1a0cefa8d}</Project>
@@ -82,7 +90,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="GroupPolicy\en-US\SinclairBase.adml" />
+    <Content Include="GroupPolicy\en-US\SinclairMakeMeAdmin.adml" />
+    <Content Include="GroupPolicy\SinclairBase.admx" />
+    <Content Include="GroupPolicy\SinclairMakeMeAdmin.admx" />
     <Content Include="Make Me Admin 2.0 User Manual.pdf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="GroupPolicy" />
+    <Folder Include="GroupPolicy\en-US" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <!--
@@ -94,37 +110,30 @@
 	</Target>
 	-->
   <Target Name="BeforeBuild">
-
     <!-- Get the assembly version of the service .exe file. -->
-    <GetAssemblyIdentity AssemblyFiles="..\Service\bin\$(Configuration) $(Platform)\Service.exe">
+    <GetAssemblyIdentity AssemblyFiles="..\Service\bin\$(Configuration) $(Platform)\MakeMeAdminService.exe">
       <Output TaskParameter="Assemblies" ItemName="AsmInfo" />
     </GetAssemblyIdentity>
-
     <CreateProperty Value="%(AsmInfo.Version)">
       <Output TaskParameter="Value" PropertyName="FullVersionNumber" />
     </CreateProperty>
-
     <!-- Create a shortened version number, using just the major and minor parts. -->
     <CreateProperty Value="$([System.Text.RegularExpressions.Regex]::Match($(FullVersionNumber), '(\d+)\.(\d+)'))">
       <Output TaskParameter="Value" PropertyName="ShortVersionNumber" />
     </CreateProperty>
-
     <!-- In debug configuration, name the .msi file after the solution platform, shortened version
          number, platform and configuration, e.g., MakeMeAdmin 2.0 x64 Debug.msi. -->
     <CreateProperty Condition=" '$(Configuration)' == 'Debug' " Value="$(SolutionName) $(ShortVersionNumber) $(Platform) $(Configuration)">
       <Output TaskParameter="Value" PropertyName="TargetName" />
     </CreateProperty>
-
     <!-- In non-debug (release) configuration, name the .msi file after the solution platform,
          shortened version number and platform, e.g., MakeMeAdmin 2.0 x64.msi. -->
     <CreateProperty Condition=" '$(Configuration)' != 'Debug' " Value="$(SolutionName) $(ShortVersionNumber) $(Platform)">
       <Output TaskParameter="Value" PropertyName="TargetName" />
     </CreateProperty>
-
     <!-- Name the .wixpdb file after the .msi file, e.g., [MSI file base name].wixpdb. -->
     <CreateProperty Value="$(TargetName)$(TargetPdbExt)">
       <Output TaskParameter="Value" PropertyName="TargetPdbName" />
     </CreateProperty>
-
   </Target>
 </Project>

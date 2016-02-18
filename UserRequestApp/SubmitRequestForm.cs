@@ -67,6 +67,7 @@ namespace SinclairCC.MakeMeAdmin
             this.notifyIcon.Text = formText.ToString();
         }
 
+
         /// <summary>
         /// This function handles the Click event for the Submit button.
         /// </summary>
@@ -91,7 +92,9 @@ namespace SinclairCC.MakeMeAdmin
             IServiceContract channel = ChannelFactory<IServiceContract>.CreateChannel(binding, ep);
             try
             {
-                channel.AddPrincipalToAdministratorsGroup(WindowsIdentity.GetCurrent().User.Value);
+                WindowsIdentity currentIdentity = WindowsIdentity.GetCurrent(TokenAccessLevels.Read);
+                int timeoutMinutes = Shared.GetTimeoutForUser(currentIdentity);
+                channel.AddPrincipalToAdministratorsGroup(currentIdentity.User.Value, DateTime.Now.AddMinutes(timeoutMinutes));
             }
             catch (System.ServiceModel.EndpointNotFoundException)
             {

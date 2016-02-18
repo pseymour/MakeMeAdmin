@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<policyDefinitionResources xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                           xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitions"
+                           revision="1.0"
+                           schemaVersion="1.0">
+  <displayName>Make Me Admin application policy file</displayName>
+  <description></description>
+  <resources>
+    <stringTable>
+      <string id="MakeMeAdminDisplayName">Make Me Admin</string>
+      <string id="MakeMeAdminExplainText">Make Me Admin allows users to grant themselves administrator privileges for a defined period of time.</string>
+      <string id="AllowedEntitiesDisplayName">Allowed Security IDs</string>
+      <string id="AllowedEntitiesExplainText">This setting specifies the security IDs (SIDs) of the users or groups allowed to gain administrative rights.</string>
+      <string id="DeniedEntitiesDisplayName">Denied Security IDs</string>
+      <string id="DeniedEntitiesExplainText">This setting specifies the security IDs (SIDs) of the users or groups denied the ability to gain administrative rights.</string>
+      <string id="AdminRightsTimeoutDisplayName">Admin Rights Timeout</string>
+      <string id="AdminRightsTimeoutExplainText">This setting specifies the amount of time, in minutes, for which administrative rights will be granted.</string>
+      <string id="RemoveOnLogoutDisplayName">Remove Admin Rights On Logout</string>
+      <string id="RemoveOnLogoutExplainText">This setting specifies whether administrative rights should be revoked when a user logs off.</string>
+      <string id="TimeoutOverrideDisplayName">Admin Rights Timeout Overrides</string>
+      <string id="TimeoutOverrideExplainText">This setting specifies different timeout values for particular users or groups.</string>
+      <string id="Yes">Yes</string>
+      <string id="No">No</string>
+    </stringTable>
+    <presentationTable>
+      <presentation id="Admin_Rights_Timeout_Spin">
+        <text>The number of minutes for which administrative rights will be granted.</text>
+        <decimalTextBox refId="AdminRightsTimeoutValue" defaultValue="10" spinStep="5">admin rights timeout:</decimalTextBox>
+      </presentation>
+      <presentation id="AllowedEntitiesMultiText_Presentation">
+        <multiTextBox refId="AllowedEntitiesMultiText">Enter allowed SIDs:</multiTextBox>
+      </presentation>
+      <presentation id="DeniedEntitiesMultiText_Presentation">
+        <multiTextBox refId="DeniedEntitiesMultiText">Enter denied SIDs:</multiTextBox>
+      </presentation>
+      <presentation id="RemoveOnLogoutEnum_Presentation">
+        <dropdownList refId="RemoveOnLogoutEnum" noSort="true" defaultItem="0">Remove users from the Administrators group when they log off.</dropdownList>
+      </presentation>
+      <presentation id="TimeoutOverrideList_Presentation">
+        <text>Specify a security identifier (SID) for each user or group, along with a timeout value for each.</text>
+        <listBox refId="TimeoutOverrideListBox">SIDs and Timeouts:</listBox>
+      </presentation>
+    </presentationTable>
+  </resources>
+</policyDefinitionResources>

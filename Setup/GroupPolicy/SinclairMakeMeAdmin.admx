@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<policyDefinitions xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.microsoft.com/GroupPolicy/PolicyDefinitions"
+                   revision="1.0"
+                   schemaVersion="1.0">
+
+  <policyNamespaces>
+    <target prefix="makemeadmin" namespace="SinclairCC.Policies.MakeMeAdmin" />
+    <using prefix="scc" namespace="SinclairCC.Policies.SCC" />
+    <using prefix="windows" namespace="Microsoft.Policies.Windows" />
+  </policyNamespaces>
+
+  <resources minRequiredRevision="1.0" fallbackCulture="en-us" />
+
+  <categories>
+    <category name="MakeMeAdmin" displayName="$(string.MakeMeAdminDisplayName)" explainText="$(string.MakeMeAdminExplainText)">
+      <parentCategory ref="scc:SinclairRoot" />
+    </category>
+  </categories>
+
+  <policies>
+
+    <policy name="AllowedEntities"
+             class="Machine"
+             displayName="$(string.AllowedEntitiesDisplayName)"
+             explainText="$(string.AllowedEntitiesExplainText)"
+             key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
+             presentation="$(presentation.AllowedEntitiesMultiText_Presentation)" >
+      <parentCategory ref="makemeadmin:MakeMeAdmin" />
+      <supportedOn ref="windows:SUPPORTED_Windows7" />
+      <elements>
+        <multiText id="AllowedEntitiesMultiText" valueName="Allowed Entities" required="false" maxLength="100" maxStrings="0" />
+      </elements>
+    </policy>
+
+    <policy name="DeniedEntities"
+             class="Machine"
+             displayName="$(string.DeniedEntitiesDisplayName)"
+             explainText="$(string.DeniedEntitiesExplainText)"
+             key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
+             presentation="$(presentation.DeniedEntitiesMultiText_Presentation)" >
+      <parentCategory ref="makemeadmin:MakeMeAdmin" />
+      <supportedOn ref="windows:SUPPORTED_Windows7" />
+      <elements>
+        <multiText id="DeniedEntitiesMultiText" valueName="Denied Entities" required="false" maxLength="100" maxStrings="0" />
+      </elements>
+    </policy>
+
+    <policy name="AdminRightsTimeout"
+             class="Machine"
+             displayName="$(string.AdminRightsTimeoutDisplayName)"
+             explainText="$(string.AdminRightsTimeoutExplainText)"
+             key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
+             valueName="Admin Rights Timeout"
+             presentation="$(presentation.Admin_Rights_Timeout_Spin)" >
+      <parentCategory ref="makemeadmin:MakeMeAdmin"></parentCategory>
+      <supportedOn ref="windows:SUPPORTED_Windows7" />
+      <elements>
+        <decimal id="AdminRightsTimeoutValue" required="true" valueName="Admin Rights Timeout" minValue="1" maxValue="1440" storeAsText="false" />
+      </elements>
+    </policy>
+
+    <policy name="TimeoutOverrideList"
+            class="Machine"
+            displayName="$(string.TimeoutOverrideDisplayName)"
+            explainText="$(string.TimeoutOverrideExplainText)"
+            key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin\Timeout Overrides"
+            presentation="$(presentation.TimeoutOverrideList_Presentation)" >
+      <parentCategory ref="makemeadmin:MakeMeAdmin" />
+      <supportedOn ref="windows:SUPPORTED_Windows7" />
+      <elements>
+        <list id="TimeoutOverrideListBox" explicitValue="true" />
+      </elements>
+    </policy>
+
+    <policy name="RemoveOnLogout"
+             class="Machine"
+             displayName="$(string.RemoveOnLogoutDisplayName)"
+             explainText="$(string.RemoveOnLogoutExplainText)"
+             key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
+             valueName="Admin Rights Timeout"
+             presentation="$(presentation.RemoveOnLogoutEnum_Presentation)" >
+      <parentCategory ref="makemeadmin:MakeMeAdmin"></parentCategory>
+      <supportedOn ref="windows:SUPPORTED_Windows7" />
+      <elements>
+        <enum id="RemoveOnLogoutEnum" valueName="Remove Admin Rights On Logout" required="true">
+          <item displayName="$(string.Yes)"><value><decimal value="1"/></value></item>
+          <item displayName="$(string.No)"><value><decimal value="0"/></value></item>
+        </enum>
+      </elements>
+    </policy>
+
+  </policies>
+
+</policyDefinitions>
