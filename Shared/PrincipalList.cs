@@ -25,21 +25,55 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         static PrincipalList()
         {
-            principals = new System.Collections.Generic.Dictionary<string, DateTime>();
-
-            // Retrieve the stored SID list from the settings.
-            string[] storedSIDs = Settings.SIDs;
-            if (storedSIDs != null)
+#if DEBUG
+            try
             {
-                for (int i = 0; i < storedSIDs.Length; i++)
-                {
-                    PrincipalList.AddSID(storedSIDs[i], DateTime.Now.AddMinutes(Settings.AdminRightsTimeout * -1));
-                }
-            }
-
-            Settings.SIDs = null;
+#endif
+                principals = new System.Collections.Generic.Dictionary<string, DateTime>();
+#if DEBUG
         }
-        
+            catch (Exception excep)
+            {
+                ApplicationLog.WriteInformationEvent("error in PrincipalList constructor, creating Dictionary object.", EventID.DebugMessage);
+                ApplicationLog.WriteInformationEvent(excep.Message, EventID.DebugMessage);
+        }
+#endif
+
+#if DEBUG
+            try
+            {
+#endif
+                // Retrieve the stored SID list from the settings.
+                string[] storedSIDs = Settings.SIDs;
+                if (storedSIDs != null)
+                {
+                    for (int i = 0; i < storedSIDs.Length; i++)
+                    {
+                        PrincipalList.AddSID(storedSIDs[i], DateTime.Now.AddMinutes(Settings.AdminRightsTimeout * -1));
+                    }
+                }
+#if DEBUG
+            }
+            catch (Exception excep)
+            {
+                ApplicationLog.WriteInformationEvent("error in PrincipalList.ReadSidsFromSettings(), getting SIDs from settings.", EventID.DebugMessage);
+                ApplicationLog.WriteInformationEvent(excep.Message, EventID.DebugMessage);
+            }
+#endif
+
+            /*
+            try
+            {
+                Settings.SIDs = null;
+            }
+            catch (Exception excep)
+            {
+                ApplicationLog.WriteInformationEvent("clearing SIDs list in Settings", EventID.DebugMessage);
+                ApplicationLog.WriteInformationEvent(excep.Message, EventID.DebugMessage);
+            }
+            */
+        }
+
         /// <summary>
         /// Prevents a default instance of the <see cref="PrincipalList"/> class from being created.
         /// </summary>
@@ -71,13 +105,55 @@ namespace SinclairCC.MakeMeAdmin
         /// </param>
         public static void AddSID(string sid, DateTime expirationTime)
         {
-            if (!principals.ContainsKey(sid))
+            if (principals.ContainsKey(sid))
             {
+                // Set the expiration time for the given SID to the maximum of
+                // its current value or the specified expiration time.
+#if DEBUG
+                ApplicationLog.WriteInformationEvent(string.Format("Setting expiration for SID {0} to {1}.", sid, new[] { principals[sid], expirationTime }.Max()), EventID.DebugMessage);
+#endif
+                principals[sid] = new[] { principals[sid], expirationTime }.Max();
+#if DEBUG
+                ApplicationLog.WriteInformationEvent(string.Format("SID list contains {0:N0} items.", principals.Count), EventID.DebugMessage);
+                string[] sids = GetSIDs();
+                foreach (string s in sids)
+                {
+                    ApplicationLog.WriteInformationEvent(string.Format("SID {0} expires at {1}.", s, principals[s]), EventID.DebugMessage);
+                }
+#endif
+            }
+            else
+            {
+#if DEBUG
+                ApplicationLog.WriteInformationEvent(string.Format("Adding SID {0} to list with an expiration of {1}.", sid, expirationTime), EventID.DebugMessage);
+#endif
                 principals.Add(sid, expirationTime);
-                Settings.SIDs = GetSIDs();
+
+#if DEBUG
+                ApplicationLog.WriteInformationEvent(string.Format("SID list contains {0:N0} items.", principals.Count), EventID.DebugMessage);
+                string[] sids = GetSIDs();
+                foreach (string s in sids)
+                {
+                    ApplicationLog.WriteInformationEvent(string.Format("SID {0} expires at {1}.", s, principals[s]), EventID.DebugMessage);
+                }
+#endif
+
+                /*Settings.SIDs = GetSIDs();*/
             }
         }
 
+        public static bool ContainsSID(string sid)
+        {
+            if (principals == null)
+            {
+                return false;
+            }
+            else
+            {
+                return principals.ContainsKey(sid);
+            }
+        }
+        
         /// <summary>
         /// Removes a principal's security ID (SID) from the collection.
         /// </summary>
@@ -88,8 +164,21 @@ namespace SinclairCC.MakeMeAdmin
         {
             if (principals.ContainsKey(sid))
             {
+#if DEBUG
+                ApplicationLog.WriteInformationEvent(string.Format("Removing SID {0} from list.", sid), EventID.DebugMessage);
+#endif
                 principals.Remove(sid);
-                Settings.SIDs = GetSIDs();
+
+#if DEBUG
+                ApplicationLog.WriteInformationEvent(string.Format("SID list contains {0:N0} items.", principals.Count), EventID.DebugMessage);
+                string[] sids = GetSIDs();
+                foreach (string s in sids)
+                {
+                    ApplicationLog.WriteInformationEvent(string.Format("SID {0} expires at {1}.", s, principals[s]), EventID.DebugMessage);
+                }
+#endif
+
+                /*Settings.SIDs = GetSIDs();*/
             }
         }
 
@@ -119,6 +208,18 @@ namespace SinclairCC.MakeMeAdmin
             return principals.Where(p => p.Value <= DateTime.Now.AddMinutes(-1 * Settings.AdminRightsTimeout)).Select(p => p.Key).ToArray<string>();
             */
             return principals.Where(p => p.Value <= DateTime.Now).Select(p => p.Key).ToArray<string>();
+        }
+
+        public static DateTime? GetExpirationTime(string sid)
+        {
+            if (principals.ContainsKey(sid))
+            {
+                return principals[sid];
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

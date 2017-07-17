@@ -31,6 +31,7 @@
             // 
             // MakeMeAdminService
             // 
+            this.CanHandleSessionChangeEvent = true;
             this.ServiceName = "MakeMeAdmin";
 
         }

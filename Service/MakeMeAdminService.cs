@@ -11,12 +11,15 @@ namespace SinclairCC.MakeMeAdmin
     public partial class MakeMeAdminService : ServiceBase
     {
         private System.Timers.Timer removalTimer;
+        private ServiceHost serviceHost = null;
 
         public MakeMeAdminService()
         {
             InitializeComponent();
 
+            /*
             this.CanHandleSessionChangeEvent = true;
+            */
 
             this.removalTimer = new System.Timers.Timer(10000);
             this.removalTimer.AutoReset = true;
@@ -28,28 +31,26 @@ namespace SinclairCC.MakeMeAdmin
             string[] expiredSids = PrincipalList.GetExpiredSIDs();
             foreach (string sid in expiredSids)
             {
-                LocalAdministratorGroup.RemovePrincipal(sid);
+                LocalAdministratorGroup.RemovePrincipal(sid, RemovalReason.Timeout);
             }
 
             LocalAdministratorGroup.ValidateAllAddedPrincipals();
         }
 
-        private string EndPointAddress
-        {
-            get
-            {
-                return string.Format("net.pipe://{0}/MakeMeAdmin/Service", Shared.GetFullyQualifiedHostName());
-            }
-        }
-
         private void OpenServiceHost()
         {
-            ServiceHost serviceHost = new ServiceHost(typeof(ServiceContract));
-            NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None);
-            serviceHost.AddServiceEndpoint(typeof(IServiceContract), binding, EndPointAddress);
-            serviceHost.Open();
+            this.serviceHost = new ServiceHost(typeof(AdminGroupManipulator), new Uri (Shared.ServiceBaseAddress));
+            this.serviceHost.Faulted += ServiceHostFaulted;
+            NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
+            this.serviceHost.AddServiceEndpoint(typeof(IAdminGroup), binding, Shared.ServiceBaseAddress);            
+            this.serviceHost.Open();
         }
-                
+
+        private void ServiceHostFaulted(object sender, EventArgs e)
+        {
+            ApplicationLog.WriteInformationEvent("Service host faulted.", EventID.DebugMessage);
+        }
+
         protected override void OnStart(string[] args)
         {
             try
@@ -59,18 +60,24 @@ namespace SinclairCC.MakeMeAdmin
             catch (Exception) { };
 
             this.OpenServiceHost();
+
             this.removalTimer.Start();
         }
 
         protected override void OnStop()
         {
+            if (this.serviceHost.State == CommunicationState.Opened)
+            {
+                this.serviceHost.Close();
+            }
+
             this.removalTimer.Stop();
 
             string[] sids = PrincipalList.GetSIDs();
 
             for (int i = 0; i < sids.Length; i++)
             {
-                LocalAdministratorGroup.RemovePrincipal(sids[i]);
+                LocalAdministratorGroup.RemovePrincipal(sids[i], RemovalReason.ServiceStopped);
             }
 
             base.OnStop();
@@ -119,7 +126,7 @@ namespace SinclairCC.MakeMeAdmin
 #if DEBUG
                             ApplicationLog.WriteInformationEvent(string.Format("SID {0} should be removed.", sidsToRemove[i]), EventID.DebugMessage);
 #endif
-                            LocalAdministratorGroup.RemovePrincipal(sidsToRemove[i]);
+                            LocalAdministratorGroup.RemovePrincipal(sidsToRemove[i], RemovalReason.UserLogoff);
                         }
                     }
 

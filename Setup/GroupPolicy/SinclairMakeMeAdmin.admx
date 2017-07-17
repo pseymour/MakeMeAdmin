@@ -79,12 +79,29 @@
              displayName="$(string.RemoveOnLogoutDisplayName)"
              explainText="$(string.RemoveOnLogoutExplainText)"
              key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
-             valueName="Admin Rights Timeout"
+             valueName="Remove Admin Rights On Logout"
              presentation="$(presentation.RemoveOnLogoutEnum_Presentation)" >
       <parentCategory ref="makemeadmin:MakeMeAdmin"></parentCategory>
       <supportedOn ref="windows:SUPPORTED_Windows7" />
       <elements>
         <enum id="RemoveOnLogoutEnum" valueName="Remove Admin Rights On Logout" required="true">
+          <item displayName="$(string.Yes)"><value><decimal value="1"/></value></item>
+          <item displayName="$(string.No)"><value><decimal value="0"/></value></item>
+        </enum>
+      </elements>
+    </policy>
+
+    <policy name="OverrideOutsideProcess"
+             class="Machine"
+             displayName="$(string.OverrideOutsideProcessDisplayName)"
+             explainText="$(string.OverrideOutsideProcessExplainText)"
+             key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
+             valueName="Override Removal By Outside Process"
+             presentation="$(presentation.OverrideOutsideProcessEnum_Presentation)" >
+      <parentCategory ref="makemeadmin:MakeMeAdmin"></parentCategory>
+      <supportedOn ref="windows:SUPPORTED_Windows7" />
+      <elements>
+        <enum id="OverrideOutsideProcessEnum" valueName="Override Removal By Outside Process" required="true">
           <item displayName="$(string.Yes)"><value><decimal value="1"/></value></item>
           <item displayName="$(string.No)"><value><decimal value="0"/></value></item>
         </enum>

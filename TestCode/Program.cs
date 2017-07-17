@@ -5,10 +5,7 @@
 namespace SinclairCC.MakeMeAdmin
 {
     using System;
-    using System.Collections.Generic;
-    using System.Reflection;
     using System.Security.Principal;
-    using System.ServiceModel;
 
     /// <summary>
     /// This class defines the main entry point for the application.
@@ -20,7 +17,20 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         internal static void Main()
         {
-
+            /*
+            for (int i = 0; i < 10; i++)
+            {
+                Console.WriteLine(DateTime.Now.ToLongTimeString());
+                Console.WriteLine("Desktops Detected");
+                Console.WriteLine("=================");
+                foreach (string desktop in Desktop.Get())
+                {
+                    Console.WriteLine(desktop);
+                }
+                System.Threading.Thread.Sleep(2000);
+                Console.WriteLine();
+            }
+            */
 
 #if DEBUG
             Console.Write("\n\nPress <ENTER> to close this program.");

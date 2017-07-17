@@ -1,0 +1,94 @@
+﻿// <copyright file="LogonSessions.cs" company="Sinclair Community College">
+// Copyright (c) Sinclair Community College. All rights reserved.
+// </copyright>
+
+namespace LsaLogonSessions
+{
+    using System;
+    using System.Runtime.InteropServices;
+
+    /// <summary>
+    /// This class allows enumeration of Windows logon sessions.
+    /// </summary>
+    public class LogonSessions
+    {
+        /// <summary>
+        /// Prevents a default instance of the LogonSessions class from being created.
+        /// </summary>
+        private LogonSessions()
+        {
+        }
+
+        public static string[] GetLoggedOnUserNames(string serverName)
+        {
+            IntPtr serverHandle = NativeMethods.WTSOpenServer(serverName);
+            string[] userNames = GetLoggedOnUserNames(serverHandle);
+            NativeMethods.WTSCloseServer(serverHandle);
+            return userNames;
+        }
+
+        public static string[] GetLoggedOnUserNames()
+        {
+            return GetLoggedOnUserNames(NativeMethods.WTS_CURRENT_SERVER_HANDLE);
+        }
+
+        /// <summary>
+        /// Gets a list of the currently logged-on users.
+        /// </summary>
+        /// <returns>
+        /// Returns an array of strings, which contains the names of the currently logged-on users.
+        /// Returns null if no users are logged on.
+        /// </returns>
+        private static string[] GetLoggedOnUserNames(IntPtr serverHandle)
+        {
+            string[] returnArray = null;
+            IntPtr sessionInfoPointer = IntPtr.Zero;
+            int sessionCount = 0;
+            int returnValue = NativeMethods.WTSEnumerateSessions(serverHandle, 0, 1, ref sessionInfoPointer, ref sessionCount);
+            Console.WriteLine("last error: {0}", Marshal.GetLastWin32Error());
+            long current = sessionInfoPointer.ToInt64();
+            int sessionInfoSize = Marshal.SizeOf(typeof(WTS_SESSION_INFO));
+            if (returnValue != 0)
+            {
+                System.Collections.Generic.List<string> userNames = new System.Collections.Generic.List<string>(sessionCount);
+                for (int i = 0; i < sessionCount; i++)
+                {
+                    string domainName = null;
+                    string userName = null;
+
+                    WTS_SESSION_INFO si = (WTS_SESSION_INFO)Marshal.PtrToStructure((System.IntPtr)current, typeof(WTS_SESSION_INFO));
+                    current += sessionInfoSize;
+
+                    IntPtr bufferPointer = IntPtr.Zero;
+                    int bytesReturned = 0;
+                    returnValue = NativeMethods.WTSQuerySessionInformation(NativeMethods.WTS_CURRENT_SERVER_HANDLE, si.SessionID, WTS_INFO_CLASS.WTSDomainName, out bufferPointer, out bytesReturned);
+                    if (returnValue != 0)
+                    {
+                        domainName = Marshal.PtrToStringAnsi(bufferPointer, bytesReturned - 1);
+                        NativeMethods.WTSFreeMemory(bufferPointer);
+                    }
+
+                    returnValue = NativeMethods.WTSQuerySessionInformation(NativeMethods.WTS_CURRENT_SERVER_HANDLE, si.SessionID, WTS_INFO_CLASS.WTSUserName, out bufferPointer, out bytesReturned);
+                    if (returnValue != 0)
+                    {
+                        userName = Marshal.PtrToStringAnsi(bufferPointer, bytesReturned - 1);
+                        NativeMethods.WTSFreeMemory(bufferPointer);
+                    }
+
+                    if (((domainName != null) || (userName != null)) && (domainName != string.Empty) && (userName != string.Empty))
+                    {
+                        string fullUserName = string.Format("{0}{1}", domainName == null ? string.Empty : string.Format("{0}\\", domainName), userName);
+                        userNames.Add(fullUserName);
+                    }
+                }
+
+                NativeMethods.WTSFreeMemory(sessionInfoPointer);
+                userNames.TrimExcess();
+                returnArray = new string[userNames.Count];
+                userNames.CopyTo(returnArray);
+            }
+
+            return returnArray;
+        }
+    }
+}

@@ -18,6 +18,8 @@
       <string id="AdminRightsTimeoutExplainText">This setting specifies the amount of time, in minutes, for which administrative rights will be granted.</string>
       <string id="RemoveOnLogoutDisplayName">Remove Admin Rights On Logout</string>
       <string id="RemoveOnLogoutExplainText">This setting specifies whether administrative rights should be revoked when a user logs off.</string>
+      <string id="OverrideOutsideProcessDisplayName">Override Removal By Outside Process</string>
+      <string id="OverrideOutsideProcessExplainText">This setting specifies whether administrative rights should be added back if an outside process removes them before the timeout has expired.</string>
       <string id="TimeoutOverrideDisplayName">Admin Rights Timeout Overrides</string>
       <string id="TimeoutOverrideExplainText">This setting specifies different timeout values for particular users or groups.</string>
       <string id="Yes">Yes</string>
@@ -36,6 +38,9 @@
       </presentation>
       <presentation id="RemoveOnLogoutEnum_Presentation">
         <dropdownList refId="RemoveOnLogoutEnum" noSort="true" defaultItem="0">Remove users from the Administrators group when they log off.</dropdownList>
+      </presentation>
+      <presentation id="OverrideOutsideProcessEnum_Presentation">
+        <dropdownList refId="OverrideOutsideProcessEnum" noSort="true" defaultItem="0">Add users back to the Administrators group if they are removed by an outside process before the timeout has expired.</dropdownList>
       </presentation>
       <presentation id="TimeoutOverrideList_Presentation">
         <text>Specify a security identifier (SID) for each user or group, along with a timeout value for each.</text>

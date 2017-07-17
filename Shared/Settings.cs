@@ -74,13 +74,10 @@ namespace SinclairCC.MakeMeAdmin
                     return preferenceTimeoutOverrides;
                 }
             }
-            // TODO: Implement this set.
-            /*
             set
             {
-                SetMultiString(PreferenceRegistryKeyPath, null, "Denied Entities", value);
+                SetKeyValuePairs(PreferenceRegistryKeyPath, "Timeout Overrides", value);
             }
-            */
         }
 
         //private static System.Collections.Generic.Dictionary<string, string> GetKeyValuePairs(string keyPath, string subkeyName)
@@ -126,16 +123,16 @@ namespace SinclairCC.MakeMeAdmin
         {
             get
             {
-                int? policyTimeoutSetting = GetDWord(PolicyRegistryKeyPath, null, "Remove Admin Rights On Logout");
-                int? preferenceTimeoutSetting = GetDWord(PreferenceRegistryKeyPath, null, "Remove Admin Rights On Logout");
-                if (policyTimeoutSetting.HasValue)
+                int? policyRemovalSetting = GetDWord(PolicyRegistryKeyPath, null, "Remove Admin Rights On Logout");
+                int? preferenceRemovalSetting = GetDWord(PreferenceRegistryKeyPath, null, "Remove Admin Rights On Logout");
+                if (policyRemovalSetting.HasValue)
                 { // The policy setting has a value. Go with whatever it says.
                     
-                    return Convert.ToBoolean(policyTimeoutSetting.Value);
+                    return Convert.ToBoolean(policyRemovalSetting.Value);
                 }
-                else if (preferenceTimeoutSetting.HasValue)
+                else if (preferenceRemovalSetting.HasValue)
                 { // The preference setting has a value. Go with whatever it says.
-                    return Convert.ToBoolean(preferenceTimeoutSetting.Value);
+                    return Convert.ToBoolean(preferenceRemovalSetting.Value);
                 }
                 else
                 { // Neither the policy nor the preference registry entries had a value. Return a default value of true.
@@ -147,6 +144,33 @@ namespace SinclairCC.MakeMeAdmin
                 SetDWord(PreferenceRegistryKeyPath, null, "Remove Admin Rights On Logout", Convert.ToInt32(value));
             }
         }
+
+        public static bool OverrideRemovalByOutsideProcess
+        {
+            get
+            {
+                int? policyOverrideSetting = GetDWord(PolicyRegistryKeyPath, null, "Override Removal By Outside Process");
+                int? preferenceOverrideSetting = GetDWord(PreferenceRegistryKeyPath, null, "Override Removal By Outside Process");
+                if (policyOverrideSetting.HasValue)
+                { // The policy setting has a value. Go with whatever it says.
+
+                    return Convert.ToBoolean(policyOverrideSetting.Value);
+                }
+                else if (preferenceOverrideSetting.HasValue)
+                { // The preference setting has a value. Go with whatever it says.
+                    return Convert.ToBoolean(preferenceOverrideSetting.Value);
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value. Return a default value of true.
+                    return false;
+                }
+            }
+            set
+            {
+                SetDWord(PreferenceRegistryKeyPath, null, "Override Removal By Outside Process", Convert.ToInt32(value));
+            }
+        }
+
 
         /// <summary>
         /// Removes from the computer all of the settings related to this application.
@@ -198,7 +222,9 @@ namespace SinclairCC.MakeMeAdmin
                 keyPath = System.IO.Path.Combine(keyPath, subkeyName);
             }
 
-            RegistryKey settingsKey = rootRegistryKey.OpenSubKey(keyPath, false);
+            System.Security.AccessControl.RegistryRights rights = System.Security.AccessControl.RegistryRights.QueryValues;
+            RegistryKey settingsKey = rootRegistryKey.OpenSubKey(keyPath, RegistryKeyPermissionCheck.ReadSubTree, rights);
+            /* RegistryKey settingsKey = rootRegistryKey.OpenSubKey(keyPath, false); */
             if (settingsKey != null)
             {
                 object regValue = settingsKey.GetValue(valueName, null);
@@ -273,6 +299,25 @@ namespace SinclairCC.MakeMeAdmin
             }
 
             return returnData;
+        }
+
+        private static void SetKeyValuePairs(string keyPath, string subkeyName, System.Collections.Generic.Dictionary<string, string> values)
+        {
+            if (!string.IsNullOrEmpty(subkeyName))
+            {
+                keyPath = System.IO.Path.Combine(keyPath, subkeyName);
+            }
+
+            RegistryKey settingsKey = rootRegistryKey.CreateSubKey(keyPath, RegistryKeyPermissionCheck.ReadWriteSubTree);
+            if (settingsKey != null)
+            {
+                foreach (string valueName in values.Keys)
+                {
+                    settingsKey.SetValue(valueName, values[valueName], RegistryValueKind.String);
+                }
+                settingsKey.Flush();
+                settingsKey.Close();
+            }
         }
 
 
@@ -425,7 +470,9 @@ namespace SinclairCC.MakeMeAdmin
                 keyPath = System.IO.Path.Combine(keyPath, subkeyName);
             }
 
-            RegistryKey settingsKey = rootRegistryKey.OpenSubKey(keyPath, false);
+            System.Security.AccessControl.RegistryRights rights = System.Security.AccessControl.RegistryRights.QueryValues;
+            RegistryKey settingsKey = rootRegistryKey.OpenSubKey(keyPath, RegistryKeyPermissionCheck.ReadSubTree, rights);
+            /* RegistryKey settingsKey = rootRegistryKey.OpenSubKey(keyPath, false); */
             if (settingsKey != null)
             {
                 object regValue = settingsKey.GetValue(valueName);

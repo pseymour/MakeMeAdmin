@@ -62,6 +62,7 @@
     <Compile Include="LocalAdministratorGroup.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="PrincipalList.cs" />
+    <Compile Include="RemovalReason.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Shared.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

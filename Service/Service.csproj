@@ -81,7 +81,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServiceContract.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MakeMeAdminService.resx">

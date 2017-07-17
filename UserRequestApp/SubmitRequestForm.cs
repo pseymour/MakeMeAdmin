@@ -37,14 +37,22 @@ namespace SinclairCC.MakeMeAdmin
         void NotifyIconTimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             this.UpdateUserAdministratorStatus();
+
             if (this.userIsDirectAdmin != this.userWasAdminOnLastCheck)
             {
+                WindowsIdentity currentIdentity = WindowsIdentity.GetCurrent(TokenAccessLevels.Read);
+
+                NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
+                ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(binding, Shared.ServiceBaseAddress);
+                IAdminGroup channel = namedPipeFactory.CreateChannel();
+
                 this.userWasAdminOnLastCheck = this.userIsDirectAdmin;
-                if (!this.userIsDirectAdmin)
+                if ((!this.userIsDirectAdmin) && (!channel.PrincipalIsInList(currentIdentity.User.Value)))
                 {
                     this.notifyIconTimer.Stop();
                     notifyIcon.ShowBalloonTip(5000, "Make Me Admin", "You are no longer a member of the Administrators group.", ToolTipIcon.Info);
                 }
+
             }
         }
 
@@ -86,10 +94,10 @@ namespace SinclairCC.MakeMeAdmin
 
         private void addUserBackgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-            string address = string.Format("net.pipe://{0}/MakeMeAdmin/Service", Shared.GetFullyQualifiedHostName());
-            NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None);
-            EndpointAddress ep = new EndpointAddress(address);
-            IServiceContract channel = ChannelFactory<IServiceContract>.CreateChannel(binding, ep);
+            NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
+            ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(binding, Shared.ServiceBaseAddress);
+            IAdminGroup channel = namedPipeFactory.CreateChannel();
+
             try
             {
                 WindowsIdentity currentIdentity = WindowsIdentity.GetCurrent(TokenAccessLevels.Read);
@@ -111,11 +119,19 @@ namespace SinclairCC.MakeMeAdmin
         {
             if (e.Error != null)
             {
-                MessageBox.Show(this, "An error occurred while adding you to the Administrators group." + System.Environment.NewLine + "Please make sure the Make Me Admin service is running.", "Make Me Admin", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, 0);
+                System.Text.StringBuilder message = new System.Text.StringBuilder("An error occurred while adding you to the Administrators group.");
+                message.Append(System.Environment.NewLine);
+                message.Append("Please make sure the Make Me Admin service is running.");
+/*#if DEBUG*/
+                message.Append(System.Environment.NewLine);
+                message.Append("error message: ");
+                message.Append(e.Error.Message);
+/*#endif*/
+
+                MessageBox.Show(this, message.ToString(), "Make Me Admin", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, 0);
             }
 
             this.UpdateUserAdministratorStatus();
-
             if (this.userIsDirectAdmin)
             {
                 this.appStatus.Text = "Ready.";
@@ -141,18 +157,53 @@ namespace SinclairCC.MakeMeAdmin
 
         private void removeUserBackgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-            string address = string.Format("net.pipe://{0}/MakeMeAdmin/Service", Shared.GetFullyQualifiedHostName());
-            NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None);
-            EndpointAddress ep = new EndpointAddress(address);
-            IServiceContract channel = ChannelFactory<IServiceContract>.CreateChannel(binding, ep);
-            channel.RemovePrincipalFromAdministratorsGroup(System.Security.Principal.WindowsIdentity.GetCurrent().User.Value);
+            NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
+            ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(binding, Shared.ServiceBaseAddress);
+            /*
+            EndpointAddress ep = new EndpointAddress(Shared.ServiceBaseAddress);
+            IAdminGroup channel = ChannelFactory<IAdminGroup>.CreateChannel(binding, ep);
+            */
+            IAdminGroup channel = namedPipeFactory.CreateChannel();
+            channel.RemovePrincipalFromAdministratorsGroup(System.Security.Principal.WindowsIdentity.GetCurrent().User.Value, RemovalReason.UserRequest);
         }
 
         private void removeUserBackgroundWorker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
             if (e.Error != null)
             {
-                MessageBox.Show(this, "An error occurred while removing you from the Administrators group." + System.Environment.NewLine + "Please make sure the Make Me Admin service is running.", "Make Me Admin", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, 0);
+                System.Text.StringBuilder message = new System.Text.StringBuilder("An error occurred while removing you from the Administrators group.");
+                message.Append(System.Environment.NewLine);
+                message.Append("Please make sure the Make Me Admin service is running.");
+/*#if DEBUG*/
+                message.Append(System.Environment.NewLine);
+                message.Append("error message: ");
+                message.Append(e.Error.Message);
+
+                message.Append(System.Environment.NewLine);
+                message.Append("stack trace: ");
+                message.Append(e.Error.StackTrace);
+                message.Append(System.Environment.NewLine);
+
+                if (e.Error.InnerException != null)
+                {
+                    message.Append(System.Environment.NewLine);
+                    message.Append("inner error message: ");
+                    message.Append(e.Error.InnerException.Message);
+                    if (e.Error.InnerException.InnerException != null)
+                    {
+                        message.Append(System.Environment.NewLine);
+                        message.Append("inner inner error message: ");
+                        message.Append(e.Error.InnerException.InnerException.Message);
+                    }
+                }
+                else
+                {
+                    message.Append(System.Environment.NewLine);
+                    message.Append("Inner exception is null.");
+                }
+                /*#endif*/
+
+                MessageBox.Show(this, message.ToString(), "Make Me Admin", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, 0);
             }
 
             if (!buttonStateWorker.IsBusy)

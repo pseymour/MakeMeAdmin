@@ -26,8 +26,12 @@ namespace SinclairCC.MakeMeAdmin
         /// <summary>
         /// This event fires before the installers perform their uninstall operations.
         /// </summary>
-        /// <param name="sender">The service installer that is performing the installation.</param>
-        /// <param name="e">Data specific to this event.</param>
+        /// <param name="sender">
+        /// The service installer that is performing the installation.
+        /// </param>
+        /// <param name="e">
+        /// Data specific to this event.
+        /// </param>
         void serviceInstaller_BeforeUninstall(object sender, InstallEventArgs e)
         {
             ApplicationLog.RemoveSource();
@@ -55,8 +59,12 @@ namespace SinclairCC.MakeMeAdmin
         /// This event fires after the Install methods of all the installers in the
         /// Installers property have run.
         /// </summary>
-        /// <param name="sender">The service installer that is performing the installation.</param>
-        /// <param name="e">Data specific to this event.</param>
+        /// <param name="sender">
+        /// The service installer that is performing the installation.
+        /// </param>
+        /// <param name="e">
+        /// Data specific to this event.
+        /// </param>
         void serviceInstaller_AfterInstall(object sender, InstallEventArgs e)
         {
             ApplicationLog.CreateSource();
