@@ -100,7 +100,6 @@
   <ItemGroup>
     <Compile Include="SidAttributes.cs" />
     <Compile Include="SID_AND_ATTRIBUTES.cs" />
-    <Compile Include="TOKEN_GROUPS.cs" />
     <Compile Include="TOKEN_USER.cs" />
     <Compile Include="TOKEN_INFORMATION_CLASS.cs" />
     <Compile Include="WTS_INFO_CLASS.cs" />

@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UI", "UserRequestApp\UI.csproj", "{63CAF2AD-A016-43BD-AA27-02CB848E2067}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalUI", "UserRequestApp\LocalUI.csproj", "{63CAF2AD-A016-43BD-AA27-02CB848E2067}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestCode", "TestCode\TestCode.csproj", "{92C5208E-DE76-49F9-B022-1A558C95B6DF}"
 EndProject

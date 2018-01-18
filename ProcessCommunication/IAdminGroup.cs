@@ -4,19 +4,19 @@
 
 namespace SinclairCC.MakeMeAdmin
 {
-    using System;
     using System.ServiceModel;
 
-    [ServiceContract(Namespace = "http://apps.sinclair.edu/makemeadmin/2016/04/")]
+    [ServiceContract(Namespace = "http://apps.sinclair.edu/makemeadmin/2017/10/")]
     public interface IAdminGroup
     {
         [OperationContract]
-        void AddPrincipalToAdministratorsGroup(string principalSid, DateTime expirationTime);
+        void AddPrincipalToAdministratorsGroup();
 
         [OperationContract]
-        void RemovePrincipalFromAdministratorsGroup(string principalSid, RemovalReason reason);
+        void RemovePrincipalFromAdministratorsGroup(RemovalReason reason);
 
         [OperationContract]
-        bool PrincipalIsInList(string principalSid);
+        bool PrincipalIsInList();
     }
+
 }

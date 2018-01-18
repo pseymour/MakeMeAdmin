@@ -6,8 +6,8 @@ namespace SinclairCC.MakeMeAdmin
 {
     using System;
     using System.Reflection;
-    using System.ServiceModel;
     using System.Security.Principal;
+    using System.ServiceModel;
     using System.Windows.Forms;
 
     /// <summary>
@@ -62,14 +62,12 @@ namespace SinclairCC.MakeMeAdmin
 
             if (this.userIsDirectAdmin != this.userWasAdminOnLastCheck)
             {
-                WindowsIdentity currentIdentity = WindowsIdentity.GetCurrent(TokenAccessLevels.Read);
-
                 NetNamedPipeBinding namedPipeBinding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
                 ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(namedPipeBinding, Shared.NamedPipeServiceBaseAddress);
                 IAdminGroup namedPipeChannel = namedPipeFactory.CreateChannel();
 
                 this.userWasAdminOnLastCheck = this.userIsDirectAdmin;
-                if ((!this.userIsDirectAdmin) && (!channel.PrincipalIsInList(currentIdentity.User.Value)))
+                if ((!this.userIsDirectAdmin) && (!namedPipeChannel.PrincipalIsInList()))
                 {
                     this.notifyIconTimer.Stop();
                     notifyIcon.ShowBalloonTip(5000, "Make Me Admin", "You are no longer a member of the Administrators group.", ToolTipIcon.Info);
@@ -124,9 +122,7 @@ namespace SinclairCC.MakeMeAdmin
 
             try
             {
-                WindowsIdentity currentIdentity = WindowsIdentity.GetCurrent(TokenAccessLevels.Read);
-                int timeoutMinutes = Shared.GetTimeoutForUser(currentIdentity);
-                channel.AddPrincipalToAdministratorsGroup(currentIdentity.User.Value, DateTime.Now.AddMinutes(timeoutMinutes));
+                channel.AddPrincipalToAdministratorsGroup();
             }
             catch (System.ServiceModel.EndpointNotFoundException)
             {
@@ -148,12 +144,8 @@ namespace SinclairCC.MakeMeAdmin
             {
                 System.Text.StringBuilder message = new System.Text.StringBuilder("An error occurred while adding you to the Administrators group.");
                 message.Append(System.Environment.NewLine);
-                message.Append("Please make sure the Make Me Admin service is running.");
-/*#if DEBUG*/
-                message.Append(System.Environment.NewLine);
                 message.Append("error message: ");
                 message.Append(e.Error.Message);
-/*#endif*/
 
                 MessageBox.Show(this, message.ToString(), "Make Me Admin", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, 0);
             }

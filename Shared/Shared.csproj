@@ -61,6 +61,7 @@
   <ItemGroup>
     <Compile Include="LocalAdministratorGroup.cs" />
     <Compile Include="NativeMethods.cs" />
+    <Compile Include="Principal.cs" />
     <Compile Include="PrincipalList.cs" />
     <Compile Include="RemovalReason.cs" />
     <Compile Include="Settings.cs" />

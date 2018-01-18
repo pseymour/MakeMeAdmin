@@ -6,6 +6,7 @@ namespace LsaLogonSessions
 {
     using System;
     using System.Runtime.InteropServices;
+    using System.Security.Principal;
 
     /// <summary>
     /// This class allows enumeration of Windows logon sessions.
@@ -47,11 +48,14 @@ namespace LsaLogonSessions
             return returnSid;
         }
 
+        /*
         public static string[] GetLoggedOnUserNames()
         {
             return GetLoggedOnUserNames(NativeMethods.WTS_CURRENT_SERVER_HANDLE);
         }
+        */
 
+        /*
         /// <summary>
         /// Gets a list of the currently logged-on users.
         /// </summary>
@@ -125,6 +129,7 @@ namespace LsaLogonSessions
 
             return returnArray;
         }
+        */
 
 
         /// <summary>
@@ -140,64 +145,45 @@ namespace LsaLogonSessions
             return GetLoggedOnUserSessionIds(NativeMethods.WTS_CURRENT_SERVER_HANDLE);
         }
 
+
         /// <summary>
-        /// Gets a list of the currently logged-on users.
+        /// Gets an array containing the session IDs of the currently logged-on users for the
+        /// server pointed to by the specified handle.
         /// </summary>
         /// <returns>
-        /// Returns an array of strings, which contains the names of the currently logged-on users.
-        /// Returns null if no users are logged on.
+        /// Returns an array of integers, which contains the sessions IDs of currently logged-on users.
+        /// Returns null if no users are logged on or the list of session IDs cannot be retrieved.
         /// </returns>
         private static int[] GetLoggedOnUserSessionIds(IntPtr serverHandle)
         {
             int[] returnArray = null;
             IntPtr sessionInfoPointer = IntPtr.Zero;
             int sessionCount = 0;
+
+            // Get a list of the sessions on a server.
             int returnValue = NativeMethods.WTSEnumerateSessions(serverHandle, 0, 1, ref sessionInfoPointer, ref sessionCount);
 
             long current = sessionInfoPointer.ToInt64();
             int sessionInfoSize = Marshal.SizeOf(typeof(WTS_SESSION_INFO));
+
             if (returnValue != 0)
             {
                 System.Collections.Generic.List<int> sessionIds = new System.Collections.Generic.List<int>(sessionCount);
+
+                // Retrieve the session ID for each session.
                 for (int i = 0; i < sessionCount; i++)
                 {
-                    /*
-                    System.UInt32 domainName = System.UInt32.MaxValue;
-                    */
-
                     WTS_SESSION_INFO si = (WTS_SESSION_INFO)Marshal.PtrToStructure((System.IntPtr)current, typeof(WTS_SESSION_INFO));
                     current += sessionInfoSize;
-
                     sessionIds.Add(si.SessionID);
-
-                    /*
-                    IntPtr bufferPointer = IntPtr.Zero;
-                    int bytesReturned = 0;
-
-                    // Get the logged-on user's domain name.
-                    returnValue = NativeMethods.WTSQuerySessionInformation(serverHandle, si.SessionID, WTS_INFO_CLASS.WTSSessionId, out bufferPointer, out bytesReturned);
-                    if (returnValue != 0)
-                    {
-                        domainName = Marshal.ptr  Marshal.PtrToStringAnsi(bufferPointer, bytesReturned - 1);
-                        NativeMethods.WTSFreeMemory(bufferPointer);
-                    }
-
-                    if (((domainName != null)) && (domainName != string.Empty))
-                    {
-                        string fullUserName = string.Format("{0}{1}{2}", domainName == null ? string.Empty : string.Format("{0}\\", domainName.ToUpper(System.Globalization.CultureInfo.CurrentCulture)), userName.ToLower(System.Globalization.CultureInfo.CurrentCulture), protocolType == 2 ? " (RDP)" : string.Empty);
-                        userNames.Add(fullUserName);
-                    }
-                    */
                 }
 
                 NativeMethods.WTSFreeMemory(sessionInfoPointer);
+
+                // Copy session IDs into the return array.
                 sessionIds.TrimExcess();
                 returnArray = new int[sessionIds.Count];
                 sessionIds.CopyTo(returnArray);
-            }
-            else
-            {
-                Console.WriteLine("WTSEnumerateSessions returned zero (0), a failure code.");
             }
 
             return returnArray;
@@ -227,6 +213,5 @@ namespace LsaLogonSessions
             }
             return returnSid;
         }
-
     }
 }
