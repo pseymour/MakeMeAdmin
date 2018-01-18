@@ -6,7 +6,8 @@ namespace SinclairCC.MakeMeAdmin
 {
     using System;
     using Microsoft.Win32;
-    
+    using System.Security.Cryptography;
+
     /// <summary>
     /// This class manages application settings.
     /// </summary>
@@ -16,6 +17,12 @@ namespace SinclairCC.MakeMeAdmin
         /// The top-level registry key in which the settings will be stored.
         /// </summary>
         private static RegistryKey rootRegistryKey = Registry.LocalMachine;
+
+        // TODO: Can we provide better entropy here?
+        /// <summary>
+        /// An additional byte array used to encrypt the data.
+        /// </summary>
+        private static byte[] optionalEntropy = new byte[] { 8, 6, 7, 5, 3, 0, 9 };
 
         public static string[] LocalAllowedEntities
         {
@@ -123,20 +130,18 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-        //private static System.Collections.Generic.Dictionary<string, string> GetKeyValuePairs(string keyPath, string subkeyName)
-
         public static string[] SIDs
         {
             get
             {
-                return GetMultiString(PreferenceRegistryKeyPath, null, "Added SIDs");
+                return GetMultiStringEncrypted(PreferenceRegistryKeyPath, null, "Added SIDs");
             }
             set
             {
-                SetMultiString(PreferenceRegistryKeyPath, null, "Added SIDs", value);
+                SetMultiStringEncrypted(PreferenceRegistryKeyPath, null, "Added SIDs", value);
             }
         }
-
+            
         public static int AdminRightsTimeout
         {
             get
@@ -331,6 +336,24 @@ namespace SinclairCC.MakeMeAdmin
             return returnValue;
         }
 
+        private static string[] GetMultiStringEncrypted(string keyPath, string subkeyName, string valueName)
+        {
+            string[] returnValue = GetMultiString(keyPath, subkeyName, valueName);
+
+            if (returnValue != null)
+            {
+                // Decrypt all of the strings in the array.
+                for (int i = 0; i < returnValue.Length; i++)
+                {
+                    byte[] stringBytes = System.Text.Encoding.Default.GetBytes(returnValue[i]);
+                    byte[] decryptedBytes = ProtectedData.Unprotect(stringBytes, null, DataProtectionScope.LocalMachine);
+                    returnValue[i] = System.Text.Encoding.Default.GetString(decryptedBytes);
+                }
+            }
+
+            return returnValue;
+        }
+
         /// <summary>
         /// Stores a multi-string in the registry.
         /// </summary>
@@ -358,6 +381,44 @@ namespace SinclairCC.MakeMeAdmin
                 settingsKey.Close();
             }
         }
+
+        private static void SetMultiStringEncrypted(string keyPath, string subkeyName, string valueName, string[] value)
+        {
+            if (value != null)
+            {
+                // Encrypt all of the strings in the array.
+                for (int i = 0; i < value.Length; i++)
+                {
+                    byte[] stringBytes = System.Text.Encoding.Default.GetBytes(value[i]);
+                    byte[] encryptedData = ProtectedData.Protect(stringBytes, optionalEntropy, DataProtectionScope.LocalMachine);
+                    value[i] = System.Text.Encoding.Default.GetString(encryptedData);
+                }
+            }
+
+            SetMultiString(keyPath, subkeyName, valueName, value);
+        }
+
+        /*
+        /// <summary>
+        /// Encrypts a string and stores it in the registry.
+        /// </summary>
+        /// <param name="valueName">
+        /// The name of the registry value in which the encrypted string will be stored.
+        /// </param>
+        /// <param name="value">
+        /// The decrypted string to be encrypted and stored in the registry.
+        /// </param>
+        private static void SetEncryptedString(string valueName, string value)
+        {
+            RegistryKey settingsKey = rootRegistryKey.CreateSubKey(RegistryKeyPath, RegistryKeyPermissionCheck.ReadWriteSubTree);
+            if (settingsKey != null)
+            {
+                System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
+                settingsKey.Flush();
+                settingsKey.Close();
+            }
+        }
+        */
 
         private static System.Collections.Generic.Dictionary<string, string> GetKeyValuePairs(string keyPath, string subkeyName)
         {

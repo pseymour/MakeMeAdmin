@@ -44,6 +44,6 @@ namespace SinclairCC.MakeMeAdmin
         /// <summary>
         /// Event ID for debug messages.
         /// </summary>
-        DebugMessage
+        DebugMessage = 9000
     }
 }

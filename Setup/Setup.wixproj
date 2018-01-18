@@ -40,7 +40,7 @@
     <Compile Include="Product.wxs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\LogonSessionEnumeration\LsaLogonSessions\LsaLogonSessions.csproj">
+    <ProjectReference Include="..\LsaLogonSessions\LsaLogonSessions.csproj">
       <Name>LsaLogonSessions</Name>
       <Project>{a2107c86-7cb5-45ee-89e8-1bc7261f7762}</Project>
       <Private>True</Private>
@@ -64,6 +64,14 @@
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
+    <ProjectReference Include="..\RemoteUI\RemoteUI.csproj">
+      <Name>RemoteUI</Name>
+      <Project>{d64e40bb-9dac-4491-8406-2ca2f2853f76}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
     <ProjectReference Include="..\Service\Service.csproj">
       <Name>Service</Name>
       <Project>{416656dc-d499-498b-8acf-6502a13efc9e}</Project>
@@ -80,8 +88,8 @@
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
-    <ProjectReference Include="..\UserRequestApp\UI.csproj">
-      <Name>UI</Name>
+    <ProjectReference Include="..\UserRequestApp\LocalUI.csproj">
+      <Name>LocalUI</Name>
       <Project>{63caf2ad-a016-43bd-aa27-02cb848e2067}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
@@ -94,9 +102,6 @@
     <Content Include="GroupPolicy\en-US\SinclairMakeMeAdmin.adml" />
     <Content Include="GroupPolicy\SinclairBase.admx" />
     <Content Include="GroupPolicy\SinclairMakeMeAdmin.admx" />
-    <Content Include="Make Me Admin 2.1 User Manual - Windows 10.pdf" />
-    <Content Include="Make Me Admin 2.1 User Manual - Windows 7.pdf" />
-    <Content Include="Make Me Admin 2.1 User Manual - Windows 8.pdf" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="GroupPolicy" />
@@ -138,4 +143,8 @@
       <Output TaskParameter="Value" PropertyName="TargetPdbName" />
     </CreateProperty>
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>if not exist "$(ProjectDir)..\Installers" mkdir "$(ProjectDir)..\Installers"
+copy "!(TargetPath)" "$(ProjectDir)..\Installers"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

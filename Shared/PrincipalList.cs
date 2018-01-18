@@ -54,7 +54,7 @@ namespace SinclairCC.MakeMeAdmin
                 {
                     for (int i = 0; i < storedSIDs.Length; i++)
                     {
-                        PrincipalList.AddSID(storedSIDs[i], DateTime.Now.AddMinutes(Settings.AdminRightsTimeout * -1));
+                        PrincipalList.AddSID(storedSIDs[i], DateTime.Now.AddMinutes(Settings.AdminRightsTimeout * -1), null);
                     }
                 }
 
@@ -118,7 +118,7 @@ namespace SinclairCC.MakeMeAdmin
             else
             {
 #if DEBUG
-                ApplicationLog.WriteInformationEvent(string.Format("Adding SID {0} to list with an expiration of {1}.", sid, expirationTime), EventID.DebugMessage);
+                ApplicationLog.WriteInformationEvent(string.Format("Adding SID {0} to list with an expiration of {1}.", userIdentity.User.Value, expirationTime), EventID.DebugMessage);
 #endif
                 
                 principals.Add(userIdentity.User, new Principal(userIdentity, expirationTime, remoteAddress));
@@ -178,6 +178,18 @@ namespace SinclairCC.MakeMeAdmin
             else
             {
                 return null;
+            }
+        }
+
+        public static bool IsRemote(SecurityIdentifier sid)
+        {
+            if (principals.ContainsKey(sid))
+            {
+                return !string.IsNullOrEmpty(principals[sid].RemoteAddress);
+            }
+            else
+            {
+                return false;
             }
         }
     }

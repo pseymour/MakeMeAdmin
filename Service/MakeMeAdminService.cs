@@ -30,10 +30,36 @@ namespace SinclairCC.MakeMeAdmin
 
         private void RemovalTimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            string[] expiredSids = PrincipalList.GetExpiredSIDs();
-            foreach (string sid in expiredSids)
+            /*
+            string[] expiredSidStrings = PrincipalList.GetExpiredSIDs();
+            foreach (string sidString in expiredSidStrings)
             {
-                LocalAdministratorGroup.RemovePrincipal(sid, RemovalReason.Timeout);
+                LocalAdministratorGroup.RemovePrincipal(new SecurityIdentifier(sidString), RemovalReason.Timeout);
+            }
+            */
+        
+            Principal[] expiredPrincipals = PrincipalList.GetExpiredPrincipals();
+            foreach (Principal prin in expiredPrincipals)
+            {
+                LocalAdministratorGroup.RemovePrincipal(prin.PrincipalSid, RemovalReason.Timeout);
+
+                if ((Settings.EndRemoteSessionsUponExpiration) && (!string.IsNullOrEmpty(prin.RemoteAddress)))
+                {
+                    string userName = prin.PrincipalName;
+                    while (userName.LastIndexOf("\\") >= 0)
+                    {
+                        userName = userName.Substring(userName.LastIndexOf("\\") + 1);
+                    }
+#if DEBUG
+                    ApplicationLog.WriteInformationEvent(string.Format("Ending session for \"{0}\" on \"{1}.\"", userName, prin.RemoteAddress), EventID.DebugMessage);
+#endif
+
+                    int returnCode = Shared.EndNetworkSession(string.Format(@"\\{0}", prin.RemoteAddress), userName);
+
+#if DEBUG
+                    ApplicationLog.WriteInformationEvent(string.Format("Ending session returned error code {0}.", returnCode), EventID.DebugMessage);
+#endif
+                }
             }
 
             LocalAdministratorGroup.ValidateAllAddedPrincipals();

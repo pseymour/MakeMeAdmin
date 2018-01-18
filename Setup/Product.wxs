@@ -1,16 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Id="*" Name="Make Me Admin" Language="1033" Version="2.1.3" Manufacturer="Sinclair Community College" UpgradeCode="9c690479-3987-48a8-8bda-118ef1f93cdd">
+  <Product Id="*" Name="Make Me Admin" Language="1033" Version="2.2.1" Manufacturer="Sinclair Community College" UpgradeCode="9c690479-3987-48a8-8bda-118ef1f93cdd">
     <Package InstallerVersion="400" Compressed="yes" InstallScope="perMachine" />
     <Condition Message="You must have administrator rights to install this software.">Privileged</Condition>
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
     <MediaTemplate EmbedCab="yes" />
+
     <Feature Id="MakeMeAdmin" Title="[ProductName]" Level="1">
-      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentRef Id="ADMXFiles" />
+      <ComponentRef Id="ADMLFiles" />
+      <ComponentRef Id="ElevationUserInterface" />
+      <ComponentRef Id="LsaLogonSessionLibrary" />
+      <ComponentRef Id="Service" />
+      <ComponentRef Id="SharedLibrary" />
+      <ComponentRef Id="LoggingLibrary" />
+      <ComponentRef Id="ProcessCommunicationLibrary" />
+      <Condition Level="0">INSTALLMAKEMEADMIN = "0"</Condition>
     </Feature>
+    
+    <Feature Id="MakeMeAdminRemote" Title="[ProductName] Remote" Level="0">
+      <ComponentRef Id="RemoteElevationUserInterface"/>
+      <ComponentRef Id="MruListLibrary"/>
+      <ComponentRef Id="SharedLibrary" />
+      <ComponentRef Id="LoggingLibrary" />
+      <ComponentRef Id="ProcessCommunicationLibrary" />
+      <Condition Level="1">(INSTALLREMOTE = "1") OR REMOVE</Condition>
+    </Feature>
+    
     <Icon Id="SecurityLock.ico" SourceFile="..\SecurityLock.ico"/>
     <Property Id="ARPPRODUCTICON" Value="SecurityLock.ico" />
     <Property Id="ARPNOMODIFY" Value="yes" Secure="yes" />
+    
     <Directory Id="TARGETDIR" Name="SourceDir">
 
       <!-- Create the structure in the appropriate Program Files folder. -->
@@ -20,131 +40,62 @@
         <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
       <?endif ?>
       <Directory Id="$(var.PlatformProgramFilesFolder)">
-        <Directory Id="SinclairProgramFilesFolder" Name="Sinclair Community College">
-          <Directory Id="INSTALLFOLDER" Name="Make Me Admin">
-            <Directory Id="GroupPolicyFolder" Name="Group Policy">
-              <Directory Id="GroupPolicyEnUSFolder" Name="en-US" />
+        <Directory Id="INSTALLFOLDER" Name="Make Me Admin">
+          <Component Id="ElevationUserInterface" Guid="562B228B-6029-457D-96C9-6B4BCA69660D">
+            <File Id="ElevationUserInterfaceExe" Name="$(var.LocalUI.TargetFileName)" Source="$(var.LocalUI.TargetPath)" KeyPath="yes" />
+            <Shortcut Id="LocalUserInferfaceShortcut" Directory="ProgramMenuFolder" Name="Make Me Admin" Description="Make Me Admin Local User Interface" Advertise="yes" WorkingDirectory="INSTALLDIR" Icon="SecurityLock.ico" IconIndex="0" />
+          </Component>
+          <Component Id="RemoteElevationUserInterface" Guid="E62C25C4-A0E8-45B4-8313-6954A8C2F6F9">
+            <File Id="RemoteElevationUserInterfaceExe" Name="$(var.RemoteUI.TargetFileName)" Source="$(var.RemoteUI.TargetPath)" KeyPath="yes" />
+            <Shortcut Id="RemoteUserInferfaceShortcut" Directory="ProgramMenuFolder" Name="Make Me Admin Remote" Description="Make Me Admin Remote User Interface" Advertise="yes" WorkingDirectory="INSTALLDIR" Icon="SecurityLock.ico" IconIndex="0" />
+          </Component>
+          <Component Id="MruListLibrary" Guid="291425FC-1060-4197-9950-D2DC5CFD3F6B">
+            <File Id="MruLibrary" Name="MruList.dll" Source="$(var.RemoteUI.TargetDir)\MruList.dll" KeyPath="yes" />
+          </Component>
+          <Component Id="SharedLibrary" Guid="CE00450C-CC5A-47A8-AB6A-0E564E3AC0BD">
+            <File Id="SharedDll" Name="$(var.Shared.TargetFileName)" Source="$(var.Shared.TargetPath)" KeyPath="yes" />
+          </Component>
+          <Component Id="LoggingLibrary" Guid="17760ABA-01B0-4E35-9AD8-3F168B171CCE">
+            <File Id="LoggingDll" Name="$(var.Logging.TargetFileName)" Source="$(var.Logging.TargetPath)" KeyPath="yes" />
+          </Component>
+          <Component Id="LsaLogonSessionLibrary" Guid="22E70C0A-7071-4E1D-B8C1-3E73FB3A1784">
+            <File Id="LsaLogonSessionDll" Name="$(var.LsaLogonSessions.TargetFileName)" Source="$(var.LsaLogonSessions.TargetPath)" KeyPath="yes" />
+          </Component>
+          <Component Id="ProcessCommunicationLibrary" Guid="79FC2590-F4CD-4205-8283-3E604052224D" >
+            <File Id="ProcessCommunicationDll" Name="$(var.ProcessCommunication.TargetFileName)" Source="$(var.ProcessCommunication.TargetPath)" KeyPath="yes" />
+          </Component>
+          <Component Id="Service" Guid="DE98A440-7542-4394-9CAB-086B2906D29A">
+            <File Id="ServiceExe" Name="$(var.Service.TargetFileName)" Source="$(var.Service.TargetPath)" KeyPath="yes" />
+            <ServiceInstall DisplayName="[ProductName]" Name="MakeMeAdmin" Start="auto" Type="shareProcess" Vital="yes"
+                            Description="Enables users to elevate themselves to adminstrator-level rights."
+                            EraseDescription="no" ErrorControl="normal">
+              <!-- <ServiceConfig DelayedAutoStart="yes" OnInstall="yes" OnReinstall="yes" OnUninstall="yes" /> -->
+          
+              <!-- Add a dependency on the Server service. -->
+              <ServiceDependency Group="no" Id="LanmanServer"/>
+            </ServiceInstall>
+            <ServiceControl Id="MakeMeAdmin" Name="MakeMeAdmin" Remove="uninstall" Start="install" Stop="both" Wait="yes" />
+            <RegistryValue Action="write" Root="HKLM" Key="SOFTWARE\Sinclair Community College\[ProductName]" Name="Admin Rights Timeout" Type="integer" Value="10" KeyPath="no" />
+            <RemoveRegistryKey Action="removeOnUninstall" Id="AddedSIDsValue" Key="Software\Sinclair Community College\Make Me Admin" Root="HKLM" />
+            <RemoveFolder Id="INSTALLFOLDER" On="uninstall" />
+          </Component>
+            
+          <Directory Id="GroupPolicyFolder" Name="Group Policy">
+            <Component Id="ADMXFiles" Guid="7DBE019F-9512-43DE-BB62-B6C3B83A90ED">
+              <File Id="SinclairBase.admx" Source="GroupPolicy\SinclairBase.admx" KeyPath="yes" />
+              <File Id="SinclairMakeMeAdmin.admx" Source="GroupPolicy\SinclairMakeMeAdmin.admx" />
+            </Component>
+            <Directory Id="GroupPolicyEnUSFolder" Name="en-US">
+              <Component Id="ADMLFiles" Guid="D8D53E30-35CA-497E-8251-026E53AE74FE" KeyPath="yes">
+                <File Id="SinclairBase.adml" Source="GroupPolicy\en-US\SinclairBase.adml" />
+                <File Id="SinclairMakeMeAdmin.adml" Source="GroupPolicy\en-US\SinclairMakeMeAdmin.adml" />
+              </Component>
             </Directory>
           </Directory>
         </Directory>
       </Directory>
       
-      <Directory Id="ProgramMenuFolder" Name="Programs">
-        <Directory Id="SinclairProgramMenu" Name="Sinclair Community College" >
-          <Component Id="SinclairProgramMenu" Guid="63B41AC1-B3CA-4CF0-B6AE-E9CC4825FF49">
-            <RemoveFolder Id="SinclairProgramMenu" On="uninstall" />
-            <!-- TODO: Not sure what this registry value is for. -->
-            <RegistryValue Root="HKMU" Key="Software\Sinclair Community College\[ProductName]" Name="SinclairMenuInstalled" Type="integer" Value="1" KeyPath="yes" />
-          </Component>
-          <Directory Id="AppProgramMenu" Name="Make Me Admin">
-            <Component Id="AppProgramMenu" Guid="01E030CB-3F67-463A-B835-E763CC82F560">
-              <RemoveFolder Id="AppProgramMenu" On="uninstall" />
-              <!-- TODO: Not sure what this registry value is for. -->
-              <RegistryValue Root="HKMU" Key="Software\Sinclair Community College\[ProductName]" Name="AppMenuInstalled" Type="integer" Value="1" KeyPath="yes" />
-            </Component>
-          </Directory>
-        </Directory>
-      </Directory>
+      <Directory Id="ProgramMenuFolder" Name="Programs" />
     </Directory>
-
-    <!-- Add the .admx and .adml files for Group Policy. -->
-    <DirectoryRef Id="GroupPolicyFolder">
-      <Component Id="ADMXFiles" Guid="7DBE019F-9512-43DE-BB62-B6C3B83A90ED">
-        <File Id="SinclairBase.admx" Source="GroupPolicy\SinclairBase.admx" KeyPath="yes" />
-        <File Id="SinclairMakeMeAdmin.admx" Source="GroupPolicy\SinclairMakeMeAdmin.admx" />
-      </Component>
-    </DirectoryRef>
-    <DirectoryRef Id="GroupPolicyEnUSFolder">
-      <Component Id="ADMLFiles" Guid="D8D53E30-35CA-497E-8251-026E53AE74FE" KeyPath="yes">
-        <File Id="SinclairBase.adml" Source="GroupPolicy\en-US\SinclairBase.adml" />
-        <File Id="SinclairMakeMeAdmin.adml" Source="GroupPolicy\en-US\SinclairMakeMeAdmin.adml" />
-      </Component>
-    </DirectoryRef>
   </Product>
-
-  <Fragment>
-    <Property Id="WIN10FOUND">
-      <?if $(var.Platform) = x64 ?>
-        <DirectorySearch Id="searchSysFolderWin10" Path="[System64Folder]" Depth="0">
-          <FileSearch Name="advapi32.dll" MinVersion="6.3.9601" MaxVersion="65.65.65.65"/>
-        </DirectorySearch>
-      <?else ?>
-        <DirectorySearch Id="searchSysFolderWin10" Path="[SystemFolder]" Depth="0">
-          <FileSearch Name="advapi32.dll" MinVersion="6.3.9601" MaxVersion="65.65.65.65"/>
-        </DirectorySearch>
-      <?endif ?>
-    </Property>
-    <Property Id="WIN8FOUND">
-      <?if $(var.Platform) = x64 ?>
-        <DirectorySearch Id="searchSysFolderWin8" Path="[System64Folder]" Depth="0">
-          <FileSearch Name="advapi32.dll" MinVersion="6.3.0" MaxVersion="6.3.9601"/>
-        </DirectorySearch>
-      <?else ?>
-        <DirectorySearch Id="searchSysFolderWin8" Path="[SystemFolder]" Depth="0">
-          <FileSearch Name="advapi32.dll" MinVersion="6.3.0" MaxVersion="6.3.9601"/>
-        </DirectorySearch>
-      <?endif ?>
-    </Property>
-    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-      <ComponentRef Id="SinclairProgramMenu" />
-      <ComponentRef Id="AppProgramMenu" />
-      <ComponentRef Id="ADMXFiles" />
-      <ComponentRef Id="ADMLFiles" />
-      <Component Id="UserManualWindows10" Guid="B2804CA5-1A4A-4659-99EB-BC402D9EDE7D">
-        <Condition>
-          <![CDATA[Installed OR ((VersionNT >= 603) AND WIN10FOUND)]]>
-        </Condition>
-        <File Id="UserManualPdfWin10" Name="Make Me Admin 2.1 User Manual - Win10.pdf" Source="Make Me Admin 2.1 User Manual - Windows 10.pdf" KeyPath="no">
-          <Shortcut Id="UserManualPdfWin10Shortcut" Directory="AppProgramMenu" Name="Make Me Admin User Manual" WorkingDirectory="INSTALLDIR" Advertise="no" />
-        </File>
-        <RegistryValue Root="HKMU" Key="Software\Sinclair Community College\[ProductName]" Name="ManualShortcutInstalled" Type="integer" Value="1" KeyPath="yes" />
-      </Component>
-      <Component Id="UserManualWindows8" Guid="A8E9BD30-5A16-46D2-9CDC-83997BFB0C2D">
-        <Condition>
-          <![CDATA[Installed OR (((VersionNT >= 602) AND (VersionNT <= 603)) AND (NOT WIN10FOUND))]]>
-        </Condition>
-        <File Id="UserManualPdfWin8" Name="Make Me Admin 2.1 User Manual - Win8.pdf" Source="Make Me Admin 2.1 User Manual - Windows 8.pdf" KeyPath="no">
-          <Shortcut Id="UserManualPdfWin8Shortcut" Directory="AppProgramMenu" Name="Make Me Admin User Manual" WorkingDirectory="INSTALLDIR" Advertise="no" />
-        </File>
-        <RegistryValue Root="HKMU" Key="Software\Sinclair Community College\[ProductName]" Name="ManualShortcutInstalled" Type="integer" Value="1" KeyPath="yes" />
-      </Component>
-      <Component Id="UserManualWindows7" Guid="99F0D159-BB2D-47BD-B96F-A05712FD62C3">
-        <Condition>
-          <![CDATA[Installed OR (VersionNT <= 601)]]>
-        </Condition>
-        <File Id="UserManualPdfWin7" Name="Make Me Admin 2.1 User Manual - Win7.pdf" Source="Make Me Admin 2.1 User Manual - Windows 7.pdf" KeyPath="no">
-          <Shortcut Id="UserManualPdfWin7Shortcut" Directory="AppProgramMenu" Name="Make Me Admin User Manual" WorkingDirectory="INSTALLDIR" Advertise="no" />
-        </File>
-        <RegistryValue Root="HKMU" Key="Software\Sinclair Community College\[ProductName]" Name="ManualShortcutInstalled" Type="integer" Value="1" KeyPath="yes" />
-      </Component>
-      <Component Id="ElevationUserInterface" Guid="5598CA34-084E-4610-80FC-0A33F2077FA4">
-        <File Id="ElevationUserInterfaceExe" Name="UserApplication.exe" Source="$(var.UI.TargetPath)" KeyPath="yes" />
-        <Shortcut Id="ElevationUserInferfaceShortcut" Directory="AppProgramMenu" Name="Make Me Admin" WorkingDirectory="INSTALLDIR" Icon="SecurityLock.ico" IconIndex="0" Advertise="yes" />
-      </Component>
-      <Component Id="SharedLibrary" Guid="169D4E2F-D7B1-4BB9-9203-AECE8DB5936A">
-        <File Id="SharedDll" Name="Shared.dll" Source="$(var.Shared.TargetPath)" KeyPath="yes" />
-      </Component>
-      <Component Id="LoggingLibrary" Guid="3D8396EF-38D6-41BC-89BA-26A5CEA97D34">
-        <File Id="LoggingDll" Name="Logging.dll" Source="$(var.Logging.TargetPath)" KeyPath="yes" />
-      </Component>
-      <Component Id="LsaLogonSessionLibrary" Guid="7D360152-7387-4CC8-A0C1-B8EA5622285E">
-        <File Id="LsaLogonSessionDll" Name="LsaLogonSessions.dll" Source="$(var.LsaLogonSessions.TargetPath)" KeyPath="yes" />
-      </Component>
-      <Component Id="ProcessCommunicationLibrary" Guid="7AE4841A-BC73-4169-8104-1459E2C0278B">
-        <File Id="ProcessCommunicationDll" Name="ProcessCommunication.dll" Source="$(var.ProcessCommunication.TargetPath)" KeyPath="yes" />
-      </Component>
-      <Component Id="Service" Guid="1C15CD40-BBA9-41E5-968E-74EEAE7F6E6D">
-        <File Id="ServiceExe" Name="MakeMeAdminService.exe" Source="$(var.Service.TargetPath)" KeyPath="yes" />
-        <ServiceInstall DisplayName="[ProductName]" Name="MakeMeAdmin" Start="auto" Type="shareProcess" Vital="yes"
-                        Description="Enables users to elevate themselves to adminstrator-level rights."
-                        EraseDescription="no" ErrorControl="normal">
-          <!-- <ServiceConfig DelayedAutoStart="yes" OnInstall="yes" OnReinstall="yes" OnUninstall="yes" /> -->
-        </ServiceInstall>
-        <ServiceControl Id="MakeMeAdmin" Name="MakeMeAdmin" Remove="uninstall" Start="install" Stop="both" Wait="yes" />
-        <RegistryValue Action="write" Root="HKLM" Key="SOFTWARE\Sinclair Community College\[ProductName]" Name="Admin Rights Timeout" Type="integer" Value="10" KeyPath="no" />
-        <RemoveRegistryKey Action="removeOnUninstall" Id="AddedSIDsValue" Key="Software\Sinclair Community College\Make Me Admin" Root="HKLM" />
-        <RemoveFolder Id="SinclairProgramFilesFolder" On="uninstall" />
-      </Component>
-    </ComponentGroup>
-  </Fragment>
 </Wix>
