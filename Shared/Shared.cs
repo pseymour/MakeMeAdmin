@@ -1,5 +1,5 @@
 ﻿// <copyright file="Shared.cs" company="Sinclair Community College">
-// Copyright (c) Sinclair Community College. All rights reserved.
+// Copyright (c) 2010-2017, Sinclair Community College. All rights reserved.
 // </copyright>
 
 namespace SinclairCC.MakeMeAdmin
@@ -11,7 +11,15 @@ namespace SinclairCC.MakeMeAdmin
 
     public class Shared
     {
-        public static string ServiceBaseAddress
+        public static string TcpServiceBaseAddress
+        {
+            get
+            {
+                return string.Format("net.tcp://{0}/MakeMeAdmin/Service", FullyQualifiedHostName);
+            }
+        }
+
+        public static string NamedPipeServiceBaseAddress
         {
             get
             {

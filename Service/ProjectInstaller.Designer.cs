@@ -1,4 +1,8 @@
-﻿namespace SinclairCC.MakeMeAdmin
+﻿// <copyright file="ProjectInstaller.Designer.cs" company="Sinclair Community College">
+// Copyright (c) Sinclair Community College. All rights reserved.
+// </copyright>
+
+namespace SinclairCC.MakeMeAdmin
 {
     using System.Configuration.Install;
 

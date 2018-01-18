@@ -1,5 +1,5 @@
 ﻿// <copyright file="Settings.cs" company="Sinclair Community College">
-// Copyright (c) Sinclair Community College. All rights reserved.
+// Copyright (c) 2010-2017, Sinclair Community College. All rights reserved.
 // </copyright>
 
 namespace SinclairCC.MakeMeAdmin
@@ -17,7 +17,7 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         private static RegistryKey rootRegistryKey = Registry.LocalMachine;
 
-        public static string[] AllowedEntities
+        public static string[] LocalAllowedEntities
         {
             get
             {
@@ -38,7 +38,7 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-        public static string[] DeniedEntities
+        public static string[] LocalDeniedEntities
         {
             get
             {
@@ -58,6 +58,49 @@ namespace SinclairCC.MakeMeAdmin
                 SetMultiString(PreferenceRegistryKeyPath, null, "Denied Entities", value);
             }
         }
+
+        public static string[] RemoteAllowedEntities
+        {
+            get
+            {
+                string[] policyAllowedEntities = GetMultiString(PolicyRegistryKeyPath, null, "Remote Allowed Entities");
+                string[] preferenceAllowedEntities = GetMultiString(PreferenceRegistryKeyPath, null, "Remote Allowed Entities");
+                if (policyAllowedEntities != null)
+                { // The policy setting has a value. Go with whatever it says.
+                    return policyAllowedEntities;
+                }
+                else
+                { // The preference setting has a value. Go with whatever it says.
+                    return preferenceAllowedEntities;
+                }
+            }
+            set
+            {
+                SetMultiString(PreferenceRegistryKeyPath, null, "Remote Allowed Entities", value);
+            }
+        }
+
+        public static string[] RemoteDeniedEntities
+        {
+            get
+            {
+                string[] policyDeniedEntities = GetMultiString(PolicyRegistryKeyPath, null, "Remote Denied Entities");
+                string[] preferenceDeniedEntities = GetMultiString(PreferenceRegistryKeyPath, null, "Remote Denied Entities");
+                if (policyDeniedEntities != null)
+                { // The policy setting has a value. Go with whatever it says.
+                    return policyDeniedEntities;
+                }
+                else
+                { // The preference setting has a value. Go with whatever it says.
+                    return preferenceDeniedEntities;
+                }
+            }
+            set
+            {
+                SetMultiString(PreferenceRegistryKeyPath, null, "Remote Denied Entities", value);
+            }
+        }
+
 
         public static System.Collections.Generic.Dictionary<string, string> TimeoutOverrides
         {
@@ -171,6 +214,55 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+        public static bool AllowRemoteRequests
+        {
+            get
+            {
+                int? policyAllowRemoteSetting = GetDWord(PolicyRegistryKeyPath, null, "Allow Remote Requests");
+                int? preferenceAllowRemoteSetting = GetDWord(PreferenceRegistryKeyPath, null, "Allow Remote Requests");
+                if (policyAllowRemoteSetting.HasValue)
+                { // The policy setting has a value. Go with whatever it says.
+                    return Convert.ToBoolean(policyAllowRemoteSetting.Value);
+                }
+                else if (preferenceAllowRemoteSetting.HasValue)
+                { // The preference setting has a value. Go with whatever it says.
+                    return Convert.ToBoolean(preferenceAllowRemoteSetting.Value);
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value. Return a default value of false.
+                    return false;
+                }
+            }
+            set
+            {
+                SetDWord(PreferenceRegistryKeyPath, null, "Allow Remote Requests", Convert.ToInt32(value));
+            }
+        }
+
+        public static bool EndRemoteSessionsUponExpiration
+        {
+            get
+            {
+                int? policyEndRemoteSessionSetting = GetDWord(PolicyRegistryKeyPath, null, "End Remote Sessions Upon Expiration");
+                int? preferenceEndRemoteSessionSetting = GetDWord(PreferenceRegistryKeyPath, null, "End Remote Sessions Upon Expiration");
+                if (policyEndRemoteSessionSetting.HasValue)
+                { // The policy setting has a value. Go with whatever it says.
+                    return Convert.ToBoolean(policyEndRemoteSessionSetting.Value);
+                }
+                else if (preferenceEndRemoteSessionSetting.HasValue)
+                { // The preference setting has a value. Go with whatever it says.
+                    return Convert.ToBoolean(preferenceEndRemoteSessionSetting.Value);
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value. Return a default value of true.
+                    return true;
+                }
+            }
+            set
+            {
+                SetDWord(PreferenceRegistryKeyPath, null, "End Remote Sessions Upon Expiration", Convert.ToInt32(value));
+            }
+        }
 
         /// <summary>
         /// Removes from the computer all of the settings related to this application.

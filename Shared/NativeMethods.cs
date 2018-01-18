@@ -64,5 +64,27 @@ namespace SinclairCC.MakeMeAdmin
             out int entriesread,
             out int totalentries,
             IntPtr resume_handle);
+
+        /// <summary>
+        /// Ends a network session between a server and a workstation.
+        /// </summary>
+        /// <param name="ServerName">
+        /// The DNS or NetBIOS name of the remote server on which the function is to execute. If this parameter is NULL, the local computer is used.
+        /// </param>
+        /// <param name="UncClientName">
+        /// The computer name of the client to disconnect. If the UncClientName parameter is NULL, then all the sessions of the user identified by the username parameter will be deleted on the server specified by the servername parameter.
+        /// </param>
+        /// <param name="UserName">
+        /// The name of the user whose session is to be terminated. If this parameter is NULL, all users' sessions from the client specified by the UncClientName parameter are to be terminated.
+        /// </param>
+        /// <returns>
+        /// If the function succeeds, the return value is zero (0).
+        /// </returns>
+        [DllImport("netapi32.dll", CharSet = CharSet.Unicode)]
+        internal static extern int NetSessionDel(
+                     [In, MarshalAs(UnmanagedType.LPWStr)] string ServerName,
+                     [In, MarshalAs(UnmanagedType.LPWStr)] string UncClientName,
+                     [In, MarshalAs(UnmanagedType.LPWStr)] string UserName);
+
     }
 }

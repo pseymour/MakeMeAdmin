@@ -36,6 +36,12 @@ namespace SinclairCC.MakeMeAdmin
         PrincipalRemovedByExternalProcess,
 
         /// <summary>
+        /// Information about a request for administrator rights that was received
+        /// from a remote host.
+        /// </summary>
+        RemoteRequestInformation,
+
+        /// <summary>
         /// Event ID for debug messages.
         /// </summary>
         DebugMessage

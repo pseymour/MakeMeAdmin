@@ -11,7 +11,8 @@ namespace SinclairCC.MakeMeAdmin
     public partial class MakeMeAdminService : ServiceBase
     {
         private System.Timers.Timer removalTimer;
-        private ServiceHost serviceHost = null;
+        private ServiceHost namedPipeServiceHost = null;
+        private ServiceHost tcpServiceHost = null;
 
         public MakeMeAdminService()
         {
@@ -37,13 +38,22 @@ namespace SinclairCC.MakeMeAdmin
             LocalAdministratorGroup.ValidateAllAddedPrincipals();
         }
 
-        private void OpenServiceHost()
+        private void OpenNamedPipeServiceHost()
         {
-            this.serviceHost = new ServiceHost(typeof(AdminGroupManipulator), new Uri (Shared.ServiceBaseAddress));
-            this.serviceHost.Faulted += ServiceHostFaulted;
+            this.namedPipeServiceHost = new ServiceHost(typeof(AdminGroupManipulator), new Uri(Shared.NamedPipeServiceBaseAddress));
+            this.namedPipeServiceHost.Faulted += ServiceHostFaulted;
             NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
-            this.serviceHost.AddServiceEndpoint(typeof(IAdminGroup), binding, Shared.ServiceBaseAddress);            
-            this.serviceHost.Open();
+            this.namedPipeServiceHost.AddServiceEndpoint(typeof(IAdminGroup), binding, Shared.NamedPipeServiceBaseAddress);
+            this.namedPipeServiceHost.Open();
+        }
+
+        private void OpenTcpServiceHost()
+        {
+            this.tcpServiceHost = new ServiceHost(typeof(AdminGroupManipulator), new Uri(Shared.TcpServiceBaseAddress));
+            this.tcpServiceHost.Faulted += ServiceHostFaulted;
+            NetTcpBinding binding = new NetTcpBinding(SecurityMode.Transport);
+            this.tcpServiceHost.AddServiceEndpoint(typeof(IAdminGroup), binding, Shared.TcpServiceBaseAddress);
+            this.tcpServiceHost.Open();
         }
 
         private void ServiceHostFaulted(object sender, EventArgs e)
@@ -59,16 +69,26 @@ namespace SinclairCC.MakeMeAdmin
             }
             catch (Exception) { };
 
-            this.OpenServiceHost();
+            this.OpenNamedPipeServiceHost();
+
+            if (Settings.AllowRemoteRequests)
+            {
+                this.OpenTcpServiceHost();
+            }
 
             this.removalTimer.Start();
         }
 
         protected override void OnStop()
         {
-            if (this.serviceHost.State == CommunicationState.Opened)
+            if (this.namedPipeServiceHost.State == CommunicationState.Opened)
             {
-                this.serviceHost.Close();
+                this.namedPipeServiceHost.Close();
+            }
+
+            if ((this.tcpServiceHost != null) && (this.tcpServiceHost.State == CommunicationState.Opened))
+            {
+                this.tcpServiceHost.Close();
             }
 
             this.removalTimer.Stop();

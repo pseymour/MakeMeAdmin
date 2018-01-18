@@ -191,3 +191,6 @@ ModelManifest.xml
 /Setup/GroupPolicy/en-US/SinclairMakeMeAdmin.adml.bak
 /Setup/GroupPolicy/SinclairMakeMeAdmin.admx.bak
 /MakeMeAdmin.sln.bak
+/Logging/EventID.cs.bak
+/ProcessCommunication/Properties/AssemblyInfo.cs.bak
+/Service/MakeMeAdminService.cs.bak

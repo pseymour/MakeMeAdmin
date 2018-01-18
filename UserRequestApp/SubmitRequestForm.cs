@@ -1,5 +1,5 @@
 ﻿// <copyright file="SubmitRequestForm.cs" company="Sinclair Community College">
-// Copyright (c) Sinclair Community College. All rights reserved.
+// Copyright (c) 2010-2017, Sinclair Community College. All rights reserved.
 // </copyright>
 
 namespace SinclairCC.MakeMeAdmin
@@ -15,9 +15,27 @@ namespace SinclairCC.MakeMeAdmin
     /// </summary>
     internal partial class SubmitRequestForm : Form
     {
+        /// <summary>
+        /// Whether the user is a direct member of the Administrator's group.
+        /// </summary>
+        /// <remarks>
+        /// This is stored in a variable because it is a rather expensive operation to check.
+        /// </remarks>
         private bool userIsDirectAdmin = false;
+
+        /// <summary>
+        /// Whether the user had administrator rights the last time the check was performed.
+        /// </summary>
+        /// <remarks>
+        /// This is used to determine when the user's administrator status changes.
+        /// </remarks>
         private bool userWasAdminOnLastCheck = false;
+
+        /// <summary>
+        /// Timer to notify users when their administrator rights expire.
+        /// </summary>
         private System.Timers.Timer notifyIconTimer;
+
 
         /// <summary>
         /// Initializes a new instance of the SubmitRequestForm class.
@@ -25,14 +43,18 @@ namespace SinclairCC.MakeMeAdmin
         public SubmitRequestForm()
         {
             this.InitializeComponent();
+
             this.Icon = Properties.Resources.SecurityLock;
             this.notifyIcon.Icon = Properties.Resources.SecurityLock;
+
             this.SetFormText();
 
+            // Configure the notification timer.
             this.notifyIconTimer = new System.Timers.Timer(5000);
             this.notifyIconTimer.AutoReset = true;
             this.notifyIconTimer.Elapsed += NotifyIconTimerElapsed;
         }
+
 
         void NotifyIconTimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
@@ -42,9 +64,9 @@ namespace SinclairCC.MakeMeAdmin
             {
                 WindowsIdentity currentIdentity = WindowsIdentity.GetCurrent(TokenAccessLevels.Read);
 
-                NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
-                ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(binding, Shared.ServiceBaseAddress);
-                IAdminGroup channel = namedPipeFactory.CreateChannel();
+                NetNamedPipeBinding namedPipeBinding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
+                ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(namedPipeBinding, Shared.NamedPipeServiceBaseAddress);
+                IAdminGroup namedPipeChannel = namedPipeFactory.CreateChannel();
 
                 this.userWasAdminOnLastCheck = this.userIsDirectAdmin;
                 if ((!this.userIsDirectAdmin) && (!channel.PrincipalIsInList(currentIdentity.User.Value)))
@@ -52,9 +74,10 @@ namespace SinclairCC.MakeMeAdmin
                     this.notifyIconTimer.Stop();
                     notifyIcon.ShowBalloonTip(5000, "Make Me Admin", "You are no longer a member of the Administrators group.", ToolTipIcon.Info);
                 }
-
+                namedPipeFactory.Close();
             }
         }
+
 
         private void SetFormText()
         {
@@ -69,7 +92,7 @@ namespace SinclairCC.MakeMeAdmin
                 formText.Append(((AssemblyProductAttribute)attributes[0]).Product);
             }
             formText.Append(' ');
-            formText.Append(Assembly.GetExecutingAssembly().GetName().Version.ToString(2));
+            formText.Append(Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
 
             this.Text = formText.ToString();
             this.notifyIcon.Text = formText.ToString();
@@ -92,10 +115,11 @@ namespace SinclairCC.MakeMeAdmin
             addUserBackgroundWorker.RunWorkerAsync();
         }
 
+
         private void addUserBackgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
-            ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(binding, Shared.ServiceBaseAddress);
+            ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(binding, Shared.NamedPipeServiceBaseAddress);
             IAdminGroup channel = namedPipeFactory.CreateChannel();
 
             try
@@ -113,7 +137,10 @@ namespace SinclairCC.MakeMeAdmin
                 throw;
                 // TODO: What do we do with this error?
             }
+
+            namedPipeFactory.Close();
         }
+
 
         private void addUserBackgroundWorker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
@@ -132,6 +159,7 @@ namespace SinclairCC.MakeMeAdmin
             }
 
             this.UpdateUserAdministratorStatus();
+
             if (this.userIsDirectAdmin)
             {
                 this.appStatus.Text = "Ready.";
@@ -148,6 +176,7 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+
         private void ClickRemoveRightsButton(object sender, EventArgs e)
         {
             this.DisableButtons();
@@ -155,17 +184,16 @@ namespace SinclairCC.MakeMeAdmin
             removeUserBackgroundWorker.RunWorkerAsync();
         }
 
+
         private void removeUserBackgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
-            ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(binding, Shared.ServiceBaseAddress);
-            /*
-            EndpointAddress ep = new EndpointAddress(Shared.ServiceBaseAddress);
-            IAdminGroup channel = ChannelFactory<IAdminGroup>.CreateChannel(binding, ep);
-            */
+            ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(binding, Shared.NamedPipeServiceBaseAddress);
             IAdminGroup channel = namedPipeFactory.CreateChannel();
-            channel.RemovePrincipalFromAdministratorsGroup(System.Security.Principal.WindowsIdentity.GetCurrent().User.Value, RemovalReason.UserRequest);
+            channel.RemovePrincipalFromAdministratorsGroup(RemovalReason.UserRequest);
+            namedPipeFactory.Close();
         }
+
 
         private void removeUserBackgroundWorker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
@@ -174,11 +202,9 @@ namespace SinclairCC.MakeMeAdmin
                 System.Text.StringBuilder message = new System.Text.StringBuilder("An error occurred while removing you from the Administrators group.");
                 message.Append(System.Environment.NewLine);
                 message.Append("Please make sure the Make Me Admin service is running.");
-/*#if DEBUG*/
                 message.Append(System.Environment.NewLine);
                 message.Append("error message: ");
                 message.Append(e.Error.Message);
-
                 message.Append(System.Environment.NewLine);
                 message.Append("stack trace: ");
                 message.Append(e.Error.StackTrace);
@@ -201,7 +227,6 @@ namespace SinclairCC.MakeMeAdmin
                     message.Append(System.Environment.NewLine);
                     message.Append("Inner exception is null.");
                 }
-                /*#endif*/
 
                 MessageBox.Show(this, message.ToString(), "Make Me Admin", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, 0);
             }
@@ -211,6 +236,7 @@ namespace SinclairCC.MakeMeAdmin
                 buttonStateWorker.RunWorkerAsync();
             }
         }
+
 
         /// <summary>
         /// This function handles the Click event for the Exit button.
@@ -226,11 +252,16 @@ namespace SinclairCC.MakeMeAdmin
             this.Close();
         }
 
+
+        /// <summary>
+        /// Disables the add and remove buttons.
+        /// </summary>
         private void DisableButtons()
         {
             this.addMeButton.Enabled = false;
             this.removeMeButton.Enabled = false;
         }
+
 
         private void FormLoad(object sender, EventArgs e)
         {
@@ -239,20 +270,38 @@ namespace SinclairCC.MakeMeAdmin
             buttonStateWorker.RunWorkerAsync();
         }
 
+
+        /*
+        private bool UserIsDirectAdmin
+        {
+            get
+            {
+                return LocalAdministratorGroup.CurrentUserIsMemberOfAdministratorsDirectly();
+            }
+        }
+        */
+
+
         private void UpdateUserAdministratorStatus()
         {
             this.userIsDirectAdmin = LocalAdministratorGroup.CurrentUserIsMemberOfAdministratorsDirectly();
         }
+
 
         private void DoButtonStateWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             this.UpdateUserAdministratorStatus();
         }
 
+
         private void ButtonStateWorkCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            bool userIsAuthorized = Shared.UserIsAuthorized(WindowsIdentity.GetCurrent());
-            this.addMeButton.Enabled = !this.userIsDirectAdmin && userIsAuthorized;
+            /*
+            System.Collections.Generic.List<SecurityIdentifier> userSids = Shared.GetAuthorizationGroups(WindowsIdentity.GetCurrent());
+            */
+            bool userIsAuthorizedLocally = Shared.UserIsAuthorized(WindowsIdentity.GetCurrent(), Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
+
+            this.addMeButton.Enabled = !this.userIsDirectAdmin && userIsAuthorizedLocally;
             if (addMeButton.Enabled)
             {
                 addMeButton.Text = "Grant Me Administrator Rights";
@@ -261,7 +310,7 @@ namespace SinclairCC.MakeMeAdmin
             {
                 addMeButton.Text = "You already have administrator rights.";
             }
-            else if (!userIsAuthorized)
+            else if (!userIsAuthorizedLocally)
             {
                 addMeButton.Text = "You are not authorized to use this application.";
             }
@@ -278,11 +327,13 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+
         private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             this.ShowInTaskbar = true;
             this.Visible = true;
         }
+
 
         private void SubmitRequestForm_VisibleChanged(object sender, EventArgs e)
         {
@@ -291,6 +342,7 @@ namespace SinclairCC.MakeMeAdmin
                 buttonStateWorker.RunWorkerAsync();
             }
         }
+
 
         private void notifyIcon_BalloonTipClosed(object sender, EventArgs e)
         {
@@ -303,7 +355,6 @@ namespace SinclairCC.MakeMeAdmin
                 */
                 this.Close();
             }
-
         }
     }
 }
