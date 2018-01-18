@@ -10,16 +10,24 @@
     <stringTable>
       <string id="MakeMeAdminDisplayName">Make Me Admin</string>
       <string id="MakeMeAdminExplainText">Make Me Admin allows users to grant themselves administrator privileges for a defined period of time.</string>
-      <string id="AllowedEntitiesDisplayName">Allowed Security IDs</string>
-      <string id="AllowedEntitiesExplainText">This setting specifies the security IDs (SIDs) of the users or groups allowed to gain administrative rights.</string>
-      <string id="DeniedEntitiesDisplayName">Denied Security IDs</string>
-      <string id="DeniedEntitiesExplainText">This setting specifies the security IDs (SIDs) of the users or groups denied the ability to gain administrative rights.</string>
+      <string id="AllowedEntitiesDisplayName">Allowed Security IDs (Local)</string>
+      <string id="AllowedEntitiesExplainText">This setting specifies the security IDs (SIDs) of the users or groups allowed to gain administrative rights on the local computer.</string>
+      <string id="RemoteAllowedEntitiesDisplayName">Allowed Security IDs (Remote)</string>
+      <string id="RemoteAllowedEntitiesExplainText">This setting specifies the security IDs (SIDs) of the users or groups allowed to gain administrative rights remotely.</string>
+      <string id="DeniedEntitiesDisplayName">Denied Security IDs (Local)</string>
+      <string id="DeniedEntitiesExplainText">This setting specifies the security IDs (SIDs) of the users or groups denied the ability to gain administrative rights on the local computer.</string>
+      <string id="RemoteDeniedEntitiesDisplayName">Denied Security IDs (Remote)</string>
+      <string id="RemoteDeniedEntitiesExplainText">This setting specifies the security IDs (SIDs) of the users or groups denied the ability to gain administrative rights remotely.</string>
       <string id="AdminRightsTimeoutDisplayName">Admin Rights Timeout</string>
       <string id="AdminRightsTimeoutExplainText">This setting specifies the amount of time, in minutes, for which administrative rights will be granted.</string>
       <string id="RemoveOnLogoutDisplayName">Remove Admin Rights On Logout</string>
       <string id="RemoveOnLogoutExplainText">This setting specifies whether administrative rights should be revoked when a user logs off.</string>
       <string id="OverrideOutsideProcessDisplayName">Override Removal By Outside Process</string>
       <string id="OverrideOutsideProcessExplainText">This setting specifies whether administrative rights should be added back if an outside process removes them before the timeout has expired.</string>
+      <string id="AllowRemoteRequestsDisplayName">Allow Remote Requests</string>
+      <string id="AllowRemoteRequestsExplainText">This setting specifies whether administrative rights can be requested by authorized users on a remote computer.</string>
+      <string id="EndRemoteSessionsDisplayName">End Remote Sessions When Rights Expire</string>
+      <string id="EndRemoteSessionsExplainText">This setting specifies whether remote sessions are closed when the corresponding user's rights expire.</string>
       <string id="TimeoutOverrideDisplayName">Admin Rights Timeout Overrides</string>
       <string id="TimeoutOverrideExplainText">This setting specifies different timeout values for particular users or groups.</string>
       <string id="Yes">Yes</string>
@@ -32,6 +40,9 @@
       </presentation>
       <presentation id="AllowedEntitiesMultiText_Presentation">
         <multiTextBox refId="AllowedEntitiesMultiText">Enter allowed SIDs:</multiTextBox>
+      </presentation>
+      <presentation id="RemoteAllowedEntitiesMultiText_Presentation">
+        <multiTextBox refId="RemoteAllowedEntitiesMultiText">Enter allowed SIDs:</multiTextBox>
       </presentation>
       <presentation id="DeniedEntitiesMultiText_Presentation">
         <multiTextBox refId="DeniedEntitiesMultiText">Enter denied SIDs:</multiTextBox>

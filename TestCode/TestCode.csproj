@@ -78,7 +78,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\LogonSessionEnumeration\LsaLogonSessions\LsaLogonSessions.csproj">
+    <ProjectReference Include="..\LsaLogonSessions\LsaLogonSessions.csproj">
       <Project>{a2107c86-7cb5-45ee-89e8-1bc7261f7762}</Project>
       <Name>LsaLogonSessions</Name>
     </ProjectReference>

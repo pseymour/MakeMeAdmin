@@ -34,6 +34,19 @@
       </elements>
     </policy>
 
+    <policy name="RemoteAllowedEntities"
+             class="Machine"
+             displayName="$(string.RemoteAllowedEntitiesDisplayName)"
+             explainText="$(string.RemoteAllowedEntitiesExplainText)"
+             key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
+             presentation="$(presentation.RemoteAllowedEntitiesMultiText_Presentation)" >
+      <parentCategory ref="makemeadmin:MakeMeAdmin" />
+      <supportedOn ref="windows:SUPPORTED_Windows7" />
+      <elements>
+        <multiText id="RemoteAllowedEntitiesMultiText" valueName="Remote Allowed Entities" required="false" maxLength="100" maxStrings="0" />
+      </elements>
+    </policy>
+
     <policy name="DeniedEntities"
              class="Machine"
              displayName="$(string.DeniedEntitiesDisplayName)"
@@ -44,6 +57,19 @@
       <supportedOn ref="windows:SUPPORTED_Windows7" />
       <elements>
         <multiText id="DeniedEntitiesMultiText" valueName="Denied Entities" required="false" maxLength="100" maxStrings="0" />
+      </elements>
+    </policy>
+
+    <policy name="RemoteDeniedEntities"
+             class="Machine"
+             displayName="$(string.RemoteDeniedEntitiesDisplayName)"
+             explainText="$(string.RemoteDeniedEntitiesExplainText)"
+             key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
+             presentation="$(presentation.RemoteDeniedEntitiesMultiText_Presentation)" >
+      <parentCategory ref="makemeadmin:MakeMeAdmin" />
+      <supportedOn ref="windows:SUPPORTED_Windows7" />
+      <elements>
+        <multiText id="RemoteDeniedEntitiesMultiText" valueName="Remote Denied Entities" required="false" maxLength="100" maxStrings="0" />
       </elements>
     </policy>
 
@@ -106,6 +132,28 @@
           <item displayName="$(string.No)"><value><decimal value="0"/></value></item>
         </enum>
       </elements>
+    <policy name="AllowRemoteRequests"
+             class="Machine"
+             displayName="$(string.AllowRemoteRequestsDisplayName)"
+             explainText="$(string.AllowRemoteRequestsExplainText)"
+             key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
+             valueName="Allow Remote Requests">
+      <parentCategory ref="makemeadmin:MakeMeAdmin"></parentCategory>
+      <supportedOn ref="windows:SUPPORTED_Windows7" />
+      <enabledValue><decimal value="1" /></enabledValue>
+      <disabledValue><delete /></disabledValue>
+    </policy>
+
+    <policy name="EndRemoteSessionsOnExpiration"
+             class="Machine"
+             displayName="$(string.EndRemoteSessionsDisplayName)"
+             explainText="$(string.EndRemoteSessionsExplainText)"
+             key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
+             valueName="End Remote Sessions Upon Expiration">
+      <parentCategory ref="makemeadmin:MakeMeAdmin"></parentCategory>
+      <supportedOn ref="windows:SUPPORTED_Windows7" />
+      <enabledValue><delete /></enabledValue>
+      <disabledValue><decimal value="0" /></disabledValue>
     </policy>
 
   </policies>
