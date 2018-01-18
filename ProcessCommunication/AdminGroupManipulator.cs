@@ -1,5 +1,5 @@
-﻿// <copyright file="ServiceContract.cs" company="Sinclair Community College">
-// Copyright (c) Sinclair Community College. All rights reserved.
+﻿// <copyright file="AdminGroupManipulator.cs" company="Sinclair Community College">
+// Copyright (c) 2010-2017, Sinclair Community College. All rights reserved.
 // </copyright>
 
 namespace SinclairCC.MakeMeAdmin

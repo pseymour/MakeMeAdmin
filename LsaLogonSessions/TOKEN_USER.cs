@@ -1,13 +1,17 @@
 ﻿// <copyright file="TOKEN_USER.cs" company="Sinclair Community College">
-// Copyright (c) Sinclair Community College. All rights reserved.
+// Copyright (c) 2010-2017, Sinclair Community College. All rights reserved.
 // </copyright>
 
 namespace LsaLogonSessions
 {
-    using System.Runtime.InteropServices;
-
+    /// <summary>
+    /// Identifies the user associated with an access token.
+    /// </summary>
     internal struct TOKEN_USER
     {
+        /// <summary>
+        /// Represents the user associated with the access token.
+        /// </summary>
         public SID_AND_ATTRIBUTES User;
     }
 }

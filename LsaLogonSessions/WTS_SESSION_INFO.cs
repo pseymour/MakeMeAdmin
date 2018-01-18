@@ -1,10 +1,9 @@
 ﻿// <copyright file="WTS_SESSION_INFO.cs" company="Sinclair Community College">
-// Copyright (c) Sinclair Community College. All rights reserved.
+// Copyright (c) 2010-2017, Sinclair Community College. All rights reserved.
 // </copyright>
 
 namespace LsaLogonSessions
 {
-    using System;
     using System.Runtime.InteropServices;
 
     /// <summary>

@@ -1,5 +1,5 @@
 ﻿// <copyright file="Program.cs" company="Sinclair Community College">
-// Copyright (c) Sinclair Community College. All rights reserved.
+// Copyright (c) 2010-2017, Sinclair Community College. All rights reserved.
 // </copyright>
 
 namespace SinclairCC.MakeMeAdmin
@@ -17,13 +17,17 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         static void Main()
         {
+            /*
 #if DEBUG
             ApplicationLog.WriteInformationEvent("In Service.Program.Main.", EventID.DebugMessage);
 #endif
+            */
             ServiceBase.Run(new MakeMeAdminService());
+            /*
 #if DEBUG
             ApplicationLog.WriteInformationEvent("Leaving Service.Program.Main.", EventID.DebugMessage);
 #endif
+            */
         }
     }
 }

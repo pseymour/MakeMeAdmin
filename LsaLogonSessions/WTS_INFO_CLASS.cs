@@ -1,5 +1,5 @@
 ﻿// <copyright file="WTS_INFO_CLASS.cs" company="Sinclair Community College">
-// Copyright (c) Sinclair Community College. All rights reserved.
+// Copyright (c) 2010-2017, Sinclair Community College. All rights reserved.
 // </copyright>
 
 namespace LsaLogonSessions

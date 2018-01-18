@@ -1,7 +1,6 @@
 // <copyright file="NativeMethods.cs" company="Sinclair Community College">
-// Copyright (c) Sinclair Community College. All rights reserved.
+// Copyright (c) 2010-2017, Sinclair Community College. All rights reserved.
 // </copyright>
-// <author>Patrick S. Seymour</author>
 
 namespace SinclairCC.Interop.Win32
 {

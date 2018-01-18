@@ -1,5 +1,5 @@
 ﻿// <copyright file="NativeMethods.cs" company="Sinclair Community College">
-// Copyright (c) Sinclair Community College. All rights reserved.
+// Copyright (c) 2010-2017, Sinclair Community College. All rights reserved.
 // </copyright>
 
 namespace LsaLogonSessions
@@ -77,6 +77,31 @@ namespace LsaLogonSessions
         [DllImport("wtsapi32.dll", SetLastError = true)]
         internal static extern int WTSQuerySessionInformation(IntPtr serverHandle, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned);
 
+        /// <summary>
+        /// Obtains the primary access token of the logged-on user specified by the session ID.
+        /// </summary>
+        /// <remarks>
+        ///  To call this function successfully, the calling application must be running within the context of the
+        ///  LocalSystem account and have the SE_TCB_NAME privilege.
+        /// </remarks>
+        /// <param name="sessionId">
+        /// A Remote Desktop Services session identifier. Any program running in the context of a service
+        /// will have a session identifier of zero (0). You can use the WTSEnumerateSessions function
+        /// to retrieve the identifiers of all sessions on a specified RD Session Host server.
+        /// To be able to query information for another user's session, you need to have the Query Information
+        /// permission. For more information, see Remote Desktop Services Permissions. To modify permissions
+        /// on a session, use the Remote Desktop Services Configuration administrative tool.
+        /// /// </param>
+        /// <param name="phToken">
+        /// If the function succeeds, receives a pointer to the token handle for the logged-on user.
+        /// Note that you must call the CloseHandle function to close this handle.
+        /// </param>
+        /// <returns>
+        /// If the function succeeds, the return value is a nonzero value, and the phToken parameter
+        /// points to the primary token of the user.
+        /// If the function fails, the return value is zero.To get extended error information, call
+        /// GetLastError.
+        /// </returns>
         [DllImport("wtsapi32.dll", SetLastError = true)]
         internal static extern int WTSQueryUserToken([MarshalAs (UnmanagedType.U4)] [In] int sessionId, [Out] out IntPtr phToken);
 
@@ -92,6 +117,20 @@ namespace LsaLogonSessions
         [DllImport("wtsapi32.dll", SetLastError = true)]
         internal static extern void WTSCloseServer(IntPtr hServer);
 
+        /// <summary>
+        /// Closes an open object handle.
+        /// </summary>
+        /// <param name="hObject">
+        /// A valid handle to an open object.
+        /// </param>
+        /// <returns>
+        /// If the function succeeds, the return value is nonzero.
+        /// If the function fails, the return value is zero. To get extended error information, call GetLastError.
+        /// If the application is running under a debugger, the function will throw an exception if it receives
+        /// either a handle value that is not valid or a pseudo-handle value. This can happen if you close a handle
+        /// twice, or if you call CloseHandle on a handle returned by the FindFirstFile function instead of calling
+        /// the FindClose function.
+        /// </returns>
         [DllImport("kernel32.dll", SetLastError = true)]
         internal static extern bool CloseHandle(IntPtr hObject);
 

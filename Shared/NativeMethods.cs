@@ -1,4 +1,8 @@
-﻿using System;
+﻿// <copyright file="NativeMethods.cs" company="Sinclair Community College">
+// Copyright (c) Sinclair Community College. All rights reserved.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

@@ -1,5 +1,5 @@
 ﻿// <copyright file="LogonSessions.cs" company="Sinclair Community College">
-// Copyright (c) Sinclair Community College. All rights reserved.
+// Copyright (c) 2010-2017, Sinclair Community College. All rights reserved.
 // </copyright>
 
 namespace LsaLogonSessions
@@ -126,6 +126,15 @@ namespace LsaLogonSessions
             return returnArray;
         }
 
+
+        /// <summary>
+        /// Gets an array containing the session IDs of the currently logged-on users for the
+        /// server on which the application is running.
+        /// </summary>
+        /// <returns>
+        /// Returns an array of integers, which contains the sessions IDs of currently logged-on users.
+        /// Returns null if no users are logged on or the list of session IDs cannot be retrievd.
+        /// </returns>
         public static int[] GetLoggedOnUserSessionIds()
         {
             return GetLoggedOnUserSessionIds(NativeMethods.WTS_CURRENT_SERVER_HANDLE);
