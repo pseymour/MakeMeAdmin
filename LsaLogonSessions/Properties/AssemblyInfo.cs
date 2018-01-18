@@ -13,7 +13,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Sinclair Community College")]
-[assembly: AssemblyProduct("LsaLogonSessions")]
+[assembly: AssemblyProduct("Make Me Admin")]
 [assembly: AssemblyCopyright("Copyright © 2009, Sinclair Community College")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

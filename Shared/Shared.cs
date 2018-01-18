@@ -6,7 +6,6 @@ namespace SinclairCC.MakeMeAdmin
 {
     using System;
     using System.Collections.Generic;
-    using System.DirectoryServices.AccountManagement;
     using System.Security.Principal;
 
     public class Shared
@@ -221,12 +220,9 @@ namespace SinclairCC.MakeMeAdmin
 
         
 
-        /*
-        public static bool UserHasAdminToken(out bool isDenyOnly)
+        public static int EndNetworkSession(string remoteHost, string userName)
         {
-            isDenyOnly = false;
-            return NativeMethods.UserHasAdminToken(out isDenyOnly);
+            return NativeMethods.NetSessionDel(null, remoteHost, userName);
         }
-        */
     }
 }

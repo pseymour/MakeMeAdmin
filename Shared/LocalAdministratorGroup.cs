@@ -143,18 +143,17 @@ namespace SinclairCC.MakeMeAdmin
             int result = AddLocalGroupMembers(null, LocalAdminGroup.SamAccountName, userSid);
             if (result == 0)
             {
-                string accountName = GetAccountNameFromSID(principalSID);
-                int result = AddLocalGroupMembers(null, LocalAdminGroup.SamAccountName, new SecurityIdentifier(principalSID));
-                if (result == 0)
+                /* PrincipalList.AddSID(userSid, expirationTime, remoteAddress); */
+                ApplicationLog.WriteInformationEvent(string.Format("Principal {0} ({1}) added to the Administrators group.", userSid, GetAccountNameFromSID(userSid.Value)), EventID.UserAddedToAdminsSuccess);
+                if (remoteAddress != null)
                 {
-                    PrincipalList.AddSID(principalSID, expirationTime);
-                    ApplicationLog.WriteInformationEvent(string.Format("Principal {0} ({1}) added to the Administrators group.", principalSID, string.IsNullOrEmpty(accountName) ? "unknown account" : accountName), EventID.UserAddedToAdminsSuccess);
-                    Settings.SIDs = PrincipalList.GetSIDs();
+                    ApplicationLog.WriteInformationEvent(string.Format("Request was sent from host {0}.", remoteAddress), EventID.RemoteRequestInformation);
                 }
-                else
-                {
-                    ApplicationLog.WriteWarningEvent(string.Format("Adding principal {0} ({1}) to the Administrators group returned error code {2}.", principalSID, string.IsNullOrEmpty(accountName) ? "unknown account" : accountName, result), EventID.UserAddedToAdminsFailure);
-                }
+                Settings.SIDs = PrincipalList.GetSIDs().Select(p => p.Value).ToArray<string>();
+            }
+            else
+            {
+                ApplicationLog.WriteWarningEvent(string.Format("Adding principal {0} ({1}) to the Administrators group returned error code {2}.", userSid, GetAccountNameFromSID(userSid.Value), result), EventID.UserAddedToAdminsFailure);
             }
         }
 
@@ -175,8 +174,8 @@ namespace SinclairCC.MakeMeAdmin
                         int result = RemoveLocalGroupMembers(null, LocalAdminGroup.SamAccountName, userSid);
                         if (result == 0)
                         {
-                            PrincipalList.RemoveSID(principalSID);
-                            Settings.SIDs = PrincipalList.GetSIDs();
+                            PrincipalList.RemoveSID(userSid);
+                            Settings.SIDs = PrincipalList.GetSIDs().Select(p => p.Value).ToArray<string>();
                             string reasonString = "Unknown";
                             switch (reason)
                             {
@@ -275,7 +274,7 @@ namespace SinclairCC.MakeMeAdmin
                                 {
                                     ApplicationLog.WriteInformationEvent(string.Format("Principal {0} ({1}) has been removed from the Administrators group by an outside process. Removing the principal from Make Me Admin's list.", addedSids[i], string.IsNullOrEmpty(accountName) ? "unknown account" : accountName), EventID.PrincipalRemovedByExternalProcess);
                                     PrincipalList.RemoveSID(addedSids[i]);
-                                    Settings.SIDs = PrincipalList.GetSIDs();
+                                    Settings.SIDs = PrincipalList.GetSIDs().Select(p => p.Value).ToArray<string>();
                                 }
                             }
                             else
@@ -286,7 +285,7 @@ namespace SinclairCC.MakeMeAdmin
                                 ApplicationLog.WriteInformationEvent(string.Format("Removing SID \"{0}\" from the principal list.", addedSids[i]), EventID.DebugMessage);
 #endif
                                 PrincipalList.RemoveSID(addedSids[i]);
-                                Settings.SIDs = PrincipalList.GetSIDs();
+                                Settings.SIDs = PrincipalList.GetSIDs().Select(p => p.Value).ToArray<string>();
                             }
                         }
                         /*

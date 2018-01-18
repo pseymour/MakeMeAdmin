@@ -5,6 +5,7 @@
 namespace SinclairCC.MakeMeAdmin
 {
     using System;
+    using System.Security.Principal;
     using System.ServiceModel;
     using System.ServiceProcess;
 
@@ -93,8 +94,7 @@ namespace SinclairCC.MakeMeAdmin
 
             this.removalTimer.Stop();
 
-            string[] sids = PrincipalList.GetSIDs();
-
+            SecurityIdentifier[] sids = PrincipalList.GetSIDs();
             for (int i = 0; i < sids.Length; i++)
             {
                 LocalAdministratorGroup.RemovePrincipal(sids[i], RemovalReason.ServiceStopped);
@@ -105,10 +105,6 @@ namespace SinclairCC.MakeMeAdmin
 
         protected override void OnSessionChange(SessionChangeDescription changeDescription)
         {
-            /*
-            ApplicationLog.WriteInformationEvent("In OnSessionChange().", EventID.DebugMessage);
-            */
-
             switch (changeDescription.Reason)
             {
                 /*
@@ -122,8 +118,7 @@ namespace SinclairCC.MakeMeAdmin
 
                     if (Settings.RemoveAdminRightsOnLogout)
                     {
-
-                        System.Collections.Generic.List<string> sidsToRemove = new System.Collections.Generic.List<string>(PrincipalList.GetSIDs());
+                        System.Collections.Generic.List<SecurityIdentifier> sidsToRemove = new System.Collections.Generic.List<SecurityIdentifier>(PrincipalList.GetSIDs());
 
                         int[] sessionIds = LsaLogonSessions.LogonSessions.GetLoggedOnUserSessionIds();
                         foreach (int id in sessionIds)
@@ -131,28 +126,24 @@ namespace SinclairCC.MakeMeAdmin
                             System.Security.Principal.SecurityIdentifier sid = LsaLogonSessions.LogonSessions.GetSidForSessionId(id);
                             if (sid != null)
                             {
-                                if (sidsToRemove.Contains(sid.Value))
+                                if (sidsToRemove.Contains(sid))
                                 {
-#if DEBUG
-                                    ApplicationLog.WriteInformationEvent(string.Format("session ID: {0}, SID: {1}, can keep their rights", id, sid.Value), EventID.DebugMessage);
-#endif
-                                    sidsToRemove.Remove(sid.Value);
+                                    sidsToRemove.Remove(sid);
                                 }
                             }
                         }
 
                         for (int i = 0; i < sidsToRemove.Count; i++)
                         {
-#if DEBUG
-                            ApplicationLog.WriteInformationEvent(string.Format("SID {0} should be removed.", sidsToRemove[i]), EventID.DebugMessage);
-#endif
-                            LocalAdministratorGroup.RemovePrincipal(sidsToRemove[i], RemovalReason.UserLogoff);
+                            if (!(PrincipalList.ContainsSID(sidsToRemove[i]) && PrincipalList.IsRemote(sidsToRemove[i])))
+                            {
+                                LocalAdministratorGroup.RemovePrincipal(sidsToRemove[i], RemovalReason.UserLogoff);
+                            }
                         }
                     }
 
                     break;
             }
-
 
             base.OnSessionChange(changeDescription);
         }

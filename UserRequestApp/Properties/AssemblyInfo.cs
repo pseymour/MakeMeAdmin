@@ -10,11 +10,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Make Me Admin User Interface")]
-[assembly: AssemblyDescription("Allows users add themselves and remove themselves from the Administrators group.")]
+[assembly: AssemblyDescription("Allows users to add themselves to and remove themselves from the local Administrators group.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Sinclair Community College")]
 [assembly: AssemblyProduct("Make Me Admin")]
-[assembly: AssemblyCopyright("Copyright © 2010, Sinclair Community College")]
+[assembly: AssemblyCopyright("Copyright © 2010-2017, Sinclair Community College")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -105,16 +105,11 @@
              displayName="$(string.RemoveOnLogoutDisplayName)"
              explainText="$(string.RemoveOnLogoutExplainText)"
              key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
-             valueName="Remove Admin Rights On Logout"
-             presentation="$(presentation.RemoveOnLogoutEnum_Presentation)" >
+             valueName="Remove Admin Rights On Logout">
       <parentCategory ref="makemeadmin:MakeMeAdmin"></parentCategory>
       <supportedOn ref="windows:SUPPORTED_Windows7" />
-      <elements>
-        <enum id="RemoveOnLogoutEnum" valueName="Remove Admin Rights On Logout" required="true">
-          <item displayName="$(string.Yes)"><value><decimal value="1"/></value></item>
-          <item displayName="$(string.No)"><value><decimal value="0"/></value></item>
-        </enum>
-      </elements>
+      <enabledValue><decimal value="1" /></enabledValue>
+      <disabledValue><delete /></disabledValue>
     </policy>
 
     <policy name="OverrideOutsideProcess"
@@ -122,16 +117,13 @@
              displayName="$(string.OverrideOutsideProcessDisplayName)"
              explainText="$(string.OverrideOutsideProcessExplainText)"
              key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
-             valueName="Override Removal By Outside Process"
-             presentation="$(presentation.OverrideOutsideProcessEnum_Presentation)" >
+             valueName="Override Removal By Outside Process">
       <parentCategory ref="makemeadmin:MakeMeAdmin"></parentCategory>
       <supportedOn ref="windows:SUPPORTED_Windows7" />
-      <elements>
-        <enum id="OverrideOutsideProcessEnum" valueName="Override Removal By Outside Process" required="true">
-          <item displayName="$(string.Yes)"><value><decimal value="1"/></value></item>
-          <item displayName="$(string.No)"><value><decimal value="0"/></value></item>
-        </enum>
-      </elements>
+      <enabledValue><decimal value="1" /></enabledValue>
+      <disabledValue><delete /></disabledValue>
+    </policy>
+
     <policy name="AllowRemoteRequests"
              class="Machine"
              displayName="$(string.AllowRemoteRequestsDisplayName)"

@@ -19,26 +19,27 @@ namespace LsaLogonSessions
         private LogonSessions()
         {
         }
-
-        public static string[] GetLoggedOnUserNames(string serverName)
+        
+        /// <summary>
+        /// Gets the security identifier (SID) associated with a particular
+        /// session ID.
+        /// </summary>
+        /// <param name="sessionId">
+        /// The session ID for which the SID should be retrieved.
+        /// </param>
+        /// <returns>
+        /// Returns the security identifier (SID) associated with the specified
+        /// session ID, or null if the function is unable to determine the SID.
+        /// </returns>
+        public static SecurityIdentifier GetSidForSessionId(int sessionId)
         {
-            IntPtr serverHandle = NativeMethods.WTSOpenServer(serverName);
-            Console.WriteLine("WTSOpenServer last error: {0}", Marshal.GetLastWin32Error());
-            string[] userNames = GetLoggedOnUserNames(serverHandle);
-            NativeMethods.WTSCloseServer(serverHandle);
-            Console.WriteLine("WTSCloseServer last error: {0}", Marshal.GetLastWin32Error());
-            return userNames;
-        }
-
-        public static System.Security.Principal.SecurityIdentifier GetSidForSessionId(int sessionId)
-        {
-            System.Security.Principal.SecurityIdentifier returnSid = null;
+            SecurityIdentifier returnSid = null;
             IntPtr tokenPointer = IntPtr.Zero;
             int returnValue = NativeMethods.WTSQueryUserToken(sessionId, out tokenPointer);
             int lastWin32Error = Marshal.GetLastWin32Error();
             if (returnValue != 0)
             {
-                System.Security.Principal.SecurityIdentifier sid = GetSidFromToken(tokenPointer);
+                SecurityIdentifier sid = GetSidFromToken(tokenPointer);
                 if (sid != null)
                 {
                     returnSid = sid;

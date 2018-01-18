@@ -30,8 +30,6 @@
       <string id="EndRemoteSessionsExplainText">This setting specifies whether remote sessions are closed when the corresponding user's rights expire.</string>
       <string id="TimeoutOverrideDisplayName">Admin Rights Timeout Overrides</string>
       <string id="TimeoutOverrideExplainText">This setting specifies different timeout values for particular users or groups.</string>
-      <string id="Yes">Yes</string>
-      <string id="No">No</string>
     </stringTable>
     <presentationTable>
       <presentation id="Admin_Rights_Timeout_Spin">
@@ -47,11 +45,8 @@
       <presentation id="DeniedEntitiesMultiText_Presentation">
         <multiTextBox refId="DeniedEntitiesMultiText">Enter denied SIDs:</multiTextBox>
       </presentation>
-      <presentation id="RemoveOnLogoutEnum_Presentation">
-        <dropdownList refId="RemoveOnLogoutEnum" noSort="true" defaultItem="0">Remove users from the Administrators group when they log off.</dropdownList>
-      </presentation>
-      <presentation id="OverrideOutsideProcessEnum_Presentation">
-        <dropdownList refId="OverrideOutsideProcessEnum" noSort="true" defaultItem="0">Add users back to the Administrators group if they are removed by an outside process before the timeout has expired.</dropdownList>
+      <presentation id="RemoteDeniedEntitiesMultiText_Presentation">
+        <multiTextBox refId="RemoteDeniedEntitiesMultiText">Enter denied SIDs:</multiTextBox>
       </presentation>
       <presentation id="TimeoutOverrideList_Presentation">
         <text>Specify a security identifier (SID) for each user or group, along with a timeout value for each.</text>

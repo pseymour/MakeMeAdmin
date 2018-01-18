@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Sinclair Community College")]
 [assembly: AssemblyProduct("Make Me Admin")]
-[assembly: AssemblyCopyright("Copyright © 2010, Sinclair Community College")]
+[assembly: AssemblyCopyright("Copyright © 2010-2017, Sinclair Community College")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
