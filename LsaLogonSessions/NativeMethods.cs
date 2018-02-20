@@ -17,8 +17,11 @@ namespace LsaLogonSessions
         /// </summary>
         internal static IntPtr WTS_CURRENT_SERVER_HANDLE = IntPtr.Zero;
 
+        /*
         [DllImport("wtsapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         internal static extern IntPtr WTSOpenServer([MarshalAs(UnmanagedType.LPWStr)] string serverName);
+        */
+
 
 
         /// <summary>
@@ -50,6 +53,7 @@ namespace LsaLogonSessions
         [DllImport("wtsapi32.dll", SetLastError = true)]
         internal static extern int WTSEnumerateSessions(System.IntPtr serverHandle, [MarshalAs(UnmanagedType.U4)] int reserved, [MarshalAs(UnmanagedType.U4)] int version, ref IntPtr sessionInfoPointer, [MarshalAs(UnmanagedType.U4)] ref int count);
 
+        /*
         /// <summary>
         /// Retrieves session information for the specified session on the specified Remote Desktop Session
         /// Host (RD Session Host) server. It can be used to query session information on local and remote
@@ -76,6 +80,7 @@ namespace LsaLogonSessions
         /// </returns>
         [DllImport("wtsapi32.dll", SetLastError = true)]
         internal static extern int WTSQuerySessionInformation(IntPtr serverHandle, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned);
+        */
 
         /// <summary>
         /// Obtains the primary access token of the logged-on user specified by the session ID.
@@ -114,8 +119,10 @@ namespace LsaLogonSessions
         [DllImport("wtsapi32.dll", ExactSpelling = true, SetLastError = false)]
         internal static extern void WTSFreeMemory(IntPtr memory);
 
+        /*
         [DllImport("wtsapi32.dll", SetLastError = true)]
         internal static extern void WTSCloseServer(IntPtr hServer);
+        */
 
         /// <summary>
         /// Closes an open object handle.

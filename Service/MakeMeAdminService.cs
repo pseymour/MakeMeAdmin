@@ -166,6 +166,15 @@ namespace SinclairCC.MakeMeAdmin
                                 LocalAdministratorGroup.RemovePrincipal(sidsToRemove[i], RemovalReason.UserLogoff);
                             }
                         }
+
+                        /*
+                         * In theory, this code should remove the user associated with the logoff, but it doesn't work.
+                        SecurityIdentifier sid = LsaLogonSessions.LogonSessions.GetSidForSessionId(changeDescription.SessionId);
+                        if (!(PrincipalList.ContainsSID(sid) && PrincipalList.IsRemote(sid)))
+                        {
+                            LocalAdministratorGroup.RemovePrincipal(sid, RemovalReason.UserLogoff);
+                        }
+                        */
                     }
 
                     break;

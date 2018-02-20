@@ -45,6 +45,7 @@ namespace SinclairCC.MakeMeAdmin
             STANDARD_RIGHTS_REQUIRED;
 
         private delegate bool EnumDesktopProc(string lpszDesktop, IntPtr lParam);
+        private delegate bool EnumWinStaProc(string lpszWinSta, IntPtr lParam);
 
         [DllImport("user32.dll")]
         private static extern IntPtr GetProcessWindowStation();
@@ -58,11 +59,67 @@ namespace SinclairCC.MakeMeAdmin
         [DllImport("user32.dll")]
         private static extern IntPtr OpenDesktop(string lpszDesktop, uint dwFlags, bool fInherit, uint dwDesiredAccess);
 
+
+
         [DllImport("user32.dll")]
         private static extern bool SwitchDesktop(IntPtr hDesktop);
 
         [DllImport("kernel32.dll")]
         private static extern bool CreateProcess(string lpApplicationName, string lpCommandLine, IntPtr lpProcessAttributes, IntPtr lpThreadAttributes, bool bInheritHandles, int dwCreationFlags, IntPtr lpEnvironment, string lpCurrentDirectory, ref STARTUPINFO lpStartupInfo, ref PROCESS_INFORMATION lpProcessInformation);
+        
+        [DllImport("user32.dll")]
+        private static extern bool EnumWindowStations(EnumWinStaProc lpEnumFunc, IntPtr lParam);
+
+
+
+        // TODO: All of this stuff was added to try to detect the Winlogon desktop.
+
+        /// <summary>
+        /// The WTSGetActiveConsoleSessionId function retrieves the Remote Desktop Services session that
+        /// is currently attached to the physical console. The physical console is the monitor, keyboard, and mouse.
+        /// Note that it is not necessary that Remote Desktop Services be running for this function to succeed.
+        /// </summary>
+        /// <returns>The session identifier of the session that is attached to the physical console. If there is no
+        /// session attached to the physical console, (for example, if the physical console session is in the process
+        /// of being attached or detached), this function returns 0xFFFFFFFF.</returns>
+        [DllImport("kernel32.dll")]
+        public static extern uint WTSGetActiveConsoleSessionId();
+
+        [DllImport("user32.dll", SetLastError = false)]
+        public static extern IntPtr GetDesktopWindow();
+
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr OpenInputDesktop(uint dwFlags, bool fInherit,
+            uint dwDesiredAccess);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr CloseDesktop(IntPtr hDesktop);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr OpenDesktop(string lpszDesktop, uint dwFlags,
+            bool fInherit, uint dwDesiredAccess);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool SwitchDesktop(IntPtr hDesktop);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool SetThreadDesktop(IntPtr hDesktop);
+
+
+        /*
+        BOOL WINAPI EnumDesktops(
+  _In_opt_ HWINSTA         hwinsta,
+  _In_ DESKTOPENUMPROC lpEnumFunc,
+  _In_ LPARAM          lParam
+);
+
+        BOOL WINAPI EnumWindowStations(
+          _In_ WINSTAENUMPROC lpEnumFunc,
+          _In_ LPARAM         lParam
+        );
+        */
 
         [StructLayout(LayoutKind.Sequential)]
         public struct SECURITY_ATTRIBUTES
@@ -105,6 +162,7 @@ namespace SinclairCC.MakeMeAdmin
         }
 
         private static List<string> _desktops = new List<string>();
+        private static List<string> _windowStations = new List<string>();
 
         public static IntPtr Create(string name)
         {
@@ -170,5 +228,26 @@ namespace SinclairCC.MakeMeAdmin
             _desktops.Add(lpszDesktop);
             return true;
         }
+
+        public static string[] GetWindowStations()
+        {
+            /*
+            IntPtr windowStation = GetProcessWindowStation();
+            if (windowStation == IntPtr.Zero) return new string[0];
+            */
+            _windowStations.Clear();
+
+            bool result = EnumWindowStations(WinStaEnumProc, IntPtr.Zero);
+            if (!result) return new string[0];
+
+            return _windowStations.ToArray();
+        }
+
+        private static bool WinStaEnumProc(string lpszWinSta, IntPtr lParam)
+        {
+            _windowStations.Add(lpszWinSta);
+            return true;
+        }
+
     }
 }

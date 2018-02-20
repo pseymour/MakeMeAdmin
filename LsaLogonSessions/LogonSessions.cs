@@ -13,6 +13,7 @@ namespace LsaLogonSessions
     /// </summary>
     public class LogonSessions
     {
+
         /// <summary>
         /// Prevents a default instance of the LogonSessions class from being created.
         /// </summary>
@@ -49,88 +50,49 @@ namespace LsaLogonSessions
             return returnSid;
         }
 
-        /*
-        public static string[] GetLoggedOnUserNames()
-        {
-            return GetLoggedOnUserNames(NativeMethods.WTS_CURRENT_SERVER_HANDLE);
-        }
-        */
-
-        /*
         /// <summary>
-        /// Gets a list of the currently logged-on users.
+        /// Gets the security identifier (SID) for a token.
         /// </summary>
+        /// <param name="tokenHandle">
+        /// A handle to the primary access token of a user.
+        /// </param>
         /// <returns>
-        /// Returns an array of strings, which contains the names of the currently logged-on users.
-        /// Returns null if no users are logged on.
+        /// Returns the security identifier (SID) for a token, or null if the SID cannot
+        /// be obtained.
         /// </returns>
-        private static string[] GetLoggedOnUserNames(IntPtr serverHandle)
+        private static SecurityIdentifier GetSidFromToken(IntPtr tokenHandle)
         {
-            string[] returnArray = null;
-            IntPtr sessionInfoPointer = IntPtr.Zero;
-            int sessionCount = 0;
-            int returnValue = NativeMethods.WTSEnumerateSessions(serverHandle, 0, 1, ref sessionInfoPointer, ref sessionCount);
-            
-            long current = sessionInfoPointer.ToInt64();
-            int sessionInfoSize = Marshal.SizeOf(typeof(WTS_SESSION_INFO));
-            if (returnValue != 0)
+            int returnLength = 0;
+            SecurityIdentifier returnSid = null;
+
+            // Get the size of the memory chunk that we need in order to retrieve the TOKEN_USER structure.
+            bool nativeReturnValue = NativeMethods.GetTokenInformation(tokenHandle, TOKEN_INFORMATION_CLASS.TokenUser, IntPtr.Zero, returnLength, out returnLength);
+
+            int lastError = Marshal.GetLastWin32Error();
+
+            if (returnLength > 0)
             {
-                System.Collections.Generic.List<string> userNames = new System.Collections.Generic.List<string>(sessionCount);
-                for (int i = 0; i < sessionCount; i++)
-                {
-                    string domainName = null;
-                    string userName = null;
-                    ushort protocolType = ushort.MinValue;
+                // Allocate enough memory to store a TOKEN_USER structure.
+                IntPtr tokenInfo = Marshal.AllocHGlobal(returnLength);
 
-                    WTS_SESSION_INFO si = (WTS_SESSION_INFO)Marshal.PtrToStructure((System.IntPtr)current, typeof(WTS_SESSION_INFO));
-                    current += sessionInfoSize;
+                // Get the TOKEN_USER structure for the token.
+                nativeReturnValue = NativeMethods.GetTokenInformation(tokenHandle, TOKEN_INFORMATION_CLASS.TokenUser, tokenInfo, returnLength, out returnLength);
 
-                    IntPtr bufferPointer = IntPtr.Zero;
-                    int bytesReturned = 0;
+                lastError = Marshal.GetLastWin32Error();
 
-                    // Get the logged-on user's domain name.
-                    returnValue = NativeMethods.WTSQuerySessionInformation(serverHandle, si.SessionID, WTS_INFO_CLASS.WTSDomainName, out bufferPointer, out bytesReturned);
-                    if (returnValue != 0)
-                    {
-                        domainName = Marshal.PtrToStringAnsi(bufferPointer, bytesReturned - 1);
-                        NativeMethods.WTSFreeMemory(bufferPointer);
-                    }
-
-                    // Get the logged-on user's name.
-                    returnValue = NativeMethods.WTSQuerySessionInformation(serverHandle, si.SessionID, WTS_INFO_CLASS.WTSUserName, out bufferPointer, out bytesReturned);
-                    if (returnValue != 0)
-                    {
-                        userName = Marshal.PtrToStringAnsi(bufferPointer, bytesReturned - 1);
-                        NativeMethods.WTSFreeMemory(bufferPointer);
-                    }
-
-                    returnValue = NativeMethods.WTSQuerySessionInformation(serverHandle, si.SessionID, WTS_INFO_CLASS.WTSClientProtocolType, out bufferPointer, out bytesReturned);
-                    if (returnValue != 0)
-                    {
-                        protocolType = (ushort)Marshal.PtrToStructure(bufferPointer, typeof(ushort));
-                        NativeMethods.WTSFreeMemory(bufferPointer);
-                    }
-
-                    if (((domainName != null) || (userName != null)) && (domainName != string.Empty) && (userName != string.Empty))
-                    {
-                        string fullUserName = string.Format("{0}{1}{2}", domainName == null ? string.Empty : string.Format("{0}\\", domainName.ToUpper(System.Globalization.CultureInfo.CurrentCulture)), userName.ToLower(System.Globalization.CultureInfo.CurrentCulture), protocolType == 2 ? " (RDP)" : string.Empty);
-                        userNames.Add(fullUserName);
-                    }
+                if (nativeReturnValue)
+                { // Get the TOKEN_USER structure, so we can retrieve the SID from it.
+                    TOKEN_USER tokenUser = (TOKEN_USER)Marshal.PtrToStructure(tokenInfo, typeof(TOKEN_USER));
+                    SecurityIdentifier sid = new SecurityIdentifier(tokenUser.User.Sid);
+                    returnSid = sid;
                 }
 
-                NativeMethods.WTSFreeMemory(sessionInfoPointer);
-                userNames.TrimExcess();
-                returnArray = new string[userNames.Count];
-                userNames.CopyTo(returnArray);
-            }
-            else
-            {
-                Console.WriteLine("WTSEnumerateSessions returned zero (0), a failure code.");
+                // Free the memory that we allocated earlier for the TOKEN_USER structure.
+                Marshal.FreeHGlobal(tokenInfo);
             }
 
-            return returnArray;
+            return returnSid;
         }
-        */
 
 
         /// <summary>
@@ -188,31 +150,6 @@ namespace LsaLogonSessions
             }
 
             return returnArray;
-        }
-
-        public static System.Security.Principal.SecurityIdentifier GetSidFromToken(IntPtr tokenHandle)
-        {
-            int returnLength = 0;
-            System.Security.Principal.SecurityIdentifier returnSid = null;
-            bool nativeReturnValue = NativeMethods.GetTokenInformation(tokenHandle, TOKEN_INFORMATION_CLASS.TokenUser, IntPtr.Zero, returnLength, out returnLength);
-            int lastError = Marshal.GetLastWin32Error();
-
-            if (returnLength > 0)
-            {
-                IntPtr tokenInfo = Marshal.AllocHGlobal(returnLength);
-                nativeReturnValue = NativeMethods.GetTokenInformation(tokenHandle, TOKEN_INFORMATION_CLASS.TokenUser, tokenInfo, returnLength, out returnLength);
-                lastError = Marshal.GetLastWin32Error();
-
-                if (nativeReturnValue)
-                {
-                    TOKEN_USER tokenUser = (TOKEN_USER)Marshal.PtrToStructure(tokenInfo, typeof(TOKEN_USER));
-                    System.Security.Principal.SecurityIdentifier sid = new System.Security.Principal.SecurityIdentifier(tokenUser.User.Sid);
-                    returnSid = sid;
-                }
-
-                Marshal.FreeHGlobal(tokenInfo);
-            }
-            return returnSid;
         }
     }
 }
