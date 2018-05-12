@@ -47,6 +47,19 @@
       </elements>
     </policy>
 
+    <policy name="AutomaticallyAddAllowedEntities"
+             class="Machine"
+             displayName="$(string.AutomaticallyAddAllowedEntitiesDisplayName)"
+             explainText="$(string.AutomaticallyAddAllowedEntitiesExplainText)"
+             key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
+             presentation="$(presentation.AllowedAutomaticallyAddMultiText_Presentation)" >
+      <parentCategory ref="makemeadmin:MakeMeAdmin" />
+      <supportedOn ref="windows:SUPPORTED_Windows7" />
+      <elements>
+        <multiText id="AllowedAutomaticallyAddEntitiesMultiText" valueName="Automatic Add Allowed" required="false" maxLength="100" maxStrings="0" />
+      </elements>
+    </policy>
+	
     <policy name="DeniedEntities"
              class="Machine"
              displayName="$(string.DeniedEntitiesDisplayName)"
@@ -73,6 +86,19 @@
       </elements>
     </policy>
 
+    <policy name="AutomaticallyAddDeniedEntities"
+             class="Machine"
+             displayName="$(string.AutomaticallyAddDeniedEntitiesDisplayName)"
+             explainText="$(string.AutomaticallyAddDeniedEntitiesExplainText)"
+             key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
+             presentation="$(presentation.DeniedAutomaticallyAddMultiText_Presentation)" >
+      <parentCategory ref="makemeadmin:MakeMeAdmin" />
+      <supportedOn ref="windows:SUPPORTED_Windows7" />
+      <elements>
+        <multiText id="DeniedAutomaticallyAddEntitiesMultiText" valueName="Automatic Add Denied" required="false" maxLength="100" maxStrings="0" />
+      </elements>
+    </policy>
+	
     <policy name="AdminRightsTimeout"
              class="Machine"
              displayName="$(string.AdminRightsTimeoutDisplayName)"

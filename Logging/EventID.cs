@@ -41,6 +41,8 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         RemoteRequestInformation,
 
+        SessionChangeEvent,
+
         /// <summary>
         /// Event ID for debug messages.
         /// </summary>

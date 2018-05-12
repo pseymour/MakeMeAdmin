@@ -22,6 +22,7 @@ namespace SinclairCC.MakeMeAdmin
         /// This is stored in a variable because it is a rather expensive operation to check.
         /// </remarks>
         private bool userIsDirectAdmin = false;
+        private bool userIsAdmin = false;
 
         /// <summary>
         /// Whether the user had administrator rights the last time the check was performed.
@@ -50,7 +51,10 @@ namespace SinclairCC.MakeMeAdmin
             this.SetFormText();
 
             // Configure the notification timer.
-            this.notifyIconTimer = new System.Timers.Timer(5000);
+            this.notifyIconTimer = new System.Timers.Timer()
+            {
+                Interval = 5000
+            };
             this.notifyIconTimer.AutoReset = true;
             this.notifyIconTimer.Elapsed += NotifyIconTimerElapsed;
         }
@@ -60,17 +64,17 @@ namespace SinclairCC.MakeMeAdmin
         {
             this.UpdateUserAdministratorStatus();
 
-            if (this.userIsDirectAdmin != this.userWasAdminOnLastCheck)
+            if (this.userIsAdmin != this.userWasAdminOnLastCheck)
             {
                 NetNamedPipeBinding namedPipeBinding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
                 ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(namedPipeBinding, Shared.NamedPipeServiceBaseAddress);
                 IAdminGroup namedPipeChannel = namedPipeFactory.CreateChannel();
 
-                this.userWasAdminOnLastCheck = this.userIsDirectAdmin;
-                if ((!this.userIsDirectAdmin) && (!namedPipeChannel.PrincipalIsInList()))
+                this.userWasAdminOnLastCheck = this.userIsAdmin;
+                if ((!this.userIsAdmin) && (!namedPipeChannel.PrincipalIsInList()))
                 {
                     this.notifyIconTimer.Stop();
-                    notifyIcon.ShowBalloonTip(5000, "Make Me Admin", "You are no longer a member of the Administrators group.", ToolTipIcon.Info);
+                    notifyIcon.ShowBalloonTip(5000, Properties.Resources.ApplicationName, string.Format(Properties.Resources.UIMessageRemovedFromGroup, LocalAdministratorGroup.LocalAdminGroupName), ToolTipIcon.Info);
                 }
                 namedPipeFactory.Close();
             }
@@ -83,7 +87,7 @@ namespace SinclairCC.MakeMeAdmin
             object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyProductAttribute), false);
             if (attributes.Length == 0)
             {
-                formText.Append("Make Me Admin");
+                formText.Append(Properties.Resources.ApplicationName);
             }
             else
             {
@@ -94,6 +98,14 @@ namespace SinclairCC.MakeMeAdmin
 
             this.Text = formText.ToString();
             this.notifyIcon.Text = formText.ToString();
+
+            /*
+#if DEBUG
+            //this.Text = string.Format("UI: {0}, Formatting: {1}", System.Threading.Thread.CurrentThread.CurrentUICulture.Name, System.Threading.Thread.CurrentThread.CurrentCulture.Name);
+            this.Text = string.Format("{0}: {1}", ApplicationLog.SName, ApplicationLog.SExists);
+#endif
+            */
+            
         }
 
 
@@ -109,7 +121,7 @@ namespace SinclairCC.MakeMeAdmin
         private void ClickSubmitButton(object sender, EventArgs e)
         {
             this.DisableButtons();
-            this.appStatus.Text = "Adding you to the Administrators group.";
+            this.appStatus.Text = string.Format(Properties.Resources.UIMessageAddingToGroup, LocalAdministratorGroup.LocalAdminGroupName);
             addUserBackgroundWorker.RunWorkerAsync();
         }
 
@@ -142,25 +154,26 @@ namespace SinclairCC.MakeMeAdmin
         {
             if (e.Error != null)
             {
+                // TODO: i18n.
                 System.Text.StringBuilder message = new System.Text.StringBuilder("An error occurred while adding you to the Administrators group.");
                 message.Append(System.Environment.NewLine);
                 message.Append("error message: ");
                 message.Append(e.Error.Message);
 
-                MessageBox.Show(this, message.ToString(), "Make Me Admin", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, 0);
+                MessageBox.Show(this, message.ToString(), Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, 0);
             }
 
             this.UpdateUserAdministratorStatus();
 
-            if (this.userIsDirectAdmin)
+            if (this.userIsAdmin)
             {
-                this.appStatus.Text = "Ready.";
+                this.appStatus.Text = Properties.Resources.ApplicationIsReady;
                 this.userWasAdminOnLastCheck = true;
                 this.notifyIconTimer.Start();
                 notifyIcon.Visible = true;
                 this.Visible = false;
                 this.ShowInTaskbar = false;
-                notifyIcon.ShowBalloonTip(5000, "Make Me Admin", "You are now a member of the Administrators group.", ToolTipIcon.Info);
+                notifyIcon.ShowBalloonTip(5000, Properties.Resources.ApplicationName, string.Format(Properties.Resources.UIMessageAddedToGroup, LocalAdministratorGroup.LocalAdminGroupName), ToolTipIcon.Info);
             }
             else if (!buttonStateWorker.IsBusy)
             {
@@ -172,7 +185,7 @@ namespace SinclairCC.MakeMeAdmin
         private void ClickRemoveRightsButton(object sender, EventArgs e)
         {
             this.DisableButtons();
-            this.appStatus.Text = "Removing you from the Administrators group.";
+            this.appStatus.Text = string.Format(Properties.Resources.UIMessageRemovingFromGroup, LocalAdministratorGroup.LocalAdminGroupName);
             removeUserBackgroundWorker.RunWorkerAsync();
         }
 
@@ -191,6 +204,7 @@ namespace SinclairCC.MakeMeAdmin
         {
             if (e.Error != null)
             {
+                // TODO: i18n.
                 System.Text.StringBuilder message = new System.Text.StringBuilder("An error occurred while removing you from the Administrators group.");
                 message.Append(System.Environment.NewLine);
                 message.Append("Please make sure the Make Me Admin service is running.");
@@ -220,7 +234,7 @@ namespace SinclairCC.MakeMeAdmin
                     message.Append("Inner exception is null.");
                 }
 
-                MessageBox.Show(this, message.ToString(), "Make Me Admin", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, 0);
+                MessageBox.Show(this, message.ToString(), Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, 0);
             }
 
             if (!buttonStateWorker.IsBusy)
@@ -276,6 +290,7 @@ namespace SinclairCC.MakeMeAdmin
 
         private void UpdateUserAdministratorStatus()
         {
+            this.userIsAdmin = LocalAdministratorGroup.WindowsIdentityIsMember(WindowsIdentity.GetCurrent());
             this.userIsDirectAdmin = LocalAdministratorGroup.CurrentUserIsMemberOfAdministratorsDirectly();
         }
 
@@ -288,26 +303,23 @@ namespace SinclairCC.MakeMeAdmin
 
         private void ButtonStateWorkCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            /*
-            System.Collections.Generic.List<SecurityIdentifier> userSids = Shared.GetAuthorizationGroups(WindowsIdentity.GetCurrent());
-            */
             bool userIsAuthorizedLocally = Shared.UserIsAuthorized(WindowsIdentity.GetCurrent(), Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
 
-            this.addMeButton.Enabled = !this.userIsDirectAdmin && userIsAuthorizedLocally;
+            this.addMeButton.Enabled = !this.userIsAdmin && userIsAuthorizedLocally;
             if (addMeButton.Enabled)
             {
-                addMeButton.Text = "Grant Me Administrator Rights";
+                addMeButton.Text = Properties.Resources.GrantRightsButtonText;
             }
-            else if (this.userIsDirectAdmin)
+            else if (this.userIsAdmin)
             {
-                addMeButton.Text = "You already have administrator rights.";
+                addMeButton.Text = Properties.Resources.UIMessageAlreadyHaveRights;
             }
             else if (!userIsAuthorizedLocally)
             {
-                addMeButton.Text = "You are not authorized to use this application.";
+                addMeButton.Text = Properties.Resources.UIMessageUnauthorized;
             }
             this.removeMeButton.Enabled = this.userIsDirectAdmin;
-            this.appStatus.Text = "Ready.";
+            this.appStatus.Text = Properties.Resources.ApplicationIsReady;
 
             if (this.addMeButton.Enabled)
             {
@@ -338,7 +350,7 @@ namespace SinclairCC.MakeMeAdmin
 
         private void notifyIcon_BalloonTipClosed(object sender, EventArgs e)
         {
-            if (!this.userIsDirectAdmin)
+            if (!this.userIsAdmin)
             {
                 /*
                 notifyIcon.Visible = false;

@@ -5,12 +5,9 @@
 namespace SinclairCC.MakeMeAdmin
 {
     using System;
-    using System.Collections.Generic;
     using System.DirectoryServices.AccountManagement;
-    using System.IdentityModel.Claims;
     using System.Linq;
     using System.Security.Principal;
-    using System.ServiceModel;
 
     public static class LocalAdministratorGroup
     {
@@ -34,12 +31,12 @@ namespace SinclairCC.MakeMeAdmin
                     }
                     catch (System.ComponentModel.InvalidEnumArgumentException invalidEnumException)
                     {
-                        ApplicationLog.WriteErrorEvent(string.Format("InvalidEnumArgumentException: {0}", invalidEnumException.Message), EventID.DebugMessage);
+                        ApplicationLog.WriteErrorEvent(invalidEnumException.Message, EventID.DebugMessage);
                         throw;
                     }
                     catch (ArgumentException argException)
                     {
-                        ApplicationLog.WriteErrorEvent(string.Format("ArgumentException: {0}", argException.Message), EventID.DebugMessage);
+                        ApplicationLog.WriteErrorEvent(argException.Message, EventID.DebugMessage);
                         throw;
                     }
                 }
@@ -59,18 +56,25 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+        public static string LocalAdminGroupName
+        {
+            get { return LocalAdminGroup.Name; }
+        }
+
         private static GroupPrincipal LocalAdminGroup
         {
             get
             {
                 if (LocalMachineContext == null)
                 {
+                    // TODO: i18n.
                     ApplicationLog.WriteErrorEvent("Local machine context is null.", EventID.DebugMessage);
                 }
                 else
                 {
                     if (LocalAdminsGroupSid == null)
                     {
+                        // TODO: i18n.
                         ApplicationLog.WriteErrorEvent("Local admins group SID is null.", EventID.DebugMessage);
                     }
                     else
@@ -83,6 +87,7 @@ namespace SinclairCC.MakeMeAdmin
                             }
                             catch (Exception exception)
                             {
+                                // TODO: i18n.
                                 ApplicationLog.WriteErrorEvent(string.Format("Exception: {0}", exception.Message), EventID.DebugMessage);
                                 throw;
                             }
@@ -93,7 +98,7 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-        public static void AddPrincipal(WindowsIdentity userIdentity, DateTime expirationTime, string remoteAddress)
+        public static void AddPrincipal(WindowsIdentity userIdentity, DateTime? expirationTime, string remoteAddress)
         {
             // TODO: Only do this if the principal is not a member of the group?
 
@@ -138,21 +143,24 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-        private static void AddPrincipalToAdministrators(SecurityIdentifier userSid, /* DateTime expirationTime, */ string remoteAddress)
+        private static void AddPrincipalToAdministrators(SecurityIdentifier userSid, string remoteAddress)
         {
             int result = AddLocalGroupMembers(null, LocalAdminGroup.SamAccountName, userSid);
             if (result == 0)
             {
                 /* PrincipalList.AddSID(userSid, expirationTime, remoteAddress); */
+                // TODO: i18n.
                 ApplicationLog.WriteInformationEvent(string.Format("Principal {0} ({1}) added to the Administrators group.", userSid, GetAccountNameFromSID(userSid.Value)), EventID.UserAddedToAdminsSuccess);
                 if (remoteAddress != null)
                 {
+                    // TODO: i18n.
                     ApplicationLog.WriteInformationEvent(string.Format("Request was sent from host {0}.", remoteAddress), EventID.RemoteRequestInformation);
                 }
                 Settings.SIDs = PrincipalList.GetSIDs().Select(p => p.Value).ToArray<string>();
             }
             else
             {
+                // TODO: i18n.
                 ApplicationLog.WriteWarningEvent(string.Format("Adding principal {0} ({1}) to the Administrators group returned error code {2}.", userSid, GetAccountNameFromSID(userSid.Value), result), EventID.UserAddedToAdminsFailure);
             }
         }
@@ -176,27 +184,29 @@ namespace SinclairCC.MakeMeAdmin
                         {
                             PrincipalList.RemoveSID(userSid);
                             Settings.SIDs = PrincipalList.GetSIDs().Select(p => p.Value).ToArray<string>();
-                            string reasonString = "Unknown";
+                            string reasonString = Properties.Resources.RemovalReasonUnknown;
                             switch (reason)
                             {
                                 case RemovalReason.ServiceStopped:
-                                    reasonString = "Make Me Admin service stopped";
+                                    reasonString = Properties.Resources.RemovalReasonServiceStopped;
                                     break;
                                 case RemovalReason.Timeout:
-                                    reasonString = "timeout elapsed";
+                                    reasonString = Properties.Resources.RemovalReasonTimeout;
                                     break;
                                 case RemovalReason.UserLogoff:
-                                    reasonString = "user logged off";
+                                    reasonString = Properties.Resources.RemovalReasonUserLogoff;
                                     break;
                                 case RemovalReason.UserRequest:
-                                    reasonString = "user requested removal";
+                                    reasonString = Properties.Resources.RemovalReasonUserRequest;
                                     break;
                             }
+                            // TODO: i18n.
                             string message = string.Format("Principal {0} ({1}) removed from the Administrators group. Reason: {2}.", userSid, accountName, reasonString);
                             ApplicationLog.WriteInformationEvent(message, EventID.UserRemovedFromAdminsSuccess);
                         }
                         else
                         {
+                            // TODO: i18n.
                             ApplicationLog.WriteWarningEvent(string.Format("Removing principal {0} ({1}) from the Administrators group returned error code {1}.", userSid, accountName, result), EventID.UserRemovedFromAdminsFailure);
                         }
                     }
@@ -247,6 +257,10 @@ namespace SinclairCC.MakeMeAdmin
                                 LocalAdministratorGroup.RemovePrincipal(addedSids[i], RemovalReason.Timeout);
                             }
                         }
+
+                        // TODO: This should be put back in, but it needs to account for the fact that
+                        // some principals may be added without expiration times.
+                        /*
                         else
                         { // The principal's rights never expire. This should never happen.
                           // Remove the principal from the administrator group.
@@ -255,7 +269,20 @@ namespace SinclairCC.MakeMeAdmin
                             ApplicationLog.WriteInformationEvent(string.Format("Principal {0} ({1}) has been removed from the Administrators group by an outside process. Removing the principal from Make Me Admin's list.", addedSids[i], string.IsNullOrEmpty(accountName) ? "unknown account" : accountName), EventID.DebugMessage);
 #endif
                             LocalAdministratorGroup.RemovePrincipal(addedSids[i], RemovalReason.Timeout);
+
+                            if (
+                                (Settings.AutomaticAddAllowed != null) &&
+                                (Settings.AutomaticAddAllowed.Length > 0) &&
+                                (Shared.UserIsAuthorized(userIdentity, Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied))
+                               )
+                            {
+#if DEBUG
+                                ApplicationLog.WriteInformationEvent("User is allowed to be automatically added!", EventID.DebugMessage);
+#endif
+                                LocalAdministratorGroup.AddPrincipal(userIdentity, null, null);
+                            }
                         }
+                        */
                     }
                     else
                     { // Principal's SID was not found in the local administrators group.
@@ -266,12 +293,13 @@ namespace SinclairCC.MakeMeAdmin
                                 string accountName = GetAccountNameFromSID(addedSids[i]);
                                 if (Settings.OverrideRemovalByOutsideProcess)
                                 {
+                                    // TODO: i18n.
                                     ApplicationLog.WriteInformationEvent(string.Format("Principal {0} ({1}) has been removed from the Administrators group by an outside process. Adding the principal back to the Administrators group.", addedSids[i], string.IsNullOrEmpty(accountName) ? "unknown account" : accountName), EventID.PrincipalRemovedByExternalProcess);
-                                    /* AddPrincipal(addedSids[i], DateTime.MinValue, null); */
-                                    AddPrincipalToAdministrators(addedSids[i], /* DateTime.MinValue, */ null);
+                                    AddPrincipalToAdministrators(addedSids[i], null);
                                 }
                                 else
                                 {
+                                    // TODO: i18n.
                                     ApplicationLog.WriteInformationEvent(string.Format("Principal {0} ({1}) has been removed from the Administrators group by an outside process. Removing the principal from Make Me Admin's list.", addedSids[i], string.IsNullOrEmpty(accountName) ? "unknown account" : accountName), EventID.PrincipalRemovedByExternalProcess);
                                     PrincipalList.RemoveSID(addedSids[i]);
                                     Settings.SIDs = PrincipalList.GetSIDs().Select(p => p.Value).ToArray<string>();
@@ -367,6 +395,7 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+
         /*
         public static bool CurrentUserIsMember()
         {
@@ -383,6 +412,7 @@ namespace SinclairCC.MakeMeAdmin
             return isMember;
         }
         */
+
 
         private static int AddLocalGroupMembers(string ServerName, string GroupName, SecurityIdentifier memberSid)
         {
@@ -446,6 +476,44 @@ namespace SinclairCC.MakeMeAdmin
                 NativeMethods.NetApiBufferFree(buffer);
             }
             return returnValue;
+        }
+
+
+        public static bool WindowsIdentityIsMember(WindowsIdentity identity)
+        {
+            bool isMember = false;
+
+            /*
+            List<Principal> authGroups = Shared.GetAuthorizationGroups(UserPrincipal.Current)
+            */
+            /*.GetAuthorizationGroups()*/;
+
+            //foreach (SecurityIdentifier sid in identity.Groups)
+            //{
+            //    isMember |= (LocalAdminsGroupSid == sid);
+            //    if (isMember) { break; }
+            //}
+
+            /*
+            authGroups.Dispose();
+            */
+
+            
+            PrincipalSearchResult<System.DirectoryServices.AccountManagement.Principal> adminGroupMembers = LocalAdminGroup.GetMembers(true);
+            foreach (System.DirectoryServices.AccountManagement.Principal prin in adminGroupMembers)
+            {
+                isMember |= (prin.Sid == identity.User);
+                if (isMember) { break; }
+            }
+
+            //LocalAdminGroup.GetMembers(true).Contains(new System.DirectoryServices.AccountManagement.Principal
+
+            /*
+            return UserPrincipal.Current.GetAuthorizationGroups().Where(p => p.Sid.Equals(localAdminsGroupSid)).Count<Principal>() >= 1;
+            */
+
+            return isMember;
+
         }
 
         public static bool CurrentUserIsMemberOfAdministratorsDirectly()

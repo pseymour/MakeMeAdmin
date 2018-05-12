@@ -1,7 +1,6 @@
 ﻿// <copyright file="ApplicationLog.cs" company="Sinclair Community College">
 // Copyright (c) 2010-2017, Sinclair Community College. All rights reserved.
 // </copyright>
-
 namespace SinclairCC.MakeMeAdmin
 {
     /// <summary>
@@ -9,11 +8,13 @@ namespace SinclairCC.MakeMeAdmin
     /// </summary>
     public class ApplicationLog
     {        
+        // TODO: i18n.
         /// <summary>
         /// The name of the Windows Event Log to which events will be written.
         /// </summary>
         private const string EventLogName = "Application";
 
+        // TODO: i18n.
         /// <summary>
         /// The source name to use when writing events to the Event Log.
         /// </summary>
@@ -28,12 +29,13 @@ namespace SinclairCC.MakeMeAdmin
         /// Constructor
         /// </summary>
         static ApplicationLog()
-        {            
+        {
             // Get an EventLog object for this service's log.
-            log = new System.Diagnostics.EventLog(EventLogName);
-
-            // Specify the source name for this event log.
-            log.Source = SourceName;
+            log = new System.Diagnostics.EventLog(EventLogName)
+            {
+                // Specify the source name for this event log.
+                Source = SourceName
+            };
         }
 
         /// <summary>

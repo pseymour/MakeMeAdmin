@@ -47,7 +47,8 @@ namespace SinclairCC.MakeMeAdmin
             object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyProductAttribute), false);
             //if (attributes.Length == 0)
             //{
-                formText.Append("Make Me Admin Remote");
+            // TODO: i18n.
+            formText.Append("Make Me Admin Remote");
             //}
             //else
             //{
@@ -107,6 +108,7 @@ namespace SinclairCC.MakeMeAdmin
                 .StartNew(() => this.RequestAdminRights(hostName))
                 .ContinueWith(resultTask =>
                 {
+                    // TODO: i18n.
                     if (resultTask.IsFaulted)
                     {
                         System.Text.StringBuilder messageBoxText = new System.Text.StringBuilder("An error occurred while requesting administrator rights on ");

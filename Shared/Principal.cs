@@ -10,12 +10,12 @@ namespace SinclairCC.MakeMeAdmin
     public class Principal
     {
         private WindowsIdentity userIdentity;
-        private DateTime expirationDateTime;
+        private DateTime? expirationDateTime;
         private string remoteHostAddress;
 
-        public Principal(WindowsIdentity userIdentity, DateTime expirationDateTime) : this(userIdentity, expirationDateTime, null) { }
+        public Principal(WindowsIdentity userIdentity, DateTime? expirationDateTime) : this(userIdentity, expirationDateTime, null) { }
 
-        public Principal(WindowsIdentity userIdentity, DateTime expirationDateTime, string remoteHostAddress)
+        public Principal(WindowsIdentity userIdentity, DateTime? expirationDateTime, string remoteHostAddress)
         {
             this.userIdentity = userIdentity;
             this.expirationDateTime = expirationDateTime;
@@ -32,7 +32,7 @@ namespace SinclairCC.MakeMeAdmin
             get { return this.userIdentity.Name; }
         }
 
-        public DateTime ExpirationTime
+        public DateTime? ExpirationTime
         {
             get { return this.expirationDateTime; }
             set { this.expirationDateTime = value; }

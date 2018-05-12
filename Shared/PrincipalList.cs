@@ -35,6 +35,7 @@ namespace SinclairCC.MakeMeAdmin
             }
             catch (Exception excep)
             {
+                // TODO: i18n.
                 ApplicationLog.WriteInformationEvent("error in PrincipalList constructor, creating Dictionary object.", EventID.DebugMessage);
                 ApplicationLog.WriteInformationEvent(excep.Message, EventID.DebugMessage);
             }
@@ -97,7 +98,7 @@ namespace SinclairCC.MakeMeAdmin
         /// <param name="expirationTime">
         /// The date and time at which the principal's administrator rights expire.
         /// </param>
-        public static void AddSID(WindowsIdentity userIdentity, DateTime expirationTime, string remoteAddress)
+        public static void AddSID(WindowsIdentity userIdentity, DateTime? expirationTime, string remoteAddress)
         {
             if (principals.ContainsKey(userIdentity.User))
             {
@@ -118,7 +119,19 @@ namespace SinclairCC.MakeMeAdmin
             else
             {
 #if DEBUG
-                ApplicationLog.WriteInformationEvent(string.Format("Adding SID {0} to list with an expiration of {1}.", userIdentity.User.Value, expirationTime), EventID.DebugMessage);
+                System.Text.StringBuilder message = new System.Text.StringBuilder("Adding SID ");
+                message.Append(userIdentity.User.Value);
+                message.Append(" to list with an expiration of ");
+                if (expirationTime.HasValue)
+                {
+                    message.Append(expirationTime.Value);
+                }
+                else
+                {
+                    message.Append("never");
+                }
+                message.Append(".");
+                ApplicationLog.WriteInformationEvent(message.ToString(), EventID.DebugMessage);
 #endif
                 
                 principals.Add(userIdentity.User, new Principal(userIdentity, expirationTime, remoteAddress));
@@ -166,10 +179,10 @@ namespace SinclairCC.MakeMeAdmin
 
             return principals.Where(p => p.Value <= DateTime.Now.AddMinutes(-1 * Settings.AdminRightsTimeout)).Select(p => p.Key).ToArray<SecurityIdentifier>();
             */
-            return principals.Where(p => p.Value.ExpirationTime <= DateTime.Now).Select(p => p.Value).ToArray<Principal>();
+            return principals.Where(p => (p.Value.ExpirationTime.HasValue && (p.Value.ExpirationTime <= DateTime.Now))).Select(p => p.Value).ToArray<Principal>();
         }
 
-        public static DateTime? GetExpirationTime(SecurityIdentifier sid /* string sidString */)
+        public static DateTime? GetExpirationTime(SecurityIdentifier sid)
         {
             if (principals.ContainsKey(sid))
             {

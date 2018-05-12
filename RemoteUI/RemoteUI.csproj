@@ -57,6 +57,12 @@
   <PropertyGroup>
     <ApplicationIcon>Resources\SecurityLock.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup Label="MultilingualAppToolkit">
+    <MultilingualAppToolkitVersion>4.0</MultilingualAppToolkitVersion>
+    <MultilingualFallbackLanguage>en-US</MultilingualFallbackLanguage>
+    <TranslationReport Condition="'$(Configuration)' == 'Release'">true</TranslationReport>
+    <SuppressPseudoWarning Condition="'$(Configuration)' == 'Debug'">true</SuppressPseudoWarning>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="MruList">
       <HintPath>References\MruList.dll</HintPath>
@@ -84,6 +90,8 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Properties\Resources.fr-CA.resx" />
+    <EmbeddedResource Include="Properties\Resources.fr.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -94,6 +102,12 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="SubmitRequestForm.fr-CA.resx">
+      <DependentUpon>SubmitRequestForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SubmitRequestForm.fr.resx">
+      <DependentUpon>SubmitRequestForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SubmitRequestForm.resx">
       <DependentUpon>SubmitRequestForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -123,7 +137,15 @@
   <ItemGroup>
     <None Include="Resources\SecurityLock.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <XliffResource Include="MultilingualResources\RemoteUI.fr-CA.xlf" />
+    <XliffResource Include="MultilingualResources\RemoteUI.fr.xlf" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Multilingual App Toolkit\Microsoft.Multilingual.ResxResources.targets" Label="MultilingualAppToolkit" Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\Multilingual App Toolkit\v$(MultilingualAppToolkitVersion)\Microsoft.Multilingual.ResxResources.targets')" />
+  <Target Name="MATPrerequisite" BeforeTargets="PrepareForBuild" Condition="!Exists('$(MSBuildExtensionsPath)\Microsoft\Multilingual App Toolkit\Microsoft.Multilingual.ResxResources.targets')" Label="MultilingualAppToolkit">
+    <Warning Text="$(MSBuildProjectFile) is Multilingual build enabled, but the Multilingual App Toolkit is unavailable during the build. If building with Visual Studio, please check to ensure that toolkit is properly installed." />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

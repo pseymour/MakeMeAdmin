@@ -18,6 +18,8 @@
     <IntermediateOutputPath>obj\$(Configuration) $(Platform)\</IntermediateOutputPath>
     <DefineConstants>Debug</DefineConstants>
     <SuppressIces>ICE57</SuppressIces>
+    <Cultures>
+    </Cultures>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\$(Configuration) $(Platform)\</OutputPath>
@@ -35,6 +37,8 @@
     <IntermediateOutputPath>obj\$(Configuration) $(Platform)\</IntermediateOutputPath>
     <SuppressValidation>False</SuppressValidation>
     <SuppressIces>ICE57</SuppressIces>
+    <Cultures>
+    </Cultures>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Product.wxs" />
@@ -107,6 +111,16 @@
     <Folder Include="GroupPolicy" />
     <Folder Include="GroupPolicy\en-US" />
   </ItemGroup>
+  <ItemGroup>
+    <WixExtension Include="WixUtilExtension">
+      <HintPath>$(WixExtDir)\WixUtilExtension.dll</HintPath>
+      <Name>WixUtilExtension</Name>
+    </WixExtension>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="en-US.wxl" />
+    <EmbeddedResource Include="fr-CA.wxl" />
+  </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <!--
 	To modify your build process, add your task inside one of the targets below and uncomment it.
@@ -144,7 +158,6 @@
     </CreateProperty>
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>if not exist "$(ProjectDir)..\Installers" mkdir "$(ProjectDir)..\Installers"
-copy "!(TargetPath)" "$(ProjectDir)..\Installers"</PostBuildEvent>
+    <PostBuildEvent>if not exist "$(ProjectDir)..\Installers" mkdir "$(ProjectDir)..\Installers\"</PostBuildEvent>
   </PropertyGroup>
 </Project>

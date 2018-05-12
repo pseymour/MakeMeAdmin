@@ -21,6 +21,7 @@ namespace LsaLogonSessions
         {
         }
         
+
         /// <summary>
         /// Gets the security identifier (SID) associated with a particular
         /// session ID.
@@ -50,6 +51,22 @@ namespace LsaLogonSessions
             return returnSid;
         }
 
+
+        public static WindowsIdentity GetWindowsIdentityForSessionId(int sessionId)
+        {
+            WindowsIdentity returnIdentity = null;
+            IntPtr tokenPointer = IntPtr.Zero;
+            int returnValue = NativeMethods.WTSQueryUserToken(sessionId, out tokenPointer);
+            int lastWin32Error = Marshal.GetLastWin32Error();
+            if (returnValue != 0)
+            {
+                returnIdentity = new WindowsIdentity(tokenPointer);
+                NativeMethods.CloseHandle(tokenPointer);
+            }
+            return returnIdentity;
+        }
+
+        
         /// <summary>
         /// Gets the security identifier (SID) for a token.
         /// </summary>

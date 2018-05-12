@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en-US" target-language="fr" original="SHARED/PROPERTIES/RESOURCES.RESX" tool-id="MultilingualAppToolkit" product-name="n/a" product-version="n/a" build-num="n/a">
+    <header>
+      <tool tool-id="MultilingualAppToolkit" tool-name="Multilingual App Toolkit" tool-version="4.0.6900.0" tool-company="Microsoft" />
+    </header>
+    <body>
+      <group id="SHARED/PROPERTIES/RESOURCES.RESX" datatype="resx">
+        <trans-unit id="RemovalReasonServiceStopped" translate="yes" xml:space="preserve">
+          <source>Make Me Admin service stopped</source>
+          <target state="new">Make Me Admin service stopped</target>
+        </trans-unit>
+        <trans-unit id="RemovalReasonTimeout" translate="yes" xml:space="preserve">
+          <source>Timeout elapsed</source>
+          <target state="new">Timeout elapsed</target>
+        </trans-unit>
+        <trans-unit id="RemovalReasonUnknown" translate="yes" xml:space="preserve">
+          <source>Unknown</source>
+          <target state="new">Unknown</target>
+        </trans-unit>
+        <trans-unit id="RemovalReasonUserLogoff" translate="yes" xml:space="preserve">
+          <source>User logged off</source>
+          <target state="new">User logged off</target>
+        </trans-unit>
+        <trans-unit id="RemovalReasonUserRequest" translate="yes" xml:space="preserve">
+          <source>User requested removal</source>
+          <target state="new">User requested removal</target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>

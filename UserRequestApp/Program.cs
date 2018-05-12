@@ -18,6 +18,12 @@ namespace SinclairCC.MakeMeAdmin
         [STAThread]
         internal static void Main()
         {
+            /*
+#if DEBUG
+            System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("qps-ploc");
+            System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("qps-ploc");
+#endif
+            */
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new SubmitRequestForm());

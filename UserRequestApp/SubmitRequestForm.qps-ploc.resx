@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="notifyIcon.Text" xml:space="preserve">
+    <value>[7BB18][!!_Мâķè Μè Ãđmìй_!!]</value>
+  </data>
+  <data name="appStatus.Text" xml:space="preserve">
+    <value>[D59E9][!!_Ŗèâðў._!!]</value>
+  </data>
+  <data name="exitButton.ToolTip" xml:space="preserve">
+    <value>[D2ECD][!!_Ęхìт τнè ãρþļîĉâтîõή._!!]</value>
+  </data>
+  <data name="exitButton.Text" xml:space="preserve">
+    <value>[CA7DD][!!_Ê&amp;хįτ_!!]</value>
+  </data>
+  <data name="removeMeButton.ToolTip" xml:space="preserve">
+    <value>[346A3][!!_Ŗęмòνę τĥè ċùѓŗęήţ Ŵíйđóẅš úŝéř ƒŕôм тђè Àđmîηîşτřáťóřŝ ğŕóûр._!!]</value>
+  </data>
+  <data name="removeMeButton.Text" xml:space="preserve">
+    <value>&amp;[C4617][!!_Ѓèмòνę Мÿ Áðмîηįśтŕâтòѓ Řìĝнтš_!!]</value>
+  </data>
+  <data name="addMeButton.ToolTip" xml:space="preserve">
+    <value>[7170F][!!_Áðð ťћę ĉùřŕęйţ Ẃįήďòẁš µşèѓ тó тћé Âďмįηíśτřâţóřś ğřôùþ._!!]</value>
+  </data>
+  <data name="addMeButton.Text" xml:space="preserve">
+    <value>&amp;[F2041][!!_Ģŕãητ Μê Àđмįήìşţŗâτõŗ Ѓìġђţş_!!]</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>[995F6][!!_Μâќè Μę Ãďмìη_!!]</value>
+  </data>
+</root>

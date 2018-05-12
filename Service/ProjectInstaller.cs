@@ -67,8 +67,6 @@ namespace SinclairCC.MakeMeAdmin
         /// </param>
         void serviceInstaller_AfterInstall(object sender, InstallEventArgs e)
         {
-            ApplicationLog.CreateSource();
-
             // Create a ServiceInstaller object from the sender object.
             System.ServiceProcess.ServiceInstaller installer = sender as System.ServiceProcess.ServiceInstaller;
 

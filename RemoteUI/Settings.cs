@@ -19,6 +19,7 @@ namespace SinclairCC.MakeMeAdmin.RemoteUI
 
         public static string[] HostNameMru
         {
+            // TODO: i18n.
             get
             {
                 string[] preferenceAllowedEntities = GetMultiString(PreferenceRegistryKeyPath, null, "Host Name MRU");
@@ -157,6 +158,7 @@ namespace SinclairCC.MakeMeAdmin.RemoteUI
         /// </summary>
         private static string PreferenceRegistryKeyPath
         {
+            // TODO: i18n.
             get { return string.Format(System.Globalization.CultureInfo.InvariantCulture, @"Software\{0}\{1}", CompanyName, ProductName); }
         }
         
@@ -171,6 +173,7 @@ namespace SinclairCC.MakeMeAdmin.RemoteUI
         {
             get
             {
+                // TODO: i18n.
                 string returnValue = "My Company";
                 System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
                 object[] attributes = assembly.GetCustomAttributes(typeof(System.Reflection.AssemblyCompanyAttribute), false);
@@ -196,6 +199,7 @@ namespace SinclairCC.MakeMeAdmin.RemoteUI
         {
             get
             {
+                // TODO: i18n.
                 string returnValue = "My Product";
                 System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
                 object[] attributes = assembly.GetCustomAttributes(typeof(System.Reflection.AssemblyProductAttribute), false);

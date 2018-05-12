@@ -24,6 +24,7 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         private static byte[] optionalEntropy = new byte[] { 8, 6, 7, 5, 3, 0, 9 };
 
+        // TODO: i18n.
         public static string[] LocalAllowedEntities
         {
             get
@@ -45,6 +46,7 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+        // TODO: i18n.
         public static string[] LocalDeniedEntities
         {
             get
@@ -66,6 +68,51 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+        // TODO: i18n.
+        public static string[] AutomaticAddAllowed
+        {
+            get
+            {
+                string[] policyAllowedEntities = GetMultiString(PolicyRegistryKeyPath, null, "Automatic Add Allowed");
+                string[] preferenceAllowedEntities = GetMultiString(PreferenceRegistryKeyPath, null, "Automatic Add Allowed");
+                if (policyAllowedEntities != null)
+                { // The policy setting has a value. Go with whatever it says.
+                    return policyAllowedEntities;
+                }
+                else
+                { // The preference setting has a value. Go with whatever it says.
+                    return preferenceAllowedEntities;
+                }
+            }
+            set
+            {
+                SetMultiString(PreferenceRegistryKeyPath, null, "Automatic Add Allowed", value);
+            }
+        }
+
+        // TODO: i18n.
+        public static string[] AutomaticAddDenied
+        {
+            get
+            {
+                string[] policyDeniedEntities = GetMultiString(PolicyRegistryKeyPath, null, "Automatic Add Denied");
+                string[] preferenceDeniedEntities = GetMultiString(PreferenceRegistryKeyPath, null, "Automatic Add Denied");
+                if (policyDeniedEntities != null)
+                { // The policy setting has a value. Go with whatever it says.
+                    return policyDeniedEntities;
+                }
+                else
+                { // The preference setting has a value. Go with whatever it says.
+                    return preferenceDeniedEntities;
+                }
+            }
+            set
+            {
+                SetMultiString(PreferenceRegistryKeyPath, null, "Automatic Add Denied", value);
+            }
+        }
+
+        // TODO: i18n.
         public static string[] RemoteAllowedEntities
         {
             get
@@ -87,6 +134,7 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+        // TODO: i18n.
         public static string[] RemoteDeniedEntities
         {
             get
@@ -108,7 +156,7 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-
+        // TODO: i18n.
         public static System.Collections.Generic.Dictionary<string, string> TimeoutOverrides
         {
             get
@@ -130,6 +178,7 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+        // TODO: i18n.
         public static string[] SIDs
         {
             get
@@ -141,7 +190,8 @@ namespace SinclairCC.MakeMeAdmin
                 SetMultiStringEncrypted(PreferenceRegistryKeyPath, null, "Added SIDs", value);
             }
         }
-            
+
+        // TODO: i18n.
         public static int AdminRightsTimeout
         {
             get
@@ -157,8 +207,8 @@ namespace SinclairCC.MakeMeAdmin
                     return preferenceTimeoutSetting.Value;
                 }
                 else
-                { // Neither the policy nor the preference registry entries had a value. Return a default timeout value of 2 minutes.
-                    return 2;
+                { // Neither the policy nor the preference registry entries had a value. Return a default timeout value of 10 minutes.
+                    return 10;
                 }
             }
             set
@@ -167,6 +217,7 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+        // TODO: i18n.
         public static bool RemoveAdminRightsOnLogout
         {
             get
@@ -193,6 +244,7 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+        // TODO: i18n.
         public static bool OverrideRemovalByOutsideProcess
         {
             get
@@ -219,6 +271,7 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+        // TODO: i18n.
         public static bool AllowRemoteRequests
         {
             get
@@ -244,6 +297,7 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+        // TODO: i18n.
         public static bool EndRemoteSessionsUponExpiration
         {
             get
@@ -497,6 +551,7 @@ namespace SinclairCC.MakeMeAdmin
         {
             get
             {
+                // TODO: i18n.
                 string returnValue = "My Company";
                 System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
                 object[] attributes = assembly.GetCustomAttributes(typeof(System.Reflection.AssemblyCompanyAttribute), false);
@@ -522,6 +577,7 @@ namespace SinclairCC.MakeMeAdmin
         {
             get
             {
+                // TODO: i18n.
                 string returnValue = "My Product";
                 System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
                 object[] attributes = assembly.GetCustomAttributes(typeof(System.Reflection.AssemblyProductAttribute), false);

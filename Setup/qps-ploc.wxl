@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="qps-ploc" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+  <String Id="SoftwareName">Mââkéé Me ÀÀdmííñ</String>
+  <String Id="SoftwareManufacturer">Sinclair Community College</String>
+  <String Id="AdminRightsRequired">You must have administrator rights to install this software.</String>
+  <String Id="NewerVersionInstalled">A newer version of [ProductName] is already installed.</String>
+  <String Id="Remote">Remote</String>
+  <String Id="ServiceDescription">ÉÉñââbléés üüsers tóó elevate themselves to admííñstrator-level rights.</String>
+</WixLocalization>

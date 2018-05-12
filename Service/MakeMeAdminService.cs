@@ -23,8 +23,11 @@ namespace SinclairCC.MakeMeAdmin
             this.CanHandleSessionChangeEvent = true;
             */
 
-            this.removalTimer = new System.Timers.Timer(10000);
-            this.removalTimer.AutoReset = true;
+            this.removalTimer = new System.Timers.Timer()
+            {
+                Interval = 10000,
+                AutoReset = true
+            };
             this.removalTimer.Elapsed += RemovalTimerElapsed;
         }
 
@@ -41,6 +44,9 @@ namespace SinclairCC.MakeMeAdmin
             Principal[] expiredPrincipals = PrincipalList.GetExpiredPrincipals();
             foreach (Principal prin in expiredPrincipals)
             {
+#if DEBUG
+                ApplicationLog.WriteInformationEvent(string.Format("Expired Principal: {0}", prin.PrincipalSid.Value), EventID.DebugMessage);
+#endif
                 LocalAdministratorGroup.RemovePrincipal(prin.PrincipalSid, RemovalReason.Timeout);
 
                 if ((Settings.EndRemoteSessionsUponExpiration) && (!string.IsNullOrEmpty(prin.RemoteAddress)))
@@ -85,6 +91,7 @@ namespace SinclairCC.MakeMeAdmin
 
         private void ServiceHostFaulted(object sender, EventArgs e)
         {
+            // TODO: i18n.
             ApplicationLog.WriteInformationEvent("Service host faulted.", EventID.DebugMessage);
         }
 
@@ -95,6 +102,8 @@ namespace SinclairCC.MakeMeAdmin
                 base.OnStart(args);
             }
             catch (Exception) { };
+
+            ApplicationLog.CreateSource();
 
             this.OpenNamedPipeServiceHost();
 
@@ -131,53 +140,149 @@ namespace SinclairCC.MakeMeAdmin
 
         protected override void OnSessionChange(SessionChangeDescription changeDescription)
         {
+
             switch (changeDescription.Reason)
             {
-                /*
-                case SessionChangeReason.ConsoleDisconnect:
-                case SessionChangeReason.RemoteDisconnect:
-                */
+                // The user has logged off from a session, either locally or remotely.
                 case SessionChangeReason.SessionLogoff:
 #if DEBUG
                     ApplicationLog.WriteInformationEvent(string.Format("Session {0} has logged off.", changeDescription.SessionId), EventID.DebugMessage);
 #endif
+                        //if (Settings.RemoveAdminRightsOnLogout)
+                        //{
+                            System.Collections.Generic.List<SecurityIdentifier> sidsToRemove = new System.Collections.Generic.List<SecurityIdentifier>(PrincipalList.GetSIDs());
 
-                    if (Settings.RemoveAdminRightsOnLogout)
-                    {
-                        System.Collections.Generic.List<SecurityIdentifier> sidsToRemove = new System.Collections.Generic.List<SecurityIdentifier>(PrincipalList.GetSIDs());
-
-                        int[] sessionIds = LsaLogonSessions.LogonSessions.GetLoggedOnUserSessionIds();
-                        foreach (int id in sessionIds)
-                        {
-                            System.Security.Principal.SecurityIdentifier sid = LsaLogonSessions.LogonSessions.GetSidForSessionId(id);
-                            if (sid != null)
+                            /*
+#if DEBUG
+                            ApplicationLog.WriteInformationEvent("SID to remove list has been retrieved.", EventID.DebugMessage);
+                            for (int i = 0; i < sidsToRemove.Count; i++)
                             {
-                                if (sidsToRemove.Contains(sid))
+                                ApplicationLog.WriteInformationEvent(string.Format("SID to remove: {0}", sidsToRemove[i]), EventID.DebugMessage);
+                            }
+#endif
+                            */
+
+                            int[] sessionIds = LsaLogonSessions.LogonSessions.GetLoggedOnUserSessionIds();
+                            foreach (int id in sessionIds)
+                            {
+                                SecurityIdentifier sid = LsaLogonSessions.LogonSessions.GetSidForSessionId(id);
+                                if (sid != null)
                                 {
-                                    sidsToRemove.Remove(sid);
+                                    if (sidsToRemove.Contains(sid))
+                                    {
+                                        sidsToRemove.Remove(sid);
+                                    }
                                 }
                             }
-                        }
 
-                        for (int i = 0; i < sidsToRemove.Count; i++)
-                        {
-                            if (!(PrincipalList.ContainsSID(sidsToRemove[i]) && PrincipalList.IsRemote(sidsToRemove[i])))
+                            /*
+#if DEBUG
+                            ApplicationLog.WriteInformationEvent("SID to remove list has been updated.", EventID.DebugMessage);
+                            for (int i = 0; i < sidsToRemove.Count; i++)
                             {
-                                LocalAdministratorGroup.RemovePrincipal(sidsToRemove[i], RemovalReason.UserLogoff);
+                                ApplicationLog.WriteInformationEvent(string.Format("SID to remove: {0}", sidsToRemove[i]), EventID.DebugMessage);
                             }
-                        }
+#endif
+                            */
 
+                            for (int i = 0; i < sidsToRemove.Count; i++)
+                            {
+                                if (
+                                    (!(PrincipalList.ContainsSID(sidsToRemove[i]) && PrincipalList.IsRemote(sidsToRemove[i])))
+                                    &&
+                                    (Settings.RemoveAdminRightsOnLogout || !PrincipalList.GetExpirationTime(sidsToRemove[i]).HasValue)
+                                   )
+                                {
+                                    LocalAdministratorGroup.RemovePrincipal(sidsToRemove[i], RemovalReason.UserLogoff);
+                                }
+                            }
+
+                            /*
+                             * In theory, this code should remove the user associated with the logoff, but it doesn't work.
+                            SecurityIdentifier sid = LsaLogonSessions.LogonSessions.GetSidForSessionId(changeDescription.SessionId);
+                            if (!(PrincipalList.ContainsSID(sid) && PrincipalList.IsRemote(sid)))
+                            {
+                                LocalAdministratorGroup.RemovePrincipal(sid, RemovalReason.UserLogoff);
+                            }
+                            */
+                        //}
                         /*
-                         * In theory, this code should remove the user associated with the logoff, but it doesn't work.
-                        SecurityIdentifier sid = LsaLogonSessions.LogonSessions.GetSidForSessionId(changeDescription.SessionId);
-                        if (!(PrincipalList.ContainsSID(sid) && PrincipalList.IsRemote(sid)))
+                        else
                         {
-                            LocalAdministratorGroup.RemovePrincipal(sid, RemovalReason.UserLogoff);
-                        }
+#if DEBUG
+                            ApplicationLog.WriteInformationEvent("Removing admin rights on log off is disabled.", EventID.DebugMessage);
+#endif
+                    }
+                    */
+
+                    break;
+
+                // The user has logged on to a session, either locally or remotely.
+                case SessionChangeReason.SessionLogon:
+#if DEBUG
+                    // TODO: i18n.
+                    ApplicationLog.WriteInformationEvent(string.Format("Session logon. Session ID: {0}", changeDescription.SessionId), EventID.SessionChangeEvent);
+#endif
+
+                    WindowsIdentity userIdentity = LsaLogonSessions.LogonSessions.GetWindowsIdentityForSessionId(changeDescription.SessionId);
+
+                    if (userIdentity != null)
+                    {
+                        /*
+#if DEBUG
+                        ApplicationLog.WriteInformationEvent("User identity is not null.", EventID.DebugMessage);
+                        ApplicationLog.WriteInformationEvent(string.Format("user name: {0}", userIdentity.Name), EventID.DebugMessage);
+                        ApplicationLog.WriteInformationEvent(string.Format("user SID: {0}", userIdentity.User), EventID.DebugMessage);
+#endif
                         */
+
+                        if (
+                            (Settings.AutomaticAddAllowed != null) &&
+                            (Settings.AutomaticAddAllowed.Length > 0) &&
+                            (Shared.UserIsAuthorized(userIdentity, Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied))
+                           )
+                        {
+#if DEBUG
+                            ApplicationLog.WriteInformationEvent("User is allowed to be automatically added!", EventID.DebugMessage);
+#endif
+                            LocalAdministratorGroup.AddPrincipal(userIdentity, null, null);
+                        }
+                    }
+                    else
+                    {
+                        // TODO: i18n.
+                        ApplicationLog.WriteWarningEvent("User identity is null.", EventID.DebugMessage);
                     }
 
                     break;
+                /*
+                // The user has reconnected or logged on to a remote session.
+                case SessionChangeReason.RemoteConnect:
+                    ApplicationLog.WriteInformationEvent(string.Format("Remote connect. Session ID: {0}", changeDescription.SessionId), EventID.SessionChangeEvent);
+                    break;
+                */
+
+                /*
+                // The user has disconnected or logged off from a remote session.
+                case SessionChangeReason.RemoteDisconnect:
+                    ApplicationLog.WriteInformationEvent(string.Format("Remote disconnect. Session ID: {0}", changeDescription.SessionId), EventID.SessionChangeEvent);
+                    break;
+                */
+
+                /*
+                // The user has locked their session.
+                case SessionChangeReason.SessionLock:
+                    ApplicationLog.WriteInformationEvent(string.Format("Session lock. Session ID: {0}", changeDescription.SessionId), EventID.SessionChangeEvent);
+                    break;
+                */
+
+                /*
+                // The user has unlocked their session.
+                case SessionChangeReason.SessionUnlock:
+                    ApplicationLog.WriteInformationEvent(string.Format("Session unlock. Session ID: {0}", changeDescription.SessionId), EventID.SessionChangeEvent);
+                    break;
+                */
+
             }
 
             base.OnSessionChange(changeDescription);

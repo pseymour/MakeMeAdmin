@@ -30,15 +30,15 @@ namespace SinclairCC.MakeMeAdmin
         {
             get
             {
-                string hostName = "localhost";
+                string hostName = System.Environment.MachineName;
                 try
                 {
                     hostName = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName()).HostName.ToLowerInvariant();
                 }
-                catch (System.Net.Sockets.SocketException) { hostName = "localhost"; }
-                catch (System.ArgumentNullException) { hostName = "localhost"; }
-                catch (System.ArgumentOutOfRangeException) { hostName = "localhost"; }
-                catch (System.ArgumentException) { hostName = "localhost"; }
+                catch (System.Net.Sockets.SocketException) { hostName = System.Environment.MachineName; }
+                catch (System.ArgumentNullException) { hostName = System.Environment.MachineName; }
+                catch (System.ArgumentOutOfRangeException) { hostName = System.Environment.MachineName; }
+                catch (System.ArgumentException) { hostName = System.Environment.MachineName; }
                 return hostName;
             }
         }
@@ -46,16 +46,41 @@ namespace SinclairCC.MakeMeAdmin
 
         private static bool ArrayContainsString(string[] stringArray, string targetString)
         {
+            /*
+#if DEBUG
+            ApplicationLog.WriteInformationEvent("In ArrayContainsString().", EventID.DebugMessage);
+            ApplicationLog.WriteInformationEvent(string.Format("targetString = \"{0}\"", targetString), EventID.DebugMessage);
+#endif
+            */
+
             if ((stringArray != null) && (stringArray.Length > 0))
             {
                 for (int i = 0; i < stringArray.Length; i++)
                 {
-                    if (string.Compare(stringArray[i], targetString, System.Globalization.CultureInfo.CurrentCulture, System.Globalization.CompareOptions.IgnoreCase) == 0)
+                    /*
+#if DEBUG
+                    ApplicationLog.WriteInformationEvent(string.Format("stringArray[i] = \"{0}\"", stringArray[i]), EventID.DebugMessage);
+                    ApplicationLog.WriteInformationEvent(string.Format("stringArray[i] (expanded) = \"{0}\"", System.Environment.ExpandEnvironmentVariables(stringArray[i])), EventID.DebugMessage);
+#endif
+                    */
+
+                    if (string.Compare(System.Environment.ExpandEnvironmentVariables(stringArray[i]), targetString, System.Globalization.CultureInfo.CurrentCulture, System.Globalization.CompareOptions.IgnoreCase) == 0)
                     {
+                        /*
+#if DEBUG
+                        ApplicationLog.WriteInformationEvent("Leaving ArrayContainsString(). Returning true.", EventID.DebugMessage);
+#endif
+                        */
                         return true;
                     }
                 }
             }
+
+            /*
+#if DEBUG
+            ApplicationLog.WriteInformationEvent("Leaving ArrayContainsString(). Returning false.", EventID.DebugMessage);
+#endif
+            */
             return false;
         }
 
@@ -106,10 +131,12 @@ namespace SinclairCC.MakeMeAdmin
 
 #if DEBUG
 
+            // TODO: i18n.
             if (deniedSidsList != null)
             {
                 ApplicationLog.WriteInformationEvent(string.Format("Denied list contains {0:N0} entries.", deniedSidsList.Length), EventID.DebugMessage);
             }
+            // TODO: i18n.
             if (allowedSidsList != null)
             {
                 ApplicationLog.WriteInformationEvent(string.Format("Allowed list contains {0:N0} entries.", allowedSidsList.Length), EventID.DebugMessage);
@@ -132,8 +159,8 @@ namespace SinclairCC.MakeMeAdmin
 #endif
                 */                
 
-                // If the user's SID is in the denied list, the user is not authorized.
-                if (ArrayContainsString(deniedSidsList, userIdentity.User.Value))
+                // If the user's SID or name is in the denied list, the user is not authorized.
+                if ((ArrayContainsString(deniedSidsList, userIdentity.User.Value)) || (ArrayContainsString(deniedSidsList, userIdentity.Name)))
                 {
                     /*
 #if DEBUG
@@ -155,6 +182,20 @@ namespace SinclairCC.MakeMeAdmin
                         */                        
                         return false;
                     }
+
+                    if (sid.IsValidTargetType(typeof(NTAccount)))
+                    {
+                        NTAccount account = (NTAccount)sid.Translate(typeof(NTAccount));
+                        if (ArrayContainsString(deniedSidsList, account.Value))
+                        {
+                            /*
+    #if DEBUG
+                            ApplicationLog.WriteInformationEvent("One of the principal's groups is in the denied list. Permission denied.", EventID.DebugMessage);
+    #endif
+                            */
+                            return false;
+                        }
+                    }
                 }
             }
 
@@ -166,7 +207,7 @@ namespace SinclairCC.MakeMeAdmin
 #if DEBUG
                 ApplicationLog.WriteInformationEvent("Allowed list is null. Everyone is allowed to request administrator rights.", EventID.DebugMessage);
 #endif
-                */                
+                */
                 return true;
             }
             else if (allowedSidsList.Length == 0)
@@ -175,20 +216,20 @@ namespace SinclairCC.MakeMeAdmin
 #if DEBUG
                 ApplicationLog.WriteInformationEvent("Allowed list is empty, but not null. No one is allowed to request administrator rights.", EventID.DebugMessage);
 #endif
-                */                
+                */
                 return false;
             }
             else
             { // The allowed list has entries.
 
                 // If the user's SID is in the allowed list, the user is authorized.
-                if (ArrayContainsString(allowedSidsList, userIdentity.User.Value))
+                if ((ArrayContainsString(allowedSidsList, userIdentity.User.Value))  || (ArrayContainsString(allowedSidsList, userIdentity.Name)))
                 {
                     /*
 #if DEBUG
                     ApplicationLog.WriteInformationEvent("Principal's SID is in the allowed list. Permission granted.", EventID.DebugMessage);
 #endif
-                    */                    
+                    */
                     return true;
                 }
 
@@ -201,8 +242,22 @@ namespace SinclairCC.MakeMeAdmin
 #if DEBUG
                         ApplicationLog.WriteInformationEvent("One of the principal's groups is in the allowed list. Permission granted.", EventID.DebugMessage);
 #endif
-                        */                        
+                        */
                         return true;
+                    }
+
+                    if (sid.IsValidTargetType(typeof(NTAccount)))
+                    {
+                        NTAccount account = (NTAccount)sid.Translate(typeof(NTAccount));
+                        if (ArrayContainsString(allowedSidsList, account.Value))
+                        {
+                            /*
+#if DEBUG
+                            ApplicationLog.WriteInformationEvent("One of the principal's groups is in the allowed list. Permission granted.", EventID.DebugMessage);
+#endif
+                            */
+                            return true;
+                        }
                     }
                 }
 
@@ -215,7 +270,6 @@ namespace SinclairCC.MakeMeAdmin
                 */
                 return false;
             }
-
         }
 
         

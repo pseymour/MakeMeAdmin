@@ -1,4 +1,5 @@
-﻿// <copyright file="AssemblyInfo.cs" company="Sinclair Community College">
+﻿using System.Resources;
+// <copyright file="AssemblyInfo.cs" company="Sinclair Community College">
 // Copyright (c) Sinclair Community College. All rights reserved.
 // </copyright>
 
@@ -36,3 +37,4 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("2.2.1.0")]
 [assembly: AssemblyFileVersion("2.2.1.0")]
+[assembly: NeutralResourcesLanguage("en-US")]

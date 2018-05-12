@@ -59,10 +59,19 @@ namespace SinclairCC.MakeMeAdmin
         [DllImport("user32.dll")]
         private static extern IntPtr OpenDesktop(string lpszDesktop, uint dwFlags, bool fInherit, uint dwDesiredAccess);
 
-
+        /*
+        [DllImport("user32.dll")]
+        public static extern IntPtr OpenDesktop(string lpszDesktop, uint dwFlags, bool fInherit, uint dwDesiredAccess);
+        */
 
         [DllImport("user32.dll")]
         private static extern bool SwitchDesktop(IntPtr hDesktop);
+
+        /*
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool SwitchDesktop(IntPtr hDesktop);
+        */
 
         [DllImport("kernel32.dll")]
         private static extern bool CreateProcess(string lpApplicationName, string lpCommandLine, IntPtr lpProcessAttributes, IntPtr lpThreadAttributes, bool bInheritHandles, int dwCreationFlags, IntPtr lpEnvironment, string lpCurrentDirectory, ref STARTUPINFO lpStartupInfo, ref PROCESS_INFORMATION lpProcessInformation);
@@ -96,13 +105,8 @@ namespace SinclairCC.MakeMeAdmin
         [DllImport("user32.dll", SetLastError = true)]
         public static extern IntPtr CloseDesktop(IntPtr hDesktop);
 
-        [DllImport("user32.dll")]
-        public static extern IntPtr OpenDesktop(string lpszDesktop, uint dwFlags,
-            bool fInherit, uint dwDesiredAccess);
 
-        [DllImport("user32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool SwitchDesktop(IntPtr hDesktop);
+
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool SetThreadDesktop(IntPtr hDesktop);
