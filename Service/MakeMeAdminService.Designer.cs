@@ -1,8 +1,4 @@
-﻿// <copyright file="MakeMeAdminService.Designer.cs" company="Sinclair Community College">
-// Copyright (c) Sinclair Community College. All rights reserved.
-// </copyright>
-
-namespace SinclairCC.MakeMeAdmin
+﻿namespace SinclairCC.MakeMeAdmin
 {
     partial class MakeMeAdminService
     {

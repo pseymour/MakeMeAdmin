@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2000
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalUI", "UserRequestApp\LocalUI.csproj", "{63CAF2AD-A016-43BD-AA27-02CB848E2067}"
 EndProject
@@ -20,6 +20,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LsaLogonSessions", "LsaLogonSessions\LsaLogonSessions.csproj", "{A2107C86-7CB5-45EE-89E8-1BC7261F7762}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteUI", "RemoteUI\RemoteUI.csproj", "{D64E40BB-9DAC-4491-8406-2CA2F2853F76}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8D90453F-CDDE-4900-AC48-1DF69D948F08}"
+	ProjectSection(SolutionItems) = preProject
+		CONTRIBUTORS = CONTRIBUTORS
+		LICENSE = LICENSE
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -104,5 +110,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3502F633-D9AB-4F88-A27F-9C3A49387D26}
 	EndGlobalSection
 EndGlobal
