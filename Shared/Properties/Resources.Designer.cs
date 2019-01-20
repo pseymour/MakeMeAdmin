@@ -59,50 +59,5 @@ namespace SinclairCC.MakeMeAdmin.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Make Me Admin service stopped.
-        /// </summary>
-        internal static string RemovalReasonServiceStopped {
-            get {
-                return ResourceManager.GetString("RemovalReasonServiceStopped", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Timeout elapsed.
-        /// </summary>
-        internal static string RemovalReasonTimeout {
-            get {
-                return ResourceManager.GetString("RemovalReasonTimeout", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unknown.
-        /// </summary>
-        internal static string RemovalReasonUnknown {
-            get {
-                return ResourceManager.GetString("RemovalReasonUnknown", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to User logged off.
-        /// </summary>
-        internal static string RemovalReasonUserLogoff {
-            get {
-                return ResourceManager.GetString("RemovalReasonUserLogoff", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to User requested removal.
-        /// </summary>
-        internal static string RemovalReasonUserRequest {
-            get {
-                return ResourceManager.GetString("RemovalReasonUserRequest", resourceCulture);
-            }
-        }
     }
 }

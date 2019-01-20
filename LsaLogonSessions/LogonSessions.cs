@@ -1,5 +1,5 @@
 ﻿// 
-// Copyright © 2010-2018, Sinclair Community College
+// Copyright © 2010-2019, Sinclair Community College
 // Licensed under the GNU General Public License, version 3.
 // See the LICENSE file in the project root for full license information.  
 //
@@ -68,6 +68,16 @@ namespace LsaLogonSessions
         }
 
 
+        /// <summary>
+        /// Creates a WindowsIdentity object for the user session with the given ID.
+        /// </summary>
+        /// <param name="sessionId">
+        /// The session ID for which the WindowsIdentity object is to be constructed.
+        /// </param>
+        /// <returns>
+        /// Returns a WindowsIdentity object for the given session ID, if the session ID can be found.
+        /// If the session ID cannot be found, null is returned.
+        /// </returns>
         public static WindowsIdentity GetWindowsIdentityForSessionId(int sessionId)
         {
             WindowsIdentity returnIdentity = null;

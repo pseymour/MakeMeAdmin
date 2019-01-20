@@ -1,5 +1,5 @@
 ﻿// 
-// Copyright © 2010-2018, Sinclair Community College
+// Copyright © 2010-2019, Sinclair Community College
 // Licensed under the GNU General Public License, version 3.
 // See the LICENSE file in the project root for full license information.  
 //
@@ -37,8 +37,6 @@ namespace LsaLogonSessions
         [DllImport("wtsapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         internal static extern IntPtr WTSOpenServer([MarshalAs(UnmanagedType.LPWStr)] string serverName);
         */
-
-
 
         /// <summary>
         /// Retrieves a list of sessions on a specified Remote Desktop Session Host (RD Session Host) server.

@@ -1,5 +1,5 @@
 ﻿// 
-// Copyright © 2010-2018, Sinclair Community College
+// Copyright © 2010-2019, Sinclair Community College
 // Licensed under the GNU General Public License, version 3.
 // See the LICENSE file in the project root for full license information.  
 //
@@ -34,12 +34,6 @@ namespace SinclairCC.MakeMeAdmin
         [STAThread]
         internal static void Main()
         {
-            /*
-#if DEBUG
-            System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("qps-ploc");
-            System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("qps-ploc");
-#endif
-            */
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new SubmitRequestForm());

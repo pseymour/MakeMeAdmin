@@ -1,5 +1,5 @@
 ﻿// 
-// Copyright © 2010-2018, Sinclair Community College
+// Copyright © 2010-2019, Sinclair Community College
 // Licensed under the GNU General Public License, version 3.
 // See the LICENSE file in the project root for full license information.  
 //
@@ -18,14 +18,11 @@
 // along with Make Me Admin. If not, see <http://www.gnu.org/licenses/>.
 //
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
 namespace SinclairCC.MakeMeAdmin
 {
+    using System;
+    using System.Windows.Forms;
+
     static class Program
     {
         /// <summary>

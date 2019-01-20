@@ -117,19 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="RemovalReasonServiceStopped" xml:space="preserve">
-    <value>Make Me Admin service stopped</value>
-  </data>
-  <data name="RemovalReasonTimeout" xml:space="preserve">
-    <value>Timeout elapsed</value>
-  </data>
-  <data name="RemovalReasonUnknown" xml:space="preserve">
-    <value>Unknown</value>
-  </data>
-  <data name="RemovalReasonUserLogoff" xml:space="preserve">
-    <value>User logged off</value>
-  </data>
-  <data name="RemovalReasonUserRequest" xml:space="preserve">
-    <value>User requested removal</value>
-  </data>
 </root>

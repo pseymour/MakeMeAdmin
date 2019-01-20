@@ -1,5 +1,5 @@
 ﻿// 
-// Copyright © 2010-2018, Sinclair Community College
+// Copyright © 2010-2019, Sinclair Community College
 // Licensed under the GNU General Public License, version 3.
 // See the LICENSE file in the project root for full license information.  
 //
@@ -112,16 +112,11 @@ namespace SinclairCC.MakeMeAdmin
             formText.Append(' ');
             formText.Append(Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
 
+            // TODO: Remove this for release.
+            formText.Append(" BETA");
+
             this.Text = formText.ToString();
             this.notifyIcon.Text = formText.ToString();
-
-            /*
-#if DEBUG
-            //this.Text = string.Format("UI: {0}, Formatting: {1}", System.Threading.Thread.CurrentThread.CurrentUICulture.Name, System.Threading.Thread.CurrentThread.CurrentCulture.Name);
-            this.Text = string.Format("{0}: {1}", ApplicationLog.SName, ApplicationLog.SExists);
-#endif
-            */
-            
         }
 
 

@@ -1,5 +1,5 @@
 ﻿// 
-// Copyright © 2010-2018, Sinclair Community College
+// Copyright © 2010-2019, Sinclair Community College
 // Licensed under the GNU General Public License, version 3.
 // See the LICENSE file in the project root for full license information.  
 //
@@ -21,17 +21,20 @@
 namespace SinclairCC.MakeMeAdmin
 {
     using System;
+    using System.Collections.Generic;
+    using System.DirectoryServices;
     using System.ServiceModel;
     using System.Security.Principal;
     using System.Runtime.InteropServices;
     using System.Security.Cryptography;
-
+    using System.Collections;
+ 
     /// <summary>
     /// This class defines the main entry point for the application.
     /// </summary>
     internal class Program
     {
-
+        /*
         [StructLayout(LayoutKind.Sequential)]
         internal struct LSA_UNICODE_STRING
         {
@@ -39,6 +42,7 @@ namespace SinclairCC.MakeMeAdmin
             public ushort MaximumLength;
             public IntPtr Buffer;   
         }
+        */
 
         /*
         [StructLayout(LayoutKind.Sequential)]
@@ -50,6 +54,7 @@ namespace SinclairCC.MakeMeAdmin
         }
         */
 
+        /*
         [StructLayout(LayoutKind.Sequential)]
         internal struct LSA_OBJECT_ATTRIBUTES
         {
@@ -128,6 +133,9 @@ namespace SinclairCC.MakeMeAdmin
         static long STANDARD_RIGHTS_ALL = 0x001F0000L;
 
         static long SPECIFIC_RIGHTS_ALL = 0x0000FFFFL;
+        */
+
+        /*
 
         //
         // Access types for the Policy object
@@ -161,6 +169,8 @@ namespace SinclairCC.MakeMeAdmin
                                   POLICY_SERVER_ADMIN |
                                   POLICY_LOOKUP_NAMES);
 
+        */
+        
         /*
         [DllImport("advapi32.dll", CharSet = CharSet.Auto, SetLastError = true, PreserveSig = true)]
         internal static extern bool LookupAccountName(
@@ -194,6 +204,8 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
                                POLICY_VIEW_LOCAL_INFORMATION    |\
                                POLICY_LOOKUP_NAMES)
             */
+
+        /*
         [DllImport("advapi32.dll", SetLastError = true)]
         internal static extern uint LsaOpenPolicy(
             [In] [Optional] ref LSA_UNICODE_STRING SystemName,
@@ -201,6 +213,7 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
             [In] int DesiredAccess,
             [Out] out IntPtr PolicyHandle        
             );
+        */
 
         /*
         [DllImport("advapi32.dll", PreserveSig = true)]
@@ -211,6 +224,7 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
             out IntPtr PolicyHandle);
         */
 
+            /*
         [DllImport("advapi32.dll", SetLastError = true, PreserveSig = true)]
         private static extern int LsaAddAccountRights(
             IntPtr PolicyHandle,
@@ -218,7 +232,9 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
             [In] [MarshalAs(UnmanagedType.LPArray)] byte[] AccountSid,
             LSA_UNICODE_STRING[] UserRights,
             int CountOfRights);
+        */
 
+        /*
         [DllImport("advapi32.dll", SetLastError = true, PreserveSig = true)]
         private static extern int LsaRemoveAccountRights(
             IntPtr PolicyHandle,
@@ -227,6 +243,7 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
             [In] int AllRights,
             LSA_UNICODE_STRING[] UserRights,
             int CountOfRights);
+        */
 
         /*
         NTSTATUS LsaAddAccountRights(
@@ -260,7 +277,7 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
         //    [Out] out LSA_UNICODE_STRING[] /* IntPtr */ UserRights,
         //    [Out] out long CountOfRights);
 
-
+        /*
         [DllImport("advapi32.dll", SetLastError = true, PreserveSig = true)]
         internal static extern int LsaEnumerateAccountRights(
             [In] IntPtr PolicyHandle,
@@ -268,23 +285,31 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
             [In] [MarshalAs(UnmanagedType.LPArray)] byte[] AccountSid,
             [Out] out IntPtr UserRightsPtr,
             [Out] out int CountOfRights);
+        */
 
-
+        /*
         [DllImport("advapi32.dll", SetLastError = true)]
         internal static extern uint LsaClose(
           [In] IntPtr ObjectHandle
         );
+        */
 
+        /*
         [DllImport("advapi32.dll", SetLastError = true)]
         internal static extern long LsaNtStatusToWinError(long status);
+        */
 
+        /*
         [DllImport("kernel32.dll")]
         private static extern int GetLastError();
+        */
 
+        /*
         [DllImport("advapi32.dll")]
         public static extern void FreeSid(IntPtr pSid);
+        */
 
-
+        /*
         private static System.Collections.Specialized.StringCollection GetRights(System.Security.Principal.WindowsIdentity identity)
         {
             System.Collections.Specialized.StringCollection rights = new System.Collections.Specialized.StringCollection();
@@ -294,11 +319,9 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
 
             LSA_UNICODE_STRING SystemName = new LSA_UNICODE_STRING();
 
-            /*
-            SystemName.Length = (ushort)(System.Environment.MachineName.Length * System.Text.UnicodeEncoding.CharSize);
-            SystemName.MaximumLength = (ushort)((System.Environment.MachineName.Length + 1) * System.Text.UnicodeEncoding.CharSize);
-            SystemName.Buffer = System.Environment.MachineName; // Marshal.StringToHGlobalUni(System.Environment.MachineName);
-            */
+            //SystemName.Length = (ushort)(System.Environment.MachineName.Length * System.Text.UnicodeEncoding.CharSize);
+            //SystemName.MaximumLength = (ushort)((System.Environment.MachineName.Length + 1) * System.Text.UnicodeEncoding.CharSize);
+            //SystemName.Buffer = System.Environment.MachineName; // Marshal.StringToHGlobalUni(System.Environment.MachineName);
 
 
             // Open a policy handle on the remote PC.
@@ -341,8 +364,9 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
 
             return rights;
         }
+        */
 
-
+        /*
         private static void SetRight(System.Security.Principal.WindowsIdentity identity, string privilegeName)
         {
             LSA_OBJECT_ATTRIBUTES objectAttributes = CreateLSAObjectAttributes();
@@ -350,11 +374,11 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
 
             LSA_UNICODE_STRING SystemName = new LSA_UNICODE_STRING();
 
-            /*
-            SystemName.Length = (ushort)(System.Environment.MachineName.Length * System.Text.UnicodeEncoding.CharSize);
-            SystemName.MaximumLength = (ushort)((System.Environment.MachineName.Length + 1) * System.Text.UnicodeEncoding.CharSize);
-            SystemName.Buffer = System.Environment.MachineName; // Marshal.StringToHGlobalUni(System.Environment.MachineName);
-            */
+            
+            //SystemName.Length = (ushort)(System.Environment.MachineName.Length * System.Text.UnicodeEncoding.CharSize);
+            //SystemName.MaximumLength = (ushort)((System.Environment.MachineName.Length + 1) * System.Text.UnicodeEncoding.CharSize);
+            //SystemName.Buffer = System.Environment.MachineName; // Marshal.StringToHGlobalUni(System.Environment.MachineName);
+            
 
 
             // Open a policy handle on the remote PC.
@@ -375,24 +399,20 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
                 //int accountType = 0;
                 long winErrorCode = 0;
 
-                /*
-                LookupAccountName(string.Empty, currentIdentity.Name, sid, ref sidSize, domainName, ref nameSize, ref accountType);
-                */
+                
+                //LookupAccountName(string.Empty, currentIdentity.Name, sid, ref sidSize, domainName, ref nameSize, ref accountType);
+                
 
-                /*
-                domainName = new System.Text.StringBuilder(nameSize);
-                sid = Marshal.AllocHGlobal(sidSize);
-                */
+                //domainName = new System.Text.StringBuilder(nameSize);
+                //sid = Marshal.AllocHGlobal(sidSize);
 
-                /*
-                if (!LookupAccountName(string.Empty, currentIdentity.Name, sid, ref sidSize, domainName, ref nameSize, ref accountType))
-                {
-                    winErrorCode = GetLastError();
-                    Console.WriteLine("LookupAccountName failed: " + winErrorCode);
-                }
-                else
-                {
-                */
+                //if (!LookupAccountName(string.Empty, currentIdentity.Name, sid, ref sidSize, domainName, ref nameSize, ref accountType))
+                //{
+                //    winErrorCode = GetLastError();
+                //    Console.WriteLine("LookupAccountName failed: " + winErrorCode);
+                //}
+                //else
+                //{
                 IntPtr userRightsPtr = IntPtr.Zero;
                 int countOfRights = 0;
 
@@ -418,7 +438,9 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
 
             }
         }
+        */
 
+        /*
         private static void RemoveRight(System.Security.Principal.WindowsIdentity identity, string privilegeName)
         {
             LSA_OBJECT_ATTRIBUTES objectAttributes = CreateLSAObjectAttributes();
@@ -426,11 +448,9 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
 
             LSA_UNICODE_STRING SystemName = new LSA_UNICODE_STRING();
 
-            /*
-            SystemName.Length = (ushort)(System.Environment.MachineName.Length * System.Text.UnicodeEncoding.CharSize);
-            SystemName.MaximumLength = (ushort)((System.Environment.MachineName.Length + 1) * System.Text.UnicodeEncoding.CharSize);
-            SystemName.Buffer = System.Environment.MachineName; // Marshal.StringToHGlobalUni(System.Environment.MachineName);
-            */
+            //SystemName.Length = (ushort)(System.Environment.MachineName.Length * System.Text.UnicodeEncoding.CharSize);
+            //SystemName.MaximumLength = (ushort)((System.Environment.MachineName.Length + 1) * System.Text.UnicodeEncoding.CharSize);
+            //SystemName.Buffer = System.Environment.MachineName; // Marshal.StringToHGlobalUni(System.Environment.MachineName);
 
 
             // Open a policy handle on the remote PC.
@@ -451,24 +471,18 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
                 //int accountType = 0;
                 long winErrorCode = 0;
 
-                /*
-                LookupAccountName(string.Empty, currentIdentity.Name, sid, ref sidSize, domainName, ref nameSize, ref accountType);
-                */
+                //LookupAccountName(string.Empty, currentIdentity.Name, sid, ref sidSize, domainName, ref nameSize, ref accountType);
 
-                /*
-                domainName = new System.Text.StringBuilder(nameSize);
-                sid = Marshal.AllocHGlobal(sidSize);
-                */
+                //domainName = new System.Text.StringBuilder(nameSize);
+                //sid = Marshal.AllocHGlobal(sidSize);
 
-                /*
-                if (!LookupAccountName(string.Empty, currentIdentity.Name, sid, ref sidSize, domainName, ref nameSize, ref accountType))
-                {
-                    winErrorCode = GetLastError();
-                    Console.WriteLine("LookupAccountName failed: " + winErrorCode);
-                }
-                else
-                {
-                */
+                //if (!LookupAccountName(string.Empty, currentIdentity.Name, sid, ref sidSize, domainName, ref nameSize, ref accountType))
+                //{
+                //    winErrorCode = GetLastError();
+                //    Console.WriteLine("LookupAccountName failed: " + winErrorCode);
+                //}
+                //else
+                //{
                 IntPtr userRightsPtr = IntPtr.Zero;
                 int countOfRights = 0;
 
@@ -494,6 +508,7 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
 
             }
         }
+        */
 
         /*
         // Returns the Local Security Authority rights granted to the account
@@ -566,6 +581,8 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
             return rights;
         }
         */
+
+        /*
         private static LSA_OBJECT_ATTRIBUTES CreateLSAObjectAttributes()
         {
             LSA_OBJECT_ATTRIBUTES objectAttributes = new LSA_OBJECT_ATTRIBUTES();
@@ -579,12 +596,87 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
 
             return objectAttributes;
         }
+        */
+
+        public static void GetLocalAdminNames()
+        {
+            // LDAP://servername/<SID=XXXXX>
+            string adminsSID = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null).ToString();
+            DirectoryEntry localAdmins = new DirectoryEntry(string.Format("WinNT://{0}/{1}", System.Environment.MachineName, LocalAdministratorGroup.LocalAdminGroupName));
+            Console.WriteLine(localAdmins.Name);
+            localAdmins.UsePropertyCache = true;
+            object members = localAdmins.Invoke("members", null);
+            /*
+            foreach (string propName in localAdmins.Properties.PropertyNames)
+            {
+                Console.WriteLine(propName);
+            }
+            */
+            /*
+            localAdmins.Children
+
+            string[] nameArray = new string[localAdmins.Properties.PropertyNames.Count];
+            localAdmins.Properties.PropertyNames.CopyTo(nameArray, 0);
+            for(int i = 0; i < nameArray.Length; i++)
+            {
+                Console.WriteLine("Property: \"{0}\"", nameArray[i]);
+            }
+            */
+            
+            /*
+            localAdmins.Children.sc
+            foreach (DirectoryEntry de in localAdmins.Children)
+            {
+                //de.UsePropertyCache = true;
+                Console.WriteLine(de.Name);
+            }
+            */
+            localAdmins.Dispose();
+        }
+
+        public static List<string> GetLocalAdministratorsNames()
+        {
+            List<string> admins = new List<string>();
+            DirectoryEntry localMachine = new DirectoryEntry("WinNT://" + Environment.MachineName);
+            string adminsSID = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null).ToString();
+
+            string localizedAdmin = new System.Security.Principal.SecurityIdentifier(adminsSID).Translate(typeof(System.Security.Principal.NTAccount)).ToString();
+
+            localizedAdmin = localizedAdmin.Replace(@"BUILTIN\", "");
+
+            DirectoryEntry admGroup = localMachine.Children.Find(localizedAdmin, "group");
+            object adminmembers = admGroup.Invoke("members", null);
+
+            //DirectoryEntry userGroup = localMachine.Children.Find("users", "group");
+            ///object usermembers = userGroup.Invoke("members", null);
+
+            //Retrieve each user name.
+            foreach (object groupMember in (IEnumerable)adminmembers)
+            {
+                DirectoryEntry member = new DirectoryEntry(groupMember);
+
+                string sidAsText = member.Path; /* GetTextualSID(member); */
+                admins.Add(member.Name);
+            }
+            return admins;
+        }
 
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         internal static void Main()
         {
+            Console.WriteLine("Main() starting at {0}.", DateTime.Now);
+
+            /*
+            ApplicationLog.WriteInformationEvent("information event!", EventID.DebugMessage);
+            ApplicationLog.WriteErrorEvent("error event!", EventID.DebugMessage);
+            ApplicationLog.WriteWarningEvent("warning event!", EventID.DebugMessage);
+            */
+
+            EncryptedSettings settings = new EncryptedSettings(EncryptedSettings.SettingsFilePath);
+            settings.AddPrincipal(System.Security.Principal.WindowsIdentity.GetCurrent().User, DateTime.Now.AddHours(4), null);
+
             /*
 
             System.Security.Principal.WindowsIdentity currentIdentity = System.Security.Principal.WindowsIdentity.GetCurrent(TokenAccessLevels.Read);
@@ -625,23 +717,7 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
             */
 
 
-            string SyslogServerHostname = "patrick-syslog";
-            //int SyslogServerPort = 514;
-            int SyslogServerPort = 1468;
-
-            Console.WriteLine(DateTime.Now);
-            /*
-            System.Net.Sockets.TcpClient tcpClient = new System.Net.Sockets.TcpClient();
-            tcpClient.SendTimeout = 5;
-            try
-            {
-                tcpClient.Connect(SyslogServerHostname, SyslogServerPort);
-            }
-            catch (Exception) { };
-            */
-
-
-            Console.WriteLine(DateTime.Now);
+            //Console.WriteLine(DateTime.Now);
 
             /*
             System.Net.Sockets.UdpClient udpClient = new System.Net.Sockets.UdpClient();
@@ -652,45 +728,41 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
             int returnValue = udpClient.Send(testBytes, testBytes.Length);
             */
 
-            using (System.Net.Sockets.TcpClient tcp = new System.Net.Sockets.TcpClient())
-            {
-                IAsyncResult asyncResult = tcp.BeginConnect(SyslogServerHostname, SyslogServerPort, null, null);
-                System.Threading.WaitHandle waitHandle = asyncResult.AsyncWaitHandle;
-                try
-                {
-                    if (!asyncResult.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(2), false))
-                    {
-                        tcp.Close();
-                        Console.WriteLine("Failed to connect.");
-                        //throw new TimeoutException();
-                    }
-
-                    if (tcp.Client != null)
-                    {
-                        if (tcp.Client.Connected)
-                        {
-                            tcp.EndConnect(asyncResult);
-                        }
-                        else
-                        {
-                            Console.WriteLine("TCP client is not connected.");
-                        }
-                    }
-                }
-                finally
-                {
-                    waitHandle.Close();
-                }
-            }
-
+            /*
             int q = 0;
+            */
 
             /*
-            for (int x = 0; x < 2; x++)
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            foreach (string name in GetLocalAdministratorsNames())
             {
-                syslog.WriteInformationEvent(string.Format("This is informational event {0:N0}.", x), System.Diagnostics.Process.GetCurrentProcess().Id, string.Empty);
+                Console.WriteLine(name);
+            }
+            Console.ResetColor();
+            */
+
+            /*
+            GetLocalAdminNames();
+            */
+
+            /*
+            int numberOfMessages = 5;
+            for (int x = 1; x <= numberOfMessages; x++)
+            {
+                Console.WriteLine("Sending informational event {0:N0} of {1:N0}.", x, numberOfMessages);
+                Syslog.WriteInformationEvent(string.Format("This is informational event {0:N0} of {1:N0}.", x, numberOfMessages), System.Diagnostics.Process.GetCurrentProcess().ProcessName, null);
             }
             */
+
+            /*
+            int numberOfMessages = 3;
+            for (int x = 1; x <= numberOfMessages; x++)
+            {
+                Console.WriteLine("Sending error event {0:N0} of {1:N0}.", x, numberOfMessages);
+                Syslog.WriteErrorEvent(string.Format("This is error event {0:N0} of {1:N0}.", x, numberOfMessages), System.Diagnostics.Process.GetCurrentProcess().ProcessName, null);
+            }
+            */
+
 
             /*
             Console.WriteLine(new string('=', 30));
@@ -930,7 +1002,8 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
             /*currentIdentity.Dispose();*/
 
 #if DEBUG
-            Console.Write("\n\nPress <ENTER> to close this program.");
+            Console.WriteLine("\n\nMain() finished at {0}.", DateTime.Now);
+            Console.Write("Press <ENTER> to close this program.");
             Console.ReadLine();
 #endif
         }

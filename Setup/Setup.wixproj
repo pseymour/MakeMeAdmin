@@ -60,6 +60,14 @@
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
+    <ProjectReference Include="..\PrincipalList\PrincipalList.csproj">
+      <Name>PrincipalList</Name>
+      <Project>{9cfd5fa4-5ad6-463c-87e5-3f42133b5da8}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
     <ProjectReference Include="..\ProcessCommunication\ProcessCommunication.csproj">
       <Name>ProcessCommunication</Name>
       <Project>{77612014-2e37-4e17-aafe-9ad4f08b4263}</Project>
@@ -79,6 +87,14 @@
     <ProjectReference Include="..\Service\Service.csproj">
       <Name>Service</Name>
       <Project>{416656dc-d499-498b-8acf-6502a13efc9e}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\Settings\Settings.csproj">
+      <Name>Settings</Name>
+      <Project>{8a516d69-ba38-429f-affe-c571b5c1e482}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
@@ -158,6 +174,7 @@
     </CreateProperty>
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>if not exist "$(ProjectDir)..\Installers" mkdir "$(ProjectDir)..\Installers\"</PostBuildEvent>
+    <PostBuildEvent>if not exist "$(ProjectDir)..\Installers" mkdir "$(ProjectDir)..\Installers"
+xcopy "$(TargetDir)%2a.msi" "$(ProjectDir)..\Installers" /y /e</PostBuildEvent>
   </PropertyGroup>
 </Project>

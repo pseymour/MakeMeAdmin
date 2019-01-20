@@ -1,5 +1,5 @@
 ﻿// 
-// Copyright © 2010-2018, Sinclair Community College
+// Copyright © 2010-2019, Sinclair Community College
 // Licensed under the GNU General Public License, version 3.
 // See the LICENSE file in the project root for full license information.  
 //
@@ -22,7 +22,10 @@ namespace SinclairCC.MakeMeAdmin
 {
     using System;
     using Microsoft.Win32;
+    using System.Collections.Generic;
+    /*
     using System.Security.Cryptography;
+    */
 
     /// <summary>
     /// This class manages application settings.
@@ -38,7 +41,7 @@ namespace SinclairCC.MakeMeAdmin
         /// <summary>
         /// An additional byte array used to encrypt the data.
         /// </summary>
-        private static byte[] optionalEntropy = new byte[] { 8, 6, 7, 5, 3, 0, 9 };
+        private readonly static byte[] optionalEntropy = new byte[] { 8, 6, 7, 5, 3, 0, 9 };
 
         // TODO: i18n.
         public static string[] LocalAllowedEntities
@@ -173,6 +176,79 @@ namespace SinclairCC.MakeMeAdmin
         }
 
         // TODO: i18n.
+        public static List<SyslogServerInfo> SyslogServers
+        {
+            get
+            {
+                string[] policySyslogEntries = GetMultiString(PolicyRegistryKeyPath, null, "syslog servers");
+                string[] preferenceSyslogEntries = GetMultiString(PreferenceRegistryKeyPath, null, "syslog servers");
+                if (policySyslogEntries != null)
+                { // The policy setting has a value. Go with whatever it says.
+                    return ProcessSyslogServerStrings(policySyslogEntries);
+                }
+                else
+                { // The preference setting has a value. Go with whatever it says.
+                    return ProcessSyslogServerStrings(preferenceSyslogEntries);
+                }
+            }
+            // TODO: Implement set for this setting.
+            /*
+            set
+            {
+                SetMultiString(PreferenceRegistryKeyPath, null, "syslog servers", value);
+            }
+            */
+        }
+
+        // TODO: Document how this should be setup in the ADMX/ADML files.
+        private static List<SyslogServerInfo> ProcessSyslogServerStrings(string[] serverStrings)
+        {
+            List<SyslogServerInfo> returnList = new List<SyslogServerInfo>();
+
+            if (serverStrings != null)
+            {
+                for (int i = 0; i < serverStrings.Length; i++)
+                {
+                    string[] stringParts = serverStrings[i].Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    string hostname = (stringParts.Length >= 1) ? stringParts[0] : string.Empty;
+
+                    int portNumber = 0;
+                    string protocol = string.Empty;
+                    if (stringParts.Length >= 2)
+                    {
+                        if (!int.TryParse(stringParts[1], out portNumber))
+                        {
+                            protocol = stringParts[1];
+                        }
+                    }
+
+                    if (string.IsNullOrEmpty(protocol))
+                    {
+                        protocol = (stringParts.Length >= 3) ? stringParts[2] : "udp";
+                    }
+
+                    string version = (stringParts.Length >= 4) ? stringParts[3] : "3164";
+
+                    SyslogServerInfo serverInfo = new SyslogServerInfo(hostname, portNumber, protocol, version);
+
+                    if (serverInfo.IsValid)
+                    {
+                        returnList.Add(serverInfo);
+                    }
+                    else
+                    {
+                        // TODO: Should this be logged?
+                        /*
+                        ApplicationLog.WriteWarningEvent(string.Format("rejected invalid syslog server information string \"{0}\"", serverStrings[i]), EventID.RejectedSyslogServerInfo);
+                        */
+                    }
+                }
+            }
+            return returnList;
+        }
+
+        // TODO: i18n.
         public static System.Collections.Generic.Dictionary<string, string> TimeoutOverrides
         {
             get
@@ -193,8 +269,10 @@ namespace SinclairCC.MakeMeAdmin
                 SetKeyValuePairs(PreferenceRegistryKeyPath, "Timeout Overrides", value);
             }
         }
-
+        
         // TODO: i18n.
+        // TODO: Remove this registry value from PCs.
+        /*
         public static string[] SIDs
         {
             get
@@ -206,6 +284,7 @@ namespace SinclairCC.MakeMeAdmin
                 SetMultiStringEncrypted(PreferenceRegistryKeyPath, null, "Added SIDs", value);
             }
         }
+        */
 
         // TODO: i18n.
         public static int AdminRightsTimeout
@@ -250,7 +329,7 @@ namespace SinclairCC.MakeMeAdmin
                     return Convert.ToBoolean(preferenceRemovalSetting.Value);
                 }
                 else
-                { // Neither the policy nor the preference registry entries had a value. Return a default value of true.
+                { // Neither the policy nor the preference registry entries had a value. Return a default value of false.
                     return false;
                 }
             }
@@ -391,7 +470,6 @@ namespace SinclairCC.MakeMeAdmin
 
             System.Security.AccessControl.RegistryRights rights = System.Security.AccessControl.RegistryRights.QueryValues;
             RegistryKey settingsKey = rootRegistryKey.OpenSubKey(keyPath, RegistryKeyPermissionCheck.ReadSubTree, rights);
-            /* RegistryKey settingsKey = rootRegistryKey.OpenSubKey(keyPath, false); */
             if (settingsKey != null)
             {
                 object regValue = settingsKey.GetValue(valueName, null);
@@ -406,6 +484,7 @@ namespace SinclairCC.MakeMeAdmin
             return returnValue;
         }
 
+        /*
         private static string[] GetMultiStringEncrypted(string keyPath, string subkeyName, string valueName)
         {
             string[] returnValue = GetMultiString(keyPath, subkeyName, valueName);
@@ -423,6 +502,7 @@ namespace SinclairCC.MakeMeAdmin
 
             return returnValue;
         }
+        */
 
         /// <summary>
         /// Stores a multi-string in the registry.
@@ -452,6 +532,7 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+        /*
         private static void SetMultiStringEncrypted(string keyPath, string subkeyName, string valueName, string[] value)
         {
             if (value != null)
@@ -467,6 +548,7 @@ namespace SinclairCC.MakeMeAdmin
 
             SetMultiString(keyPath, subkeyName, valueName, value);
         }
+        */
 
         /*
         /// <summary>
@@ -490,6 +572,7 @@ namespace SinclairCC.MakeMeAdmin
         }
         */
 
+        // TODO: This needs to be commented.
         private static System.Collections.Generic.Dictionary<string, string> GetKeyValuePairs(string keyPath, string subkeyName)
         {
             System.Collections.Generic.Dictionary<string, string> returnData = new System.Collections.Generic.Dictionary<string, string>();
@@ -524,6 +607,7 @@ namespace SinclairCC.MakeMeAdmin
             return returnData;
         }
 
+        // TODO: This needs to be commented.
         private static void SetKeyValuePairs(string keyPath, string subkeyName, System.Collections.Generic.Dictionary<string, string> values)
         {
             if (!string.IsNullOrEmpty(subkeyName))
@@ -543,15 +627,17 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-
         /// <summary>
-        /// Gets the path of the registry key in which all of the settings are stored.
+        /// Gets the path of the registry key in which all of the preferred settings are stored.
         /// </summary>
         private static string PreferenceRegistryKeyPath
         {
             get { return string.Format(System.Globalization.CultureInfo.InvariantCulture, @"Software\{0}\{1}", CompanyName, ProductName); }
         }
 
+        /// <summary>
+        /// Gets the path of the registry key in which all of the policy-enforced settings are stored.
+        /// </summary>
         private static string PolicyRegistryKeyPath
         {
             get { return string.Format(System.Globalization.CultureInfo.InvariantCulture, @"Software\Policies\{0}\{1}", CompanyName, ProductName); }
@@ -609,6 +695,7 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+        // TODO: This needs to be commented.
         private static string[] GetValueNames(string keyPath, string subkeyName)
         {
             string[] returnArray = null;
@@ -686,6 +773,7 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+        // TODO: This needs to be commented.
         private static int? GetDWord(string keyPath, string subkeyName, string valueName)
         {
             int? returnValue = null;
@@ -697,7 +785,6 @@ namespace SinclairCC.MakeMeAdmin
 
             System.Security.AccessControl.RegistryRights rights = System.Security.AccessControl.RegistryRights.QueryValues;
             RegistryKey settingsKey = rootRegistryKey.OpenSubKey(keyPath, RegistryKeyPermissionCheck.ReadSubTree, rights);
-            /* RegistryKey settingsKey = rootRegistryKey.OpenSubKey(keyPath, false); */
             if (settingsKey != null)
             {
                 object regValue = settingsKey.GetValue(valueName);
@@ -735,6 +822,5 @@ namespace SinclairCC.MakeMeAdmin
                 settingsKey.Close();
             }
         }
-
     }
 }

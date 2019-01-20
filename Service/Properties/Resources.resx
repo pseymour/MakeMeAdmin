@@ -121,4 +121,10 @@
   <data name="SecurityLock" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SecurityLock.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="ServiceHostFaulted" xml:space="preserve">
+    <value>The service host has faulted.</value>
+  </data>
+  <data name="UserIdentifyIsNull" xml:space="preserve">
+    <value>The identity of the user is null.</value>
+  </data>
 </root>

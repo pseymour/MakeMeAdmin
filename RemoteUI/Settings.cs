@@ -1,5 +1,5 @@
 ﻿// 
-// Copyright © 2010-2018, Sinclair Community College
+// Copyright © 2010-2019, Sinclair Community College
 // Licensed under the GNU General Public License, version 3.
 // See the LICENSE file in the project root for full license information.  
 //
@@ -20,7 +20,6 @@
 
 namespace SinclairCC.MakeMeAdmin.RemoteUI
 {
-    using System;
     using Microsoft.Win32;
     
     /// <summary>
@@ -33,6 +32,9 @@ namespace SinclairCC.MakeMeAdmin.RemoteUI
         /// </summary>
         private static RegistryKey rootRegistryKey = Registry.CurrentUser;
 
+        /// <summary>
+        /// Gets or sets the most-recently used (MRU) list of hostnames.
+        /// </summary>
         public static string[] HostNameMru
         {
             // TODO: i18n.
@@ -72,7 +74,6 @@ namespace SinclairCC.MakeMeAdmin.RemoteUI
 
             System.Security.AccessControl.RegistryRights rights = System.Security.AccessControl.RegistryRights.QueryValues;
             RegistryKey settingsKey = rootRegistryKey.OpenSubKey(keyPath, RegistryKeyPermissionCheck.ReadSubTree, rights);
-            /* RegistryKey settingsKey = rootRegistryKey.OpenSubKey(keyPath, false); */
             if (settingsKey != null)
             {
                 object regValue = settingsKey.GetValue(valueName, null);
@@ -115,6 +116,7 @@ namespace SinclairCC.MakeMeAdmin.RemoteUI
             }
         }
 
+        /*
         private static System.Collections.Generic.Dictionary<string, string> GetKeyValuePairs(string keyPath, string subkeyName)
         {
             System.Collections.Generic.Dictionary<string, string> returnData = new System.Collections.Generic.Dictionary<string, string>();
@@ -148,7 +150,9 @@ namespace SinclairCC.MakeMeAdmin.RemoteUI
 
             return returnData;
         }
+        */
 
+        /*
         private static void SetKeyValuePairs(string keyPath, string subkeyName, System.Collections.Generic.Dictionary<string, string> values)
         {
             if (!string.IsNullOrEmpty(subkeyName))
@@ -167,6 +171,7 @@ namespace SinclairCC.MakeMeAdmin.RemoteUI
                 settingsKey.Close();
             }
         }
+        */
 
 
         /// <summary>
@@ -231,6 +236,7 @@ namespace SinclairCC.MakeMeAdmin.RemoteUI
             }
         }
 
+        /*
         private static string[] GetValueNames(string keyPath, string subkeyName)
         {
             string[] returnArray = null;
@@ -249,7 +255,9 @@ namespace SinclairCC.MakeMeAdmin.RemoteUI
 
             return returnArray;
         }
+        */
         
+        /*
         /// <summary>
         /// Gets the value of a string stored in the registry.
         /// </summary>
@@ -283,7 +291,9 @@ namespace SinclairCC.MakeMeAdmin.RemoteUI
 
             return returnValue;
         }
+        */
 
+        /*
         /// <summary>
         /// Stores a string in the registry.
         /// </summary>
@@ -307,7 +317,9 @@ namespace SinclairCC.MakeMeAdmin.RemoteUI
                 settingsKey.Close();
             }
         }
+        */
 
+        /*
         private static int? GetDWord(string keyPath, string subkeyName, string valueName)
         {
             int? returnValue = null;
@@ -319,7 +331,6 @@ namespace SinclairCC.MakeMeAdmin.RemoteUI
 
             System.Security.AccessControl.RegistryRights rights = System.Security.AccessControl.RegistryRights.QueryValues;
             RegistryKey settingsKey = rootRegistryKey.OpenSubKey(keyPath, RegistryKeyPermissionCheck.ReadSubTree, rights);
-            /* RegistryKey settingsKey = rootRegistryKey.OpenSubKey(keyPath, false); */
             if (settingsKey != null)
             {
                 object regValue = settingsKey.GetValue(valueName);
@@ -333,7 +344,9 @@ namespace SinclairCC.MakeMeAdmin.RemoteUI
 
             return returnValue;
         }
+        */
 
+        /*
         /// <summary>
         /// Stores a string in the registry.
         /// </summary>
@@ -357,6 +370,7 @@ namespace SinclairCC.MakeMeAdmin.RemoteUI
                 settingsKey.Close();
             }
         }
+        */
 
     }
 }

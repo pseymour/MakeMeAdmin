@@ -64,6 +64,10 @@
       <Project>{f5a53b43-5d6d-48ec-bc44-c0c1a0cefa8d}</Project>
       <Name>Logging</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PrincipalList\PrincipalList.csproj">
+      <Project>{9cfd5fa4-5ad6-463c-87e5-3f42133b5da8}</Project>
+      <Name>PrincipalList</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Shared\Shared.csproj">
       <Project>{1d796627-c3a2-4a12-84e3-21981300b1de}</Project>
       <Name>Shared</Name>

@@ -1,5 +1,5 @@
 ﻿// 
-// Copyright © 2010-2018, Sinclair Community College
+// Copyright © 2010-2019, Sinclair Community College
 // Licensed under the GNU General Public License, version 3.
 // See the LICENSE file in the project root for full license information.  
 //
@@ -20,7 +20,6 @@
 
 namespace SinclairCC.MakeMeAdmin
 {
-    using System;
     using System.ServiceProcess;
 
     /// <summary>
@@ -33,17 +32,7 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         static void Main()
         {
-            /*
-#if DEBUG
-            ApplicationLog.WriteInformationEvent("In Service.Program.Main.", EventID.DebugMessage);
-#endif
-            */
             ServiceBase.Run(new MakeMeAdminService());
-            /*
-#if DEBUG
-            ApplicationLog.WriteInformationEvent("Leaving Service.Program.Main.", EventID.DebugMessage);
-#endif
-            */
         }
     }
 }

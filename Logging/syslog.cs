@@ -1,5 +1,5 @@
 ﻿// 
-// Copyright © 2010-2018, Sinclair Community College
+// Copyright © 2010-2019, Sinclair Community College
 // Licensed under the GNU General Public License, version 3.
 // See the LICENSE file in the project root for full license information.  
 //
@@ -24,82 +24,64 @@ namespace SinclairCC.MakeMeAdmin
     /// <summary>
     /// This class allows simple logging of application events.
     /// </summary>
-    public class syslog
-    {        
-        // TODO: i18n.
-        /// <summary>
-        /// The name of the Windows Event Log to which events will be written.
-        /// </summary>
-        private const string EventLogName = "Application";
-
+    public class Syslog
+    {
         // TODO: i18n.
         private const string AppName = "Make Me Admin";
 
-        // TODO: Make this configurable.
-        private const string SyslogVersion = "5424";
-
-        // TODO: Make this configurable.
-        private const string NetworkProtocol = "udp";
-
-        // TODO: Make this configurable.
-        private const string SyslogServerHostname = "patrick-syslog";
-
-        // TODO: Make this configurable.
-        private const int SyslogServerPort = 514;
-
+        private string hostname;
+        private int port;
+        private string protocol;
+        private string syslogRFC;
 
         /// <summary>
-        /// Constructor
+        /// Constructor.
         /// </summary>
-        static syslog()
+        public Syslog(string Hostname) : this(Hostname, "udp")
         {
         }
 
-        /*
         /// <summary>
-        /// Adds an event source to the event log on the local computer.
+        /// Constructor.
         /// </summary>
-        public static void CreateSource()
+        public Syslog(string Hostname, string Protocol) : this(Hostname, 0, Protocol, "3164")
         {
-            // If the specified source name does not exist, create it.
-            if (!System.Diagnostics.EventLog.SourceExists(SourceName))
-            {
-                System.Diagnostics.EventLog.CreateEventSource(SourceName, EventLogName);
-            }
         }
 
         /// <summary>
-        /// Removes, from the local computer, the event source for this service.
+        /// Constructor.
         /// </summary>
-        public static void RemoveSource()
+        public Syslog(string Hostname, int Port, string Protocol) : this(Hostname, Port, Protocol, "3164")
         {
-            // If the specified source name exists, remove it.
-            if (System.Diagnostics.EventLog.SourceExists(SourceName))
-            {
-                System.Diagnostics.EventLog.DeleteEventSource(SourceName);
-            }
         }
-        */
 
-
-        // TODO: Try to use the property from the Shared class, so we don't have duplication of effort.
-        private static string FullyQualifiedHostName
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        public Syslog(string Hostname, int Port, string Protocol, string RFC)
         {
-            get
+            hostname = Hostname;
+            port = Port;
+            protocol = Protocol;
+            syslogRFC = RFC;
+
+            if (0 == port)
             {
-                // TODO: i18n for localhost?
-                string hostName = System.Environment.MachineName;
-                try
+                switch (protocol)
                 {
-                    hostName = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName()).HostName.ToLowerInvariant();
+                    case "tcp":
+                        port = 1468;
+                        break;
+                    case "udp":
+                        port = 514;
+                        break;
+                    default:
+                        port = int.MaxValue;
+                        break;
                 }
-                catch (System.Net.Sockets.SocketException) { hostName = System.Environment.MachineName; }
-                catch (System.ArgumentNullException) { hostName = System.Environment.MachineName; }
-                catch (System.ArgumentOutOfRangeException) { hostName = System.Environment.MachineName; }
-                catch (System.ArgumentException) { hostName = System.Environment.MachineName; }
-                return hostName;
             }
         }
+
 
         /// <summary>
         /// Writes the specified message to the event log as an information event
@@ -111,45 +93,91 @@ namespace SinclairCC.MakeMeAdmin
         /// <param name="id">
         /// The event ID to use for the event being written.
         /// </param>
-        public static void WriteInformationEvent(string message, int processId, string messageId)
+        public void WriteInformationEvent(string message, string processName, string messageId)
         {
-            // TODO: Maybe we want to pass the process name here, rather than the numeric ID.
+            SendMessage(message, processName, messageId, SyslogNet.Client.Severity.Informational);
+        }
 
-            SyslogNet.Client.SyslogMessage syslogMessage = new SyslogNet.Client.SyslogMessage(
-                System.DateTimeOffset.Now,
-                SyslogNet.Client.Facility.UserLevelMessages,
-                SyslogNet.Client.Severity.Informational,
-                FullyQualifiedHostName,
-                AppName,
-                processId.ToString(),
-                messageId,
-                message);
+        public void WriteWarningEvent(string message, string processName, string messageId)
+        {
+            SendMessage(message, processName, messageId, SyslogNet.Client.Severity.Warning);
+        }
 
-            Sender.Send(syslogMessage, Serializer);
+        public void WriteErrorEvent(string message, string processName, string messageId)
+        {
+            SendMessage(message, processName, messageId, SyslogNet.Client.Severity.Error);
+        }
+
+        private void SendMessage(string message, string processName, string messageId, SyslogNet.Client.Severity severity)
+        {
+
+            System.Net.IPHostEntry hostEntry = null;
+            try
+            {
+                hostEntry = System.Net.Dns.GetHostEntry(hostname);
+            }
+            catch (System.Net.Sockets.SocketException)
+            {
+                hostEntry = null;
+            }
+
+            if (hostEntry == null)
+            {
+                // TODO: Cache these events.                    
+            }
+            else
+            {
+                SyslogNet.Client.SyslogMessage syslogMessage = new SyslogNet.Client.SyslogMessage(
+                    System.DateTimeOffset.Now,
+                    SyslogNet.Client.Facility.UserLevelMessages,
+                    severity,
+                    Shared.FullyQualifiedHostName,
+                    AppName,
+                    processName,
+                    messageId,
+                    string.Format("to {0}:{1} over {2} (RFC{3}) - {4}", hostname, port, protocol, syslogRFC, message));
+                // TODO: Take out the string.Format above.
+
+                if (string.Compare(protocol, "TCP", true) == 0)
+                {
+                    if (HostIsAvailableViaTcp(5))
+                    {
+                        Sender.Send(syslogMessage, Serializer);
+                    }
+                    else
+                    {
+                        // TODO: Write this event to a cache.
+                    }
+                }
+                else if (string.Compare(protocol, "UDP", true) == 0)
+                {
+                    Sender.Send(syslogMessage, Serializer);
+                }
+            }
         }
 
 
-        private static SyslogNet.Client.Serialization.ISyslogMessageSerializer Serializer
+        private SyslogNet.Client.Serialization.ISyslogMessageSerializer Serializer
         {
             get
             {
-                return SyslogVersion == "5424"
+                return syslogRFC == "5424"
                     ? (SyslogNet.Client.Serialization.ISyslogMessageSerializer)new SyslogNet.Client.Serialization.SyslogRfc5424MessageSerializer()
-                    : SyslogVersion == "3164"
+                    : syslogRFC == "3164"
                         ? (SyslogNet.Client.Serialization.ISyslogMessageSerializer)new SyslogNet.Client.Serialization.SyslogRfc3164MessageSerializer()
                         : (SyslogNet.Client.Serialization.ISyslogMessageSerializer)new SyslogNet.Client.Serialization.SyslogLocalMessageSerializer();
             }
         }
 
 
-        private static SyslogNet.Client.Transport.ISyslogMessageSender Sender
+        private SyslogNet.Client.Transport.ISyslogMessageSender Sender
         {
             get
             {
-                return NetworkProtocol == "tcp"
-                    ? (SyslogNet.Client.Transport.ISyslogMessageSender)new SyslogNet.Client.Transport.SyslogEncryptedTcpSender(SyslogServerHostname, SyslogServerPort)
-                    : NetworkProtocol == "udp"
-                        ? (SyslogNet.Client.Transport.ISyslogMessageSender)new SyslogNet.Client.Transport.SyslogUdpSender(SyslogServerHostname, SyslogServerPort)
+                return (string.Compare(protocol, "TCP", true) == 0)
+                    ? (SyslogNet.Client.Transport.ISyslogMessageSender)new SyslogNet.Client.Transport.SyslogTcpSender(hostname, port)
+                    : (string.Compare(protocol, "UDP", true) == 0)
+                        ? (SyslogNet.Client.Transport.ISyslogMessageSender)new SyslogNet.Client.Transport.SyslogUdpSender(hostname, port)
                         : (SyslogNet.Client.Transport.ISyslogMessageSender)new SyslogNet.Client.Transport.SyslogLocalSender();
             }
         }
@@ -160,7 +188,7 @@ namespace SinclairCC.MakeMeAdmin
             bool returnValue = false;
             using (System.Net.Sockets.TcpClient tcp = new System.Net.Sockets.TcpClient())
             {
-                System.IAsyncResult asyncResult = tcp.BeginConnect(SyslogServerHostname, SyslogServerPort, null, null);
+                System.IAsyncResult asyncResult = tcp.BeginConnect(hostname, port, null, null);
                 System.Threading.WaitHandle waitHandle = asyncResult.AsyncWaitHandle;
                 try
                 {
@@ -192,37 +220,5 @@ namespace SinclairCC.MakeMeAdmin
 
             return returnValue;
         }
-
-        /*
-        /// <summary>
-        /// Writes the specified message to the event log as an error event with the
-        /// specified event ID.
-        /// </summary>
-        /// <param name="message">
-        /// The message to be written to the log.
-        /// </param>
-        /// <param name="id">
-        /// The event ID to use for the event being written.
-        /// </param>
-        public static void WriteErrorEvent(string message, EventID id)
-        {
-            log.WriteEntry(message, System.Diagnostics.EventLogEntryType.Error, (int)id);
-        }
-
-        /// <summary>
-        /// Writes the specified message to the event log as a warning event with the
-        /// specified event ID.
-        /// </summary>
-        /// <param name="message">
-        /// The message to be written to the log.
-        /// </param>
-        /// <param name="id">
-        /// The event ID to use for the event being written.
-        /// </param>
-        public static void WriteWarningEvent(string message, EventID id)
-        {
-            log.WriteEntry(message, System.Diagnostics.EventLogEntryType.Warning, (int)id);
-        }
-        */
     }
 }

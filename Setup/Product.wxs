@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
-  <Product Id="*" Name="!(loc.SoftwareName)" Language="!(loc.LANG)" Version="2.2.1" Manufacturer="!(loc.SoftwareManufacturer)" UpgradeCode="9c690479-3987-48a8-8bda-118ef1f93cdd">
+  <Product Id="*" Name="!(loc.SoftwareName)" Language="!(loc.LANG)" Version="2.3" Manufacturer="!(loc.SoftwareManufacturer)" UpgradeCode="9c690479-3987-48a8-8bda-118ef1f93cdd">
     <Package InstallerVersion="400" Compressed="yes" InstallScope="perMachine" />
     <Condition Message="!(loc.AdminRightsRequired)">Privileged</Condition>
     <MajorUpgrade DowngradeErrorMessage="!(loc.NewerVersionInstalled)" />
@@ -12,22 +12,22 @@
 
       <ComponentRef Id="ElevationUserInterface" />
       <ComponentRef Id="ElevationUserInterfaceFR" />
-      <!-- <ComponentRef Id="ElevationUserInterfaceQPS_PLOC" /> -->
 
       <ComponentRef Id="LsaLogonSessionLibrary" />
       
       <ComponentRef Id="Service" />
-      <!-- <ComponentRef Id="ServiceFR" /> -->
-      <!-- <ComponentRef Id="ServiceQPS_PLOC" /> -->
 
       <ComponentRef Id="SharedLibrary" />
-      <ComponentRef Id="SharedLibraryFR" />
-      <!-- <ComponentRef Id="SharedLibraryQPS_PLOC" /> -->
+      <!-- <ComponentRef Id="SharedLibraryFR" /> -->
 
       <ComponentRef Id="LoggingLibrary" />
       <ComponentRef Id="LoggingLibraryFR" />
-      <!-- <ComponentRef Id="LoggingLibraryQPS_PLOC" /> -->
 
+      <ComponentRef Id="SettingsLibrary" />
+      
+      <ComponentRef Id="PrincipalListLibrary" />
+      <ComponentRef Id="PrincipalListLibraryFR" />
+      
       <ComponentRef Id="ProcessCommunicationLibrary" />
       <Condition Level="0">INSTALLMAKEMEADMIN = "0"</Condition>
     </Feature>
@@ -35,18 +35,17 @@
     <Feature Id="MakeMeAdminRemote" Title="[ProductName] !(loc.Remote)" Level="0">
       <ComponentRef Id="RemoteElevationUserInterface"/>
       <ComponentRef Id="RemoteElevationFR"/>
-      <!-- <ComponentRef Id="RemoteElevationQPS_PLOC"/> -->
       
       <ComponentRef Id="MruListLibrary"/>
 
       <ComponentRef Id="SharedLibrary" />
-      <ComponentRef Id="SharedLibraryFR" />
-      <!-- <ComponentRef Id="SharedLibraryQPS_PLOC" /> -->
+      <!-- <ComponentRef Id="SharedLibraryFR" /> -->
 
       <ComponentRef Id="LoggingLibrary" />
       <ComponentRef Id="LoggingLibraryFR" />
-      <!-- <ComponentRef Id="LoggingLibraryQPS_PLOC" /> -->
-
+      
+      <ComponentRef Id="SettingsLibrary" />
+      
       <ComponentRef Id="ProcessCommunicationLibrary" />
       <Condition Level="1">(INSTALLREMOTE = "1") OR REMOVE</Condition>
     </Feature>
@@ -72,37 +71,18 @@
             <Component Id="LoggingLibraryFR" Guid="0A40D5F6-4C3A-4015-8240-14C628440726">
               <File Id="LoggingResourcesFR" Name="$(var.Logging.TargetName).resources.dll" Source="$(var.Logging.TargetDir)fr-CA\$(var.Logging.TargetName).resources.dll" KeyPath="no" />
             </Component>
+            <!--
             <Component Id="SharedLibraryFR" Guid="ECEAA942-0BFB-47DB-8D97-7C4B7AC5FF4F">
               <File Id="SharedLibraryResourcesFR" Name="$(var.Shared.TargetName).resources.dll" Source="$(var.Shared.TargetDir)fr-CA\$(var.Shared.TargetName).resources.dll" KeyPath="no" />
             </Component>
-            <!--
-            <Component Id="ServiceFR" Guid="8FE89448-365B-438A-9122-F7325F17300A">
-              <File Id="ServiceResourcesFR" Name="$(var.Service.TargetName).resources.dll" Source="$(var.Service.TargetDir)fr-CA\$(var.Service.TargetName).resources.dll" KeyPath="no" />
-            </Component>
             -->
+            <Component Id="PrincipalListLibraryFR" Guid="1BE88596-718B-4C7D-81FF-B0509B6443F6">
+              <File Id="PrincipalListLibraryResourcesFR" Name="$(var.PrincipalList.TargetName).resources.dll" Source="$(var.PrincipalList.TargetDir)fr-CA\$(var.PrincipalList.TargetName).resources.dll" KeyPath="no" />
+            </Component>
             <Component Id="ElevationUserInterfaceFR" Guid="6E2DC9BE-B61A-4703-B529-DD5943D5A078">
               <File Id="ElevationUserInterfaceResourcesFR" Name="$(var.LocalUI.TargetName).resources.dll" Source="$(var.LocalUI.TargetDir)fr-CA\$(var.LocalUI.TargetName).resources.dll" KeyPath="no" />
             </Component>
           </Directory>
-          <!--
-          <Directory Id="qpsploc_Localization" Name="qps-ploc">
-            <Component Id="RemoteElevationQPS_PLOC" Guid="59744D03-3214-49BF-BA70-C879471A93BE">
-              <File Id="RemoteElevationResourcesQPS_PLOC" Name="$(var.RemoteUI.TargetName).resources.dll" Source="$(var.RemoteUI.TargetDir)qps-ploc\$(var.RemoteUI.TargetName).resources.dll" KeyPath="no" />
-            </Component>
-            <Component Id="LoggingLibraryQPS_PLOC" Guid="5294BDE0-9377-4B45-A4D6-5048A142D7AE">
-              <File Id="LoggingResourcesQPS_PLOC" Name="$(var.Logging.TargetName).resources.dll" Source="$(var.Logging.TargetDir)qps-ploc\$(var.Logging.TargetName).resources.dll" KeyPath="no" />
-            </Component>
-            <Component Id="SharedLibraryQPS_PLOC" Guid="934FB537-7ECD-4E05-BC8F-4FAB2AC4146B">
-              <File Id="SharedLibraryResourcesQPS_PLOC" Name="$(var.Shared.TargetName).resources.dll" Source="$(var.Shared.TargetDir)qps-ploc\$(var.Shared.TargetName).resources.dll" KeyPath="no" />
-            </Component>
-            <Component Id="ServiceQPS_PLOC" Guid="0CA66FE2-7C50-47A5-A054-CED1C165527D">
-              <File Id="ServiceResourcesQPS_PLOC" Name="$(var.Service.TargetName).resources.dll" Source="$(var.Service.TargetDir)qps-ploc\$(var.Service.TargetName).resources.dll" KeyPath="no" />
-            </Component>
-            <Component Id="ElevationUserInterfaceQPS_PLOC" Guid="66E060FD-56FE-4995-A229-37144273AEC0">
-              <File Id="ElevationUserInterfaceResourcesQPS_PLOC" Name="$(var.LocalUI.TargetName).resources.dll" Source="$(var.LocalUI.TargetDir)qps-ploc\$(var.LocalUI.TargetName).resources.dll" KeyPath="no" />
-            </Component>
-          </Directory>
-          -->
           <Component Id="ElevationUserInterface" Guid="562B228B-6029-457D-96C9-6B4BCA69660D">
             <File Id="ElevationUserInterfaceExe" Name="$(var.LocalUI.TargetFileName)" Source="$(var.LocalUI.TargetPath)" KeyPath="yes" />
             <Shortcut Id="LocalUserInferfaceShortcut" Directory="ProgramMenuFolder" Name="Make Me Admin" Description="Make Me Admin Local User Interface" Advertise="yes" WorkingDirectory="INSTALLDIR" Icon="SecurityLock.ico" IconIndex="0" />
@@ -117,11 +97,15 @@
           <Component Id="SharedLibrary" Guid="CE00450C-CC5A-47A8-AB6A-0E564E3AC0BD">
             <File Id="SharedDll" Name="$(var.Shared.TargetFileName)" Source="$(var.Shared.TargetPath)" KeyPath="yes" />
           </Component>
+          <Component Id="SettingsLibrary" Guid="DFF604F6-F91A-4C6C-8582-91D698EAD179">
+            <File Id="SettingsDll" Name="$(var.Settings.TargetFileName)" Source="$(var.Settings.TargetPath)" KeyPath="yes" />
+          </Component>
+          <Component Id="PrincipalListLibrary" Guid="1255D767-16A2-4E90-98EF-A79BDEE38A57">
+            <File Id="PrincipalListDll" Name="$(var.PrincipalList.TargetFileName)" Source="$(var.PrincipalList.TargetPath)" KeyPath="yes" />
+          </Component>
           <Component Id="LoggingLibrary" Guid="17760ABA-01B0-4E35-9AD8-3F168B171CCE">
             <File Id="LoggingDll" Name="$(var.Logging.TargetFileName)" Source="$(var.Logging.TargetPath)" KeyPath="yes" />
-            <!--
-            <File Id="SyslogNetClientDll" Name="SyslogNet.Client.dll" Source="$(var.Logging.TargetDir)SyslogNet.Client.dll" KeyPath="no" />
-            -->
+            <File Id="SyslogNetClientDll"  Source="$(var.Logging.TargetDir)\SyslogNet.Client.dll" KeyPath="no" />
           </Component>
           <Component Id="LsaLogonSessionLibrary" Guid="22E70C0A-7071-4E1D-B8C1-3E73FB3A1784">
             <File Id="LsaLogonSessionDll" Name="$(var.LsaLogonSessions.TargetFileName)" Source="$(var.LsaLogonSessions.TargetPath)" KeyPath="yes" />
@@ -141,7 +125,6 @@
               <ServiceDependency Group="no" Id="LanmanServer"/>
             </ServiceInstall>
             <ServiceControl Id="MakeMeAdmin" Name="MakeMeAdmin" Remove="uninstall" Start="install" Stop="both" Wait="yes" />
-            <!-- <RegistryValue Action="write" Root="HKLM" Key="SOFTWARE\Sinclair Community College\[ProductName]" Name="Admin Rights Timeout" Type="integer" Value="10" KeyPath="no" /> -->
             <RemoveRegistryKey Action="removeOnUninstall" Id="AddedSIDsValue" Key="Software\Sinclair Community College\Make Me Admin" Root="HKLM" />
             <RemoveFolder Id="INSTALLFOLDER" On="uninstall" />
           </Component>

@@ -1,5 +1,5 @@
 ﻿// 
-// Copyright © 2010-2018, Sinclair Community College
+// Copyright © 2010-2019, Sinclair Community College
 // Licensed under the GNU General Public License, version 3.
 // See the LICENSE file in the project root for full license information.  
 //
@@ -20,6 +20,8 @@
 
 namespace SinclairCC.MakeMeAdmin
 {
+    using System.Threading.Tasks;
+
     /// <summary>
     /// This class allows simple logging of application events.
     /// </summary>
@@ -92,6 +94,18 @@ namespace SinclairCC.MakeMeAdmin
         public static void WriteInformationEvent(string message, EventID id)
         {
             log.WriteEntry(message, System.Diagnostics.EventLogEntryType.Information, (int)id);
+
+            int j = 0;
+            Task[] tasks = new Task[Settings.SyslogServers.Count];
+
+            foreach (SyslogServerInfo serverInfo in Settings.SyslogServers)
+                if (serverInfo.IsValid)
+                {
+                    Syslog syslog = new Syslog(serverInfo.Hostname, serverInfo.Port, serverInfo.Protocol, serverInfo.RFC);
+                    tasks[j] = Task.Factory.StartNew(() => syslog.WriteInformationEvent(message, "PROCESS_NAME", id.ToString()));
+                }
+                j++;
+            }
         }
 
         /// <summary>
@@ -107,6 +121,19 @@ namespace SinclairCC.MakeMeAdmin
         public static void WriteErrorEvent(string message, EventID id)
         {
             log.WriteEntry(message, System.Diagnostics.EventLogEntryType.Error, (int)id);
+
+            int j = 0;
+            Task[] tasks = new Task[Settings.SyslogServers.Count];
+
+            foreach (SyslogServerInfo serverInfo in Settings.SyslogServers)
+            {
+                if (serverInfo.IsValid)
+                {
+                    Syslog syslog = new Syslog(serverInfo.Hostname, serverInfo.Port, serverInfo.Protocol, serverInfo.RFC);
+                    tasks[j] = Task.Factory.StartNew(() => syslog.WriteErrorEvent(message, "PROCESS_NAME", id.ToString()));
+                }
+                j++;
+            }
         }
 
         /// <summary>
@@ -122,6 +149,19 @@ namespace SinclairCC.MakeMeAdmin
         public static void WriteWarningEvent(string message, EventID id)
         {
             log.WriteEntry(message, System.Diagnostics.EventLogEntryType.Warning, (int)id);
+
+            int j = 0;
+            Task[] tasks = new Task[Settings.SyslogServers.Count];
+
+            foreach (SyslogServerInfo serverInfo in Settings.SyslogServers)
+            {
+                if (serverInfo.IsValid)
+                {
+                    Syslog syslog = new Syslog(serverInfo.Hostname, serverInfo.Port, serverInfo.Protocol, serverInfo.RFC);
+                    tasks[j] = Task.Factory.StartNew(() => syslog.WriteWarningEvent(message, "PROCESS_NAME", id.ToString()));
+                }
+                j++;
+            }
         }
     }
 }

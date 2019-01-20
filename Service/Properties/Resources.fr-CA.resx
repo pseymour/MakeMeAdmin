@@ -12,4 +12,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="SecurityLock" xml:space="preserve" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SecurityLock.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="UserIdentifyIsNull" xml:space="preserve">
+    <value>L'identité de l'utilisateur est null.</value>
+  </data>
 </root>

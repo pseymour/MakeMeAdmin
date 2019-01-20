@@ -1,5 +1,5 @@
 ﻿// 
-// Copyright © 2010-2018, Sinclair Community College
+// Copyright © 2010-2019, Sinclair Community College
 // Licensed under the GNU General Public License, version 3.
 // See the LICENSE file in the project root for full license information.  
 //
@@ -118,33 +118,11 @@ namespace SinclairCC.MakeMeAdmin
         {
             // TODO: Only do this if the principal is not a member of the group?
 
-            /*
-#if DEBUG
-            ApplicationLog.WriteInformationEvent(string.Format("User is a member of {0:N0} groups.", userIdentity.Groups.Count), EventID.DebugMessage);
-#endif
-
-#if DEBUG
-            ApplicationLog.WriteInformationEvent("Checking local allowed/denied list.", EventID.DebugMessage);
-#endif
-            */
             bool userIsAuthorized = Shared.UserIsAuthorized(userIdentity, Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
-#if DEBUG
-            ApplicationLog.WriteInformationEvent(string.Format("User is authorized: {0}", userIsAuthorized), EventID.DebugMessage);
-#endif
 
             if (!string.IsNullOrEmpty(remoteAddress))
             { // Request is from a remote computer. Check the remote authorization list.
-                /*
-#if DEBUG
-                ApplicationLog.WriteInformationEvent("Checking remote allowed/denied list.", EventID.DebugMessage);
-#endif
-                */
                 userIsAuthorized &= Shared.UserIsAuthorized(userIdentity, Settings.RemoteAllowedEntities, Settings.RemoteDeniedEntities);
-                /*
-#if DEBUG
-                ApplicationLog.WriteInformationEvent(string.Format("User is authorized: {0}", userIsAuthorized), EventID.DebugMessage);
-#endif 
-                */
             }
 
             if (
@@ -154,8 +132,9 @@ namespace SinclairCC.MakeMeAdmin
                 (userIsAuthorized)
                )
             {
-                PrincipalList.AddSID(userIdentity, expirationTime, remoteAddress);
-                AddPrincipalToAdministrators(userIdentity.User, /* expirationTime, */ remoteAddress);
+                EncryptedSettings encryptedSettings = new EncryptedSettings(EncryptedSettings.SettingsFilePath);
+                encryptedSettings.AddPrincipal(userIdentity.User, expirationTime, remoteAddress);
+                AddPrincipalToAdministrators(userIdentity.User, remoteAddress);
             }
         }
 
@@ -166,25 +145,28 @@ namespace SinclairCC.MakeMeAdmin
             {
                 /* PrincipalList.AddSID(userSid, expirationTime, remoteAddress); */
                 // TODO: i18n.
-                ApplicationLog.WriteInformationEvent(string.Format("Principal {0} ({1}) added to the Administrators group.", userSid, GetAccountNameFromSID(userSid.Value)), EventID.UserAddedToAdminsSuccess);
+                ApplicationLog.WriteInformationEvent(string.Format("Principal {0} ({1}) added to the Administrators group.", userSid, GetAccountNameFromSID(userSid)), EventID.UserAddedToAdminsSuccess);
                 if (remoteAddress != null)
                 {
                     // TODO: i18n.
                     ApplicationLog.WriteInformationEvent(string.Format("Request was sent from host {0}.", remoteAddress), EventID.RemoteRequestInformation);
                 }
+                
+                /*
                 Settings.SIDs = PrincipalList.GetSIDs().Select(p => p.Value).ToArray<string>();
+                */
+
             }
             else
             {
                 // TODO: i18n.
-                ApplicationLog.WriteWarningEvent(string.Format("Adding principal {0} ({1}) to the Administrators group returned error code {2}.", userSid, GetAccountNameFromSID(userSid.Value), result), EventID.UserAddedToAdminsFailure);
+                ApplicationLog.WriteWarningEvent(string.Format("Adding principal {0} ({1}) to the Administrators group returned error code {2}.", userSid, GetAccountNameFromSID(userSid), result), EventID.UserAddedToAdminsFailure);
             }
         }
 
         public static void RemovePrincipal(SecurityIdentifier userSid, RemovalReason reason)
         {
             // TODO: Only do this if the principal is a member of the group?
-
             if ((LocalAdminGroup != null) && (userSid != null))
             {
                 SecurityIdentifier[] localAdminSids = GetLocalGroupMembers(null, LocalAdminGroup.SamAccountName);
@@ -194,12 +176,16 @@ namespace SinclairCC.MakeMeAdmin
                     if (sid == userSid)
                     /* if (string.Compare(sid.Value, principalSID, true) == 0) */
                     {
-                        string accountName = GetAccountNameFromSID(userSid.Value);
+                        string accountName = GetAccountNameFromSID(userSid);
                         int result = RemoveLocalGroupMembers(null, LocalAdminGroup.SamAccountName, userSid);
                         if (result == 0)
                         {
-                            PrincipalList.RemoveSID(userSid);
+                            EncryptedSettings encryptedSettings = new EncryptedSettings(EncryptedSettings.SettingsFilePath);
+                            encryptedSettings.RemovePrincipal(userSid);
+                            /*
                             Settings.SIDs = PrincipalList.GetSIDs().Select(p => p.Value).ToArray<string>();
+                            */
+
                             string reasonString = Properties.Resources.RemovalReasonUnknown;
                             switch (reason)
                             {
@@ -235,7 +221,9 @@ namespace SinclairCC.MakeMeAdmin
             SecurityIdentifier[] localAdminSids = null;
 
             /* string[] addedSids = PrincipalList.GetSIDs(); */
-            SecurityIdentifier[] addedSids = PrincipalList.GetSIDs();
+
+            EncryptedSettings encryptedSettings = new EncryptedSettings(EncryptedSettings.SettingsFilePath);
+            SecurityIdentifier[] addedSids = encryptedSettings.AddedPrincipalSIDs;
 
             if ((addedSids.Length > 0) && (LocalAdminGroup != null))
             {
@@ -258,9 +246,12 @@ namespace SinclairCC.MakeMeAdmin
 
                     if (sidFoundInAdminsGroup)
                     {  // Principal's SID was found in the local administrators group.
-                        if (PrincipalList.GetExpirationTime(addedSids[i]).HasValue)
+
+                        DateTime? expirationTime = encryptedSettings.GetExpirationTime(addedSids[i]);
+
+                        if (expirationTime.HasValue)
                         { // The principal's rights expire at some point.
-                            if (PrincipalList.GetExpirationTime(addedSids[i]).Value > DateTime.Now)
+                            if (expirationTime.Value > DateTime.Now)
                             { // The principal's administrator rights expire in the future.
                                 // Nothing to do here, since the principal is already in the administrators group.
                             }
@@ -302,9 +293,12 @@ namespace SinclairCC.MakeMeAdmin
                     }
                     else
                     { // Principal's SID was not found in the local administrators group.
-                        if (PrincipalList.GetExpirationTime(addedSids[i]).HasValue)
+
+                        DateTime? expirationTime = encryptedSettings.GetExpirationTime(addedSids[i]);
+
+                        if (expirationTime.HasValue)
                         { // The principal's rights expire at some point.
-                            if (PrincipalList.GetExpirationTime(addedSids[i]).Value > DateTime.Now)
+                            if (expirationTime.Value > DateTime.Now)
                             { // The principal's administrator rights expire in the future.
                                 string accountName = GetAccountNameFromSID(addedSids[i]);
                                 if (Settings.OverrideRemovalByOutsideProcess)
@@ -317,8 +311,11 @@ namespace SinclairCC.MakeMeAdmin
                                 {
                                     // TODO: i18n.
                                     ApplicationLog.WriteInformationEvent(string.Format("Principal {0} ({1}) has been removed from the Administrators group by an outside process. Removing the principal from Make Me Admin's list.", addedSids[i], string.IsNullOrEmpty(accountName) ? "unknown account" : accountName), EventID.PrincipalRemovedByExternalProcess);
-                                    PrincipalList.RemoveSID(addedSids[i]);
+
+                                    encryptedSettings.RemovePrincipal(addedSids[i]);
+                                    /*
                                     Settings.SIDs = PrincipalList.GetSIDs().Select(p => p.Value).ToArray<string>();
+                                    */
                                 }
                             }
                             else
@@ -328,8 +325,11 @@ namespace SinclairCC.MakeMeAdmin
 #if DEBUG
                                 ApplicationLog.WriteInformationEvent(string.Format("Removing SID \"{0}\" from the principal list.", addedSids[i]), EventID.DebugMessage);
 #endif
-                                PrincipalList.RemoveSID(addedSids[i]);
+                                
+                                encryptedSettings.RemovePrincipal(addedSids[i]);
+                                /*
                                 Settings.SIDs = PrincipalList.GetSIDs().Select(p => p.Value).ToArray<string>();
+                                */
                             }
                         }
                         /*
@@ -378,6 +378,7 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+        /*
         private static string GetAccountNameFromSID(string sidString)
         {
             SecurityIdentifier sid = new SecurityIdentifier(sidString);
@@ -410,7 +411,7 @@ namespace SinclairCC.MakeMeAdmin
                 return null;
             }
         }
-
+        */
 
         /*
         public static bool CurrentUserIsMember()
@@ -463,13 +464,10 @@ namespace SinclairCC.MakeMeAdmin
         private static SecurityIdentifier[] GetLocalGroupMembers(string ServerName, string GroupName)
         {
             SecurityIdentifier[] returnValue = null;
-
-            int EntriesRead;
-            int TotalEntries;
             IntPtr buffer = IntPtr.Zero;
             IntPtr Resume = IntPtr.Zero;
 
-            int val = NativeMethods.NetLocalGroupGetMembers(ServerName, GroupName, 0, out buffer, -1, out EntriesRead, out TotalEntries, Resume);
+            int val = NativeMethods.NetLocalGroupGetMembers(ServerName, GroupName, 0, out buffer, -1, out int EntriesRead, out int TotalEntries, Resume);
             if (EntriesRead > 0)
             {
                 returnValue = new SecurityIdentifier[EntriesRead];
@@ -521,6 +519,15 @@ namespace SinclairCC.MakeMeAdmin
                 isMember |= (prin.Sid == identity.User);
                 if (isMember) { break; }
             }
+            
+
+            /*
+            foreach (SecurityIdentifier userGroupSid in identity.Groups)
+            {
+                isMember |= (userGroupSid == LocalAdminsGroupSid);
+                if (isMember) { break; }
+            }
+            */
 
             //LocalAdminGroup.GetMembers(true).Contains(new System.DirectoryServices.AccountManagement.Principal
 
@@ -546,6 +553,13 @@ namespace SinclairCC.MakeMeAdmin
             }
 
             return isMember;
+        }
+
+
+        // TODO: This function doesn't really belong here.
+        public static int EndNetworkSession(string remoteHost, string userName)
+        {
+            return NativeMethods.NetSessionDel(null, remoteHost, userName);
         }
     }
 }

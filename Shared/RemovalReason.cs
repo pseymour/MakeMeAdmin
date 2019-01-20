@@ -1,5 +1,5 @@
 ﻿// 
-// Copyright © 2010-2018, Sinclair Community College
+// Copyright © 2010-2019, Sinclair Community College
 // Licensed under the GNU General Public License, version 3.
 // See the LICENSE file in the project root for full license information.  
 //
@@ -31,8 +31,14 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         Timeout,
 
+        /// <summary>
+        /// The service was stopped.
+        /// </summary>
         ServiceStopped,
 
+        /// <summary>
+        /// User has logged off.
+        /// </summary>
         UserLogoff,
 
         /// <summary>

@@ -1,5 +1,5 @@
 ﻿// 
-// Copyright © 2010-2018, Sinclair Community College
+// Copyright © 2010-2019, Sinclair Community College
 // Licensed under the GNU General Public License, version 3.
 // See the LICENSE file in the project root for full license information.  
 //
@@ -26,6 +26,9 @@ namespace SinclairCC.MakeMeAdmin
 
     public class Shared
     {
+        /// <summary>
+        /// Gets the base address for the service host that is available via TCP.
+        /// </summary>
         public static string TcpServiceBaseAddress
         {
             get
@@ -34,6 +37,10 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+
+        /// <summary>
+        /// Gets the base address for the service host that is available via named pipes.
+        /// </summary>
         public static string NamedPipeServiceBaseAddress
         {
             get
@@ -42,7 +49,14 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-        private static string FullyQualifiedHostName
+
+        /// <summary>
+        /// Returns the fully-qualified host name of the local computer.
+        /// </summary>
+        /// <remarks>
+        /// If there is an error determining the fully-qualified name, the NetBIOS name is returned.
+        /// </remarks>
+        public static string FullyQualifiedHostName
         {
             get
             {
@@ -60,47 +74,47 @@ namespace SinclairCC.MakeMeAdmin
         }
 
 
+        /// <summary>
+        /// Determines whether the given array of strings contains the given target string.
+        /// </summary>
+        /// <param name="stringArray">
+        /// An array to be searched for the target string.
+        /// </param>
+        /// <param name="targetString">
+        /// The string to be searched for in the array.
+        /// </param>
+        /// <returns>
+        /// Returns true if the given target string is present in the array.
+        /// If the array is null or empty, false is returned.
+        /// </returns>
+        /// <remarks>
+        /// String comparisons are case-insensitive.
+        /// </remarks>
         private static bool ArrayContainsString(string[] stringArray, string targetString)
         {
-            /*
-#if DEBUG
-            ApplicationLog.WriteInformationEvent("In ArrayContainsString().", EventID.DebugMessage);
-            ApplicationLog.WriteInformationEvent(string.Format("targetString = \"{0}\"", targetString), EventID.DebugMessage);
-#endif
-            */
-
             if ((stringArray != null) && (stringArray.Length > 0))
             {
                 for (int i = 0; i < stringArray.Length; i++)
                 {
-                    /*
-#if DEBUG
-                    ApplicationLog.WriteInformationEvent(string.Format("stringArray[i] = \"{0}\"", stringArray[i]), EventID.DebugMessage);
-                    ApplicationLog.WriteInformationEvent(string.Format("stringArray[i] (expanded) = \"{0}\"", System.Environment.ExpandEnvironmentVariables(stringArray[i])), EventID.DebugMessage);
-#endif
-                    */
-
                     if (string.Compare(System.Environment.ExpandEnvironmentVariables(stringArray[i]), targetString, System.Globalization.CultureInfo.CurrentCulture, System.Globalization.CompareOptions.IgnoreCase) == 0)
                     {
-                        /*
-#if DEBUG
-                        ApplicationLog.WriteInformationEvent("Leaving ArrayContainsString(). Returning true.", EventID.DebugMessage);
-#endif
-                        */
                         return true;
                     }
                 }
             }
-
-            /*
-#if DEBUG
-            ApplicationLog.WriteInformationEvent("Leaving ArrayContainsString(). Returning false.", EventID.DebugMessage);
-#endif
-            */
             return false;
         }
 
-        
+
+        /// <summary>
+        /// Gets the administrator rights timeout value for the given user.
+        /// </summary>
+        /// <param name="userIdentity">
+        /// An identity object representing the user whose authorization is to be checked.
+        /// </param>
+        /// <returns>
+        /// Returns the number of minutes at which the user's administrator rights should expire.
+        /// </returns>
         public static int GetTimeoutForUser(WindowsIdentity userIdentity)
         {
             Dictionary<string, string> overrides = Settings.TimeoutOverrides;
@@ -133,82 +147,47 @@ namespace SinclairCC.MakeMeAdmin
         }
 
 
-        /*
-        public static bool UserIsAuthorized(IdentityReferenceCollection authorizationGroups, string[] allowedSidsList, string[] deniedSidsList)
-        */
+        /// <summary>
+        /// Determines whether the given user is authorized to obtain administrator rights.
+        /// </summary>
+        /// <param name="userIdentity">
+        /// An identity object representing the user whose authorization is to be checked.
+        /// </param>
+        /// <param name="allowedSidsList">
+        /// The list of allowed SIDs and principal names against which the user's identity is checked.
+        /// </param>
+        /// <param name="deniedSidsList">
+        /// The list of denied SIDs and principal names against which the user's identity is checked.
+        /// </param>
+        /// <returns>
+        /// Returns true if the user is authorized to obtain administrator rights.
+        /// </returns>
         public static bool UserIsAuthorized(WindowsIdentity userIdentity, string[] allowedSidsList, string[] deniedSidsList)
         {
-            /*
-#if DEBUG
-            ApplicationLog.WriteInformationEvent("In Shared.Shared.UserIsAuthorized.", EventID.DebugMessage);
-            ApplicationLog.WriteInformationEvent(string.Format("Authorization group count: {0:N0}", userIdentity.Groups.Count), EventID.DebugMessage);
-#endif
-            */
-
-#if DEBUG
-
-            // TODO: i18n.
-            if (deniedSidsList != null)
-            {
-                ApplicationLog.WriteInformationEvent(string.Format("Denied list contains {0:N0} entries.", deniedSidsList.Length), EventID.DebugMessage);
-            }
-            // TODO: i18n.
-            if (allowedSidsList != null)
-            {
-                ApplicationLog.WriteInformationEvent(string.Format("Allowed list contains {0:N0} entries.", allowedSidsList.Length), EventID.DebugMessage);
-            }
-            
-#endif
-
-            /*
-#if DEBUG
-            ApplicationLog.WriteInformationEvent("Checking security principal against allowed and denied list.", EventID.DebugMessage);
-#endif
-            */            
-
             if ((deniedSidsList != null) && (deniedSidsList.Length > 0))
             { // The denied list contains entries. Check the user against that list first.
-
-                /*
-#if DEBUG
-                ApplicationLog.WriteInformationEvent("Denied list contains entries.", EventID.DebugMessage);
-#endif
-                */                
 
                 // If the user's SID or name is in the denied list, the user is not authorized.
                 if ((ArrayContainsString(deniedSidsList, userIdentity.User.Value)) || (ArrayContainsString(deniedSidsList, userIdentity.Name)))
                 {
-                    /*
-#if DEBUG
-                    ApplicationLog.WriteInformationEvent("Principal's SID is in the denied list. Permission denied.", EventID.DebugMessage);
-#endif
-                    */
                     return false;
                 }
 
                 // If any of the user's authorization groups are in the denied list, the user is not authorized.
                 foreach (SecurityIdentifier sid in userIdentity.Groups)
                 {
+                    // Check the SID values.
                     if (ArrayContainsString(deniedSidsList, sid.Value))
                     {
-                        /*
-#if DEBUG
-                        ApplicationLog.WriteInformationEvent("One of the principal's groups is in the denied list. Permission denied.", EventID.DebugMessage);
-#endif
-                        */                        
                         return false;
                     }
 
+                    // Translate the SID to an NT Account (Domain\User), and check the resulting values.
                     if (sid.IsValidTargetType(typeof(NTAccount)))
                     {
                         NTAccount account = (NTAccount)sid.Translate(typeof(NTAccount));
                         if (ArrayContainsString(deniedSidsList, account.Value))
                         {
-                            /*
-    #if DEBUG
-                            ApplicationLog.WriteInformationEvent("One of the principal's groups is in the denied list. Permission denied.", EventID.DebugMessage);
-    #endif
-                            */
                             return false;
                         }
                     }
@@ -219,20 +198,10 @@ namespace SinclairCC.MakeMeAdmin
 
             if (allowedSidsList == null)
             { // The allowed list is null, meaning everyone is allowed administrator rights.
-                /*
-#if DEBUG
-                ApplicationLog.WriteInformationEvent("Allowed list is null. Everyone is allowed to request administrator rights.", EventID.DebugMessage);
-#endif
-                */
                 return true;
             }
             else if (allowedSidsList.Length == 0)
             { // The allowed list is empty, meaning no one is allowed administrator rights.
-                /*
-#if DEBUG
-                ApplicationLog.WriteInformationEvent("Allowed list is empty, but not null. No one is allowed to request administrator rights.", EventID.DebugMessage);
-#endif
-                */
                 return false;
             }
             else
@@ -241,58 +210,32 @@ namespace SinclairCC.MakeMeAdmin
                 // If the user's SID is in the allowed list, the user is authorized.
                 if ((ArrayContainsString(allowedSidsList, userIdentity.User.Value))  || (ArrayContainsString(allowedSidsList, userIdentity.Name)))
                 {
-                    /*
-#if DEBUG
-                    ApplicationLog.WriteInformationEvent("Principal's SID is in the allowed list. Permission granted.", EventID.DebugMessage);
-#endif
-                    */
                     return true;
                 }
 
                 // If any of the user's authorization groups are in the allowed list, the user is authorized.
                 foreach (SecurityIdentifier sid in userIdentity.Groups)
                 {
+                    // Check the SID values.
                     if (ArrayContainsString(allowedSidsList, sid.Value))
                     {
-                        /*
-#if DEBUG
-                        ApplicationLog.WriteInformationEvent("One of the principal's groups is in the allowed list. Permission granted.", EventID.DebugMessage);
-#endif
-                        */
                         return true;
                     }
 
+                    // Translate the SID to an NT Account (Domain\User), and check the resulting values.
                     if (sid.IsValidTargetType(typeof(NTAccount)))
                     {
                         NTAccount account = (NTAccount)sid.Translate(typeof(NTAccount));
                         if (ArrayContainsString(allowedSidsList, account.Value))
                         {
-                            /*
-#if DEBUG
-                            ApplicationLog.WriteInformationEvent("One of the principal's groups is in the allowed list. Permission granted.", EventID.DebugMessage);
-#endif
-                            */
                             return true;
                         }
                     }
                 }
 
-
                 // The user was not found in the allowed list, so the user is not authorized.
-                /*
-#if DEBUG
-                ApplicationLog.WriteInformationEvent("Principal was not found in the allowed list. Permission denied.", EventID.DebugMessage);
-#endif
-                */
                 return false;
             }
-        }
-
-        
-
-        public static int EndNetworkSession(string remoteHost, string userName)
-        {
-            return NativeMethods.NetSessionDel(null, remoteHost, userName);
         }
     }
 }

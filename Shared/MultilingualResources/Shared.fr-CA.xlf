@@ -5,28 +5,7 @@
       <tool tool-id="MultilingualAppToolkit" tool-name="Multilingual App Toolkit" tool-version="4.0.6900.0" tool-company="Microsoft" />
     </header>
     <body>
-      <group id="SHARED/PROPERTIES/RESOURCES.RESX" datatype="resx">
-        <trans-unit id="RemovalReasonServiceStopped" translate="yes" xml:space="preserve">
-          <source>Make Me Admin service stopped</source>
-          <target state="new">Make Me Admin service stopped</target>
-        </trans-unit>
-        <trans-unit id="RemovalReasonTimeout" translate="yes" xml:space="preserve">
-          <source>Timeout elapsed</source>
-          <target state="new">Timeout elapsed</target>
-        </trans-unit>
-        <trans-unit id="RemovalReasonUnknown" translate="yes" xml:space="preserve">
-          <source>Unknown</source>
-          <target state="new">Unknown</target>
-        </trans-unit>
-        <trans-unit id="RemovalReasonUserLogoff" translate="yes" xml:space="preserve">
-          <source>User logged off</source>
-          <target state="new">User logged off</target>
-        </trans-unit>
-        <trans-unit id="RemovalReasonUserRequest" translate="yes" xml:space="preserve">
-          <source>User requested removal</source>
-          <target state="new">User requested removal</target>
-        </trans-unit>
-      </group>
+      <group id="SHARED/PROPERTIES/RESOURCES.RESX" datatype="resx"></group>
     </body>
   </file>
 </xliff>

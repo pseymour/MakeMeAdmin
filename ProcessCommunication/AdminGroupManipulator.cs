@@ -1,5 +1,5 @@
 ﻿// 
-// Copyright © 2010-2018, Sinclair Community College
+// Copyright © 2010-2019, Sinclair Community College
 // Licensed under the GNU General Public License, version 3.
 // See the LICENSE file in the project root for full license information.  
 //
@@ -25,10 +25,15 @@ namespace SinclairCC.MakeMeAdmin
     using System.ServiceModel.Channels;
     using System.Security.Principal;
 
-    /* IncludeExceptionDetailInFaults = true */
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
+    /// <summary>
+    /// This class implements the WCF service contract.
+    /// </summary>
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, IncludeExceptionDetailInFaults = false)]
     public class AdminGroupManipulator : IAdminGroup
     {
+        /// <summary>
+        /// Adds a security principal to the local Administrators group.
+        /// </summary>
         public void AddPrincipalToAdministratorsGroup()
         {
             string remoteAddress = null;
@@ -39,14 +44,6 @@ namespace SinclairCC.MakeMeAdmin
             {
                 userIdentity = ServiceSecurityContext.Current.WindowsIdentity;
             }
-            
-#if DEBUG
-            else
-            {
-                ApplicationLog.WriteWarningEvent("Current service security context is null.", EventID.DebugMessage);
-            }
-#endif
-
 
             if (OperationContext.Current != null)
             {
@@ -59,15 +56,6 @@ namespace SinclairCC.MakeMeAdmin
                 }
             }
 
-            
-#if DEBUG
-            if (remoteAddress != null)
-            {
-                string message = string.Format("Administrator rights request came from [{0}].", remoteAddress);
-                ApplicationLog.WriteInformationEvent(message, EventID.DebugMessage);
-            }
-#endif
-            
             if (userIdentity != null)
             {
                 int timeoutMinutes = Shared.GetTimeoutForUser(userIdentity);
@@ -76,6 +64,12 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+        /// <summary>
+        /// Removes a security principal from the local Administrators group.
+        /// </summary>
+        /// <param name="reason">
+        /// The reason that the rights are being removed.
+        /// </param>
         public void RemovePrincipalFromAdministratorsGroup(RemovalReason reason)
         {
             WindowsIdentity userIdentity = null;
@@ -91,6 +85,14 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+        /// <summary>
+        /// Returns a value indicating whether a security principal is in the
+        /// list of added principals.
+        /// </summary>
+        /// <returns>
+        /// Returns true if the given principal is already in the list of added
+        /// principals. Otherwise, false is returned.
+        /// </returns>
         public bool PrincipalIsInList()
         {
             WindowsIdentity userIdentity = null;
@@ -102,7 +104,8 @@ namespace SinclairCC.MakeMeAdmin
 
             if (userIdentity != null)
             {
-                return PrincipalList.ContainsSID(userIdentity.User);
+                EncryptedSettings encryptedSettings = new EncryptedSettings(EncryptedSettings.SettingsFilePath);
+                return encryptedSettings.ContainsSID(userIdentity.User);
             }
             else
             {
