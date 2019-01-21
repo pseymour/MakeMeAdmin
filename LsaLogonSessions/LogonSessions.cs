@@ -137,6 +137,7 @@ namespace LsaLogonSessions
             return returnSid;
         }
 
+        // TODO: This needs to be commented.
         public static SecurityIdentifier[] GetGroupMemberships(IntPtr tokenHandle)
         {
             int returnLength = 0;
