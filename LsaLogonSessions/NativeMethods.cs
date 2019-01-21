@@ -200,5 +200,13 @@ namespace LsaLogonSessions
             [In] int TokenInformationLength,
             [Out] out int ReturnLength);
 
+
+        // TODO: Comment this.
+        [DllImport("advapi32", CharSet = CharSet.Auto, SetLastError = true)]
+        internal static extern bool ConvertSidToStringSid(IntPtr pSID, out IntPtr ptrSid);
+
+        // TODO: Comment this.
+        [DllImport("kernel32.dll")]
+        internal static extern IntPtr LocalFree(IntPtr hMem);
     }
 }

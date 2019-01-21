@@ -85,6 +85,10 @@
       <Project>{f5a53b43-5d6d-48ec-bc44-c0c1a0cefa8d}</Project>
       <Name>Logging</Name>
     </ProjectReference>
+    <ProjectReference Include="..\LsaLogonSessions\LsaLogonSessions.csproj">
+      <Project>{a2107c86-7cb5-45ee-89e8-1bc7261f7762}</Project>
+      <Name>LsaLogonSessions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Settings\Settings.csproj">
       <Project>{8a516d69-ba38-429f-affe-c571b5c1e482}</Project>
       <Name>Settings</Name>

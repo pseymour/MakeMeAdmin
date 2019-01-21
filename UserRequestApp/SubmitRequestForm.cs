@@ -301,8 +301,8 @@ namespace SinclairCC.MakeMeAdmin
 
         private void UpdateUserAdministratorStatus()
         {
-            this.userIsAdmin = LocalAdministratorGroup.WindowsIdentityIsMember(WindowsIdentity.GetCurrent());
-            this.userIsDirectAdmin = LocalAdministratorGroup.CurrentUserIsMemberOfAdministratorsDirectly();
+            this.userIsAdmin = LocalAdministratorGroup.IsMemberOfAdministrators(WindowsIdentity.GetCurrent());
+            this.userIsDirectAdmin = LocalAdministratorGroup.IsMemberOfAdministratorsDirectly(WindowsIdentity.GetCurrent());
         }
 
 

@@ -99,6 +99,7 @@ namespace SinclairCC.MakeMeAdmin
             Task[] tasks = new Task[Settings.SyslogServers.Count];
 
             foreach (SyslogServerInfo serverInfo in Settings.SyslogServers)
+            {
                 if (serverInfo.IsValid)
                 {
                     Syslog syslog = new Syslog(serverInfo.Hostname, serverInfo.Port, serverInfo.Protocol, serverInfo.RFC);

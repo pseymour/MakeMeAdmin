@@ -492,15 +492,16 @@ namespace SinclairCC.MakeMeAdmin
             return returnValue;
         }
 
-
+        /*
         public static bool WindowsIdentityIsMember(WindowsIdentity identity)
         {
             bool isMember = false;
+        */
 
             /*
             List<Principal> authGroups = Shared.GetAuthorizationGroups(UserPrincipal.Current)
             */
-            /*.GetAuthorizationGroups()*/;
+            /*.GetAuthorizationGroups();*/
 
             //foreach (SecurityIdentifier sid in identity.Groups)
             //{
@@ -512,14 +513,14 @@ namespace SinclairCC.MakeMeAdmin
             authGroups.Dispose();
             */
 
-            
+         /*   
             PrincipalSearchResult<System.DirectoryServices.AccountManagement.Principal> adminGroupMembers = LocalAdminGroup.GetMembers(true);
             foreach (System.DirectoryServices.AccountManagement.Principal prin in adminGroupMembers)
             {
                 isMember |= (prin.Sid == identity.User);
                 if (isMember) { break; }
             }
-            
+         */   
 
             /*
             foreach (SecurityIdentifier userGroupSid in identity.Groups)
@@ -535,10 +536,12 @@ namespace SinclairCC.MakeMeAdmin
             return UserPrincipal.Current.GetAuthorizationGroups().Where(p => p.Sid.Equals(localAdminsGroupSid)).Count<Principal>() >= 1;
             */
 
+        /*
             return isMember;
-
         }
+        */
 
+        /*
         public static bool CurrentUserIsMemberOfAdministratorsDirectly()
         {
             SecurityIdentifier[] localAdminSids = GetLocalGroupMembers(null, LocalAdminGroup.SamAccountName);
@@ -550,6 +553,53 @@ namespace SinclairCC.MakeMeAdmin
             {
                 isMember = sid.Equals(currentIdentity.User);
                 if (isMember) { break; }
+            }
+
+            return isMember;
+        }
+        */
+
+        // TODO: This function needs to be commented.
+        public static bool IsMemberOfAdministratorsDirectly(WindowsIdentity userIdentity)
+        {
+            SecurityIdentifier[] localAdminSids = GetLocalGroupMembers(null, LocalAdminGroup.SamAccountName);
+
+            bool isMember = false;
+
+            foreach (SecurityIdentifier sid in localAdminSids)
+            {
+                isMember = sid.Equals(userIdentity.User);
+                if (isMember) { break; }
+            }
+
+            return isMember;
+        }
+
+        // TODO: This function needs to be commented.
+        public static bool IsMemberOfAdministrators(WindowsIdentity userIdentity)
+        {
+            SecurityIdentifier[] localAdminSids = GetLocalGroupMembers(null, LocalAdminGroup.SamAccountName);
+
+            bool isMember = false;
+
+            foreach (SecurityIdentifier sid in localAdminSids)
+            {
+                isMember |= sid.Equals(userIdentity.User);
+                if (isMember) { break; }
+            }
+
+            if (!isMember)
+            {
+                SecurityIdentifier[] groupSids = LsaLogonSessions.LogonSessions.GetGroupMemberships(userIdentity.Token);
+                foreach (SecurityIdentifier userGroupSid in groupSids)
+                {
+                    foreach (SecurityIdentifier adminSid in localAdminSids)
+                    {
+                        isMember |= adminSid.Equals(userGroupSid);
+                        if (isMember) { break; }
+                    }
+                    if (isMember) { break; }
+                }
             }
 
             return isMember;
