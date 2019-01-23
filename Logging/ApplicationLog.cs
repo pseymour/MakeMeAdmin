@@ -22,6 +22,8 @@ namespace SinclairCC.MakeMeAdmin
 {
     using System.Threading.Tasks;
 
+    // TODO: Comment this class.
+
     /// <summary>
     /// This class allows simple logging of application events.
     /// </summary>
@@ -81,6 +83,7 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+        /*
         /// <summary>
         /// Writes the specified message to the event log as an information event
         /// with the specified event ID.
@@ -94,6 +97,7 @@ namespace SinclairCC.MakeMeAdmin
         public static void WriteInformationEvent(string message, EventID id)
         {
             log.WriteEntry(message, System.Diagnostics.EventLogEntryType.Information, (int)id);
+            //System.Diagnostics.EventLogEntryType.
 
             int j = 0;
             Task[] tasks = new Task[Settings.SyslogServers.Count];
@@ -103,7 +107,7 @@ namespace SinclairCC.MakeMeAdmin
                 if (serverInfo.IsValid)
                 {
                     Syslog syslog = new Syslog(serverInfo.Hostname, serverInfo.Port, serverInfo.Protocol, serverInfo.RFC);
-                    tasks[j] = Task.Factory.StartNew(() => syslog.WriteInformationEvent(message, "PROCESS_NAME", id.ToString()));
+                    tasks[j] = Task.Factory.StartNew(() => syslog.SendMessage(message, id.ToString(), SyslogNet.Client.Severity.Informational));
                 }
                 j++;
             }
@@ -131,7 +135,7 @@ namespace SinclairCC.MakeMeAdmin
                 if (serverInfo.IsValid)
                 {
                     Syslog syslog = new Syslog(serverInfo.Hostname, serverInfo.Port, serverInfo.Protocol, serverInfo.RFC);
-                    tasks[j] = Task.Factory.StartNew(() => syslog.WriteErrorEvent(message, "PROCESS_NAME", id.ToString()));
+                    tasks[j] = Task.Factory.StartNew(() => syslog.SendMessage(message, id.ToString(), SyslogNet.Client.Severity.Error));
                 }
                 j++;
             }
@@ -159,7 +163,58 @@ namespace SinclairCC.MakeMeAdmin
                 if (serverInfo.IsValid)
                 {
                     Syslog syslog = new Syslog(serverInfo.Hostname, serverInfo.Port, serverInfo.Protocol, serverInfo.RFC);
-                    tasks[j] = Task.Factory.StartNew(() => syslog.WriteWarningEvent(message, "PROCESS_NAME", id.ToString()));
+                    tasks[j] = Task.Factory.StartNew(() => syslog.SendMessage(message, id.ToString(), SyslogNet.Client.Severity.Warning));
+                }
+                j++;
+            }
+        }
+        */
+
+        /// <summary>
+        /// Writes an event to the log.
+        /// </summary>
+        /// <param name="message">
+        /// The message to write to the log.
+        /// </param>
+        /// <param name="id">
+        /// An ID for the type of event being logged.
+        /// </param>
+        /// <param name="entryType">
+        /// The severity of the message being logged (information, warning, etc.).
+        /// </param>
+        public static void WriteEvent(string message, EventID id, System.Diagnostics.EventLogEntryType entryType)
+        {
+            log.WriteEntry(message, entryType, (int)id);
+
+            int j = 0;
+            Task[] tasks = new Task[Settings.SyslogServers.Count];
+
+            // Determine the syslog severity for this event, based on the event log entry type.
+            SyslogNet.Client.Severity severity = SyslogNet.Client.Severity.Informational;
+            switch (entryType)
+            {
+                case System.Diagnostics.EventLogEntryType.Error:
+                    severity = SyslogNet.Client.Severity.Error;
+                    break;
+                case System.Diagnostics.EventLogEntryType.Warning:
+                    severity = SyslogNet.Client.Severity.Warning;
+                    break;
+                case System.Diagnostics.EventLogEntryType.FailureAudit:
+                    severity = SyslogNet.Client.Severity.Alert;
+                    break;
+                case System.Diagnostics.EventLogEntryType.SuccessAudit:
+                    severity = SyslogNet.Client.Severity.Notice;
+                    break;
+                default:
+                    break;
+            }
+
+            foreach (SyslogServerInfo serverInfo in Settings.SyslogServers)
+            {
+                if (serverInfo.IsValid)
+                {
+                    Syslog syslog = new Syslog(serverInfo.Hostname, serverInfo.Port, serverInfo.Protocol, serverInfo.RFC);
+                    tasks[j] = Task.Factory.StartNew(() => syslog.SendMessage(message, id.ToString(), severity));
                 }
                 j++;
             }

@@ -57,8 +57,14 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         RemoteRequestInformation,
 
+        /// <summary>
+        /// A user session has changed.
+        /// </summary>
         SessionChangeEvent,
 
+        /// <summary>
+        /// Syslog server info, stored in the registry, is invalid in some way.
+        /// </summary>
         RejectedSyslogServerInfo,
 
         /// <summary>

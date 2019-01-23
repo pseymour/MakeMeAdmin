@@ -154,7 +154,7 @@ namespace SinclairCC.MakeMeAdmin
         /// </param>
         private void ServiceHostFaulted(object sender, EventArgs e)
         {
-            ApplicationLog.WriteWarningEvent(Properties.Resources.ServiceHostFaulted, EventID.DebugMessage);
+            ApplicationLog.WriteEvent(Properties.Resources.ServiceHostFaulted, EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Warning);
         }
 
 
@@ -243,9 +243,11 @@ namespace SinclairCC.MakeMeAdmin
             {
                 // The user has logged off from a session, either locally or remotely.
                 case SessionChangeReason.SessionLogoff:
+                    /*
 #if DEBUG
                     ApplicationLog.WriteInformationEvent(string.Format("Session {0} has logged off.", changeDescription.SessionId), EventID.DebugMessage);
 #endif
+                    */
                     //if (Settings.RemoveAdminRightsOnLogout)
                     //{
                     EncryptedSettings encryptedSettings = new EncryptedSettings(EncryptedSettings.SettingsFilePath);
@@ -319,9 +321,11 @@ namespace SinclairCC.MakeMeAdmin
                 // The user has logged on to a session, either locally or remotely.
                 case SessionChangeReason.SessionLogon:
 
+                    /*
 #if DEBUG
                     ApplicationLog.WriteInformationEvent(string.Format("Session {0} has logged on.", changeDescription.SessionId), EventID.DebugMessage);
 #endif
+                    */
 
                     WindowsIdentity userIdentity = LsaLogonSessions.LogonSessions.GetWindowsIdentityForSessionId(changeDescription.SessionId);
 
@@ -334,14 +338,14 @@ namespace SinclairCC.MakeMeAdmin
                            )
                         {
 #if DEBUG
-                            ApplicationLog.WriteInformationEvent("User is allowed to be automatically added!", EventID.DebugMessage);
+                            ApplicationLog.WriteEvent("User is allowed to be automatically added!", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
 #endif
                             LocalAdministratorGroup.AddPrincipal(userIdentity, null, null);
                         }
                     }
                     else
                     {
-                        ApplicationLog.WriteWarningEvent(Properties.Resources.UserIdentifyIsNull, EventID.DebugMessage);
+                        ApplicationLog.WriteEvent(Properties.Resources.UserIdentifyIsNull, EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Warning);
                     }
 
                     break;

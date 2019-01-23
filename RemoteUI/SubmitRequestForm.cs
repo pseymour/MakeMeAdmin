@@ -175,7 +175,7 @@ namespace SinclairCC.MakeMeAdmin
                         messageBoxText.Append(hostName);
                         messageBoxText.Append(".");
                         messageBoxText.Append(System.Environment.NewLine);
-                        messageBoxText.Append("Message: ");
+                        messageBoxText.Append("Error Message: ");
                         messageBoxText.Append(System.Environment.NewLine);
                         messageBoxText.Append("{0}");
                         resultTask.Exception.Flatten().Handle(excep => { MessageBox.Show(string.Format(messageBoxText.ToString(), excep.Message), "Make Me Admin Remote", MessageBoxButtons.OK, MessageBoxIcon.Error); return true; });

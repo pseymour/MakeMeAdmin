@@ -670,7 +670,7 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
 
             /*
             ApplicationLog.WriteInformationEvent("information event!", EventID.DebugMessage);
-            ApplicationLog.WriteErrorEvent("error event!", EventID.DebugMessage);
+            ApplicationLog.WriteEvent("error event!", EventID.DebugMessage);
             ApplicationLog.WriteWarningEvent("warning event!", EventID.DebugMessage);
             */
 

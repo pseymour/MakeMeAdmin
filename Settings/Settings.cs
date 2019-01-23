@@ -200,7 +200,6 @@ namespace SinclairCC.MakeMeAdmin
             */
         }
 
-        // TODO: Document how this should be setup in the ADMX/ADML files.
         private static List<SyslogServerInfo> ProcessSyslogServerStrings(string[] serverStrings)
         {
             List<SyslogServerInfo> returnList = new List<SyslogServerInfo>();
@@ -270,7 +269,6 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
         
-        // TODO: i18n.
         // TODO: Remove this registry value from PCs.
         /*
         public static string[] SIDs
@@ -653,8 +651,7 @@ namespace SinclairCC.MakeMeAdmin
         {
             get
             {
-                // TODO: i18n.
-                string returnValue = "My Company";
+                string returnValue = Properties.Resources.MyCompany;
                 System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
                 object[] attributes = assembly.GetCustomAttributes(typeof(System.Reflection.AssemblyCompanyAttribute), false);
                 foreach (object o in attributes)
@@ -679,8 +676,7 @@ namespace SinclairCC.MakeMeAdmin
         {
             get
             {
-                // TODO: i18n.
-                string returnValue = "My Product";
+                string returnValue = Properties.Resources.MyProduct;
                 System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
                 object[] attributes = assembly.GetCustomAttributes(typeof(System.Reflection.AssemblyProductAttribute), false);
                 foreach (object o in attributes)

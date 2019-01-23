@@ -79,6 +79,21 @@
       </presentation>
       <presentation id="SyslogMultiText_Presentation">
         <multiTextBox refId="SyslogMultiText">Enter syslog server information.</multiTextBox>
+        <text>Syntax:</text>
+        <text>&lt;syslogserver&gt;:&lt;port&gt;:&lt;protocol&gt;:&lt;syslog RFC&gt;</text>
+        <text>&lt;syslogserver&gt; is the name or IP address of the syslog server.</text>
+        <text>&lt;port&gt; is the port on which the syslog server is communicating.</text>
+        <text>&lt;protocol&gt; is either TCP or UDP.</text>
+        <text>&lt;syslog RFC&gt; is either 3164 or 5424.</text>
+        <text>If a protocol is not specified, UDP is assumed.</text>
+        <text>If a port is not specified, 514 is assumed for UDP and 1468 is assumed for TCP.</text>
+        <text>If an RFC number is not specified, 3164 is assumed.</text>
+        <text>Example:</text>
+        <text>syslogserver:1468:tcp:5424</text>
+        <text>Communicates with the server called syslogserver on port 1468 via TCP using RFC 5424 messages.</text>
+        <text>Example:</text>
+        <text>syslogserver:udp</text>
+        <text>Communicates with the server called syslogserver on port 514 via UDP using RFC 3164 messages.</text>
       </presentation>
     </presentationTable>
   </resources>

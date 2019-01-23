@@ -20,7 +20,7 @@
 
 namespace SinclairCC.MakeMeAdmin
 {
-
+    // TODO: Finish commenting this class.
     /// <summary>
     /// This class allows simple logging of application events.
     /// </summary>
@@ -29,17 +29,37 @@ namespace SinclairCC.MakeMeAdmin
         // TODO: i18n.
         private const string AppName = "Make Me Admin";
 
+        /// <summary>
+        /// The name or IP address of the syslog server.
+        /// </summary>
         private string hostname;
+
+        /// <summary>
+        /// The port on which the server communicates.
+        /// </summary>
         private int port;
+
+        /// <summary>
+        /// The protocol used by the server (UDP or TCP).
+        /// </summary>
         private string protocol;
+
+        /// <summary>
+        /// The syslog RFC to which the server conforms.
+        /// </summary>
         private string syslogRFC;
+
 
         /// <summary>
         /// Constructor.
         /// </summary>
+        /// <remarks>
+        /// The protocol is assumed to be UDP.
+        /// </remarks>
         public Syslog(string Hostname) : this(Hostname, "udp")
         {
         }
+
 
         /// <summary>
         /// Constructor.
@@ -48,12 +68,14 @@ namespace SinclairCC.MakeMeAdmin
         {
         }
 
+
         /// <summary>
         /// Constructor.
         /// </summary>
         public Syslog(string Hostname, int Port, string Protocol) : this(Hostname, Port, Protocol, "3164")
         {
         }
+
 
         /// <summary>
         /// Constructor.
@@ -62,9 +84,10 @@ namespace SinclairCC.MakeMeAdmin
         {
             hostname = Hostname;
             port = Port;
-            protocol = Protocol;
+            protocol = Protocol.ToLowerInvariant();
             syslogRFC = RFC;
 
+            // If the port is zero, choose a default port based on the protocol being used.
             if (0 == port)
             {
                 switch (protocol)
@@ -82,33 +105,33 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-
+        /*
         /// <summary>
-        /// Writes the specified message to the event log as an information event
-        /// with the specified event ID.
+        /// Writes the specified message to syslog as an information event.
         /// </summary>
         /// <param name="message">
-        /// The message to be written to the log.
+        /// The message to be written.
         /// </param>
-        /// <param name="id">
-        /// The event ID to use for the event being written.
+        /// <param name="messageId">
+        /// Identifies the type of message being sent.
         /// </param>
-        public void WriteInformationEvent(string message, string processName, string messageId)
+        public void WriteInformationEvent(string message, string messageId)
         {
-            SendMessage(message, processName, messageId, SyslogNet.Client.Severity.Informational);
+            SendMessage(message, messageId, SyslogNet.Client.Severity.Informational);
         }
 
-        public void WriteWarningEvent(string message, string processName, string messageId)
+        public void WriteWarningEvent(string message, string messageId)
         {
-            SendMessage(message, processName, messageId, SyslogNet.Client.Severity.Warning);
+            SendMessage(message, messageId, SyslogNet.Client.Severity.Warning);
         }
 
-        public void WriteErrorEvent(string message, string processName, string messageId)
+        public void WriteErrorEvent(string message, string messageId)
         {
-            SendMessage(message, processName, messageId, SyslogNet.Client.Severity.Error);
+            SendMessage(message, messageId, SyslogNet.Client.Severity.Error);
         }
+        */
 
-        private void SendMessage(string message, string processName, string messageId, SyslogNet.Client.Severity severity)
+        public void SendMessage(string message,  string messageId, SyslogNet.Client.Severity severity)
         {
 
             System.Net.IPHostEntry hostEntry = null;
@@ -133,10 +156,9 @@ namespace SinclairCC.MakeMeAdmin
                     severity,
                     Shared.FullyQualifiedHostName,
                     AppName,
-                    processName,
+                    null,
                     messageId,
-                    string.Format("to {0}:{1} over {2} (RFC{3}) - {4}", hostname, port, protocol, syslogRFC, message));
-                // TODO: Take out the string.Format above.
+                    message);
 
                 if (string.Compare(protocol, "TCP", true) == 0)
                 {
@@ -146,7 +168,7 @@ namespace SinclairCC.MakeMeAdmin
                     }
                     else
                     {
-                        // TODO: Write this event to a cache.
+                        // TODO: Cache these events.
                     }
                 }
                 else if (string.Compare(protocol, "UDP", true) == 0)

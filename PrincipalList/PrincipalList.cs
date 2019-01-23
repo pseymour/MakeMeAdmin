@@ -21,13 +21,9 @@
 namespace SinclairCC.MakeMeAdmin
 {
     using System;
-    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
-    //using System.Security.Cryptography;
     using System.Security.Principal;
-    using System.Xml;
-    using System.Xml.Serialization;
 
     // TODO: How do we know we are being passed a valid SID?
 
@@ -37,153 +33,97 @@ namespace SinclairCC.MakeMeAdmin
     [Serializable]
     public class PrincipalList : KeyedCollection<SecurityIdentifier, Principal>
     {
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         public PrincipalList() : base()
         {
-
-#if DEBUG
-            try
-            {
-#endif
-                /*
-                // Retrieve the stored SID list from the settings.
-                string[] storedSIDs = Settings.SIDs;
-                if (storedSIDs != null)
-                {
-                    for (int i = 0; i < storedSIDs.Length; i++)
-                    {
-                        PrincipalList.AddSID(storedSIDs[i], DateTime.Now.AddMinutes(Settings.AdminRightsTimeout * -1), null);
-                    }
-                }
-                */
-
-#if DEBUG
-            }
-            catch (Exception excep)
-            {
-                ApplicationLog.WriteInformationEvent("error in PrincipalList.ReadSidsFromSettings(), getting SIDs from settings.", EventID.DebugMessage);
-                ApplicationLog.WriteInformationEvent(excep.Message, EventID.DebugMessage);
-            }
-#endif
-            
-
-            /*
-            try
-            {
-                Settings.SIDs = null;
-            }
-            catch (Exception excep)
-            {
-                ApplicationLog.WriteInformationEvent("clearing SIDs list in Settings", EventID.DebugMessage);
-                ApplicationLog.WriteInformationEvent(excep.Message, EventID.DebugMessage);
-            }
-            */
         }
 
+        /// <summary>
+        /// Gets the key (security identifier) for the specified principal.
+        /// </summary>
+        /// <param name="item">
+        /// The principal whose SID is to be returned.
+        /// </param>
+        /// <returns>
+        /// Returns the Security Identifier (SID) of the given principal.
+        /// </returns>
         protected override SecurityIdentifier GetKeyForItem(Principal item)
         {
             return item.PrincipalSid;
         }
 
-
         /// <summary>
         /// Adds a principal's security ID (SID) to the collection.
         /// </summary>
-        /// <param name="sid">
-        /// The SID to be added to the collection, in SDDL form.
+        /// <param name="principalSecurityIdentifier">
+        /// The SID to be added to the collection.
         /// </param>
         /// <param name="expirationTime">
         /// The date and time at which the principal's administrator rights expire.
         /// </param>
-        internal void AddSID(/* WindowsIdentity userIdentity */ SecurityIdentifier principalSecurityIdentifier, DateTime? expirationTime, string remoteAddress)
+        /// <param name="remoteAddress">
+        /// The address of the remote computer from which a request for administrator rights came.
+        /// </param>
+        internal void AddSID(SecurityIdentifier principalSecurityIdentifier, DateTime? expirationTime, string remoteAddress)
         {
             if (this.Contains(principalSecurityIdentifier))
-            //if (principals.ContainsKey(/* userIdentity.User */ principalSecurityIdentifier))
             {
-                // Set the expiration time for the given SID to the maximum of
-                // its current value or the specified expiration time.
-#if DEBUG
-                ApplicationLog.WriteInformationEvent(string.Format("Setting expiration for SID {0} to {1}.", principalSecurityIdentifier.Value /* userIdentity.User.Value */, new[] { this[/* userIdentity.User */ principalSecurityIdentifier].ExpirationTime, expirationTime }.Max()), EventID.DebugMessage);
-#endif
-                /*
-                principals[userIdentity.User].ExpirationTime = new[] { principals[userIdentity.User].ExpirationTime, expirationTime }.Max();
-                */
-                //principals[principalSecurityIdentifier /* userIdentity.User */].RemoteAddress = remoteAddress;
                 this[principalSecurityIdentifier].RemoteAddress = remoteAddress;
-#if DEBUG
-                ApplicationLog.WriteInformationEvent(string.Format("SID list contains {0:N0} items.", this.Count), EventID.DebugMessage);
-#endif
             }
             else
             {
-#if DEBUG
-                System.Text.StringBuilder message = new System.Text.StringBuilder("Adding SID ");
-                message.Append(/* userIdentity.User.Value */ principalSecurityIdentifier.Value);
-                message.Append(" to list with an expiration of ");
-                if (expirationTime.HasValue)
-                {
-                    message.Append(expirationTime.Value);
-                }
-                else
-                {
-                    message.Append("never");
-                }
-                message.Append(".");
-                ApplicationLog.WriteInformationEvent(message.ToString(), EventID.DebugMessage);
-#endif
-
                 this.Add(new Principal(principalSecurityIdentifier, expirationTime, remoteAddress));
-
-                //principals.Add(principalSecurityIdentifier /* userIdentity.User */, new Principal(principalSecurityIdentifier, expirationTime, remoteAddress));
-
-                /*
-                Settings.SIDs = GetSIDs().Select(p => p.Value).ToArray<string>();
-                */
             }
         }
-
-        /*
-        internal bool ContainsSID(SecurityIdentifier sid)
-        {
-            return this.Contains(sid);
-        }
-        */
-        
+                
         /// <summary>
         /// Removes a principal's security ID (SID) from the collection.
         /// </summary>
         /// <param name="sid">
-        /// The SID to be removed from the collection, in SDDL form.
+        /// The SID to be removed from the collection.
         /// </param>
         internal void RemoveSID(SecurityIdentifier sid)
         {
             if (this.Contains(sid))
             {
                 this.Remove(sid);
-                /*
-                Settings.SIDs = GetSIDs().Select(p => p.Value).ToArray<string>();
-                */
             }
         }
 
+        /// <summary>
+        /// Gets a list of the SIDs for all principals in the list.
+        /// </summary>
+        /// <returns>
+        /// Returns an array of Security Identifiers (SIDs), one for each principal in the list.
+        /// </returns>
         internal SecurityIdentifier[] GetSIDs()
         {
             return this.Select(p => p.PrincipalSid).ToArray<SecurityIdentifier>();
         }
 
+        /// <summary>
+        /// Gets a list of the principals whose administrator rights have expired.
+        /// </summary>
+        /// <returns>
+        /// Returns an array containing the list of expired principals.
+        /// </returns>
         internal Principal[] GetExpiredPrincipals()
         {
-            /*
-            This is what was returned when the principal list held the time at which admin rights were granted.
-            Now, it holds the expiration time.
-
-            return principals.Where(p => p.Value <= DateTime.Now.AddMinutes(-1 * Settings.AdminRightsTimeout)).Select(p => p.Key).ToArray<SecurityIdentifier>();
-            */
-
-            //return this.Where(p => (p.ExpirationTime.HasValue && (p.ExpirationTime <= DateTime.Now))).Select(p => p.Value).ToArray<Principal>();
-
             return this.Where(p => (p.ExpirationTime.HasValue && (p.ExpirationTime <= DateTime.Now))).ToArray<Principal>();
         }
 
+        /// <summary>
+        /// Gets the expiration date and time for the administrator rights of the given principal.
+        /// </summary>
+        /// <param name="sid">
+        /// The Security Identifier (SID) of the principal to be checked.
+        /// </param>
+        /// <returns>
+        /// Returns the date and time at which the principal's administrator rights expire.
+        /// If the principal is not in the list, null is returned.
+        /// </returns>
         internal DateTime? GetExpirationTime(SecurityIdentifier sid)
         {
             if (this.Contains(sid))
@@ -196,6 +136,16 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+        /// <summary>
+        /// Determines whether the given principal has been added as a result of a remote request.
+        /// </summary>
+        /// <param name="sid">
+        /// The Security Identifier (SID) of the principal to be checked.
+        /// </param>
+        /// <returns>
+        /// Returns true if the given principal was added due to a remote request.
+        /// Otherwise, false is returned.
+        /// </returns>
         internal bool IsRemote(SecurityIdentifier sid)
         {
             if (this.Contains(sid))

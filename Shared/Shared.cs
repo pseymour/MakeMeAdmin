@@ -164,6 +164,11 @@ namespace SinclairCC.MakeMeAdmin
         /// </returns>
         public static bool UserIsAuthorized(WindowsIdentity userIdentity, string[] allowedSidsList, string[] deniedSidsList)
         {
+            if (userIdentity == null)
+            {
+                return false;
+            }
+
             if ((deniedSidsList != null) && (deniedSidsList.Length > 0))
             { // The denied list contains entries. Check the user against that list first.
 

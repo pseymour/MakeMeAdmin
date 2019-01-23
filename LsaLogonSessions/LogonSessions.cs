@@ -39,8 +39,7 @@ namespace LsaLogonSessions
         
 
         /// <summary>
-        /// Gets the security identifier (SID) associated with a particular
-        /// session ID.
+        /// Gets the security identifier (SID) associated with a particular session ID.
         /// </summary>
         /// <param name="sessionId">
         /// The session ID for which the SID should be retrieved.
