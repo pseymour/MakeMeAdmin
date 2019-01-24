@@ -674,8 +674,10 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
             ApplicationLog.WriteWarningEvent("warning event!", EventID.DebugMessage);
             */
 
+            /*
             EncryptedSettings settings = new EncryptedSettings(EncryptedSettings.SettingsFilePath);
             settings.AddPrincipal(System.Security.Principal.WindowsIdentity.GetCurrent(), DateTime.Now.AddHours(4), null);
+            */
 
             /*
 

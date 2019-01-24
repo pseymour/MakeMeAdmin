@@ -22,8 +22,6 @@ namespace SinclairCC.MakeMeAdmin
 {
     using System.Threading.Tasks;
 
-    // TODO: Comment this class.
-
     /// <summary>
     /// This class allows simple logging of application events.
     /// </summary>

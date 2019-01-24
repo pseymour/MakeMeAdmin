@@ -215,9 +215,6 @@ namespace SinclairCC.MakeMeAdmin
 
             this.removalTimer.Stop();
 
-            // TODO: Does this do anything? It may never need to because of the SessionChange event.
-            // If a user is added and we stop the service, are they removed?
-            // If a user is added and we reboot, are they removed?            
             EncryptedSettings encryptedSettings = new EncryptedSettings(EncryptedSettings.SettingsFilePath);
             SecurityIdentifier[] sids = encryptedSettings.AddedPrincipalSIDs;
             for (int i = 0; i < sids.Length; i++)
@@ -228,8 +225,6 @@ namespace SinclairCC.MakeMeAdmin
             base.OnStop();
         }
 
-
-        // TODO: This function needs to be commented, after the testing of it is finished.
 
         /// <summary>
         /// Executes when a change event is received from a Terminal Server session.
@@ -243,54 +238,35 @@ namespace SinclairCC.MakeMeAdmin
             {
                 // The user has logged off from a session, either locally or remotely.
                 case SessionChangeReason.SessionLogoff:
-                    /*
-#if DEBUG
-                    ApplicationLog.WriteInformationEvent(string.Format("Session {0} has logged off.", changeDescription.SessionId), EventID.DebugMessage);
-#endif
-                    */
-                    //if (Settings.RemoveAdminRightsOnLogout)
-                    //{
+
                     EncryptedSettings encryptedSettings = new EncryptedSettings(EncryptedSettings.SettingsFilePath);
                     System.Collections.Generic.List<SecurityIdentifier> sidsToRemove = new System.Collections.Generic.List<SecurityIdentifier>(encryptedSettings.AddedPrincipalSIDs);
 
-                            /*
-#if DEBUG
-                            ApplicationLog.WriteInformationEvent("SID to remove list has been retrieved.", EventID.DebugMessage);
-                            for (int i = 0; i < sidsToRemove.Count; i++)
-                            {
-                                ApplicationLog.WriteInformationEvent(string.Format("SID to remove: {0}", sidsToRemove[i]), EventID.DebugMessage);
-                            }
-#endif
-                            */
+                    int[] sessionIds = LsaLogonSessions.LogonSessions.GetLoggedOnUserSessionIds();
 
-                            int[] sessionIds = LsaLogonSessions.LogonSessions.GetLoggedOnUserSessionIds();
-                            foreach (int id in sessionIds)
-                            {
-                                SecurityIdentifier sid = LsaLogonSessions.LogonSessions.GetSidForSessionId(id);
-                                if (sid != null)
-                                {
-                                    if (sidsToRemove.Contains(sid))
-                                    {
-                                        sidsToRemove.Remove(sid);
-                                    }
-                                }
-                            }
-
-                    /*
-#if DEBUG
-                    ApplicationLog.WriteInformationEvent("SID to remove list has been updated.", EventID.DebugMessage);
-                    for (int i = 0; i < sidsToRemove.Count; i++)
+                    // For any user that is still logged on, remove their SID from the list of
+                    // SIDs to be removed from Administrators. That is, let the users who are still
+                    // logged on stay in the Administrators group.
+                    foreach (int id in sessionIds)
                     {
-                        ApplicationLog.WriteInformationEvent(string.Format("SID to remove: {0}", sidsToRemove[i]), EventID.DebugMessage);
+                        SecurityIdentifier sid = LsaLogonSessions.LogonSessions.GetSidForSessionId(id);
+                        if (sid != null)
+                        {
+                            if (sidsToRemove.Contains(sid))
+                            {
+                                sidsToRemove.Remove(sid);
+                            }
+                        }
                     }
-#endif
-                    */
 
+                    // Process the list of SIDs to be removed from Administrators.
                     for (int i = 0; i < sidsToRemove.Count; i++)
                     {
                         if (
+                            // If the user is not remote.
                             (!(encryptedSettings.ContainsSID(sidsToRemove[i]) && encryptedSettings.IsRemote(sidsToRemove[i])))
                             &&
+                            // If admin rights are to be removed on logoff, or the user's rights do not expire.
                             (Settings.RemoveAdminRightsOnLogout || !encryptedSettings.GetExpirationTime(sidsToRemove[i]).HasValue)
                             )
                         {
@@ -298,21 +274,12 @@ namespace SinclairCC.MakeMeAdmin
                         }
                     }
 
-                            /*
-                             * In theory, this code should remove the user associated with the logoff, but it doesn't work.
-                            SecurityIdentifier sid = LsaLogonSessions.LogonSessions.GetSidForSessionId(changeDescription.SessionId);
-                            if (!(PrincipalList.ContainsSID(sid) && PrincipalList.IsRemote(sid)))
-                            {
-                                LocalAdministratorGroup.RemovePrincipal(sid, RemovalReason.UserLogoff);
-                            }
-                            */
-                        //}
-                        /*
-                        else
-                        {
-#if DEBUG
-                            ApplicationLog.WriteInformationEvent("Removing admin rights on log off is disabled.", EventID.DebugMessage);
-#endif
+                    /*
+                     * In theory, this code should remove the user associated with the logoff, but it doesn't work.
+                    SecurityIdentifier sid = LsaLogonSessions.LogonSessions.GetSidForSessionId(changeDescription.SessionId);
+                    if (!(PrincipalList.ContainsSID(sid) && PrincipalList.IsRemote(sid)))
+                    {
+                        LocalAdministratorGroup.RemovePrincipal(sid, RemovalReason.UserLogoff);
                     }
                     */
 
@@ -321,25 +288,17 @@ namespace SinclairCC.MakeMeAdmin
                 // The user has logged on to a session, either locally or remotely.
                 case SessionChangeReason.SessionLogon:
 
-                    /*
-#if DEBUG
-                    ApplicationLog.WriteInformationEvent(string.Format("Session {0} has logged on.", changeDescription.SessionId), EventID.DebugMessage);
-#endif
-                    */
-
                     WindowsIdentity userIdentity = LsaLogonSessions.LogonSessions.GetWindowsIdentityForSessionId(changeDescription.SessionId);
 
                     if (userIdentity != null)
                     {
+                        // If the user is in the automatic add list, then add them to the Administrators group.
                         if (
                             (Settings.AutomaticAddAllowed != null) &&
                             (Settings.AutomaticAddAllowed.Length > 0) &&
                             (Shared.UserIsAuthorized(userIdentity, Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied))
                            )
                         {
-#if DEBUG
-                            ApplicationLog.WriteEvent("User is allowed to be automatically added!", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
-#endif
                             LocalAdministratorGroup.AddPrincipal(userIdentity, null, null);
                         }
                     }
@@ -349,6 +308,7 @@ namespace SinclairCC.MakeMeAdmin
                     }
 
                     break;
+
                 /*
                 // The user has reconnected or logged on to a remote session.
                 case SessionChangeReason.RemoteConnect:

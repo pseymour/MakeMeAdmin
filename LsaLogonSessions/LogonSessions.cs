@@ -136,7 +136,16 @@ namespace LsaLogonSessions
             return returnSid;
         }
 
-        // TODO: This needs to be commented.
+        /// <summary>
+        /// Gets the group memberships for the user with the specified token.
+        /// </summary>
+        /// <param name="tokenHandle">
+        /// The handle to the user's token.
+        /// </param>
+        /// <returns>
+        /// Returns an array of security identifiers (SIDs), one for each
+        /// group of which the given user is a member.
+        /// </returns>
         public static SecurityIdentifier[] GetGroupMemberships(IntPtr tokenHandle)
         {
             int returnLength = 0;
@@ -163,21 +172,12 @@ namespace LsaLogonSessions
                     returnArray = new SecurityIdentifier[tokenGroups.GroupCount];
                     uint groupCount = tokenGroups.GroupCount;
 
-                    /*
-                    // Extract TOKEN_GROUPS.Groups, by iterating over the array and marshalling
-                    // each native SID_AND_ATTRIBUTES into a managed SID_AND_ATTR.
-                    SID_AND_ATTRIBUTES[]groups = new SID_AND_ATTRIBUTES[groupCount];
-                    */
-
                     IntPtr currentItem = new IntPtr(tokenInfo.ToInt64() + Marshal.SizeOf(typeof(TOKEN_GROUPS)) - Marshal.SizeOf(typeof(IntPtr)));
                     int sidAndAttrSize = Marshal.SizeOf(new SID_AND_ATTRIBUTES());
                     for (int i = 0; i < groupCount; i++)
                     {
                         SID_AND_ATTRIBUTES sidAndAttributes = (SID_AND_ATTRIBUTES)Marshal.PtrToStructure(new IntPtr(tokenInfo.ToInt64() + i * sidAndAttrSize + IntPtr.Size), typeof(SID_AND_ATTRIBUTES));
-                        /*
-                        groups[i] = (SID_AND_ATTRIBUTES)Marshal.PtrToStructure(currentItem, typeof(SID_AND_ATTRIBUTES));
-                        */
-                        //returnArray[i] = new SecurityIdentifier(groups[i].Sid);
+
                         IntPtr pstr = IntPtr.Zero;
                         NativeMethods.ConvertSidToStringSid(sidAndAttributes.Sid, out pstr);
                         string sidString = Marshal.PtrToStringAuto(pstr);
@@ -187,32 +187,10 @@ namespace LsaLogonSessions
                         currentItem = new IntPtr(currentItem.ToInt64() + Marshal.SizeOf(typeof(SID_AND_ATTRIBUTES)));
                     }
 
-                    //_groupSidList = new SidList(groups);
-                }
-
-                /*
-
-                // Allocate enough memory to store a TOKEN_GROUPS structure.
-                IntPtr tokenInfo = Marshal.AllocHGlobal(returnLength);
-
-                // Get the TOKEN_GROUPS structure for the token.
-                nativeReturnValue = NativeMethods.GetTokenInformation(tokenHandle, TOKEN_INFORMATION_CLASS.TokenGroups, tokenInfo, returnLength, out returnLength);
-
-                lastError = Marshal.GetLastWin32Error();
-
-                if (nativeReturnValue)
-                { // Get the TOKEN_GROUPS structure, so we can retrieve the SIDs from it.
-                    TOKEN_GROUPS tokenGroups = (TOKEN_GROUPS)Marshal.PtrToStructure(tokenInfo, typeof(TOKEN_GROUPS));
-                    returnArray = new SecurityIdentifier[tokenGroups.GroupCount];
-                    for (int i = 0; i < tokenGroups.GroupCount; i++)
-                    {
-                        returnArray[i] = new SecurityIdentifier(tokenGroups.Groups[i].Sid);
-                    }
                 }
 
                 // Free the memory that we allocated earlier for the TOKEN_GROUPS structure.
                 Marshal.FreeHGlobal(tokenInfo);
-                */
             }
 
             return returnArray;

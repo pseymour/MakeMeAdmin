@@ -37,11 +37,13 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         private static RegistryKey rootRegistryKey = Registry.LocalMachine;
 
+        /*
         // TODO: Can we provide better entropy here?
         /// <summary>
         /// An additional byte array used to encrypt the data.
         /// </summary>
         private readonly static byte[] optionalEntropy = new byte[] { 8, 6, 7, 5, 3, 0, 9 };
+        */
 
         // TODO: i18n.
         public static string[] LocalAllowedEntities
@@ -200,6 +202,17 @@ namespace SinclairCC.MakeMeAdmin
             */
         }
 
+        /// <summary>
+        /// Processes the array of strings, retrieved from the registry, containing
+        /// the syslog server information.
+        /// </summary>
+        /// <param name="serverStrings">
+        /// The array of strings retrieved from the registry.
+        /// </param>
+        /// <returns>
+        /// Returns a collection of SyslogServerInfo objects, one object for each
+        /// valid entry in the registry.
+        /// </returns>
         private static List<SyslogServerInfo> ProcessSyslogServerStrings(string[] serverStrings)
         {
             List<SyslogServerInfo> returnList = new List<SyslogServerInfo>();
@@ -445,187 +458,6 @@ namespace SinclairCC.MakeMeAdmin
         }
 
         /// <summary>
-        /// Gets the value of a multi-string stored in the registry.
-        /// </summary>
-        /// <param name="subkeyName">
-        /// The relative path of the subkey in which the value is stored.
-        /// </param>
-        /// <param name="valueName">
-        /// The name of the value to be retrieved from the registry.
-        /// </param>
-        /// <returns>
-        /// Returns the value of the multi-string from the registry.
-        /// If there is a problem retrieving the specified value from the registry, null is returned.
-        /// </returns>
-        private static string[] GetMultiString(string keyPath, string subkeyName, string valueName)
-        {
-            string[] returnValue = null;
-
-            if (!string.IsNullOrEmpty(subkeyName))
-            {
-                keyPath = System.IO.Path.Combine(keyPath, subkeyName);
-            }
-
-            System.Security.AccessControl.RegistryRights rights = System.Security.AccessControl.RegistryRights.QueryValues;
-            RegistryKey settingsKey = rootRegistryKey.OpenSubKey(keyPath, RegistryKeyPermissionCheck.ReadSubTree, rights);
-            if (settingsKey != null)
-            {
-                object regValue = settingsKey.GetValue(valueName, null);
-                if (regValue != null)
-                {
-                    returnValue = (string[])regValue;
-                }
-
-                settingsKey.Close();
-            }
-
-            return returnValue;
-        }
-
-        /*
-        private static string[] GetMultiStringEncrypted(string keyPath, string subkeyName, string valueName)
-        {
-            string[] returnValue = GetMultiString(keyPath, subkeyName, valueName);
-
-            if (returnValue != null)
-            {
-                // Decrypt all of the strings in the array.
-                for (int i = 0; i < returnValue.Length; i++)
-                {
-                    byte[] stringBytes = System.Text.Encoding.Default.GetBytes(returnValue[i]);
-                    byte[] decryptedBytes = ProtectedData.Unprotect(stringBytes, null, DataProtectionScope.LocalMachine);
-                    returnValue[i] = System.Text.Encoding.Default.GetString(decryptedBytes);
-                }
-            }
-
-            return returnValue;
-        }
-        */
-
-        /// <summary>
-        /// Stores a multi-string in the registry.
-        /// </summary>
-        /// <param name="valueName">
-        /// The name of the registry value in which the string will be stored.
-        /// </param>
-        /// <param name="value">
-        /// The array of strings to stored in the registry.
-        /// </param>
-        private static void SetMultiString(string keyPath, string subkeyName, string valueName, string[] value)
-        {
-            if (!string.IsNullOrEmpty(subkeyName))
-            {
-                keyPath = System.IO.Path.Combine(keyPath, subkeyName);
-            }
-            RegistryKey settingsKey = rootRegistryKey.CreateSubKey(keyPath, RegistryKeyPermissionCheck.ReadWriteSubTree);
-            if (settingsKey != null)
-            {
-                if (value == null)
-                {
-                    value = new string[0];
-                }
-                settingsKey.SetValue(valueName, value, RegistryValueKind.MultiString);
-                settingsKey.Flush();
-                settingsKey.Close();
-            }
-        }
-
-        /*
-        private static void SetMultiStringEncrypted(string keyPath, string subkeyName, string valueName, string[] value)
-        {
-            if (value != null)
-            {
-                // Encrypt all of the strings in the array.
-                for (int i = 0; i < value.Length; i++)
-                {
-                    byte[] stringBytes = System.Text.Encoding.Default.GetBytes(value[i]);
-                    byte[] encryptedData = ProtectedData.Protect(stringBytes, optionalEntropy, DataProtectionScope.LocalMachine);
-                    value[i] = System.Text.Encoding.Default.GetString(encryptedData);
-                }
-            }
-
-            SetMultiString(keyPath, subkeyName, valueName, value);
-        }
-        */
-
-        /*
-        /// <summary>
-        /// Encrypts a string and stores it in the registry.
-        /// </summary>
-        /// <param name="valueName">
-        /// The name of the registry value in which the encrypted string will be stored.
-        /// </param>
-        /// <param name="value">
-        /// The decrypted string to be encrypted and stored in the registry.
-        /// </param>
-        private static void SetEncryptedString(string valueName, string value)
-        {
-            RegistryKey settingsKey = rootRegistryKey.CreateSubKey(RegistryKeyPath, RegistryKeyPermissionCheck.ReadWriteSubTree);
-            if (settingsKey != null)
-            {
-                System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
-                settingsKey.Flush();
-                settingsKey.Close();
-            }
-        }
-        */
-
-        // TODO: This needs to be commented.
-        private static System.Collections.Generic.Dictionary<string, string> GetKeyValuePairs(string keyPath, string subkeyName)
-        {
-            System.Collections.Generic.Dictionary<string, string> returnData = new System.Collections.Generic.Dictionary<string, string>();
-
-            if (!string.IsNullOrEmpty(subkeyName))
-            {
-                keyPath = System.IO.Path.Combine(keyPath, subkeyName);
-            }
-
-            RegistryKey settingsKey = rootRegistryKey.OpenSubKey(keyPath, false);
-            if (settingsKey != null)
-            {
-                string valueData = string.Empty;
-                string[] valueNames = settingsKey.GetValueNames();
-                foreach (string valueName in valueNames)
-                {
-                    object regValue = settingsKey.GetValue(valueName, null);
-                    if (regValue != null)
-                    {
-                        valueData = System.Convert.ToString(regValue);
-                    }
-                    else
-                    {
-                        valueData = null;
-                    }
-                    returnData.Add(valueName, valueData);
-                }
-
-                settingsKey.Close();
-            }
-
-            return returnData;
-        }
-
-        // TODO: This needs to be commented.
-        private static void SetKeyValuePairs(string keyPath, string subkeyName, System.Collections.Generic.Dictionary<string, string> values)
-        {
-            if (!string.IsNullOrEmpty(subkeyName))
-            {
-                keyPath = System.IO.Path.Combine(keyPath, subkeyName);
-            }
-
-            RegistryKey settingsKey = rootRegistryKey.CreateSubKey(keyPath, RegistryKeyPermissionCheck.ReadWriteSubTree);
-            if (settingsKey != null)
-            {
-                foreach (string valueName in values.Keys)
-                {
-                    settingsKey.SetValue(valueName, values[valueName], RegistryValueKind.String);
-                }
-                settingsKey.Flush();
-                settingsKey.Close();
-            }
-        }
-
-        /// <summary>
         /// Gets the path of the registry key in which all of the preferred settings are stored.
         /// </summary>
         private static string PreferenceRegistryKeyPath
@@ -691,7 +523,20 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-        // TODO: This needs to be commented.
+        /// <summary>
+        /// Gets a list of the value names in the specified registry key.
+        /// </summary>
+        /// <param name="keyPath">
+        /// The path of the registry key that contains the data to be read.
+        /// </param>
+        /// <param name="subkeyName">
+        /// An optional relative path of a subkey in which the data is stored.
+        /// </param>
+        /// <returns>
+        /// Returns an array containing the names of the registry values in
+        /// the specified key.
+        /// If there is a problem retrieving the value names from the registry, a null array is returned.
+        /// </returns>
         private static string[] GetValueNames(string keyPath, string subkeyName)
         {
             string[] returnArray = null;
@@ -710,10 +555,16 @@ namespace SinclairCC.MakeMeAdmin
 
             return returnArray;
         }
-        
+
         /// <summary>
         /// Gets the value of a string stored in the registry.
         /// </summary>
+        /// <param name="keyPath">
+        /// The path of the registry key that contains the data to be read.
+        /// </param>
+        /// <param name="subkeyName">
+        /// An optional relative path of a subkey in which the data is stored.
+        /// </param>
         /// <param name="valueName">
         /// The name of the value to be retrieved from the registry.
         /// </param>
@@ -748,11 +599,17 @@ namespace SinclairCC.MakeMeAdmin
         /// <summary>
         /// Stores a string in the registry.
         /// </summary>
+        /// <param name="keyPath">
+        /// The path of the registry key that contains the data to be read.
+        /// </param>
+        /// <param name="subkeyName">
+        /// An optional relative path of a subkey in which the data is stored.
+        /// </param>
         /// <param name="valueName">
-        /// The name of the registry value in which the string will be stored.
+        /// The name of the registry value in which the data will be stored.
         /// </param>
         /// <param name="value">
-        /// The string to stored in the registry.
+        /// The value to be stored in the registry.
         /// </param>
         private static void SetString(string keyPath, string subkeyName, string valueName, string value)
         {
@@ -769,7 +626,22 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-        // TODO: This needs to be commented.
+        /// <summary>
+        /// Gets a double-word value from the registry.
+        /// </summary>
+        /// <param name="keyPath">
+        /// The path of the registry key that contains the data to be read.
+        /// </param>
+        /// <param name="subkeyName">
+        /// An optional relative path of a subkey in which the data is stored.
+        /// </param>
+        /// <param name="valueName">
+        /// The name of the value to be retrieved from the registry.
+        /// </param>
+        /// <returns>
+        /// Returns the value of the specified registry value.
+        /// If there is a problem retrieving the specified value from the registry, null is returned.
+        /// </returns>
         private static int? GetDWord(string keyPath, string subkeyName, string valueName)
         {
             int? returnValue = null;
@@ -798,11 +670,17 @@ namespace SinclairCC.MakeMeAdmin
         /// <summary>
         /// Stores a string in the registry.
         /// </summary>
+        /// <param name="keyPath">
+        /// The path of the registry key that contains the data to be read.
+        /// </param>
+        /// <param name="subkeyName">
+        /// An optional relative path of a subkey in which the data is stored.
+        /// </param>
         /// <param name="valueName">
-        /// The name of the registry value in which the string will be stored.
+        /// The name of the registry value in which the data will be stored.
         /// </param>
         /// <param name="value">
-        /// The string to stored in the registry.
+        /// The value to be stored in the registry.
         /// </param>
         private static void SetDWord(string keyPath, string subkeyName, string valueName, int? value)
         {
@@ -818,5 +696,218 @@ namespace SinclairCC.MakeMeAdmin
                 settingsKey.Close();
             }
         }
+
+        /// <summary>
+        /// Gets a collection of key-value pairs from the registry.
+        /// </summary>
+        /// <param name="keyPath">
+        /// The path of the registry key that contains the data to be read.
+        /// </param>
+        /// <param name="subkeyName">
+        /// An optional relative path of a subkey in which the data is stored.
+        /// </param>
+        /// <returns>
+        /// Returns a collection of the key-value pairs retrieved from the registry.
+        /// If there is a problem retrieving the values from the specified key, an empty collection is returned.
+        /// </returns>
+        private static System.Collections.Generic.Dictionary<string, string> GetKeyValuePairs(string keyPath, string subkeyName)
+        {
+            System.Collections.Generic.Dictionary<string, string> returnData = new System.Collections.Generic.Dictionary<string, string>();
+
+            if (!string.IsNullOrEmpty(subkeyName))
+            {
+                keyPath = System.IO.Path.Combine(keyPath, subkeyName);
+            }
+
+            RegistryKey settingsKey = rootRegistryKey.OpenSubKey(keyPath, false);
+            if (settingsKey != null)
+            {
+                string valueData = string.Empty;
+                string[] valueNames = settingsKey.GetValueNames();
+                foreach (string valueName in valueNames)
+                {
+                    object regValue = settingsKey.GetValue(valueName, null);
+                    if (regValue != null)
+                    {
+                        valueData = System.Convert.ToString(regValue);
+                    }
+                    else
+                    {
+                        valueData = null;
+                    }
+                    returnData.Add(valueName, valueData);
+                }
+
+                settingsKey.Close();
+            }
+
+            return returnData;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="keyPath">
+        /// The path of the registry key that contains the data to be read.
+        /// </param>
+        /// <param name="subkeyName">
+        /// An optional relative path of a subkey in which the data is stored.
+        /// </param>
+        /// <param name="values">
+        /// The collection of keys and values to be stored in the registry.
+        /// </param>
+        private static void SetKeyValuePairs(string keyPath, string subkeyName, System.Collections.Generic.Dictionary<string, string> values)
+        {
+            if (!string.IsNullOrEmpty(subkeyName))
+            {
+                keyPath = System.IO.Path.Combine(keyPath, subkeyName);
+            }
+
+            RegistryKey settingsKey = rootRegistryKey.CreateSubKey(keyPath, RegistryKeyPermissionCheck.ReadWriteSubTree);
+            if (settingsKey != null)
+            {
+                foreach (string valueName in values.Keys)
+                {
+                    settingsKey.SetValue(valueName, values[valueName], RegistryValueKind.String);
+                }
+                settingsKey.Flush();
+                settingsKey.Close();
+            }
+        }
+
+        /// <summary>
+        /// Gets the value of a multi-string stored in the registry.
+        /// </summary>
+        /// <param name="keyPath">
+        /// The path of the registry key that contains the data to be read.
+        /// </param>
+        /// <param name="subkeyName">
+        /// An optional relative path of a subkey in which the data is stored.
+        /// </param>
+        /// <param name="valueName">
+        /// The name of the value to be retrieved from the registry.
+        /// </param>
+        /// <returns>
+        /// Returns the value of the multi-string from the registry.
+        /// If there is a problem retrieving the specified value from the registry, null is returned.
+        /// </returns>
+        private static string[] GetMultiString(string keyPath, string subkeyName, string valueName)
+        {
+            string[] returnValue = null;
+
+            if (!string.IsNullOrEmpty(subkeyName))
+            {
+                keyPath = System.IO.Path.Combine(keyPath, subkeyName);
+            }
+
+            System.Security.AccessControl.RegistryRights rights = System.Security.AccessControl.RegistryRights.QueryValues;
+            RegistryKey settingsKey = rootRegistryKey.OpenSubKey(keyPath, RegistryKeyPermissionCheck.ReadSubTree, rights);
+            if (settingsKey != null)
+            {
+                object regValue = settingsKey.GetValue(valueName, null);
+                if (regValue != null)
+                {
+                    returnValue = (string[])regValue;
+                }
+
+                settingsKey.Close();
+            }
+
+            return returnValue;
+        }
+
+        /// <summary>
+        /// Stores a multi-string in the registry.
+        /// </summary>
+        /// <param name="keyPath">
+        /// The path of the registry key that contains the data to be read.
+        /// </param>
+        /// <param name="subkeyName">
+        /// An optional relative path of a subkey in which the data is stored.
+        /// </param>
+        /// <param name="valueName">
+        /// The name of the registry value in which the data will be stored.
+        /// </param>
+        /// <param name="value">
+        /// The array of strings to be stored in the registry.
+        /// </param>
+        private static void SetMultiString(string keyPath, string subkeyName, string valueName, string[] value)
+        {
+            if (!string.IsNullOrEmpty(subkeyName))
+            {
+                keyPath = System.IO.Path.Combine(keyPath, subkeyName);
+            }
+            RegistryKey settingsKey = rootRegistryKey.CreateSubKey(keyPath, RegistryKeyPermissionCheck.ReadWriteSubTree);
+            if (settingsKey != null)
+            {
+                if (value == null)
+                {
+                    value = new string[0];
+                }
+                settingsKey.SetValue(valueName, value, RegistryValueKind.MultiString);
+                settingsKey.Flush();
+                settingsKey.Close();
+            }
+        }
+
+        /*
+        private static string[] GetMultiStringEncrypted(string keyPath, string subkeyName, string valueName)
+        {
+            string[] returnValue = GetMultiString(keyPath, subkeyName, valueName);
+
+            if (returnValue != null)
+            {
+                // Decrypt all of the strings in the array.
+                for (int i = 0; i < returnValue.Length; i++)
+                {
+                    byte[] stringBytes = System.Text.Encoding.Default.GetBytes(returnValue[i]);
+                    byte[] decryptedBytes = ProtectedData.Unprotect(stringBytes, null, DataProtectionScope.LocalMachine);
+                    returnValue[i] = System.Text.Encoding.Default.GetString(decryptedBytes);
+                }
+            }
+
+            return returnValue;
+        }
+        */
+
+        /*
+        private static void SetMultiStringEncrypted(string keyPath, string subkeyName, string valueName, string[] value)
+        {
+            if (value != null)
+            {
+                // Encrypt all of the strings in the array.
+                for (int i = 0; i < value.Length; i++)
+                {
+                    byte[] stringBytes = System.Text.Encoding.Default.GetBytes(value[i]);
+                    byte[] encryptedData = ProtectedData.Protect(stringBytes, optionalEntropy, DataProtectionScope.LocalMachine);
+                    value[i] = System.Text.Encoding.Default.GetString(encryptedData);
+                }
+            }
+
+            SetMultiString(keyPath, subkeyName, valueName, value);
+        }
+        */
+
+        /*
+        /// <summary>
+        /// Encrypts a string and stores it in the registry.
+        /// </summary>
+        /// <param name="valueName">
+        /// The name of the registry value in which the encrypted string will be stored.
+        /// </param>
+        /// <param name="value">
+        /// The decrypted string to be encrypted and stored in the registry.
+        /// </param>
+        private static void SetEncryptedString(string valueName, string value)
+        {
+            RegistryKey settingsKey = rootRegistryKey.CreateSubKey(RegistryKeyPath, RegistryKeyPermissionCheck.ReadWriteSubTree);
+            if (settingsKey != null)
+            {
+                System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
+                settingsKey.Flush();
+                settingsKey.Close();
+            }
+        }
+        */
     }
 }

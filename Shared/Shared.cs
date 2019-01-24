@@ -188,13 +188,9 @@ namespace SinclairCC.MakeMeAdmin
                     }
 
                     // Translate the SID to an NT Account (Domain\User), and check the resulting values.
-                    if (sid.IsValidTargetType(typeof(NTAccount)))
+                    if (ArrayContainsString(deniedSidsList, GetAccountNameFromSID(sid)))
                     {
-                        NTAccount account = (NTAccount)sid.Translate(typeof(NTAccount));
-                        if (ArrayContainsString(deniedSidsList, account.Value))
-                        {
-                            return false;
-                        }
+                        return false;
                     }
                 }
             }
@@ -228,18 +224,65 @@ namespace SinclairCC.MakeMeAdmin
                     }
 
                     // Translate the SID to an NT Account (Domain\User), and check the resulting values.
-                    if (sid.IsValidTargetType(typeof(NTAccount)))
+                    if (ArrayContainsString(allowedSidsList, GetAccountNameFromSID(sid)))
                     {
-                        NTAccount account = (NTAccount)sid.Translate(typeof(NTAccount));
-                        if (ArrayContainsString(allowedSidsList, account.Value))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
 
                 // The user was not found in the allowed list, so the user is not authorized.
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// Gets the human-friendly account name corresponding to a givem
+        /// security identifier (SID).
+        /// </summary>
+        /// <param name="sid">
+        /// The security identifier (SID) for which the account name should be retrieved.
+        /// </param>
+        /// <returns>
+        /// Returns a string containing the name of the account corresponding to the given
+        /// SID. If the account name cannot be determined or the SID does not belong to a
+        /// valid Windows account, null is returned.
+        /// </returns>
+        public static string GetAccountNameFromSID(SecurityIdentifier sid)
+        {
+            if (sid.IsAccountSid() && sid.IsValidTargetType(typeof(NTAccount)))
+            {
+                try
+                {
+                    try
+                    {
+                        NTAccount account = (NTAccount)sid.Translate(typeof(NTAccount));
+                        return account.Value;
+                    }
+                    catch (System.SystemException)
+                    {
+                        return null;
+                    }
+                }
+                catch (IdentityNotMappedException)
+                { // Some or all identity references could not be translated.
+                    return null;
+                }
+                catch (System.ArgumentNullException)
+                { // The target translation type is null.
+                    return null;
+                }
+                catch (System.ArgumentException)
+                { // The target translation type is not an IdentityReference type.
+                    return null;
+                }
+                catch (System.SystemException)
+                { // A Win32 error code was returned.
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
             }
         }
     }

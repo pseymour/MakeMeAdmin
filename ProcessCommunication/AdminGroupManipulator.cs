@@ -25,12 +25,10 @@ namespace SinclairCC.MakeMeAdmin
     using System.ServiceModel.Channels;
     using System.Security.Principal;
 
-    // TODO: Set the exception details back to false.
-
     /// <summary>
     /// This class implements the WCF service contract.
     /// </summary>
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, IncludeExceptionDetailInFaults = true)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, IncludeExceptionDetailInFaults = false)]
     public class AdminGroupManipulator : IAdminGroup
     {
         /// <summary>

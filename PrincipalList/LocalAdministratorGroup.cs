@@ -193,13 +193,13 @@ namespace SinclairCC.MakeMeAdmin
             if (result == 0)
             {
                 // TODO: i18n.
-                ApplicationLog.WriteEvent(string.Format("Principal {0} ({1}) added to the Administrators group.", userSid, GetAccountNameFromSID(userSid)), EventID.UserAddedToAdminsSuccess, System.Diagnostics.EventLogEntryType.Information);
+                ApplicationLog.WriteEvent(string.Format("Principal {0} ({1}) added to the Administrators group.", userSid, Shared.GetAccountNameFromSID(userSid)), EventID.UserAddedToAdminsSuccess, System.Diagnostics.EventLogEntryType.Information);
                 return true;
             }
             else
             {
                 // TODO: i18n.
-                ApplicationLog.WriteEvent(string.Format("Adding principal {0} ({1}) to the Administrators group returned error code {2}.", userSid, GetAccountNameFromSID(userSid), result), EventID.UserAddedToAdminsFailure, System.Diagnostics.EventLogEntryType.Warning);
+                ApplicationLog.WriteEvent(string.Format("Adding principal {0} ({1}) to the Administrators group returned error code {2}.", userSid, Shared.GetAccountNameFromSID(userSid), result), EventID.UserAddedToAdminsFailure, System.Diagnostics.EventLogEntryType.Warning);
                 return false;
             }
         }
@@ -225,7 +225,7 @@ namespace SinclairCC.MakeMeAdmin
                 {
                     if (sid == userSid)
                     {
-                        string accountName = GetAccountNameFromSID(userSid);
+                        string accountName = Shared.GetAccountNameFromSID(userSid);
                         int result = RemoveLocalGroupMembers(LocalAdminGroup.SamAccountName, userSid);
                         if (result == 0)
                         {
@@ -309,7 +309,7 @@ namespace SinclairCC.MakeMeAdmin
                             else
                             { // The principal's administrator rights have expired.
 #if DEBUG
-                                string accountName = GetAccountNameFromSID(addedPrincipalList[i]);
+                                string accountName = Shared.GetAccountNameFromSID(addedPrincipalList[i]);
                                 ApplicationLog.WriteEvent(string.Format("Principal {0} ({1}) has been removed from the Administrators group by an outside process. Removing the principal from Make Me Admin's list.", addedPrincipalList[i], string.IsNullOrEmpty(accountName) ? "unknown account" : accountName), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
 #endif
                                 LocalAdministratorGroup.RemovePrincipal(addedPrincipalList[i], RemovalReason.Timeout);
@@ -359,7 +359,7 @@ namespace SinclairCC.MakeMeAdmin
                         { // The principal's rights expire at some point.
                             if (expirationTime.Value > DateTime.Now)
                             { // The principal's administrator rights expire in the future.
-                                string accountName = GetAccountNameFromSID(addedPrincipalList[i]);
+                                string accountName = Shared.GetAccountNameFromSID(addedPrincipalList[i]);
                                 if (Settings.OverrideRemovalByOutsideProcess)
                                 {
                                     // TODO: i18n.
@@ -426,57 +426,6 @@ namespace SinclairCC.MakeMeAdmin
                         }
                     }
                 }
-            }
-        }
-
-        /// <summary>
-        /// Gets the human-friendly account name corresponding to a givem
-        /// security identifier (SID).
-        /// </summary>
-        /// <param name="sid">
-        /// The security identifier (SID) for which the account name should be retrieved.
-        /// </param>
-        /// <returns>
-        /// Returns a string containing the name of the account corresponding to the given
-        /// SID. If the account name cannot be determined or the SID does not belong to a
-        /// valid Windows account, null is returned.
-        /// </returns>
-        private static string GetAccountNameFromSID(SecurityIdentifier sid)
-        {
-            if (sid.IsAccountSid() && sid.IsValidTargetType(typeof(NTAccount)))
-            {
-                try
-                {
-                    try
-                    {
-                        NTAccount account = (NTAccount)sid.Translate(typeof(NTAccount));
-                        return account.Value;
-                    }
-                    catch (System.SystemException)
-                    {
-                        return null;
-                    }
-                }
-                catch (IdentityNotMappedException)
-                { // Some or all identity references could not be translated.
-                    return null;
-                }
-                catch (System.ArgumentNullException)
-                { // The target translation type is null.
-                    return null;
-                }
-                catch (System.ArgumentException)
-                { // The target translation type is not an IdentityReference type.
-                    return null;
-                }
-                catch (System.SystemException)
-                { // A Win32 error code was returned.
-                    return null;
-                }
-            }
-            else
-            {
-                return null;
             }
         }
 
