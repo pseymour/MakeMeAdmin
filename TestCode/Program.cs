@@ -675,7 +675,7 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
             */
 
             EncryptedSettings settings = new EncryptedSettings(EncryptedSettings.SettingsFilePath);
-            settings.AddPrincipal(System.Security.Principal.WindowsIdentity.GetCurrent().User, DateTime.Now.AddHours(4), null);
+            settings.AddPrincipal(System.Security.Principal.WindowsIdentity.GetCurrent(), DateTime.Now.AddHours(4), null);
 
             /*
 

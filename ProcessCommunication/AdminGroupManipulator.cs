@@ -25,10 +25,12 @@ namespace SinclairCC.MakeMeAdmin
     using System.ServiceModel.Channels;
     using System.Security.Principal;
 
+    // TODO: Set the exception details back to false.
+
     /// <summary>
     /// This class implements the WCF service contract.
     /// </summary>
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, IncludeExceptionDetailInFaults = false)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, IncludeExceptionDetailInFaults = true)]
     public class AdminGroupManipulator : IAdminGroup
     {
         /// <summary>
@@ -52,6 +54,12 @@ namespace SinclairCC.MakeMeAdmin
                     if (OperationContext.Current.IncomingMessageProperties.ContainsKey(RemoteEndpointMessageProperty.Name))
                     {
                         remoteAddress = ((RemoteEndpointMessageProperty)OperationContext.Current.IncomingMessageProperties[RemoteEndpointMessageProperty.Name]).Address;
+                        if (remoteAddress != null)
+                        {
+                            // TODO: i18n.
+                            ApplicationLog.WriteEvent(string.Format("Request was sent from host {0}.", remoteAddress), EventID.RemoteRequestInformation, System.Diagnostics.EventLogEntryType.Information);
+                        }
+
                     }
                 }
             }

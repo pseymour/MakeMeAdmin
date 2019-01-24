@@ -25,8 +25,6 @@ namespace SinclairCC.MakeMeAdmin
     using System.Linq;
     using System.Security.Principal;
 
-    // TODO: How do we know we are being passed a valid SID?
-
     /// <summary>
     /// Maintains a collection of security principals which have been added to the Administrators group.
     /// </summary>
@@ -54,6 +52,7 @@ namespace SinclairCC.MakeMeAdmin
             return item.PrincipalSid;
         }
 
+        /*
         /// <summary>
         /// Adds a principal's security ID (SID) to the collection.
         /// </summary>
@@ -77,6 +76,7 @@ namespace SinclairCC.MakeMeAdmin
                 this.Add(new Principal(principalSecurityIdentifier, expirationTime, remoteAddress));
             }
         }
+        */
                 
         /// <summary>
         /// Removes a principal's security ID (SID) from the collection.

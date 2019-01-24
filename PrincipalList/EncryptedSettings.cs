@@ -1,7 +1,6 @@
 namespace SinclairCC.MakeMeAdmin
 {
     using System;
-    /* using System.Collections.Specialized; */
     using System.Collections.Generic;
     using System.Security.Cryptography;
     using System.Security.Principal;
@@ -10,7 +9,7 @@ namespace SinclairCC.MakeMeAdmin
 
 
     /// <summary>
-    /// This class allows simplified management of application settings.
+    /// This class stores application data in an encrypted file.
     /// </summary>
     [Serializable]
     [XmlRootAttribute("applicationSettings")]
@@ -21,15 +20,20 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         private string filePath;
 
-        /* [XmlElement("addedPrincipals")] */
+        /// <summary>
+        /// The list of security principals that have been added to the
+        /// local Administrators group.
+        /// </summary>
         [XmlArray("addedPrincipals")]
         [XmlArrayItem("principal")]
         public PrincipalList AddedPrincipals { get; set; }
-
-
+        
         /// <summary>
-        /// Initializes a new instance of the XmlAppSettings class.
+        /// Constructor.
         /// </summary>
+        /// <remarks>
+        /// This constructor is used by the serialization process.
+        /// </remarks>
         public EncryptedSettings()
         {
             this.filePath = EncryptedSettings.SettingsFilePath;
@@ -40,10 +44,10 @@ namespace SinclairCC.MakeMeAdmin
         }
 
         /// <summary>
-        /// Initializes a new instance of the XmlAppSettings class.
+        /// Constructor.
         /// </summary>
         /// <param name="filePath">
-        /// The path of a file containing an XML-serialized XmlAppSettings object.
+        /// The path of a file containing an XML-serialized EncryptedSettings object.
         /// </param>
         public EncryptedSettings(string filePath)
         {
@@ -73,27 +77,36 @@ namespace SinclairCC.MakeMeAdmin
         {
             get
             {
-                const string XmlAppSettingsFile = "settings.xml";
+                const string EncryptedSettingsFile = "security principals.xml";
                 string filePath = System.IO.Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Make Me Admin");
-                /*
-                filePath = System.IO.Path.Combine(filePath, "0.1.0");
-                */
                 System.IO.Directory.CreateDirectory(filePath);
-                filePath = System.IO.Path.Combine(filePath, XmlAppSettingsFile);
+                filePath = System.IO.Path.Combine(filePath, EncryptedSettingsFile);
                 return filePath;
             }
         }
-                
-        public void AddPrincipal(SecurityIdentifier principalSecurityIdentifier, DateTime? expirationTime, string remoteAddress)
+
+        /// <summary>
+        /// Adds a principal to the list.
+        /// </summary>
+        /// <param name="userIdentity">
+        /// 
+        /// </param>
+        /// <param name="expirationTime">
+        /// 
+        /// </param>
+        /// <param name="remoteAddress">
+        /// 
+        /// </param>
+        public void AddPrincipal(WindowsIdentity userIdentity, DateTime? expirationTime, string remoteAddress)
         {
-            if (this.AddedPrincipals.Contains(principalSecurityIdentifier))
+            if (this.AddedPrincipals.Contains(userIdentity.User))
             {
-                if (this.AddedPrincipals[principalSecurityIdentifier].ExpirationTime.HasValue)
+                if (this.AddedPrincipals[userIdentity.User].ExpirationTime.HasValue)
                 {
                     if (expirationTime.HasValue)
                     {
                         // Choose the earlier of the two expiration times.
-                        this.AddedPrincipals[principalSecurityIdentifier].ExpirationTime = DateTime.FromFileTime(Math.Min(expirationTime.Value.ToFileTime(), this.AddedPrincipals[principalSecurityIdentifier].ExpirationTime.Value.ToFileTime()));
+                        this.AddedPrincipals[userIdentity.User].ExpirationTime = DateTime.FromFileTime(Math.Min(expirationTime.Value.ToFileTime(), this.AddedPrincipals[userIdentity.User].ExpirationTime.Value.ToFileTime()));
                     }
                     else
                     { // expirationTime doesn't have a value, but the currently-stored principal does.
@@ -102,15 +115,17 @@ namespace SinclairCC.MakeMeAdmin
                 }
                 else if (expirationTime.HasValue)
                 { // The currently-stored principal does not have an expiration value, but expirationTime does.
-                    this.AddedPrincipals[principalSecurityIdentifier].ExpirationTime = expirationTime;
+                    this.AddedPrincipals[userIdentity.User].ExpirationTime = expirationTime;
                 }
             }
             else
             {
-                this.AddedPrincipals.Add(new Principal(principalSecurityIdentifier, expirationTime, remoteAddress));
+                /* this.AddedPrincipals.Add(new Principal(principalSecurityIdentifier, expirationTime, remoteAddress)); */
+                this.AddedPrincipals.Add(new Principal(userIdentity, expirationTime, remoteAddress));
             }
             this.Save();
         }
+        
 
         public void RemovePrincipal(SecurityIdentifier principalSecurityIdentifier)
         {
@@ -167,7 +182,7 @@ namespace SinclairCC.MakeMeAdmin
         /*
         public Dictionary<SecurityIdentifier, DateTime?> GetAddedPrincipals()
         {
-            XmlAppSettings encryptedSettings = new XmlAppSettings();
+            EncryptedSettings encryptedSettings = new EncryptedSettings();
             return encryptedSettings.AddedPrincipals;
         }
         */
@@ -206,7 +221,7 @@ namespace SinclairCC.MakeMeAdmin
 
                 System.IO.MemoryStream plaintextStream = new System.IO.MemoryStream();
                 System.Xml.XmlTextWriter plaintextWriter = new System.Xml.XmlTextWriter(plaintextStream, System.Text.Encoding.Unicode);
-                XmlSerializer serializer = XmlAppSettings.Serializer;
+                XmlSerializer serializer = EncryptedSettings.Serializer;
                 lock (serializer)
                 {
                     plaintextWriter.Indentation = 0;
@@ -232,6 +247,8 @@ namespace SinclairCC.MakeMeAdmin
                 throw;
             }
             */
+            
+            // This is the unencrypted version.
             try
             {
                 System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(filePath));
@@ -287,7 +304,8 @@ namespace SinclairCC.MakeMeAdmin
                 reader.Close();
                 plaintextStream.Close();
                 */
-
+                
+                // This is the unencrypted version.
                 EncryptedSettings deserializedSettings = null;
                 System.Xml.XmlTextReader reader = new XmlTextReader(filePath);
                 XmlSerializer serializer = EncryptedSettings.Serializer;

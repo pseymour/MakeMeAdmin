@@ -29,31 +29,94 @@ namespace SinclairCC.MakeMeAdmin
 {
     internal class NativeMethods
     {
-        //[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+        /// <summary>
+        /// Contains the security identifier (SID) associated with a local group member.
+        /// </summary>
         internal struct LOCALGROUP_MEMBERS_INFO_0
         {
+            /// <summary>
+            /// Pointer to a SID structure that contains the security identifier
+            /// (SID) of the local group member.
+            /// </summary>
             public IntPtr lgrmi0_sid;
         }
 
+        /// <summary>
+        /// Frees the memory that the NetApiBufferAllocate function allocates.
+        /// </summary>
+        /// <param name="Buffer">
+        /// A pointer to a buffer returned previously by another network management
+        /// function or memory allocated by calling the NetApiBufferAllocate function.
+        /// </param>
+        /// <returns>
+        /// If the function succeeds, the return value is NERR_Success.
+        /// If the function fails, the return value is a system error code.
+        /// </returns>
         [DllImport("Netapi32.dll", SetLastError = true)]
         internal static extern int NetApiBufferFree(IntPtr Buffer);
 
+        /// <summary>
+        /// Adds membership of one or more existing user accounts or global group accounts to an existing local group. 
+        /// </summary>
+        /// <param name="servername">
+        /// The DNS or NetBIOS name of the remote server on which the function is to execute.
+        /// If this parameter is NULL, the local computer is used.
+        /// </param>
+        /// <param name="localgroupname">
+        /// The name of the local group to which the specified users or global groups will be added.
+        /// </param>
+        /// <param name="level">
+        /// Specifies the information level of the data.
+        /// </param>
+        /// <param name="newMembers">
+        /// The data for the new local group members.
+        /// </param>
+        /// <param name="totalentries">
+        /// Specifies the number of entries in the newMembers parameter.
+        /// </param>
+        /// <returns>
+        /// If the function succeeds, the return value is NERR_Success.
+        /// If the function fails, the return value can be one of a few error codes (see Microsoft documentation).
+        /// </returns>
         [DllImport("NetApi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         internal static extern Int32 NetLocalGroupAddMembers(
             [MarshalAs(UnmanagedType.LPWStr)] string servername,
             [MarshalAs(UnmanagedType.LPWStr)] string localgroupname,
-            int level, //info level 
+            int level,
             ref LOCALGROUP_MEMBERS_INFO_0 newMembers,
-            int totalentries //number of entries 
+            int totalentries
             );
 
+        /// <summary>
+        /// Removes one or more members from an existing local group. Local group members can be users or global groups.
+        /// </summary>
+        /// <param name="servername">
+        /// The DNS or NetBIOS name of the remote server on which the function is to execute.
+        /// If this parameter is NULL, the local computer is used.
+        /// </param>
+        /// <param name="localgroupname">
+        /// The name of the local group from which the specified users or global groups will be removed. 
+        /// </param>
+        /// <param name="level">
+        /// Specifies the information level of the data.
+        /// </param>
+        /// <param name="newMembers">
+        /// The data for the group members to be removed.
+        /// </param>
+        /// <param name="totalentries">
+        /// Specifies the number of entries in the newMembers parameter.
+        /// </param>
+        /// <returns>
+        /// If the function succeeds, the return value is NERR_Success.
+        /// If the function fails, the return value can be one of a few error codes (see Microsoft documentation).
+        /// </returns>
         [DllImport("NetApi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         internal static extern Int32 NetLocalGroupDelMembers(
             [MarshalAs(UnmanagedType.LPWStr)] string servername,
             [MarshalAs(UnmanagedType.LPWStr)] string localgroupname,
-            int level, //info level 
+            int level,
             ref LOCALGROUP_MEMBERS_INFO_0 newMembers,
-            int totalentries //number of entries 
+            int totalentries
             );
 
         /// <summary>
