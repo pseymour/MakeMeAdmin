@@ -136,7 +136,7 @@ namespace SinclairCC.MakeMeAdmin
             // Submit a request for adminsitrator rights on the remote host.
             try
             {
-                channel.AddPrincipalToAdministratorsGroup();
+                channel.AddUserToAdministratorsGroup();
             }
             catch (System.ServiceModel.EndpointNotFoundException)
             {

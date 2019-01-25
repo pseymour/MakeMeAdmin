@@ -21,13 +21,13 @@
 namespace SinclairCC.MakeMeAdmin
 {
     /// <summary>
-    /// This enumeration contains all of the reasons that a principal is removed
+    /// This enumeration contains all of the reasons that a user is removed
     /// from the Administrators group.
     /// </summary>
     public enum RemovalReason : int
     {
         /// <summary>
-        /// The principal's rights expired.
+        /// The user's rights expired.
         /// </summary>
         Timeout,
 

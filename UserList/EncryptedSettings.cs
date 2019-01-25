@@ -1,7 +1,6 @@
-namespace EncryptedStorage
+namespace SinclairCC.MakeMeAdmin
 {
     using System;
-    /* using System.Collections.Specialized; */
     using System.Collections.Generic;
     using System.Security.Cryptography;
     using System.Security.Principal;
@@ -10,44 +9,52 @@ namespace EncryptedStorage
 
 
     /// <summary>
-    /// This class allows simplified management of application settings.
+    /// This class stores application data in an encrypted file.
     /// </summary>
     [Serializable]
     [XmlRootAttribute("applicationSettings")]
-    public class XmlAppSettings
+    public class EncryptedSettings
     {
         /// <summary>
         /// The path of the file containing the settings.
         /// </summary>
         private string filePath;
 
-        /* [XmlElement("addedPrincipals")] */
-        [XmlArray("addedPrincipals")]
-        [XmlArrayItem("principal")]
-        public PrincipalList AddedPrincipals { get; set; }
-
-
         /// <summary>
-        /// Initializes a new instance of the XmlAppSettings class.
+        /// The list of users that have been added to the
+        /// local Administrators group.
         /// </summary>
-        public XmlAppSettings()
+        [XmlArray("addedUsers")]
+        [XmlArrayItem("user")]
+        public UserList AddedUsers { get; set; }
+        
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <remarks>
+        /// This constructor is used by the serialization process.
+        /// </remarks>
+        public EncryptedSettings()
         {
-            this.filePath = XmlAppSettings.SettingsFilePath;
-
-            if (this.AddedPrincipals == null)
+            this.filePath = EncryptedSettings.SettingsFilePath;
+            if (this.AddedUsers == null)
             {
-                this.AddedPrincipals = new PrincipalList();
+                this.AddedUsers = new UserList();
             }
         }
 
         /// <summary>
-        /// Initializes a new instance of the XmlAppSettings class.
+        /// Constructor.
         /// </summary>
         /// <param name="filePath">
-        /// The path of a file containing an XML-serialized XmlAppSettings object.
+        /// The path of a file containing an XML-serialized EncryptedSettings object.
         /// </param>
-        public XmlAppSettings(string filePath)
+        public EncryptedSettings(string filePath)
         {
+            if (this.AddedUsers == null)
+            {
+                this.AddedUsers = new UserList();
+            }
             this.filePath = filePath;
             if (System.IO.File.Exists(filePath))
             {
@@ -55,9 +62,9 @@ namespace EncryptedStorage
             }
             else
             {
-                if (this.AddedPrincipals == null)
+                if (this.AddedUsers == null)
                 {
-                    this.AddedPrincipals = new PrincipalList();
+                    this.AddedUsers = new UserList();
                 }
                 this.Save(filePath);
             }
@@ -66,87 +73,117 @@ namespace EncryptedStorage
         /// <summary>
         /// Gets the path of the file in which settings are stored.
         /// </summary>
-        private static string SettingsFilePath
+        public static string SettingsFilePath
         {
             get
             {
-                const string XmlAppSettingsFile = "settings.xml";
-                string filePath = System.IO.Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Poop Crapson");
-                /*
-                filePath = System.IO.Path.Combine(filePath, "Schedule Data Viewer");
-                filePath = System.IO.Path.Combine(filePath, "0.1.0");
-                */
+                const string EncryptedSettingsFile = "users.xml";
+                string filePath = System.IO.Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Make Me Admin");
                 System.IO.Directory.CreateDirectory(filePath);
-                filePath = System.IO.Path.Combine(filePath, XmlAppSettingsFile);
+                filePath = System.IO.Path.Combine(filePath, EncryptedSettingsFile);
                 return filePath;
             }
         }
 
-        /*
-        public System.Collections.Generic.SortedList<string, DateTime?> SerializablePrincipals
+        /// <summary>
+        /// Adds a user to the list.
+        /// </summary>
+        /// <param name="userIdentity">
+        /// 
+        /// </param>
+        /// <param name="expirationTime">
+        /// 
+        /// </param>
+        /// <param name="remoteAddress">
+        /// 
+        /// </param>
+        public void AddUser(WindowsIdentity userIdentity, DateTime? expirationTime, string remoteAddress)
         {
-            get
+            if (this.AddedUsers.Contains(userIdentity.User))
             {
-                SortedList<string, DateTime?> returnDictionary = new SortedList<string, DateTime?>();
-                foreach (SecurityIdentifier sid in AddedPrincipals.Keys)
-                {
-                    returnDictionary.Add(sid.Value, AddedPrincipals[sid]);
-                }
-                return returnDictionary;
-            }
-            set
-            {
-            }
-        }
-        */
-
-
-        
-        public void AddPrincipal(SecurityIdentifier principalSecurityIdentifier, DateTime? expirationTime)
-        {
-            if (this.AddedPrincipals.Contains(principalSecurityIdentifier))
-            {
-                if (this.AddedPrincipals[principalSecurityIdentifier].ExpirationTime.HasValue)
+                if (this.AddedUsers[userIdentity.User].ExpirationTime.HasValue)
                 {
                     if (expirationTime.HasValue)
                     {
                         // Choose the earlier of the two expiration times.
-                        this.AddedPrincipals[principalSecurityIdentifier].ExpirationTime = DateTime.FromFileTime(Math.Min(expirationTime.Value.ToFileTime(), this.AddedPrincipals[principalSecurityIdentifier].ExpirationTime.Value.ToFileTime()));
+                        this.AddedUsers[userIdentity.User].ExpirationTime = DateTime.FromFileTime(Math.Min(expirationTime.Value.ToFileTime(), this.AddedUsers[userIdentity.User].ExpirationTime.Value.ToFileTime()));
                     }
                     else
-                    { // expirationTime doesn't have a value, but the currently-stored principal does.
+                    { // expirationTime doesn't have a value, but the currently-stored user does.
                         // Err on the side of safety and keep the currently-stored value.
                     }
                 }
                 else if (expirationTime.HasValue)
-                { // The currently-stored principal does not have an expiration value, but expirationTime does.
-                    this.AddedPrincipals[principalSecurityIdentifier].ExpirationTime = expirationTime;
+                { // The currently-stored user does not have an expiration value, but expirationTime does.
+                    this.AddedUsers[userIdentity.User].ExpirationTime = expirationTime;
                 }
             }
             else
             {
-                this.AddedPrincipals.Add(new Principal(principalSecurityIdentifier, expirationTime, null));
+                /* this.AddedUsers.Add(new User(userSecurityIdentifier, expirationTime, remoteAddress)); */
+                this.AddedUsers.Add(new User(userIdentity, expirationTime, remoteAddress));
             }
             this.Save();
         }
+        
 
-        /*
-        public void RemovePrincipal(SecurityIdentifier principalSecurityIdentifier)
+        public void RemoveUser(SecurityIdentifier userSecurityIdentifier)
         {
-            XmlAppSettings encryptedSettings = new XmlAppSettings();
-            if (encryptedSettings.AddedPrincipals.ContainsKey(principalSecurityIdentifier))
+            if (this.AddedUsers.Contains(userSecurityIdentifier))
             {
-                encryptedSettings.AddedPrincipals.Remove(principalSecurityIdentifier);
-                encryptedSettings.Save();
+                this.AddedUsers.Remove(userSecurityIdentifier);
+                this.Save();
             }
         }
-        */
+
+        public DateTime? GetExpirationTime(SecurityIdentifier sid)
+        {
+            if (this.AddedUsers.Contains(sid))
+            {
+                return this.AddedUsers[sid].ExpirationTime;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        [XmlIgnore]
+        public SecurityIdentifier[] AddedUserSIDs
+        {
+            get
+            {
+                return this.AddedUsers.GetSIDs();
+            }
+        }
+
+        public bool ContainsSID(SecurityIdentifier sid)
+        {
+            return this.AddedUsers.Contains(sid);
+        }
+
+        public User[] GetExpiredUsers()
+        {
+            if (this.AddedUsers == null)
+            {
+                return null;
+            }
+            else
+            {
+                return this.AddedUsers.GetExpiredUsers();
+            }
+        }
+
+        public bool IsRemote(SecurityIdentifier sid)
+        {
+            return this.AddedUsers.IsRemote(sid);
+        }
 
         /*
-        public Dictionary<SecurityIdentifier, DateTime?> GetAddedPrincipals()
+        public Dictionary<SecurityIdentifier, DateTime?> GetAddedUsers()
         {
-            XmlAppSettings encryptedSettings = new XmlAppSettings();
-            return encryptedSettings.AddedPrincipals;
+            EncryptedSettings encryptedSettings = new EncryptedSettings();
+            return encryptedSettings.AddedUsers;
         }
         */
 
@@ -158,7 +195,7 @@ namespace EncryptedStorage
         {
             get
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(XmlAppSettings));
+                XmlSerializer serializer = new XmlSerializer(typeof(EncryptedSettings));
                 return serializer;
             }
         }
@@ -169,7 +206,7 @@ namespace EncryptedStorage
         /// </summary>
         private void Save()
         {
-            this.Save(XmlAppSettings.SettingsFilePath);
+            this.Save(EncryptedSettings.SettingsFilePath);
         }
 
         /// <summary>
@@ -184,7 +221,7 @@ namespace EncryptedStorage
 
                 System.IO.MemoryStream plaintextStream = new System.IO.MemoryStream();
                 System.Xml.XmlTextWriter plaintextWriter = new System.Xml.XmlTextWriter(plaintextStream, System.Text.Encoding.Unicode);
-                XmlSerializer serializer = XmlAppSettings.Serializer;
+                XmlSerializer serializer = EncryptedSettings.Serializer;
                 lock (serializer)
                 {
                     plaintextWriter.Indentation = 0;
@@ -210,11 +247,13 @@ namespace EncryptedStorage
                 throw;
             }
             */
+            
+            // This is the unencrypted version.
             try
             {
                 System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(filePath));
                 System.Xml.XmlTextWriter writer = new System.Xml.XmlTextWriter(filePath, System.Text.Encoding.Unicode);
-                XmlSerializer serializer = XmlAppSettings.Serializer;
+                XmlSerializer serializer = EncryptedSettings.Serializer;
                 lock (serializer)
                 {
                     writer.Indentation = 1;
@@ -239,6 +278,7 @@ namespace EncryptedStorage
         {
             if (System.IO.File.Exists(filePath))
             {
+                /*
                 byte[] buffer = new byte[128];
                 int bytesRead = int.MinValue;
                 System.IO.MemoryStream ciphertextMemoryStream = new System.IO.MemoryStream();
@@ -253,21 +293,33 @@ namespace EncryptedStorage
                 byte[] plaintextBytes = System.Security.Cryptography.ProtectedData.Unprotect(ciphertextBytes, null, DataProtectionScope.LocalMachine);
                 ciphertextMemoryStream.Close();
 
-                XmlAppSettings deserializedSettings = null;
+                EncryptedSettings deserializedSettings = null;
                 System.IO.MemoryStream plaintextStream = new System.IO.MemoryStream(plaintextBytes);
                 System.Xml.XmlTextReader reader = new XmlTextReader(plaintextStream);
-                XmlSerializer serializer = XmlAppSettings.Serializer;
+                XmlSerializer serializer = EncryptedSettings.Serializer;
                 lock (serializer)
                 {
-                    deserializedSettings = (XmlAppSettings)serializer.Deserialize(reader);
+                    deserializedSettings = (EncryptedSettings)serializer.Deserialize(reader);
                 }
                 reader.Close();
                 plaintextStream.Close();
+                */
+                
+                // This is the unencrypted version.
+                EncryptedSettings deserializedSettings = null;
+                System.Xml.XmlTextReader reader = new XmlTextReader(filePath);
+                XmlSerializer serializer = EncryptedSettings.Serializer;
+                lock (serializer)
+                {
+                    deserializedSettings = (EncryptedSettings)serializer.Deserialize(reader);
+                }
+                reader.Close();
 
-                this.AddedPrincipals = deserializedSettings.AddedPrincipals;
+                this.AddedUsers = deserializedSettings.AddedUsers;
             }
             else
             {
+                this.AddedUsers = new UserList();
                 this.Save(filePath);
             }
         }

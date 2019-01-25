@@ -26,60 +26,60 @@ namespace SinclairCC.MakeMeAdmin
     using System.Security.Principal;
 
     /// <summary>
-    /// Maintains a collection of security principals which have been added to the Administrators group.
+    /// Maintains a collection of users which have been added to the Administrators group.
     /// </summary>
     [Serializable]
-    public class PrincipalList : KeyedCollection<SecurityIdentifier, Principal>
+    public class UserList : KeyedCollection<SecurityIdentifier, User>
     {
         /// <summary>
         /// Constructor.
         /// </summary>
-        public PrincipalList() : base()
+        public UserList() : base()
         {
         }
 
         /// <summary>
-        /// Gets the key (security identifier) for the specified principal.
+        /// Gets the key (security identifier) for the specified user.
         /// </summary>
         /// <param name="item">
-        /// The principal whose SID is to be returned.
+        /// The user whose SID is to be returned.
         /// </param>
         /// <returns>
-        /// Returns the Security Identifier (SID) of the given principal.
+        /// Returns the Security Identifier (SID) of the given user.
         /// </returns>
-        protected override SecurityIdentifier GetKeyForItem(Principal item)
+        protected override SecurityIdentifier GetKeyForItem(User item)
         {
-            return item.PrincipalSid;
+            return item.Sid;
         }
 
         /*
         /// <summary>
-        /// Adds a principal's security ID (SID) to the collection.
+        /// Adds a user's security ID (SID) to the collection.
         /// </summary>
-        /// <param name="principalSecurityIdentifier">
+        /// <param name="userSecurityIdentifier">
         /// The SID to be added to the collection.
         /// </param>
         /// <param name="expirationTime">
-        /// The date and time at which the principal's administrator rights expire.
+        /// The date and time at which the user's administrator rights expire.
         /// </param>
         /// <param name="remoteAddress">
         /// The address of the remote computer from which a request for administrator rights came.
         /// </param>
-        internal void AddSID(SecurityIdentifier principalSecurityIdentifier, DateTime? expirationTime, string remoteAddress)
+        internal void AddSID(SecurityIdentifier userSecurityIdentifier, DateTime? expirationTime, string remoteAddress)
         {
-            if (this.Contains(principalSecurityIdentifier))
+            if (this.Contains(userSecurityIdentifier))
             {
-                this[principalSecurityIdentifier].RemoteAddress = remoteAddress;
+                this[userSecurityIdentifier].RemoteAddress = remoteAddress;
             }
             else
             {
-                this.Add(new Principal(principalSecurityIdentifier, expirationTime, remoteAddress));
+                this.Add(new User(userSecurityIdentifier, expirationTime, remoteAddress));
             }
         }
         */
                 
         /// <summary>
-        /// Removes a principal's security ID (SID) from the collection.
+        /// Removes a user's security ID (SID) from the collection.
         /// </summary>
         /// <param name="sid">
         /// The SID to be removed from the collection.
@@ -93,36 +93,36 @@ namespace SinclairCC.MakeMeAdmin
         }
 
         /// <summary>
-        /// Gets a list of the SIDs for all principals in the list.
+        /// Gets a list of the SIDs for all users in the list.
         /// </summary>
         /// <returns>
-        /// Returns an array of Security Identifiers (SIDs), one for each principal in the list.
+        /// Returns an array of Security Identifiers (SIDs), one for each user in the list.
         /// </returns>
         internal SecurityIdentifier[] GetSIDs()
         {
-            return this.Select(p => p.PrincipalSid).ToArray<SecurityIdentifier>();
+            return this.Select(p => p.Sid).ToArray<SecurityIdentifier>();
         }
 
         /// <summary>
-        /// Gets a list of the principals whose administrator rights have expired.
+        /// Gets a list of the users whose administrator rights have expired.
         /// </summary>
         /// <returns>
-        /// Returns an array containing the list of expired principals.
+        /// Returns an array containing the list of expired users.
         /// </returns>
-        internal Principal[] GetExpiredPrincipals()
+        internal User[] GetExpiredUsers()
         {
-            return this.Where(p => (p.ExpirationTime.HasValue && (p.ExpirationTime <= DateTime.Now))).ToArray<Principal>();
+            return this.Where(p => (p.ExpirationTime.HasValue && (p.ExpirationTime <= DateTime.Now))).ToArray<User>();
         }
 
         /// <summary>
-        /// Gets the expiration date and time for the administrator rights of the given principal.
+        /// Gets the expiration date and time for the administrator rights of the given user.
         /// </summary>
         /// <param name="sid">
-        /// The Security Identifier (SID) of the principal to be checked.
+        /// The Security Identifier (SID) of the user to be checked.
         /// </param>
         /// <returns>
-        /// Returns the date and time at which the principal's administrator rights expire.
-        /// If the principal is not in the list, null is returned.
+        /// Returns the date and time at which the user's administrator rights expire.
+        /// If the user is not in the list, null is returned.
         /// </returns>
         internal DateTime? GetExpirationTime(SecurityIdentifier sid)
         {
@@ -137,13 +137,13 @@ namespace SinclairCC.MakeMeAdmin
         }
 
         /// <summary>
-        /// Determines whether the given principal has been added as a result of a remote request.
+        /// Determines whether the given user has been added as a result of a remote request.
         /// </summary>
         /// <param name="sid">
-        /// The Security Identifier (SID) of the principal to be checked.
+        /// The Security Identifier (SID) of the user to be checked.
         /// </param>
         /// <returns>
-        /// Returns true if the given principal was added due to a remote request.
+        /// Returns true if the given user was added due to a remote request.
         /// Otherwise, false is returned.
         /// </returns>
         internal bool IsRemote(SecurityIdentifier sid)

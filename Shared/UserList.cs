@@ -28,31 +28,31 @@ namespace SinclairCC.MakeMeAdmin
     // TODO: How do we know we are being passed a valid SID?
 
     /// <summary>
-    /// Maintains a collection of security principals which have been added to the Administrators group.
+    /// Maintains a collection of users which have been added to the Administrators group.
     /// </summary>
-    public class PrincipalList
+    public class UserList
     {
         /// <summary>
-        /// A collection of security principals which have been added to the Administrators group.
+        /// A collection of users which have been added to the Administrators group.
         /// </summary>
-        private static Dictionary<SecurityIdentifier, Principal> principals = null;
+        private static Dictionary<SecurityIdentifier, User> users = null;
 
         /// <summary>
-        /// Initializes static members of the <see cref="PrincipalList"/> class.
+        /// Initializes static members of the <see cref="UserList"/> class.
         /// </summary>
-        static PrincipalList()
+        static UserList()
         {
 #if DEBUG
             try
             {
 #endif
-                principals = new Dictionary<SecurityIdentifier, Principal>();
+                users = new Dictionary<SecurityIdentifier, User>();
 #if DEBUG
             }
             catch (Exception excep)
             {
                 // TODO: i18n.
-                ApplicationLog.WriteInformationEvent("error in PrincipalList constructor, creating Dictionary object.", EventID.DebugMessage);
+                ApplicationLog.WriteInformationEvent("error in UserList constructor, creating Dictionary object.", EventID.DebugMessage);
                 ApplicationLog.WriteInformationEvent(excep.Message, EventID.DebugMessage);
             }
 #endif
@@ -71,7 +71,7 @@ namespace SinclairCC.MakeMeAdmin
                 {
                     for (int i = 0; i < storedSIDs.Length; i++)
                     {
-                        PrincipalList.AddSID(storedSIDs[i], DateTime.Now.AddMinutes(Settings.AdminRightsTimeout * -1), null);
+                        UserList.AddSID(storedSIDs[i], DateTime.Now.AddMinutes(Settings.AdminRightsTimeout * -1), null);
                     }
                 }
 
@@ -79,7 +79,7 @@ namespace SinclairCC.MakeMeAdmin
             }
             catch (Exception excep)
             {
-                ApplicationLog.WriteInformationEvent("error in PrincipalList.ReadSidsFromSettings(), getting SIDs from settings.", EventID.DebugMessage);
+                ApplicationLog.WriteInformationEvent("error in UserList.ReadSidsFromSettings(), getting SIDs from settings.", EventID.DebugMessage);
                 ApplicationLog.WriteInformationEvent(excep.Message, EventID.DebugMessage);
             }
 #endif
@@ -99,37 +99,37 @@ namespace SinclairCC.MakeMeAdmin
         }
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="PrincipalList"/> class from being created.
+        /// Prevents a default instance of the <see cref="UserList"/> class from being created.
         /// </summary>
-        private PrincipalList()
+        private UserList()
         {
         }
 
         /// <summary>
-        /// Adds a principal's security ID (SID) to the collection.
+        /// Adds a user's security ID (SID) to the collection.
         /// </summary>
         /// <param name="sid">
         /// The SID to be added to the collection, in SDDL form.
         /// </param>
         /// <param name="expirationTime">
-        /// The date and time at which the principal's administrator rights expire.
+        /// The date and time at which the user's administrator rights expire.
         /// </param>
         public static void AddSID(WindowsIdentity userIdentity, DateTime? expirationTime, string remoteAddress)
         {
-            if (principals.ContainsKey(userIdentity.User))
+            if (users.ContainsKey(userIdentity.User))
             {
                 // Set the expiration time for the given SID to the maximum of
                 // its current value or the specified expiration time.
 #if DEBUG
-                ApplicationLog.WriteInformationEvent(string.Format("Setting expiration for SID {0} to {1}.", userIdentity.User.Value, new[] { principals[userIdentity.User].ExpirationTime, expirationTime }.Max()), EventID.DebugMessage);
+                ApplicationLog.WriteInformationEvent(string.Format("Setting expiration for SID {0} to {1}.", userIdentity.User.Value, new[] { users[userIdentity.User].ExpirationTime, expirationTime }.Max()), EventID.DebugMessage);
 #endif
                 /*
-                principals[userIdentity.User].ExpirationTime = new[] { principals[userIdentity.User].ExpirationTime, expirationTime }.Max();
+                users[userIdentity.User].ExpirationTime = new[] { users[userIdentity.User].ExpirationTime, expirationTime }.Max();
                 */
-                principals[userIdentity.User].RemoteAddress = remoteAddress;
+                users[userIdentity.User].RemoteAddress = remoteAddress;
 
 #if DEBUG
-                ApplicationLog.WriteInformationEvent(string.Format("SID list contains {0:N0} items.", principals.Count), EventID.DebugMessage);
+                ApplicationLog.WriteInformationEvent(string.Format("SID list contains {0:N0} items.", users.Count), EventID.DebugMessage);
 #endif
             }
             else
@@ -150,59 +150,59 @@ namespace SinclairCC.MakeMeAdmin
                 ApplicationLog.WriteInformationEvent(message.ToString(), EventID.DebugMessage);
 #endif
                 
-                principals.Add(userIdentity.User, new Principal(userIdentity, expirationTime, remoteAddress));
+                users.Add(userIdentity.User, new User(userIdentity, expirationTime, remoteAddress));
                 Settings.SIDs = GetSIDs().Select(p => p.Value).ToArray<string>();
             }
         }
 
         public static bool ContainsSID(SecurityIdentifier sid)
         {
-            if (principals == null)
+            if (users == null)
             {
                 return false;
             }
             else
             {
-                return principals.ContainsKey(sid);
+                return users.ContainsKey(sid);
             }
         }
         
         /// <summary>
-        /// Removes a principal's security ID (SID) from the collection.
+        /// Removes a user's security ID (SID) from the collection.
         /// </summary>
         /// <param name="sid">
         /// The SID to be removed from the collection, in SDDL form.
         /// </param>
         public static void RemoveSID(SecurityIdentifier sid)
         {
-            if (principals.ContainsKey(sid))
+            if (users.ContainsKey(sid))
             {
-                principals.Remove(sid);
+                users.Remove(sid);
                 Settings.SIDs = GetSIDs().Select(p => p.Value).ToArray<string>();
             }
         }
 
         public static SecurityIdentifier[] GetSIDs()
         {
-            return principals.Select(p => p.Key).ToArray<SecurityIdentifier>();
+            return users.Select(p => p.Key).ToArray<SecurityIdentifier>();
         }
 
-        public static Principal[] GetExpiredPrincipals()
+        public static User[] GetExpiredUsers()
         {
             /*
-            This is what was returned when the principal list held the time at which admin rights were granted.
+            This is what was returned when the user list held the time at which admin rights were granted.
             Now, it holds the expiration time.
 
-            return principals.Where(p => p.Value <= DateTime.Now.AddMinutes(-1 * Settings.AdminRightsTimeout)).Select(p => p.Key).ToArray<SecurityIdentifier>();
+            return users.Where(p => p.Value <= DateTime.Now.AddMinutes(-1 * Settings.AdminRightsTimeout)).Select(p => p.Key).ToArray<SecurityIdentifier>();
             */
-            return principals.Where(p => (p.Value.ExpirationTime.HasValue && (p.Value.ExpirationTime <= DateTime.Now))).Select(p => p.Value).ToArray<Principal>();
+            return users.Where(p => (p.Value.ExpirationTime.HasValue && (p.Value.ExpirationTime <= DateTime.Now))).Select(p => p.Value).ToArray<User>();
         }
 
         public static DateTime? GetExpirationTime(SecurityIdentifier sid)
         {
-            if (principals.ContainsKey(sid))
+            if (users.ContainsKey(sid))
             {
-                return principals[sid].ExpirationTime;
+                return users[sid].ExpirationTime;
             }
             else
             {
@@ -212,9 +212,9 @@ namespace SinclairCC.MakeMeAdmin
 
         public static bool IsRemote(SecurityIdentifier sid)
         {
-            if (principals.ContainsKey(sid))
+            if (users.ContainsKey(sid))
             {
-                return !string.IsNullOrEmpty(principals[sid].RemoteAddress);
+                return !string.IsNullOrEmpty(users[sid].RemoteAddress);
             }
             else
             {

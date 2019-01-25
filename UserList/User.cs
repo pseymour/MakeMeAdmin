@@ -26,29 +26,29 @@ namespace SinclairCC.MakeMeAdmin
     using System.Xml.Serialization;
 
     /// <summary>
-    /// This class stores information about a security principal that has
+    /// This class stores information about a user that has
     /// been added to the Administrators group.
     /// </summary>
     /// <remarks>
     /// This data is stored on disk so that the service may take action on
-    /// those added principals after recovery from a potential crash.
+    /// those added users after recovery from a potential crash.
     /// </remarks>
     [Serializable]
-    [XmlRoot(ElementName = "principal")]
-    public class Principal
+    [XmlRoot(ElementName = "user")]
+    public class User
     {
         /// <summary>
-        /// The security identifier (SID) of the principal.
+        /// The security identifier (SID) of the user.
         /// </summary>
-        private SecurityIdentifier principalSecurityIdentifier;
+        private SecurityIdentifier userSecurityIdentifier;
 
         /// <summary>
-        /// The name of the principal (e.g., DOMAIN\UserName).
+        /// The name of the user (e.g., DOMAIN\UserName).
         /// </summary>
-        private string principalName;
+        private string userName;
 
         /// <summary>
-        /// The date and time at which the principal's administrator
+        /// The date and time at which the user's administrator
         /// rights should expire.
         /// </summary>
         private DateTime? expirationDateTime;
@@ -65,7 +65,7 @@ namespace SinclairCC.MakeMeAdmin
         /// <remarks>
         /// This constructor only exists to support serialization.
         /// </remarks>
-        private Principal()
+        private User()
         {
         }
 
@@ -73,37 +73,37 @@ namespace SinclairCC.MakeMeAdmin
         /// Constructor.
         /// </summary>
         /// <param name="userIdentity">
-        /// The identity of the principal.
+        /// The identity of the user.
         /// </param>
         /// <param name="expirationDateTime">
-        /// The date and time at which the principal's administrator rights expire.
+        /// The date and time at which the user's administrator rights expire.
         /// </param>
         /// <param name="remoteHostAddress">
         /// The address from which the remote administrator rights request came.
         /// </param>
-        public Principal(WindowsIdentity userIdentity, DateTime? expirationDateTime, string remoteHostAddress)
+        public User(WindowsIdentity userIdentity, DateTime? expirationDateTime, string remoteHostAddress)
         {
-            this.principalSecurityIdentifier = userIdentity.User;
-            this.principalName = userIdentity.Name;
+            this.userSecurityIdentifier = userIdentity.User;
+            this.userName = userIdentity.Name;
             this.expirationDateTime = expirationDateTime;
             this.remoteHostAddress = remoteHostAddress;
         }
 
         /// <summary>
-        /// Gets the security identifier (SID) of the principal.
+        /// Gets the security identifier (SID) of the user.
         /// </summary>
         /// <remarks>
         /// This member is not stored on disk, because SecurityIdentifier
         /// objects are not serializable.
         /// </remarks>
         [XmlIgnore]
-        public SecurityIdentifier PrincipalSid
+        public SecurityIdentifier Sid
         {
-            get { return this.principalSecurityIdentifier; }
+            get { return this.userSecurityIdentifier; }
         }
 
         /// <summary>
-        /// Gets or sets the security identifier (SID) of the principal, in SDDL format.
+        /// Gets or sets the security identifier (SID) of the user, in SDDL format.
         /// </summary>
         /// <remarks>
         /// This really only exists to support XML serialization and should
@@ -112,24 +112,24 @@ namespace SinclairCC.MakeMeAdmin
         [XmlAttribute("sid")]
         public string SidString
         {
-            get { return this.principalSecurityIdentifier.Value; }
-            set { this.principalSecurityIdentifier = new SecurityIdentifier(value); }
+            get { return this.userSecurityIdentifier.Value; }
+            set { this.userSecurityIdentifier = new SecurityIdentifier(value); }
         }
 
         /// <summary>
-        /// Gets the name of the principal (e.g., DOMAIN\UserName).
+        /// Gets the name of the user (e.g., DOMAIN\UserName).
         /// </summary>
         /// <remarks>
         /// This value is not serialized, because it is unnecessary.
         /// </remarks>
         [XmlIgnore]
-        public string PrincipalName
+        public string Name
         {
-            get { return this.principalName; }
+            get { return this.userName; }
         }
 
         /// <summary>
-        /// Gets or sets the date and time at which the principal's
+        /// Gets or sets the date and time at which the user's
         /// administrator rights should expire.
         /// </summary>
         [XmlElement(ElementName = "expirationDateTime")]

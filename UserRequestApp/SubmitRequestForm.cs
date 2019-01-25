@@ -106,7 +106,7 @@ namespace SinclairCC.MakeMeAdmin
 
                 this.userWasAdminOnLastCheck = this.userIsAdmin;
 
-                if ((!this.userIsAdmin) && (!namedPipeChannel.PrincipalIsInList()))
+                if ((!this.userIsAdmin) && (!namedPipeChannel.UserIsInList()))
                 {
                     this.notifyIconTimer.Stop();
                     notifyIcon.ShowBalloonTip(5000, Properties.Resources.ApplicationName, string.Format(Properties.Resources.UIMessageRemovedFromGroup, LocalAdministratorGroup.LocalAdminGroupName), ToolTipIcon.Info);
@@ -177,7 +177,7 @@ namespace SinclairCC.MakeMeAdmin
 
             try
             {
-                channel.AddPrincipalToAdministratorsGroup();
+                channel.AddUserToAdministratorsGroup();
             }
             catch (System.ServiceModel.EndpointNotFoundException)
             {
@@ -265,7 +265,7 @@ namespace SinclairCC.MakeMeAdmin
             NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
             ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(binding, Shared.NamedPipeServiceBaseAddress);
             IAdminGroup channel = namedPipeFactory.CreateChannel();
-            channel.RemovePrincipalFromAdministratorsGroup(RemovalReason.UserRequest);
+            channel.RemoveUserFromAdministratorsGroup(RemovalReason.UserRequest);
             namedPipeFactory.Close();
         }
 

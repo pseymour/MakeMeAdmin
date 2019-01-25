@@ -60,8 +60,8 @@
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
-    <ProjectReference Include="..\PrincipalList\PrincipalList.csproj">
-      <Name>PrincipalList</Name>
+    <ProjectReference Include="..\UserList\UserList.csproj">
+      <Name>UserList</Name>
       <Project>{9cfd5fa4-5ad6-463c-87e5-3f42133b5da8}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>

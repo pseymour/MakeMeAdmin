@@ -32,9 +32,9 @@ namespace SinclairCC.MakeMeAdmin
     public class AdminGroupManipulator : IAdminGroup
     {
         /// <summary>
-        /// Adds a security principal to the local Administrators group.
+        /// Adds a user to the local Administrators group.
         /// </summary>
-        public void AddPrincipalToAdministratorsGroup()
+        public void AddUserToAdministratorsGroup()
         {
             string remoteAddress = null;
 
@@ -66,17 +66,17 @@ namespace SinclairCC.MakeMeAdmin
             {
                 int timeoutMinutes = Shared.GetTimeoutForUser(userIdentity);
                 DateTime expirationTime = DateTime.Now.AddMinutes(timeoutMinutes);
-                LocalAdministratorGroup.AddPrincipal(userIdentity, expirationTime, remoteAddress);
+                LocalAdministratorGroup.AddUser(userIdentity, expirationTime, remoteAddress);
             }
         }
 
         /// <summary>
-        /// Removes a security principal from the local Administrators group.
+        /// Removes a user from the local Administrators group.
         /// </summary>
         /// <param name="reason">
         /// The reason that the rights are being removed.
         /// </param>
-        public void RemovePrincipalFromAdministratorsGroup(RemovalReason reason)
+        public void RemoveUserFromAdministratorsGroup(RemovalReason reason)
         {
             WindowsIdentity userIdentity = null;
 
@@ -87,19 +87,19 @@ namespace SinclairCC.MakeMeAdmin
 
             if (userIdentity != null)
             {
-                LocalAdministratorGroup.RemovePrincipal(userIdentity.User, reason);
+                LocalAdministratorGroup.RemoveUser(userIdentity.User, reason);
             }
         }
 
         /// <summary>
-        /// Returns a value indicating whether a security principal is in the
-        /// list of added principals.
+        /// Returns a value indicating whether a user is in the
+        /// list of added users.
         /// </summary>
         /// <returns>
-        /// Returns true if the given principal is already in the list of added
-        /// principals. Otherwise, false is returned.
+        /// Returns true if the given user is already in the list of added
+        /// users. Otherwise, false is returned.
         /// </returns>
-        public bool PrincipalIsInList()
+        public bool UserIsInList()
         {
             WindowsIdentity userIdentity = null;
 

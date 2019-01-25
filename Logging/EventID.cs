@@ -46,10 +46,10 @@ namespace SinclairCC.MakeMeAdmin
         UserRemovedFromAdminsFailure,
 
         /// <summary>
-        /// A principal has been removed from the Administrators group by some
+        /// A user has been removed from the Administrators group by some
         /// external (to Make Me Admin) process.
         /// </summary>
-        PrincipalRemovedByExternalProcess,
+        UserRemovedByExternalProcess,
 
         /// <summary>
         /// Information about a request for administrator rights that was received

@@ -29,7 +29,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Settings", "Settings\Settings.csproj", "{8A516D69-BA38-429F-AFFE-C571B5C1E482}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrincipalList", "PrincipalList\PrincipalList.csproj", "{9CFD5FA4-5AD6-463C-87E5-3F42133B5DA8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserList", "UserList\UserList.csproj", "{9CFD5FA4-5AD6-463C-87E5-3F42133B5DA8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

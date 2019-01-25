@@ -88,17 +88,17 @@ namespace SinclairCC.MakeMeAdmin
         {
             EncryptedSettings encryptedSettings = new EncryptedSettings(EncryptedSettings.SettingsFilePath);
 
-            Principal[] expiredPrincipals = encryptedSettings.GetExpiredPrincipals();
+            User[] expiredUsers = encryptedSettings.GetExpiredUsers();
 
-            if (expiredPrincipals != null)
+            if (expiredUsers != null)
             {
-                foreach (Principal prin in expiredPrincipals)
+                foreach (User prin in expiredUsers)
                 {
-                    LocalAdministratorGroup.RemovePrincipal(prin.PrincipalSid, RemovalReason.Timeout);
+                    LocalAdministratorGroup.RemoveUser(prin.Sid, RemovalReason.Timeout);
 
                     if ((Settings.EndRemoteSessionsUponExpiration) && (!string.IsNullOrEmpty(prin.RemoteAddress)))
                     {
-                        string userName = prin.PrincipalName;
+                        string userName = prin.Name;
                         while (userName.LastIndexOf("\\") >= 0)
                         {
                             userName = userName.Substring(userName.LastIndexOf("\\") + 1);
@@ -113,7 +113,7 @@ namespace SinclairCC.MakeMeAdmin
                 }
             }
 
-            LocalAdministratorGroup.ValidateAllAddedPrincipals();
+            LocalAdministratorGroup.ValidateAllAddedUsers();
         }
 
 
@@ -216,10 +216,10 @@ namespace SinclairCC.MakeMeAdmin
             this.removalTimer.Stop();
 
             EncryptedSettings encryptedSettings = new EncryptedSettings(EncryptedSettings.SettingsFilePath);
-            SecurityIdentifier[] sids = encryptedSettings.AddedPrincipalSIDs;
+            SecurityIdentifier[] sids = encryptedSettings.AddedUserSIDs;
             for (int i = 0; i < sids.Length; i++)
             {
-                LocalAdministratorGroup.RemovePrincipal(sids[i], RemovalReason.ServiceStopped);
+                LocalAdministratorGroup.RemoveUser(sids[i], RemovalReason.ServiceStopped);
             }
 
             base.OnStop();
@@ -240,7 +240,7 @@ namespace SinclairCC.MakeMeAdmin
                 case SessionChangeReason.SessionLogoff:
 
                     EncryptedSettings encryptedSettings = new EncryptedSettings(EncryptedSettings.SettingsFilePath);
-                    System.Collections.Generic.List<SecurityIdentifier> sidsToRemove = new System.Collections.Generic.List<SecurityIdentifier>(encryptedSettings.AddedPrincipalSIDs);
+                    System.Collections.Generic.List<SecurityIdentifier> sidsToRemove = new System.Collections.Generic.List<SecurityIdentifier>(encryptedSettings.AddedUserSIDs);
 
                     int[] sessionIds = LsaLogonSessions.LogonSessions.GetLoggedOnUserSessionIds();
 
@@ -270,16 +270,16 @@ namespace SinclairCC.MakeMeAdmin
                             (Settings.RemoveAdminRightsOnLogout || !encryptedSettings.GetExpirationTime(sidsToRemove[i]).HasValue)
                             )
                         {
-                            LocalAdministratorGroup.RemovePrincipal(sidsToRemove[i], RemovalReason.UserLogoff);
+                            LocalAdministratorGroup.RemoveUser(sidsToRemove[i], RemovalReason.UserLogoff);
                         }
                     }
 
                     /*
                      * In theory, this code should remove the user associated with the logoff, but it doesn't work.
                     SecurityIdentifier sid = LsaLogonSessions.LogonSessions.GetSidForSessionId(changeDescription.SessionId);
-                    if (!(PrincipalList.ContainsSID(sid) && PrincipalList.IsRemote(sid)))
+                    if (!(UserList.ContainsSID(sid) && UserList.IsRemote(sid)))
                     {
-                        LocalAdministratorGroup.RemovePrincipal(sid, RemovalReason.UserLogoff);
+                        LocalAdministratorGroup.RemoveUser(sid, RemovalReason.UserLogoff);
                     }
                     */
 
@@ -299,7 +299,7 @@ namespace SinclairCC.MakeMeAdmin
                             (Shared.UserIsAuthorized(userIdentity, Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied))
                            )
                         {
-                            LocalAdministratorGroup.AddPrincipal(userIdentity, null, null);
+                            LocalAdministratorGroup.AddUser(userIdentity, null, null);
                         }
                     }
                     else

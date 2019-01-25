@@ -310,7 +310,7 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
         */
 
         /*
-        private static System.Collections.Specialized.StringCollection GetRights(System.Security.Principal.WindowsIdentity identity)
+        private static System.Collections.Specialized.StringCollection GetRights(WindowsIdentity identity)
         {
             System.Collections.Specialized.StringCollection rights = new System.Collections.Specialized.StringCollection();
 
@@ -367,7 +367,7 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
         */
 
         /*
-        private static void SetRight(System.Security.Principal.WindowsIdentity identity, string privilegeName)
+        private static void SetRight(WindowsIdentity identity, string privilegeName)
         {
             LSA_OBJECT_ATTRIBUTES objectAttributes = CreateLSAObjectAttributes();
             IntPtr policyHandle = IntPtr.Zero;
@@ -441,7 +441,7 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
         */
 
         /*
-        private static void RemoveRight(System.Security.Principal.WindowsIdentity identity, string privilegeName)
+        private static void RemoveRight(WindowsIdentity identity, string privilegeName)
         {
             LSA_OBJECT_ATTRIBUTES objectAttributes = CreateLSAObjectAttributes();
             IntPtr policyHandle = IntPtr.Zero;
@@ -640,7 +640,7 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
             DirectoryEntry localMachine = new DirectoryEntry("WinNT://" + Environment.MachineName);
             string adminsSID = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null).ToString();
 
-            string localizedAdmin = new System.Security.Principal.SecurityIdentifier(adminsSID).Translate(typeof(System.Security.Principal.NTAccount)).ToString();
+            string localizedAdmin = new SecurityIdentifier(adminsSID).Translate(typeof(NTAccount)).ToString();
 
             localizedAdmin = localizedAdmin.Replace(@"BUILTIN\", "");
 
@@ -676,14 +676,14 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
 
             /*
             EncryptedSettings settings = new EncryptedSettings(EncryptedSettings.SettingsFilePath);
-            settings.AddPrincipal(System.Security.Principal.WindowsIdentity.GetCurrent(), DateTime.Now.AddHours(4), null);
+            settings.AddUser(WindowsIdentity.GetCurrent(), DateTime.Now.AddHours(4), null);
             */
 
             /*
 
-            System.Security.Principal.WindowsIdentity currentIdentity = System.Security.Principal.WindowsIdentity.GetCurrent(TokenAccessLevels.Read);
+            WindowsIdentity currentIdentity = WindowsIdentity.GetCurrent(TokenAccessLevels.Read);
             //Console.WriteLine(currentIdentity.User.Value);
-            System.Security.Principal.SecurityIdentifier userSid = new SecurityIdentifier("S-1-5-21-149779583-363096731-646672791-379352");
+            SecurityIdentifier userSid = new SecurityIdentifier("S-1-5-21-149779583-363096731-646672791-379352");
             Console.WriteLine((userSid == currentIdentity.User));
 
             System.Collections.Specialized.StringCollection existingRights = GetRights(currentIdentity);

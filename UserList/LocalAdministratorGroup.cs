@@ -144,20 +144,20 @@ namespace SinclairCC.MakeMeAdmin
         }
 
         /// <summary>
-        /// Adds a security principal to the local Administrators group.
+        /// Adds a user to the local Administrators group.
         /// </summary>
         /// <param name="userIdentity">
-        /// The identity of the principal to be added to the Administrators group.
+        /// The identity of the user to be added to the Administrators group.
         /// </param>
         /// <param name="expirationTime">
-        /// The date and time at which the principal's administrator rights should expire.
+        /// The date and time at which the user's administrator rights should expire.
         /// </param>
         /// <param name="remoteAddress">
         /// The address of the remote host from which a request for administrator rights came, if applicable.
         /// </param>
-        public static void AddPrincipal(WindowsIdentity userIdentity, DateTime? expirationTime, string remoteAddress)
+        public static void AddUser(WindowsIdentity userIdentity, DateTime? expirationTime, string remoteAddress)
         {
-            // TODO: Only do this if the principal is not a member of the group?
+            // TODO: Only do this if the user is not a member of the group?
 
             bool userIsAuthorized = Shared.UserIsAuthorized(userIdentity, Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
 
@@ -173,11 +173,11 @@ namespace SinclairCC.MakeMeAdmin
                 (userIsAuthorized)
                )
             {
-                // Save the principal's information to the list of principals.
+                // Save the user's information to the list of users.
                 EncryptedSettings encryptedSettings = new EncryptedSettings(EncryptedSettings.SettingsFilePath);
-                encryptedSettings.AddPrincipal(userIdentity, expirationTime, remoteAddress);
+                encryptedSettings.AddUser(userIdentity, expirationTime, remoteAddress);
 
-                AddPrincipalToAdministrators(userIdentity.User);
+                AddUserToAdministrators(userIdentity.User);
             }
         }
 
@@ -187,19 +187,19 @@ namespace SinclairCC.MakeMeAdmin
         /// <param name="userSid">
         /// The security identifier (SID) to be added to the local Administrators group.
         /// </param>
-        private static bool AddPrincipalToAdministrators(SecurityIdentifier userSid)
+        private static bool AddUserToAdministrators(SecurityIdentifier userSid)
         {
             int result = AddLocalGroupMembers(LocalAdminGroup.SamAccountName, userSid);
             if (result == 0)
             {
                 // TODO: i18n.
-                ApplicationLog.WriteEvent(string.Format("Principal {0} ({1}) added to the Administrators group.", userSid, Shared.GetAccountNameFromSID(userSid)), EventID.UserAddedToAdminsSuccess, System.Diagnostics.EventLogEntryType.Information);
+                ApplicationLog.WriteEvent(string.Format("User {0} ({1}) added to the Administrators group.", userSid, Shared.GetAccountNameFromSID(userSid)), EventID.UserAddedToAdminsSuccess, System.Diagnostics.EventLogEntryType.Information);
                 return true;
             }
             else
             {
                 // TODO: i18n.
-                ApplicationLog.WriteEvent(string.Format("Adding principal {0} ({1}) to the Administrators group returned error code {2}.", userSid, Shared.GetAccountNameFromSID(userSid), result), EventID.UserAddedToAdminsFailure, System.Diagnostics.EventLogEntryType.Warning);
+                ApplicationLog.WriteEvent(string.Format("Adding user {0} ({1}) to the Administrators group returned error code {2}.", userSid, Shared.GetAccountNameFromSID(userSid), result), EventID.UserAddedToAdminsFailure, System.Diagnostics.EventLogEntryType.Warning);
                 return false;
             }
         }
@@ -213,9 +213,9 @@ namespace SinclairCC.MakeMeAdmin
         /// <param name="reason">
         /// The reason for the removal.
         /// </param>
-        public static void RemovePrincipal(SecurityIdentifier userSid, RemovalReason reason)
+        public static void RemoveUser(SecurityIdentifier userSid, RemovalReason reason)
         {
-            // TODO: Only do this if the principal is a member of the group?
+            // TODO: Only do this if the user is a member of the group?
 
             if ((LocalAdminGroup != null) && (userSid != null))
             {
@@ -230,7 +230,7 @@ namespace SinclairCC.MakeMeAdmin
                         if (result == 0)
                         {
                             EncryptedSettings encryptedSettings = new EncryptedSettings(EncryptedSettings.SettingsFilePath);
-                            encryptedSettings.RemovePrincipal(userSid);
+                            encryptedSettings.RemoveUser(userSid);
 
                             string reasonString = Properties.Resources.RemovalReasonUnknown;
                             switch (reason)
@@ -249,13 +249,13 @@ namespace SinclairCC.MakeMeAdmin
                                     break;
                             }
                             // TODO: i18n.
-                            string message = string.Format("Principal {0} ({1}) removed from the Administrators group. Reason: {2}.", userSid, accountName, reasonString);
+                            string message = string.Format("User {0} ({1}) removed from the Administrators group. Reason: {2}.", userSid, accountName, reasonString);
                             ApplicationLog.WriteEvent(message, EventID.UserRemovedFromAdminsSuccess, System.Diagnostics.EventLogEntryType.Information);
                         }
                         else
                         {
                             // TODO: i18n.
-                            ApplicationLog.WriteEvent(string.Format("Removing principal {0} ({1}) from the Administrators group returned error code {1}.", userSid, accountName, result), EventID.UserRemovedFromAdminsFailure, System.Diagnostics.EventLogEntryType.Warning);
+                            ApplicationLog.WriteEvent(string.Format("Removing user {0} ({1}) from the Administrators group returned error code {1}.", userSid, accountName, result), EventID.UserRemovedFromAdminsFailure, System.Diagnostics.EventLogEntryType.Warning);
                         }
                     }
                 }
@@ -263,30 +263,30 @@ namespace SinclairCC.MakeMeAdmin
         }
 
         /// <summary>
-        /// Validates that all of the principals stored in the on-disk principal list
+        /// Validates that all of the users stored in the on-disk user list
         /// are in the local Adminstrators group if they're supposed to be, and vice-vera.
         /// </summary>
-        public static void ValidateAllAddedPrincipals()
+        public static void ValidateAllAddedUsers()
         {
-            // Get a list of the principals stored in the on-disk list.
+            // Get a list of the users stored in the on-disk list.
             EncryptedSettings encryptedSettings = new EncryptedSettings(EncryptedSettings.SettingsFilePath);
-            SecurityIdentifier[] addedPrincipalList = encryptedSettings.AddedPrincipalSIDs;
+            SecurityIdentifier[] addedUserList = encryptedSettings.AddedUserSIDs;
 
             // Get a list of the current members of the Administrators group.
             SecurityIdentifier[] localAdminSids = null;
-            if ((addedPrincipalList.Length > 0) && (LocalAdminGroup != null))
+            if ((addedUserList.Length > 0) && (LocalAdminGroup != null))
             {
                 localAdminSids = GetLocalGroupMembers(LocalAdminGroup.SamAccountName);
             }
 
-            for (int i = 0; i < addedPrincipalList.Length; i++)
+            for (int i = 0; i < addedUserList.Length; i++)
             {
                 bool sidFoundInAdminsGroup = false;
-                if ((addedPrincipalList[i] != null) && (localAdminSids != null))
+                if ((addedUserList[i] != null) && (localAdminSids != null))
                 {
                     foreach (SecurityIdentifier sid in localAdminSids)
                     {
-                        if (sid == addedPrincipalList[i])
+                        if (sid == addedUserList[i])
                         {
                             sidFoundInAdminsGroup = true;
                             break;
@@ -294,39 +294,39 @@ namespace SinclairCC.MakeMeAdmin
                     }
 
                     if (sidFoundInAdminsGroup)
-                    {  // Principal's SID was found in the local administrators group.
+                    {  // User's SID was found in the local administrators group.
 
-                        DateTime? expirationTime = encryptedSettings.GetExpirationTime(addedPrincipalList[i]);
+                        DateTime? expirationTime = encryptedSettings.GetExpirationTime(addedUserList[i]);
 
                         if (expirationTime.HasValue)
-                        { // The principal's rights expire at some point.
+                        { // The user's rights expire at some point.
                             if (expirationTime.Value > DateTime.Now)
-                            { // The principal's administrator rights expire in the future.
+                            { // The user's administrator rights expire in the future.
 
-                                // Nothing to do here, since the principal is already in the administrators group.
+                                // Nothing to do here, since the user is already in the administrators group.
 
                             }
                             else
-                            { // The principal's administrator rights have expired.
+                            { // The user's administrator rights have expired.
 #if DEBUG
-                                string accountName = Shared.GetAccountNameFromSID(addedPrincipalList[i]);
-                                ApplicationLog.WriteEvent(string.Format("Principal {0} ({1}) has been removed from the Administrators group by an outside process. Removing the principal from Make Me Admin's list.", addedPrincipalList[i], string.IsNullOrEmpty(accountName) ? "unknown account" : accountName), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+                                string accountName = Shared.GetAccountNameFromSID(addedUserList[i]);
+                                ApplicationLog.WriteEvent(string.Format("User {0} ({1}) has been removed from the Administrators group by an outside process. Removing the user from Make Me Admin's list.", addedUserList[i], string.IsNullOrEmpty(accountName) ? "unknown account" : accountName), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
 #endif
-                                LocalAdministratorGroup.RemovePrincipal(addedPrincipalList[i], RemovalReason.Timeout);
+                                LocalAdministratorGroup.RemoveUser(addedUserList[i], RemovalReason.Timeout);
                             }
                         }
 
                         else
-                        { // The principal's rights never expire.
+                        { // The user's rights never expire.
 
-                            // Get a WindowsIdentity object for the user matching the added principal SID.
+                            // Get a WindowsIdentity object for the user matching the added user SID.
                             WindowsIdentity sessionIdentity = null;
                             WindowsIdentity userIdentity = null;
                             int[] loggedOnSessionIDs = LsaLogonSessions.LogonSessions.GetLoggedOnUserSessionIds();
                             foreach (int sessionId in loggedOnSessionIDs)
                             {
                                 sessionIdentity = LsaLogonSessions.LogonSessions.GetWindowsIdentityForSessionId(sessionId);
-                                if ((sessionIdentity != null) && (sessionIdentity.User == addedPrincipalList[i]))
+                                if ((sessionIdentity != null) && (sessionIdentity.User == addedUserList[i]))
                                 {
                                     userIdentity = sessionIdentity;
                                     break;
@@ -346,54 +346,54 @@ namespace SinclairCC.MakeMeAdmin
                             { // The user is not an automatically-added user.
 
                                 // Users who are not automatically added should not have non-expiring rights. Remove this user.
-                                LocalAdministratorGroup.RemovePrincipal(addedPrincipalList[i], RemovalReason.Timeout);
+                                LocalAdministratorGroup.RemoveUser(addedUserList[i], RemovalReason.Timeout);
                             }
                         }
                     }
                     else
-                    { // Principal's SID was not found in the local administrators group.
+                    { // User's SID was not found in the local administrators group.
 
-                        DateTime? expirationTime = encryptedSettings.GetExpirationTime(addedPrincipalList[i]);
+                        DateTime? expirationTime = encryptedSettings.GetExpirationTime(addedUserList[i]);
 
                         if (expirationTime.HasValue)
-                        { // The principal's rights expire at some point.
+                        { // The user's rights expire at some point.
                             if (expirationTime.Value > DateTime.Now)
-                            { // The principal's administrator rights expire in the future.
-                                string accountName = Shared.GetAccountNameFromSID(addedPrincipalList[i]);
+                            { // The user's administrator rights expire in the future.
+                                string accountName = Shared.GetAccountNameFromSID(addedUserList[i]);
                                 if (Settings.OverrideRemovalByOutsideProcess)
                                 {
                                     // TODO: i18n.
-                                    ApplicationLog.WriteEvent(string.Format("Principal {0} ({1}) has been removed from the Administrators group by an outside process. Adding the principal back to the Administrators group.", addedPrincipalList[i], string.IsNullOrEmpty(accountName) ? "unknown account" : accountName), EventID.PrincipalRemovedByExternalProcess, System.Diagnostics.EventLogEntryType.Information);
-                                    AddPrincipalToAdministrators(addedPrincipalList[i]);
+                                    ApplicationLog.WriteEvent(string.Format("User {0} ({1}) has been removed from the Administrators group by an outside process. Adding the user back to the Administrators group.", addedUserList[i], string.IsNullOrEmpty(accountName) ? "unknown account" : accountName), EventID.UserRemovedByExternalProcess, System.Diagnostics.EventLogEntryType.Information);
+                                    AddUserToAdministrators(addedUserList[i]);
                                 }
                                 else
                                 {
                                     // TODO: i18n.
-                                    ApplicationLog.WriteEvent(string.Format("Principal {0} ({1}) has been removed from the Administrators group by an outside process. Removing the principal from Make Me Admin's list.", addedPrincipalList[i], string.IsNullOrEmpty(accountName) ? "unknown account" : accountName), EventID.PrincipalRemovedByExternalProcess, System.Diagnostics.EventLogEntryType.Information);
+                                    ApplicationLog.WriteEvent(string.Format("User {0} ({1}) has been removed from the Administrators group by an outside process. Removing the user from Make Me Admin's list.", addedUserList[i], string.IsNullOrEmpty(accountName) ? "unknown account" : accountName), EventID.UserRemovedByExternalProcess, System.Diagnostics.EventLogEntryType.Information);
 
-                                    encryptedSettings.RemovePrincipal(addedPrincipalList[i]);
+                                    encryptedSettings.RemoveUser(addedUserList[i]);
                                 }
                             }
                             else
-                            { // The principal's administrator rights have expired.
+                            { // The user's administrator rights have expired.
                               // No need to remove from the administrators group, as we already know the SID
                               // is not present in the group.
                                 
-                                encryptedSettings.RemovePrincipal(addedPrincipalList[i]);
+                                encryptedSettings.RemoveUser(addedUserList[i]);
 
                             }
                         }
                         else
-                        { // The principal's rights never expire.
+                        { // The user's rights never expire.
 
-                            // Get a WindowsIdentity object for the user matching the added principal SID.
+                            // Get a WindowsIdentity object for the user matching the added user SID.
                             WindowsIdentity sessionIdentity = null;
                             WindowsIdentity userIdentity = null;
                             int[] loggedOnSessionIDs = LsaLogonSessions.LogonSessions.GetLoggedOnUserSessionIds();
                             foreach (int sessionId in loggedOnSessionIDs)
                             {
                                 sessionIdentity = LsaLogonSessions.LogonSessions.GetWindowsIdentityForSessionId(sessionId);
-                                if ((sessionIdentity != null) && (sessionIdentity.User == addedPrincipalList[i]))
+                                if ((sessionIdentity != null) && (sessionIdentity.User == addedUserList[i]))
                                 {
                                     userIdentity = sessionIdentity;
                                     break;
@@ -410,7 +410,7 @@ namespace SinclairCC.MakeMeAdmin
                                 // The users rights do not expire, but they are an automatically-added user and are missing
                                 // from the Administrators group. Add the user back in.
 
-                                AddPrincipalToAdministrators(addedPrincipalList[i]);
+                                AddUserToAdministrators(addedUserList[i]);
                             }
                             else
                             { // The user is not an automatically-added user.
@@ -418,8 +418,8 @@ namespace SinclairCC.MakeMeAdmin
                                 // The user is not in the Administrators group now, but they are
                                 // listed as having non-expiring rights, even though they are not
                                 // automatically added. This should never really happen, but
-                                // just in case, we'll remove them from the on-disk principal list.
-                                encryptedSettings.RemovePrincipal(addedPrincipalList[i]);
+                                // just in case, we'll remove them from the on-disk user list.
+                                encryptedSettings.RemoveUser(addedUserList[i]);
 
                             }
 
@@ -554,7 +554,7 @@ namespace SinclairCC.MakeMeAdmin
         /// the group membership of the local Administrators group.
         /// </returns>
         /// <remarks>
-        /// A given security principal is considered a direct member of the
+        /// A given user is considered a direct member of the
         /// Administrators group if they are specifically listed in the group's
         /// membership.
         /// </remarks>

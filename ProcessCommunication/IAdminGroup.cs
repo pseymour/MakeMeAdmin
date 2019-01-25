@@ -29,29 +29,29 @@ namespace SinclairCC.MakeMeAdmin
     public interface IAdminGroup
     {
         /// <summary>
-        /// Adds a security principal to the Administrators group.
+        /// Adds a user to the Administrators group.
         /// </summary>
         [OperationContract]
-        void AddPrincipalToAdministratorsGroup();
+        void AddUserToAdministratorsGroup();
 
         /// <summary>
-        /// Removes a security principal from the Administrators group.
+        /// Removes a user from the Administrators group.
         /// </summary>
         /// <param name="reason">
-        /// The reason that the principal is being removed.
+        /// The reason that the user is being removed.
         /// </param>
         [OperationContract]
-        void RemovePrincipalFromAdministratorsGroup(RemovalReason reason);
+        void RemoveUserFromAdministratorsGroup(RemovalReason reason);
 
         /// <summary>
-        /// Returns a value indicating whether a security principal is 
-        /// already in the list of added security principals.
+        /// Returns a value indicating whether a user is 
+        /// already in the list of added users.
         /// </summary>
         /// <returns>
-        /// Returns true if the security principal is already in the list
-        /// of added principals.
+        /// Returns true if the users is already in the list
+        /// of added users.
         /// </returns>
         [OperationContract]
-        bool PrincipalIsInList();
+        bool UserIsInList();
     }
 }
