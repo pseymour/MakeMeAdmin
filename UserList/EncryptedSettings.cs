@@ -215,7 +215,6 @@ namespace SinclairCC.MakeMeAdmin
         /// <param name="filePath">The path of the file to which settings are to be saved.</param>
         private void Save(string filePath)
         {
-            /*
             try
             {
 
@@ -246,8 +245,8 @@ namespace SinclairCC.MakeMeAdmin
             {
                 throw;
             }
-            */
             
+            /*
             // This is the unencrypted version.
             try
             {
@@ -267,6 +266,7 @@ namespace SinclairCC.MakeMeAdmin
             {
                 throw;
             }
+            */
         }
 
 
@@ -278,7 +278,6 @@ namespace SinclairCC.MakeMeAdmin
         {
             if (System.IO.File.Exists(filePath))
             {
-                /*
                 byte[] buffer = new byte[128];
                 int bytesRead = int.MinValue;
                 System.IO.MemoryStream ciphertextMemoryStream = new System.IO.MemoryStream();
@@ -303,8 +302,8 @@ namespace SinclairCC.MakeMeAdmin
                 }
                 reader.Close();
                 plaintextStream.Close();
-                */
-                
+
+                /*
                 // This is the unencrypted version.
                 EncryptedSettings deserializedSettings = null;
                 System.Xml.XmlTextReader reader = new XmlTextReader(filePath);
@@ -314,6 +313,7 @@ namespace SinclairCC.MakeMeAdmin
                     deserializedSettings = (EncryptedSettings)serializer.Deserialize(reader);
                 }
                 reader.Close();
+                */
 
                 this.AddedUsers = deserializedSettings.AddedUsers;
             }
