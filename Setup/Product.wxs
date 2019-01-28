@@ -14,8 +14,9 @@
       <ComponentRef Id="ElevationUserInterfaceFR" />
 
       <ComponentRef Id="LsaLogonSessionLibrary" />
-      
+
       <ComponentRef Id="Service" />
+      <ComponentRef Id="ServiceFR" />
 
       <ComponentRef Id="SharedLibrary" />
       <!-- <ComponentRef Id="SharedLibraryFR" /> -->
@@ -27,8 +28,10 @@
       
       <ComponentRef Id="UserListLibrary" />
       <ComponentRef Id="UserListLibraryFR" />
-      
+
       <ComponentRef Id="ProcessCommunicationLibrary" />
+      <ComponentRef Id="ProcessCommunicationLibraryFR" />
+      
       <Condition Level="0">INSTALLMAKEMEADMIN = "0"</Condition>
     </Feature>
     
@@ -45,8 +48,10 @@
       <ComponentRef Id="LoggingLibraryFR" />
       
       <ComponentRef Id="SettingsLibrary" />
-      
+
       <ComponentRef Id="ProcessCommunicationLibrary" />
+      <ComponentRef Id="ProcessCommunicationLibraryFR" />
+      
       <Condition Level="1">(INSTALLREMOTE = "1") OR REMOVE</Condition>
     </Feature>
     
@@ -78,6 +83,12 @@
             -->
             <Component Id="UserListLibraryFR" Guid="1BE88596-718B-4C7D-81FF-B0509B6443F6">
               <File Id="UserListLibraryResourcesFR" Name="$(var.UserList.TargetName).resources.dll" Source="$(var.UserList.TargetDir)fr-CA\$(var.UserList.TargetName).resources.dll" KeyPath="no" />
+            </Component>
+            <Component Id="ServiceFR" Guid="98EABA24-D4D4-4D96-B417-946F4648F682">
+              <File Id="ServiceResourcesFR" Name="$(var.Service.TargetName).resources.dll" Source="$(var.Service.TargetDir)fr-CA\$(var.Service.TargetName).resources.dll" KeyPath="no" />
+            </Component>
+            <Component Id="ProcessCommunicationLibraryFR" Guid="F795FC35-86B6-4F70-813B-6EF17B520170">
+              <File Id="ProcessCommunicationLibraryResourcesFR" Name="$(var.ProcessCommunication.TargetName).resources.dll" Source="$(var.ProcessCommunication.TargetDir)fr-CA\$(var.ProcessCommunication.TargetName).resources.dll" KeyPath="no" />
             </Component>
             <Component Id="ElevationUserInterfaceFR" Guid="6E2DC9BE-B61A-4703-B529-DD5943D5A078">
               <File Id="ElevationUserInterfaceResourcesFR" Name="$(var.LocalUI.TargetName).resources.dll" Source="$(var.LocalUI.TargetDir)fr-CA\$(var.LocalUI.TargetName).resources.dll" KeyPath="no" />

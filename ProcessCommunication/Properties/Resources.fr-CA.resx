@@ -12,7 +12,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ApplicationLogName" xml:space="preserve">
-    <value>Application</value>
+  <data name="RequestSentFromHost" xml:space="preserve">
+    <value>La requête a été envoyée depuis l'hôte {0}.</value>
   </data>
 </root>

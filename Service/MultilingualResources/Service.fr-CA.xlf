@@ -6,9 +6,9 @@
     </header>
     <body>
       <group id="SERVICE/MAKEMEADMINSERVICE.RESX" datatype="resx">
-        <trans-unit id="$this.TrayLargeIcon" translate="yes" extype="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" extradata="metadata" xml:space="preserve">
+        <trans-unit id="$this.TrayLargeIcon" translate="no" extype="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" extradata="metadata" xml:space="preserve">
           <source>False</source>
-          <target state="needs-review-translation">False</target>
+          <target state="final">False</target>
         </trans-unit>
       </group>
     </body>
@@ -19,17 +19,21 @@
     </header>
     <body>
       <group id="SERVICE/PROPERTIES/RESOURCES.RESX" datatype="resx">
-        <trans-unit id="SecurityLock" translate="yes" extype="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
+        <trans-unit id="SecurityLock" translate="no" extype="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
           <source>..\Resources\SecurityLock.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</source>
-          <target state="needs-review-translation">..\Resources\SecurityLock.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</target>
+          <target state="final">..\Resources\SecurityLock.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</target>
         </trans-unit>
         <trans-unit id="UserIdentifyIsNull" translate="yes" xml:space="preserve">
           <source>The identity of the user is null.</source>
-          <target state="translated">L'identité de l'utilisateur est null.</target>
+          <target state="final">L'identité de l'utilisateur est null.</target>
         </trans-unit>
         <trans-unit id="ServiceHostFaulted" translate="yes" xml:space="preserve">
           <source>The service host has faulted.</source>
-          <target state="new">The service host has faulted.</target>
+          <target state="final">Le service hôte a rencontré des difficultés.</target>
+        </trans-unit>
+        <trans-unit id="EventLogName" translate="yes" xml:space="preserve">
+          <source>Application</source>
+          <target state="final">Application</target>
         </trans-unit>
       </group>
     </body>
@@ -40,17 +44,17 @@
     </header>
     <body>
       <group id="SERVICE/PROJECTINSTALLER.RESX" datatype="resx">
-        <trans-unit id="serviceProcessInstaller.TrayLocation" translate="yes" extype="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" extradata="metadata" xml:space="preserve">
+        <trans-unit id="serviceProcessInstaller.TrayLocation" translate="no" extype="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" extradata="metadata" xml:space="preserve">
           <source>232, 17</source>
-          <target state="needs-review-translation">232, 17</target>
+          <target state="final">232, 17</target>
         </trans-unit>
-        <trans-unit id="serviceInstaller.TrayLocation" translate="yes" extype="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" extradata="metadata" xml:space="preserve">
+        <trans-unit id="serviceInstaller.TrayLocation" translate="no" extype="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" extradata="metadata" xml:space="preserve">
           <source>17, 17</source>
-          <target state="needs-review-translation">17, 17</target>
+          <target state="final">17, 17</target>
         </trans-unit>
-        <trans-unit id="$this.TrayLargeIcon" translate="yes" extype="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" extradata="metadata" xml:space="preserve">
+        <trans-unit id="$this.TrayLargeIcon" translate="no" extype="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" extradata="metadata" xml:space="preserve">
           <source>False</source>
-          <target state="needs-review-translation">False</target>
+          <target state="final">False</target>
         </trans-unit>
       </group>
     </body>

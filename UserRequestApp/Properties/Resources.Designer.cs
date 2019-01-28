@@ -88,6 +88,15 @@ namespace SinclairCC.MakeMeAdmin.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error Message.
+        /// </summary>
+        public static string ErrorMessage {
+            get {
+                return ResourceManager.GetString("ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Grant Me Administrator Rights.
         /// </summary>
         public static string GrantRightsButtonText {
@@ -103,6 +112,15 @@ namespace SinclairCC.MakeMeAdmin.Properties {
             get {
                 object obj = ResourceManager.GetObject("SecurityLock", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stack Trace.
+        /// </summary>
+        public static string StackTrace {
+            get {
+                return ResourceManager.GetString("StackTrace", resourceCulture);
             }
         }
         
@@ -130,6 +148,33 @@ namespace SinclairCC.MakeMeAdmin.Properties {
         public static string UIMessageAlreadyHaveRights {
             get {
                 return ResourceManager.GetString("UIMessageAlreadyHaveRights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please make sure the Make Me Admin service is running..
+        /// </summary>
+        public static string UIMessageEnsureServiceRunning {
+            get {
+                return ResourceManager.GetString("UIMessageEnsureServiceRunning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occurred while adding you to the Administrators group..
+        /// </summary>
+        public static string UIMessageErrorWhileAdding {
+            get {
+                return ResourceManager.GetString("UIMessageErrorWhileAdding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occurred while removing you from the Administrators group..
+        /// </summary>
+        public static string UIMessageErrorWhileRemoving {
+            get {
+                return ResourceManager.GetString("UIMessageErrorWhileRemoving", resourceCulture);
             }
         }
         

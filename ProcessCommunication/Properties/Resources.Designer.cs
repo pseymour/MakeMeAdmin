@@ -61,11 +61,11 @@ namespace SinclairCC.MakeMeAdmin.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Application.
+        ///   Looks up a localized string similar to Request was sent from host {0}..
         /// </summary>
-        internal static string ApplicationLogName {
+        internal static string RequestSentFromHost {
             get {
-                return ResourceManager.GetString("ApplicationLogName", resourceCulture);
+                return ResourceManager.GetString("RequestSentFromHost", resourceCulture);
             }
         }
     }

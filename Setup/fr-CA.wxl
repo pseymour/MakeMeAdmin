@@ -6,5 +6,5 @@
   <String Id="AdminRightsRequired">Vous devez disposer des droits d'administrateur pour installer ce logiciel.</String>
   <String Id="NewerVersionInstalled">Une version plus récente de [ProductName] est déjà installée.</String>
   <String Id="Remote">Éloigné</String>
-  <String Id="ServiceDescription">Enables users to elevate themselves to adminstrator-level rights.</String>
+  <String Id="ServiceDescription">Permet aux utilisateurs d'élever eux-mêmes leurs privilèges au niveau administrateur.</String>
 </WixLocalization>

@@ -26,7 +26,6 @@ namespace SinclairCC.MakeMeAdmin
     /// </summary>
     public class Syslog
     {
-        // TODO: i18n.
         private const string AppName = "Make Me Admin";
 
         /// <summary>

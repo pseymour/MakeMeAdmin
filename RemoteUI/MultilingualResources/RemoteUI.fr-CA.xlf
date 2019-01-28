@@ -18,6 +18,26 @@
           <source>..\Resources\SecurityLock.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</source>
           <target state="final">..\Resources\SecurityLock.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</target>
         </trans-unit>
+        <trans-unit id="AdminRightsRequestedOnHost" translate="yes" xml:space="preserve">
+          <source>Administrator rights requested on {0}.</source>
+          <target state="final">Les droits d'administrateur ont été demandés sur {0}.</target>
+        </trans-unit>
+        <trans-unit id="ErrorMessage" translate="yes" xml:space="preserve">
+          <source>Error Message</source>
+          <target state="final">Message d'erreur</target>
+        </trans-unit>
+        <trans-unit id="ErrorRequestingRightsOn" translate="yes" xml:space="preserve">
+          <source>An error occurred while requesting administrator rights on </source>
+          <target state="final">Une erreur s'est produite lors de la requête des droits d'administrateur sur </target>
+        </trans-unit>
+        <trans-unit id="MyCompany" translate="yes" xml:space="preserve">
+          <source>My Company</source>
+          <target state="final">Mon entreprise</target>
+        </trans-unit>
+        <trans-unit id="MyProduct" translate="yes" xml:space="preserve">
+          <source>My Product</source>
+          <target state="final">Mon produit</target>
+        </trans-unit>
       </group>
     </body>
   </file>

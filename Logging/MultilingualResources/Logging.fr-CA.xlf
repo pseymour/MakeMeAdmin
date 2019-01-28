@@ -5,7 +5,12 @@
       <tool tool-id="MultilingualAppToolkit" tool-name="Multilingual App Toolkit" tool-version="4.0.6900.0" tool-company="Microsoft" />
     </header>
     <body>
-      <group id="LOGGING/PROPERTIES/RESOURCES.RESX" datatype="resx" />
+      <group id="LOGGING/PROPERTIES/RESOURCES.RESX" datatype="resx">
+        <trans-unit id="ApplicationLogName" translate="yes" xml:space="preserve">
+          <source>Application</source>
+          <target state="final">Application</target>
+        </trans-unit>
+      </group>
     </body>
   </file>
 </xliff>

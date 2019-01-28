@@ -26,14 +26,7 @@ namespace SinclairCC.MakeMeAdmin
     /// This class allows simple logging of application events.
     /// </summary>
     public class ApplicationLog
-    {        
-        // TODO: i18n.
-        /// <summary>
-        /// The name of the Windows Event Log to which events will be written.
-        /// </summary>
-        private const string EventLogName = "Application";
-
-        // TODO: i18n.
+    {
         /// <summary>
         /// The source name to use when writing events to the Event Log.
         /// </summary>
@@ -50,7 +43,7 @@ namespace SinclairCC.MakeMeAdmin
         static ApplicationLog()
         {
             // Get an EventLog object for this service's log.
-            log = new System.Diagnostics.EventLog(EventLogName)
+            log = new System.Diagnostics.EventLog(Properties.Resources.ApplicationLogName)
             {
                 // Specify the source name for this event log.
                 Source = SourceName
@@ -65,7 +58,7 @@ namespace SinclairCC.MakeMeAdmin
             // If the specified source name does not exist, create it.
             if (!System.Diagnostics.EventLog.SourceExists(SourceName))
             {
-                System.Diagnostics.EventLog.CreateEventSource(SourceName, EventLogName);
+                System.Diagnostics.EventLog.CreateEventSource(SourceName, Properties.Resources.ApplicationLogName);
             }
         }
 

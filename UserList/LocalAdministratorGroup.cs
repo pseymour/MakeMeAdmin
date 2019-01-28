@@ -112,15 +112,13 @@ namespace SinclairCC.MakeMeAdmin
             {
                 if (LocalMachineContext == null)
                 {
-                    // TODO: i18n.
-                    ApplicationLog.WriteEvent("Local machine context is null.", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Error);
+                    ApplicationLog.WriteEvent(Properties.Resources.LocalMachineContextIsNull, EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Error);
                 }
                 else
                 {
                     if (LocalAdminsGroupSid == null)
                     {
-                        // TODO: i18n.
-                        ApplicationLog.WriteEvent("Local admins group SID is null.", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Error);
+                        ApplicationLog.WriteEvent(Properties.Resources.LocalAdminsGroupSIDIsNull, EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Error);
                     }
                     else
                     {
@@ -132,8 +130,7 @@ namespace SinclairCC.MakeMeAdmin
                             }
                             catch (Exception exception)
                             {
-                                // TODO: i18n.
-                                ApplicationLog.WriteEvent(string.Format("Exception: {0}", exception.Message), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Error);
+                                ApplicationLog.WriteEvent(string.Format("{0}: {1}", Properties.Resources.Exception, exception.Message), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Error);
                                 throw;
                             }
                         }
@@ -192,14 +189,12 @@ namespace SinclairCC.MakeMeAdmin
             int result = AddLocalGroupMembers(LocalAdminGroup.SamAccountName, userSid);
             if (result == 0)
             {
-                // TODO: i18n.
-                ApplicationLog.WriteEvent(string.Format("User {0} ({1}) added to the Administrators group.", userSid, Shared.GetAccountNameFromSID(userSid)), EventID.UserAddedToAdminsSuccess, System.Diagnostics.EventLogEntryType.Information);
+                ApplicationLog.WriteEvent(string.Format(Properties.Resources.UserAddedToAdminsGroup, userSid, Shared.GetAccountNameFromSID(userSid)), EventID.UserAddedToAdminsSuccess, System.Diagnostics.EventLogEntryType.Information);
                 return true;
             }
             else
             {
-                // TODO: i18n.
-                ApplicationLog.WriteEvent(string.Format("Adding user {0} ({1}) to the Administrators group returned error code {2}.", userSid, Shared.GetAccountNameFromSID(userSid), result), EventID.UserAddedToAdminsFailure, System.Diagnostics.EventLogEntryType.Warning);
+                ApplicationLog.WriteEvent(string.Format(Properties.Resources.AddingUserReturnedError, userSid, Shared.GetAccountNameFromSID(userSid), result), EventID.UserAddedToAdminsFailure, System.Diagnostics.EventLogEntryType.Warning);
                 return false;
             }
         }
@@ -248,14 +243,12 @@ namespace SinclairCC.MakeMeAdmin
                                     reasonString = Properties.Resources.RemovalReasonUserRequest;
                                     break;
                             }
-                            // TODO: i18n.
-                            string message = string.Format("User {0} ({1}) removed from the Administrators group. Reason: {2}.", userSid, accountName, reasonString);
+                            string message = string.Format(Properties.Resources.UserRemoved, userSid, accountName, reasonString);
                             ApplicationLog.WriteEvent(message, EventID.UserRemovedFromAdminsSuccess, System.Diagnostics.EventLogEntryType.Information);
                         }
                         else
                         {
-                            // TODO: i18n.
-                            ApplicationLog.WriteEvent(string.Format("Removing user {0} ({1}) from the Administrators group returned error code {1}.", userSid, accountName, result), EventID.UserRemovedFromAdminsFailure, System.Diagnostics.EventLogEntryType.Warning);
+                            ApplicationLog.WriteEvent(string.Format(Properties.Resources.RemovingUserReturnedError, userSid, accountName, result), EventID.UserRemovedFromAdminsFailure, System.Diagnostics.EventLogEntryType.Warning);
                         }
                     }
                 }
@@ -308,10 +301,6 @@ namespace SinclairCC.MakeMeAdmin
                             }
                             else
                             { // The user's administrator rights have expired.
-#if DEBUG
-                                string accountName = Shared.GetAccountNameFromSID(addedUserList[i]);
-                                ApplicationLog.WriteEvent(string.Format("User {0} ({1}) has been removed from the Administrators group by an outside process. Removing the user from Make Me Admin's list.", addedUserList[i], string.IsNullOrEmpty(accountName) ? "unknown account" : accountName), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
-#endif
                                 LocalAdministratorGroup.RemoveUser(addedUserList[i], RemovalReason.Timeout);
                             }
                         }
@@ -362,15 +351,12 @@ namespace SinclairCC.MakeMeAdmin
                                 string accountName = Shared.GetAccountNameFromSID(addedUserList[i]);
                                 if (Settings.OverrideRemovalByOutsideProcess)
                                 {
-                                    // TODO: i18n.
-                                    ApplicationLog.WriteEvent(string.Format("User {0} ({1}) has been removed from the Administrators group by an outside process. Adding the user back to the Administrators group.", addedUserList[i], string.IsNullOrEmpty(accountName) ? "unknown account" : accountName), EventID.UserRemovedByExternalProcess, System.Diagnostics.EventLogEntryType.Information);
+                                    ApplicationLog.WriteEvent(string.Format(Properties.Resources.UserRemovedByOutsideProcess + " " + Properties.Resources.AddingUserBackToAdministrators, addedUserList[i], string.IsNullOrEmpty(accountName) ? Properties.Resources.UnknownAccount : accountName), EventID.UserRemovedByExternalProcess, System.Diagnostics.EventLogEntryType.Information);
                                     AddUserToAdministrators(addedUserList[i]);
                                 }
                                 else
                                 {
-                                    // TODO: i18n.
-                                    ApplicationLog.WriteEvent(string.Format("User {0} ({1}) has been removed from the Administrators group by an outside process. Removing the user from Make Me Admin's list.", addedUserList[i], string.IsNullOrEmpty(accountName) ? "unknown account" : accountName), EventID.UserRemovedByExternalProcess, System.Diagnostics.EventLogEntryType.Information);
-
+                                    ApplicationLog.WriteEvent(string.Format(Properties.Resources.UserRemovedByOutsideProcess + " " + Properties.Resources.RemovingUserFromList, addedUserList[i], string.IsNullOrEmpty(accountName) ? Properties.Resources.UnknownAccount : accountName), EventID.UserRemovedByExternalProcess, System.Diagnostics.EventLogEntryType.Information);
                                     encryptedSettings.RemoveUser(addedUserList[i]);
                                 }
                             }

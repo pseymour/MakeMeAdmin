@@ -54,8 +54,7 @@ namespace SinclairCC.MakeMeAdmin
                         remoteAddress = ((RemoteEndpointMessageProperty)OperationContext.Current.IncomingMessageProperties[RemoteEndpointMessageProperty.Name]).Address;
                         if (remoteAddress != null)
                         {
-                            // TODO: i18n.
-                            ApplicationLog.WriteEvent(string.Format("Request was sent from host {0}.", remoteAddress), EventID.RemoteRequestInformation, System.Diagnostics.EventLogEntryType.Information);
+                            ApplicationLog.WriteEvent(string.Format(Properties.Resources.RequestSentFromHost, remoteAddress), EventID.RemoteRequestInformation, System.Diagnostics.EventLogEntryType.Information);
                         }
 
                     }

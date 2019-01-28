@@ -15,6 +15,9 @@
   <data name="ApplicationIsReady" xml:space="preserve">
     <value>Prêt.</value>
   </data>
+  <data name="ApplicationName" xml:space="preserve">
+    <value>Make Me Admin</value>
+  </data>
   <data name="CheckingAdminStatus" xml:space="preserve">
     <value>Vérification du status d'administrateur...</value>
   </data>
@@ -24,13 +27,34 @@
   <data name="UIMessageAddedToGroup" xml:space="preserve">
     <value>Vous êtes maintenant membre du groupe {0}.</value>
   </data>
+  <data name="UIMessageAddingToGroup" xml:space="preserve">
+    <value>Nous vous ajoutons au groupe {0}.</value>
+  </data>
   <data name="UIMessageAlreadyHaveRights" xml:space="preserve">
     <value>Vous avez déjà les droits administrateur.</value>
   </data>
   <data name="UIMessageRemovedFromGroup" xml:space="preserve">
     <value>Vous n'êtes maintenant plus membre du groupe {0}.</value>
   </data>
+  <data name="UIMessageRemovingFromGroup" xml:space="preserve">
+    <value>Nous vous retirons du groupe {0}.</value>
+  </data>
   <data name="UIMessageUnauthorized" xml:space="preserve">
     <value>Vous n'êtes pas autorisé à utiliser cette application.</value>
+  </data>
+  <data name="ErrorMessage" xml:space="preserve">
+    <value>Message d'erreur</value>
+  </data>
+  <data name="StackTrace" xml:space="preserve">
+    <value>tracé de la pile</value>
+  </data>
+  <data name="UIMessageEnsureServiceRunning" xml:space="preserve">
+    <value>Veuillez s'il vous plaît vous assurer que le service Make Me Admin est démarré.</value>
+  </data>
+  <data name="UIMessageErrorWhileAdding" xml:space="preserve">
+    <value>Une erreur s'est produite lors de votre ajout au groupe Administrateurs.</value>
+  </data>
+  <data name="UIMessageErrorWhileRemoving" xml:space="preserve">
+    <value>Une erreur s'est produite lors de votre retrait du groupe Administrateurs.</value>
   </data>
 </root>

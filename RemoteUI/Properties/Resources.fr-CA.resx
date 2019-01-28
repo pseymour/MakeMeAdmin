@@ -12,4 +12,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AdminRightsRequestedOnHost" xml:space="preserve">
+    <value>Les droits d'administrateur ont été demandés sur {0}.</value>
+  </data>
+  <data name="ErrorMessage" xml:space="preserve">
+    <value>Message d'erreur</value>
+  </data>
+  <data name="ErrorRequestingRightsOn" xml:space="preserve">
+    <value>Une erreur s'est produite lors de la requête des droits d'administrateur sur </value>
+  </data>
+  <data name="MyCompany" xml:space="preserve">
+    <value>Mon entreprise</value>
+  </data>
+  <data name="MyProduct" xml:space="preserve">
+    <value>Mon produit</value>
+  </data>
 </root>

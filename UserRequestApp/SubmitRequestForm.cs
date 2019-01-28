@@ -206,10 +206,10 @@ namespace SinclairCC.MakeMeAdmin
         {
             if (e.Error != null)
             {
-                // TODO: i18n.
-                System.Text.StringBuilder message = new System.Text.StringBuilder("An error occurred while adding you to the Administrators group.");
+                System.Text.StringBuilder message = new System.Text.StringBuilder(Properties.Resources.UIMessageErrorWhileAdding);
                 message.Append(System.Environment.NewLine);
-                message.Append("error message: ");
+                message.Append(Properties.Resources.ErrorMessage);
+                message.Append(": ");
                 message.Append(e.Error.Message);
 
                 MessageBox.Show(this, message.ToString(), Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, 0);
@@ -283,15 +283,16 @@ namespace SinclairCC.MakeMeAdmin
         {
             if (e.Error != null)
             {
-                // TODO: i18n.
-                System.Text.StringBuilder message = new System.Text.StringBuilder("An error occurred while removing you from the Administrators group.");
+                System.Text.StringBuilder message = new System.Text.StringBuilder(Properties.Resources.UIMessageErrorWhileRemoving);
                 message.Append(System.Environment.NewLine);
-                message.Append("Please make sure the Make Me Admin service is running.");
+                message.Append(Properties.Resources.UIMessageEnsureServiceRunning);
                 message.Append(System.Environment.NewLine);
-                message.Append("error message: ");
+                message.Append(Properties.Resources.ErrorMessage);
+                message.Append(": ");
                 message.Append(e.Error.Message);
                 message.Append(System.Environment.NewLine);
-                message.Append("stack trace: ");
+                message.Append(Properties.Resources.StackTrace);
+                message.Append(": ");
                 message.Append(e.Error.StackTrace);
                 message.Append(System.Environment.NewLine);
 

@@ -82,7 +82,6 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         private void SetFormText()
         {
-            // TODO: i18n.
             System.Text.StringBuilder formText = new System.Text.StringBuilder("Make Me Admin Remote ");
 
             // Append to the form text the first three parts of the assembly's version number.
@@ -171,21 +170,21 @@ namespace SinclairCC.MakeMeAdmin
                 .StartNew(() => this.RequestAdminRights(hostName))
                 .ContinueWith(resultTask =>
                 {
-                    // TODO: i18n.
                     if (resultTask.IsFaulted)
                     {
-                        System.Text.StringBuilder messageBoxText = new System.Text.StringBuilder("An error occurred while requesting administrator rights on ");
+                        System.Text.StringBuilder messageBoxText = new System.Text.StringBuilder(Properties.Resources.ErrorRequestingRightsOn);
                         messageBoxText.Append(hostName);
                         messageBoxText.Append(".");
                         messageBoxText.Append(System.Environment.NewLine);
-                        messageBoxText.Append("Error Message: ");
+                        messageBoxText.Append(Properties.Resources.ErrorMessage);
+                        messageBoxText.Append(": ");
                         messageBoxText.Append(System.Environment.NewLine);
                         messageBoxText.Append("{0}");
                         resultTask.Exception.Flatten().Handle(excep => { MessageBox.Show(string.Format(messageBoxText.ToString(), excep.Message), "Make Me Admin Remote", MessageBoxButtons.OK, MessageBoxIcon.Error); return true; });
                     }
                     else
                     {
-                        MessageBox.Show(string.Format("Administrator rights requested on {0}.", hostName), "Make Me Admin Remote", MessageBoxButtons.OK);
+                        MessageBox.Show(string.Format(Properties.Resources.AdminRightsRequestedOnHost, hostName), "Make Me Admin Remote", MessageBoxButtons.OK);
                     }                    
                 });
         }

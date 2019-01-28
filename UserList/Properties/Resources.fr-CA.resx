@@ -12,4 +12,52 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="RemovalReasonServiceStopped" xml:space="preserve">
+    <value>Service Make Me Admin arrêté</value>
+  </data>
+  <data name="RemovalReasonTimeout" xml:space="preserve">
+    <value>Délai d'attente écoulé</value>
+  </data>
+  <data name="RemovalReasonUnknown" xml:space="preserve">
+    <value>Inconnu</value>
+  </data>
+  <data name="RemovalReasonUserLogoff" xml:space="preserve">
+    <value>Utilisateur déconnecté</value>
+  </data>
+  <data name="RemovalReasonUserRequest" xml:space="preserve">
+    <value>Suppression demandée par l'utilisateur</value>
+  </data>
+  <data name="AddingUserReturnedError" xml:space="preserve">
+    <value>L'ajout de l'utilisateur {0} ({1}) au groupe Administrateurs a généré une erreur avec le code {2}.</value>
+  </data>
+  <data name="Exception" xml:space="preserve">
+    <value>Exception</value>
+  </data>
+  <data name="LocalAdminsGroupSIDIsNull" xml:space="preserve">
+    <value>Le SID du groupe local Administrateurs est invalide.</value>
+  </data>
+  <data name="LocalMachineContextIsNull" xml:space="preserve">
+    <value>Le contexte de la machine locale est invalide.</value>
+  </data>
+  <data name="RemovingUserReturnedError" xml:space="preserve">
+    <value>La suppression de l'utilisateur {0} ({1}) du groupe Administrateurs a généré une erreur avec le code {1}.</value>
+  </data>
+  <data name="UnknownAccount" xml:space="preserve">
+    <value>Compte Inconnu</value>
+  </data>
+  <data name="UserAddedToAdminsGroup" xml:space="preserve">
+    <value>L'utilisateur {0} ({1}) a été ajouté au groupe Administrateurs.</value>
+  </data>
+  <data name="UserRemoved" xml:space="preserve">
+    <value>L'utilisateur {0} ({1}) a été retiré du groupe Administrateurs. Raison: {2}.</value>
+  </data>
+  <data name="AddingUserBackToAdministrators" xml:space="preserve">
+    <value>Rajout de l'utilisateur au groupe Administrateurs.</value>
+  </data>
+  <data name="RemovingUserFromList" xml:space="preserve">
+    <value>Suppression de l'utilisateur de la liste de Make Me Admin.</value>
+  </data>
+  <data name="UserRemovedByOutsideProcess" xml:space="preserve">
+    <value>L'utilisateur {0} ({1}) a été retiré du groupe Administrateurs par un processus externe.</value>
+  </data>
 </root>

@@ -19,7 +19,7 @@ namespace SinclairCC.MakeMeAdmin.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -57,6 +57,51 @@ namespace SinclairCC.MakeMeAdmin.Properties {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Administrator rights requested on {0}..
+        /// </summary>
+        internal static string AdminRightsRequestedOnHost {
+            get {
+                return ResourceManager.GetString("AdminRightsRequestedOnHost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error Message.
+        /// </summary>
+        internal static string ErrorMessage {
+            get {
+                return ResourceManager.GetString("ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occurred while requesting administrator rights on .
+        /// </summary>
+        internal static string ErrorRequestingRightsOn {
+            get {
+                return ResourceManager.GetString("ErrorRequestingRightsOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to My Company.
+        /// </summary>
+        internal static string MyCompany {
+            get {
+                return ResourceManager.GetString("MyCompany", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to My Product.
+        /// </summary>
+        internal static string MyProduct {
+            get {
+                return ResourceManager.GetString("MyProduct", resourceCulture);
             }
         }
         

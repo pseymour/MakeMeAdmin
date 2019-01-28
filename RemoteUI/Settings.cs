@@ -194,8 +194,7 @@ namespace SinclairCC.MakeMeAdmin.RemoteUI
         {
             get
             {
-                // TODO: i18n.
-                string returnValue = "My Company";
+                string returnValue = Properties.Resources.MyCompany;
                 System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
                 object[] attributes = assembly.GetCustomAttributes(typeof(System.Reflection.AssemblyCompanyAttribute), false);
                 foreach (object o in attributes)
@@ -220,8 +219,7 @@ namespace SinclairCC.MakeMeAdmin.RemoteUI
         {
             get
             {
-                // TODO: i18n.
-                string returnValue = "My Product";
+                string returnValue = Properties.Resources.MyProduct;
                 System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
                 object[] attributes = assembly.GetCustomAttributes(typeof(System.Reflection.AssemblyProductAttribute), false);
                 foreach (object o in attributes)
