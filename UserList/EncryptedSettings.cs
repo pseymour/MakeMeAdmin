@@ -1,12 +1,10 @@
 namespace SinclairCC.MakeMeAdmin
 {
     using System;
-    using System.Collections.Generic;
     using System.Security.Cryptography;
     using System.Security.Principal;
     using System.Xml;
     using System.Xml.Serialization;
-
 
     /// <summary>
     /// This class stores application data in an encrypted file.
@@ -86,21 +84,21 @@ namespace SinclairCC.MakeMeAdmin
         }
 
         /// <summary>
-        /// Adds a user to the list.
+        /// Adds a user to the list of users that have been added to the Administrators group.
         /// </summary>
         /// <param name="userIdentity">
-        /// 
+        /// A WindowsIdentity object representing the user who is to be added to the list.
         /// </param>
         /// <param name="expirationTime">
-        /// 
+        /// The date and time at which the user's administrator rights expire.
         /// </param>
         /// <param name="remoteAddress">
-        /// 
+        /// The remote host from which the request for administrator rights came.
         /// </param>
         public void AddUser(WindowsIdentity userIdentity, DateTime? expirationTime, string remoteAddress)
         {
             if (this.AddedUsers.Contains(userIdentity.User))
-            {
+            { // The user is already in the list.
                 if (this.AddedUsers[userIdentity.User].ExpirationTime.HasValue)
                 {
                     if (expirationTime.HasValue)
@@ -110,7 +108,7 @@ namespace SinclairCC.MakeMeAdmin
                     }
                     else
                     { // expirationTime doesn't have a value, but the currently-stored user does.
-                        // Err on the side of safety and keep the currently-stored value.
+                        // Err on the side of safety, and keep the currently-stored value.
                     }
                 }
                 else if (expirationTime.HasValue)
@@ -119,14 +117,18 @@ namespace SinclairCC.MakeMeAdmin
                 }
             }
             else
-            {
-                /* this.AddedUsers.Add(new User(userSecurityIdentifier, expirationTime, remoteAddress)); */
+            { // The user is not already in the list.
                 this.AddedUsers.Add(new User(userIdentity, expirationTime, remoteAddress));
             }
             this.Save();
         }
         
-
+        /// <summary>
+        /// Removes a user from the list of added users.
+        /// </summary>
+        /// <param name="userSecurityIdentifier">
+        /// The security identifier (SID) of the user to be removed.
+        /// </param>
         public void RemoveUser(SecurityIdentifier userSecurityIdentifier)
         {
             if (this.AddedUsers.Contains(userSecurityIdentifier))
@@ -136,6 +138,16 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+        /// <summary>
+        /// Gets the date and time at which the given user's administrator rights expire.
+        /// </summary>
+        /// <param name="sid">
+        /// The security identifier (SID) of the user in question.
+        /// </param>
+        /// <returns>
+        /// Returns a DateTime object indicating when the user's administrator rights expire.
+        /// If the user is not in the list of added users, null is returned.
+        /// </returns>
         public DateTime? GetExpirationTime(SecurityIdentifier sid)
         {
             if (this.AddedUsers.Contains(sid))
@@ -148,6 +160,10 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+        /// <summary>
+        /// Gets an array of security identifiers (SIDs), each one representing
+        /// a user in the list of added users.
+        /// </summary>
         [XmlIgnore]
         public SecurityIdentifier[] AddedUserSIDs
         {
@@ -157,11 +173,27 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the given user is in the list.
+        /// </summary>
+        /// <param name="sid">
+        /// The security identifier (SID) of the user to be found.
+        /// </param>
+        /// <returns>
+        /// Returns true if the user is in the list of added users.
+        /// </returns>
         public bool ContainsSID(SecurityIdentifier sid)
         {
             return this.AddedUsers.Contains(sid);
         }
 
+        /// <summary>
+        /// Gets an array of users whose administrator rights have expired.
+        /// </summary>
+        /// <returns>
+        /// Returns an array containing the set of users whose rights have expired.
+        /// If the list of users is null, a null array is returned.
+        /// </returns>
         public User[] GetExpiredUsers()
         {
             if (this.AddedUsers == null)
@@ -174,22 +206,24 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the given user's administrator rights
+        /// are the result of a remote request.
+        /// </summary>
+        /// <param name="sid">
+        /// The security identifier (SID) of the user in question.
+        /// </param>
+        /// <returns>
+        /// Returns true if the request for administrator rights for the given users
+        /// was from a remote host.
+        /// </returns>
         public bool IsRemote(SecurityIdentifier sid)
         {
             return this.AddedUsers.IsRemote(sid);
         }
 
-        /*
-        public Dictionary<SecurityIdentifier, DateTime?> GetAddedUsers()
-        {
-            EncryptedSettings encryptedSettings = new EncryptedSettings();
-            return encryptedSettings.AddedUsers;
-        }
-        */
-
-
         /// <summary>
-        /// Gets an XML serializer for the AppSettings class.
+        /// Gets an XML serializer for the EncryptedSettings class.
         /// </summary>
         public static XmlSerializer Serializer
         {
@@ -200,9 +234,8 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-
         /// <summary>
-        /// Saves the settings.
+        /// Saves the settings to the default file path.
         /// </summary>
         private void Save()
         {
@@ -212,31 +245,36 @@ namespace SinclairCC.MakeMeAdmin
         /// <summary>
         /// Saves the application settings to the specified file.
         /// </summary>
-        /// <param name="filePath">The path of the file to which settings are to be saved.</param>
+        /// <param name="filePath">
+        /// The path of the file to which settings are to be saved.
+        /// </param>
         private void Save(string filePath)
         {
             try
             {
-
+                // Serialize the current object to a memory stream.
                 System.IO.MemoryStream plaintextStream = new System.IO.MemoryStream();
                 System.Xml.XmlTextWriter plaintextWriter = new System.Xml.XmlTextWriter(plaintextStream, System.Text.Encoding.Unicode);
                 XmlSerializer serializer = EncryptedSettings.Serializer;
                 lock (serializer)
                 {
                     plaintextWriter.Indentation = 0;
-                    // plaintextWriter.IndentChar = '\t';
                     plaintextWriter.Formatting = System.Xml.Formatting.None;
                     serializer.Serialize(plaintextWriter, this);
                 }
 
+                // Convert the plaintext memory stream to an array of bytes.
                 byte[] plaintextBytes = plaintextStream.ToArray();
 
+                // Encrypt the plaintext byte array.
                 byte[] ciphertextBytes = ProtectedData.Protect(plaintextBytes, null, DataProtectionScope.LocalMachine);
 
                 plaintextWriter.Close();
                 plaintextWriter.Dispose();
 
                 System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(filePath));
+
+                // Write the encrypted byte array to the file.
                 System.IO.FileStream ciphertextStream = new System.IO.FileStream(filePath, System.IO.FileMode.Create, System.IO.FileAccess.Write);
                 ciphertextStream.Write(ciphertextBytes, 0, ciphertextBytes.Length);
                 ciphertextStream.Close();
@@ -273,13 +311,17 @@ namespace SinclairCC.MakeMeAdmin
         /// <summary>
         /// Loads application settings from the specified file.
         /// </summary>
-        /// <param name="filePath">The path of the file from which settings should be loaded.</param>
+        /// <param name="filePath">
+        /// The path of the file from which settings should be loaded.
+        /// </param>
         private void Load(string filePath)
         {
             if (System.IO.File.Exists(filePath))
-            {
+            { // The specified file exists.
                 byte[] buffer = new byte[128];
                 int bytesRead = int.MinValue;
+
+                // Read the encrpyted bytes from the file.
                 System.IO.MemoryStream ciphertextMemoryStream = new System.IO.MemoryStream();
                 System.IO.FileStream ciphertextFileStream = new System.IO.FileStream(filePath, System.IO.FileMode.Open, System.IO.FileAccess.Read);
                 while ((bytesRead = ciphertextFileStream.Read(buffer, 0, buffer.Length)) > 0)
@@ -288,10 +330,15 @@ namespace SinclairCC.MakeMeAdmin
                 }
                 ciphertextFileStream.Close();
                 
+                // Convert the encrypted bytes to an array.
                 byte[] ciphertextBytes = ciphertextMemoryStream.ToArray();
+
+                // Decrypt the byte array.
                 byte[] plaintextBytes = System.Security.Cryptography.ProtectedData.Unprotect(ciphertextBytes, null, DataProtectionScope.LocalMachine);
+
                 ciphertextMemoryStream.Close();
 
+                // Deserialize the plaintext byte array.
                 EncryptedSettings deserializedSettings = null;
                 System.IO.MemoryStream plaintextStream = new System.IO.MemoryStream(plaintextBytes);
                 System.Xml.XmlTextReader reader = new XmlTextReader(plaintextStream);
@@ -318,7 +365,7 @@ namespace SinclairCC.MakeMeAdmin
                 this.AddedUsers = deserializedSettings.AddedUsers;
             }
             else
-            {
+            { // The specified file does not exist. Save a new one.
                 this.AddedUsers = new UserList();
                 this.Save(filePath);
             }

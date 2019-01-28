@@ -20,9 +20,8 @@
 
 namespace SinclairCC.MakeMeAdmin
 {
-    // TODO: Finish commenting this class.
     /// <summary>
-    /// This class allows simple logging of application events.
+    /// This class allows syslog logging of application events.
     /// </summary>
     public class Syslog
     {
@@ -63,6 +62,9 @@ namespace SinclairCC.MakeMeAdmin
         /// <summary>
         /// Constructor.
         /// </summary>
+        /// <remarks>
+        /// The syslog RFC is assume to be 3164.
+        /// </remarks>
         public Syslog(string Hostname, string Protocol) : this(Hostname, 0, Protocol, "3164")
         {
         }
@@ -71,6 +73,9 @@ namespace SinclairCC.MakeMeAdmin
         /// <summary>
         /// Constructor.
         /// </summary>
+        /// <remarks>
+        /// The syslog RFC is assume to be 3164.
+        /// </remarks>
         public Syslog(string Hostname, int Port, string Protocol) : this(Hostname, Port, Protocol, "3164")
         {
         }
@@ -104,6 +109,7 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+
         /*
         /// <summary>
         /// Writes the specified message to syslog as an information event.
@@ -130,6 +136,18 @@ namespace SinclairCC.MakeMeAdmin
         }
         */
 
+        /// <summary>
+        /// Sends the message to the syslog server.
+        /// </summary>
+        /// <param name="message">
+        /// The text of the message to be sent.
+        /// </param>
+        /// <param name="messageId">
+        /// The message identifier.
+        /// </param>
+        /// <param name="severity">
+        /// The severity of the message.
+        /// </param>
         public void SendMessage(string message,  string messageId, SyslogNet.Client.Severity severity)
         {
 
@@ -177,7 +195,9 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-
+        /// <summary>
+        /// Gets a message serializer based on the chosen syslog RFC.
+        /// </summary>
         private SyslogNet.Client.Serialization.ISyslogMessageSerializer Serializer
         {
             get
@@ -190,20 +210,31 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-
+        /// <summary>
+        /// Gets a message sender based on the chosen protocol.
+        /// </summary>
         private SyslogNet.Client.Transport.ISyslogMessageSender Sender
         {
             get
             {
                 return (string.Compare(protocol, "TCP", true) == 0)
-                    ? (SyslogNet.Client.Transport.ISyslogMessageSender)new SyslogNet.Client.Transport.SyslogTcpSender(hostname, port)
+                    ? new SyslogNet.Client.Transport.SyslogTcpSender(hostname, port)
                     : (string.Compare(protocol, "UDP", true) == 0)
-                        ? (SyslogNet.Client.Transport.ISyslogMessageSender)new SyslogNet.Client.Transport.SyslogUdpSender(hostname, port)
+                        ? new SyslogNet.Client.Transport.SyslogUdpSender(hostname, port)
                         : (SyslogNet.Client.Transport.ISyslogMessageSender)new SyslogNet.Client.Transport.SyslogLocalSender();
             }
         }
 
 
+        /// <summary>
+        /// Gets a value indicating whether the syslog host is available via TCP.
+        /// </summary>
+        /// <param name="timeout">
+        /// The timeout, in seconds, to wait for a response from the host.
+        /// </param>
+        /// <returns>
+        /// Returns true if the syslog host is available via TCP.
+        /// </returns>
         private bool HostIsAvailableViaTcp(double timeout)
         {
             bool returnValue = false;
@@ -217,7 +248,6 @@ namespace SinclairCC.MakeMeAdmin
                     {
                         tcp.Close();
                         returnValue = false;
-                        //throw new TimeoutException();
                     }
 
                     if (tcp.Client != null)
