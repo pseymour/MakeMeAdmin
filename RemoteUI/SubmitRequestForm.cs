@@ -87,9 +87,6 @@ namespace SinclairCC.MakeMeAdmin
             // Append to the form text the first three parts of the assembly's version number.
             formText.Append(Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
 
-            // TODO: Remove this for release.
-            formText.Append(" RC1");
-
             this.Text = formText.ToString();
         }
 

@@ -135,9 +135,6 @@ namespace SinclairCC.MakeMeAdmin
             formText.Append(' ');
             formText.Append(Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
 
-            // TODO: Remove this for release.
-            formText.Append(" RC1");
-
             this.Text = formText.ToString();
             this.notifyIcon.Text = formText.ToString();
         }

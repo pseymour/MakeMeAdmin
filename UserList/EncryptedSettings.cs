@@ -76,7 +76,7 @@ namespace SinclairCC.MakeMeAdmin
             get
             {
                 const string EncryptedSettingsFile = "users.xml";
-                string filePath = System.IO.Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Make Me Admin");
+                string filePath = System.IO.Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Make Me Admin");
                 System.IO.Directory.CreateDirectory(filePath);
                 filePath = System.IO.Path.Combine(filePath, EncryptedSettingsFile);
                 return filePath;
