@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<WixLocalization Culture="fr-ca" xmlns="http://schemas.microsoft.com/wix/2006/localization" Codepage="1252">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="fr" xmlns="http://schemas.microsoft.com/wix/2006/localization" Codepage="1252">
   <String Id='LANG'>3084</String>
   <String Id="SoftwareName">Make Me Admin</String>
   <String Id="SoftwareManufacturer">Sinclair Community College</String>

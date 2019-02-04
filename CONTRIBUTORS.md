@@ -8,4 +8,4 @@ This is the official list of the Make Me Admin project contributors.
 
 * **Etienne Croteau**
 
-  * fr-CA localization
+  * French localization

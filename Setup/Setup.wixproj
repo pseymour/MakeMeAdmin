@@ -135,7 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="en-US.wxl" />
-    <EmbeddedResource Include="fr-CA.wxl" />
+    <EmbeddedResource Include="fr.wxl" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <!--
