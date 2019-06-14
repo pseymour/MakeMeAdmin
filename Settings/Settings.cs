@@ -36,7 +36,7 @@ namespace SinclairCC.MakeMeAdmin
         /// The top-level registry key in which the settings will be stored.
         /// </summary>
         private static RegistryKey rootRegistryKey = Registry.LocalMachine;
-        
+
         /// <summary>
         /// Gets the base address for the service host that is available via TCP.
         /// </summary>
@@ -463,6 +463,32 @@ namespace SinclairCC.MakeMeAdmin
             set
             {
                 SetDWord(PreferenceRegistryKeyPath, null, "End Remote Sessions Upon Expiration", Convert.ToInt32(value));
+            }
+        }
+
+        // TODO: i18n.
+        public static bool AllowSCCMTopConsoleUser
+        {
+            get
+            {
+                int? policySCCMTopUserSetting = GetDWord(PolicyRegistryKeyPath, null, "Allow SCCM Top Console User");
+                int? preferenceSCCMTopUserSetting = GetDWord(PreferenceRegistryKeyPath, null, "Allow SCCM Top Console User");
+                if (policySCCMTopUserSetting.HasValue)
+                { // The policy setting has a value. Go with whatever it says.
+                    return Convert.ToBoolean(policySCCMTopUserSetting.Value);
+                }
+                else if (preferenceSCCMTopUserSetting.HasValue)
+                { // The preference setting has a value. Go with whatever it says.
+                    return Convert.ToBoolean(preferenceSCCMTopUserSetting.Value);
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value. Return a default value of false.
+                    return false;
+                }
+            }
+            set
+            {
+                SetDWord(PreferenceRegistryKeyPath, null, "Allow SCCM Top Console User", Convert.ToInt32(value));
             }
         }
 

@@ -53,7 +53,13 @@ namespace SinclairCC.MakeMeAdmin
         /// </returns>
         [OperationContract]
         bool UserIsInList();
-
+        
+        /*
+        [OperationContract]
+        string GetSCCMTopConsoleUser();        
+        */
+        
+        
         [OperationContract]
         bool UserIsAuthorized(string[] allowedSidsList, string[] deniedSidsList);
     }

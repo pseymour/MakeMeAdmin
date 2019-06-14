@@ -44,6 +44,9 @@
       <string id="EndRemoteSessionsDisplayName">End Remote Sessions When Rights Expire</string>
       <string id="EndRemoteSessionsExplainText">Specifies whether remote sessions are closed when the corresponding user's rights expire.</string>
 
+      <string id="AllowSCCMTopConsoleUserDisplayName">Allow the SCCM Top Console User</string>
+      <string id="AllowSCCMTopConsoleUserExplainText">Specifies whether the top console user, according to SCCM, is allowed to gain administrative rights. See the documentation for the SMS_SystemConsoleUsage client WMI class.</string>
+
       <string id="TimeoutOverrideDisplayName">Admin Rights Timeout Overrides</string>
       <string id="TimeoutOverrideExplainText">Specifies different timeout values for particular users or groups.</string>
 

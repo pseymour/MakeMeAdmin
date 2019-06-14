@@ -22,6 +22,7 @@ namespace SinclairCC.MakeMeAdmin
 {
     using System;
     using System.Collections.Generic;
+    using System.Management;
     using System.ServiceModel;
     using System.ServiceModel.Channels;
     using System.Security.Principal;
@@ -32,6 +33,8 @@ namespace SinclairCC.MakeMeAdmin
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, IncludeExceptionDetailInFaults = false)]
     public class AdminGroupManipulator : IAdminGroup
     {
+        private static string SCCMTopConsoleUserName { get; set; }
+
         /// <summary>
         /// Adds a user to the local Administrators group.
         /// </summary>
@@ -211,6 +214,35 @@ namespace SinclairCC.MakeMeAdmin
 
             // The user hasn't been denied yet, so now we check for authorization.
 
+
+            // TODO: Finish this!
+            if (Settings.AllowSCCMTopConsoleUser)
+            {
+#if DEBUG
+                ApplicationLog.WriteEvent("Retrieving SCCM top console user.", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+                if (null == AdminGroupManipulator.SCCMTopConsoleUserName)
+                {
+                    AdminGroupManipulator.SCCMTopConsoleUserName = GetSCCMTopConsoleUser();
+                    if (null == AdminGroupManipulator.SCCMTopConsoleUserName) { AdminGroupManipulator.SCCMTopConsoleUserName = string.Empty; }
+                }
+
+                if (!string.IsNullOrEmpty(AdminGroupManipulator.SCCMTopConsoleUserName))
+                {
+                    if (string.Compare(AdminGroupManipulator.SCCMTopConsoleUserName, userIdentity.Name, true) == 0)
+                    {
+#if DEBUG
+                        ApplicationLog.WriteEvent(string.Format("User is SCCM top console user.", AdminGroupManipulator.SCCMTopConsoleUserName), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+                        return true;
+                    }
+                }
+#if DEBUG
+                ApplicationLog.WriteEvent(string.Format("Finished retrieving SCCM top console user. Top console user is \"{0}.\"", AdminGroupManipulator.SCCMTopConsoleUserName), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+            }
+
+
             // Check the authorization list.
             if (allowedSidsList == null)
             { // The allowed list is null, meaning everyone is allowed administrator rights.
@@ -290,5 +322,82 @@ namespace SinclairCC.MakeMeAdmin
             return timeoutMinutes;
         }
 
+        private string GetSCCMTopConsoleUser()
+        {
+            string returnValue = null;
+            try
+            {
+                ManagementScope scope = new ManagementScope("\\root\\cimv2\\SMS");
+                scope.Connect();
+                ObjectQuery oq = new ObjectQuery("SELECT TopConsoleUser FROM SMS_SystemConsoleUsage");
+                ManagementObjectSearcher searcher = new ManagementObjectSearcher(scope, oq);
+                ManagementObjectCollection collection = searcher.Get();
+
+                foreach (ManagementObject mo in collection)
+                {
+                    foreach (PropertyData pd in mo.Properties)
+                    {
+                        if (null != pd.Value)
+                        {
+                            returnValue = ConvertPropDataToString(pd);
+                        }
+                    }
+                }
+
+                collection.Dispose();
+                searcher.Dispose();
+            }
+            catch (ManagementException)
+            {
+            }
+            catch (System.UnauthorizedAccessException)
+            {
+            }
+
+            return returnValue;
+        }
+
+
+        /// <summary>
+        /// Converts the given PropertyData object to a string.
+        /// </summary>
+        /// <param name="propData"></param>
+        /// <returns></returns>
+        /// <remarks>This function only works for single-valued WMI values.</remarks>
+        private string ConvertPropDataToString(PropertyData propData)
+        {
+            string propValue;
+
+            switch (propData.Type)
+            {
+                case CimType.String:
+                //if (propData.IsArray)
+                //{
+                //    // TODO: Handle arrays of data!
+                //    string[] stringArrayData = (string[])propData.Value;
+
+                //    foreach (string stringData in stringArrayData)
+                //    {
+                //        // Replace multiple whitespace characters with a single space character.
+                //        stringData = System.Text.RegularExpressions.Regex.Replace(stringData, "\\s+", " ");
+
+                //        propValue = stringData;
+                //    }
+                //}
+                //else
+                //{
+                    string stringData = (string)propData.Value;
+
+                    propValue = stringData;
+                    break;
+
+                default:
+                    propValue = default(string);
+                    break;
+            }
+
+            return propValue;
+        }
+        
     }
 }

@@ -187,6 +187,18 @@
       </elements>
     </policy>
 
+    <policy name="AllowSCCMTopConsoleUser"
+             class="Machine"
+             displayName="$(string.AllowSCCMTopConsoleUserDisplayName)"
+             explainText="$(string.AllowSCCMTopConsoleUserExplainText)"
+             key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
+             valueName="Allow SCCM Top Console User">
+      <parentCategory ref="makemeadmin:MakeMeAdmin"></parentCategory>
+      <supportedOn ref="windows:SUPPORTED_Windows7" />
+      <enabledValue><decimal value="1" /></enabledValue>
+      <disabledValue><delete /></disabledValue>
+    </policy>
+
   </policies>
 
 </policyDefinitions>
