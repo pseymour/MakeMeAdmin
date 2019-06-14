@@ -122,10 +122,10 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         private void OpenNamedPipeServiceHost()
         {
-            this.namedPipeServiceHost = new ServiceHost(typeof(AdminGroupManipulator), new Uri(Shared.NamedPipeServiceBaseAddress));
+            this.namedPipeServiceHost = new ServiceHost(typeof(AdminGroupManipulator), new Uri(Settings.NamedPipeServiceBaseAddress));
             this.namedPipeServiceHost.Faulted += ServiceHostFaulted;
             NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
-            this.namedPipeServiceHost.AddServiceEndpoint(typeof(IAdminGroup), binding, Shared.NamedPipeServiceBaseAddress);
+            this.namedPipeServiceHost.AddServiceEndpoint(typeof(IAdminGroup), binding, Settings.NamedPipeServiceBaseAddress);
             this.namedPipeServiceHost.Open();
         }
 
@@ -135,10 +135,10 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         private void OpenTcpServiceHost()
         {
-            this.tcpServiceHost = new ServiceHost(typeof(AdminGroupManipulator), new Uri(Shared.TcpServiceBaseAddress));
+            this.tcpServiceHost = new ServiceHost(typeof(AdminGroupManipulator), new Uri(Settings.TcpServiceBaseAddress));
             this.tcpServiceHost.Faulted += ServiceHostFaulted;
             NetTcpBinding binding = new NetTcpBinding(SecurityMode.Transport);
-            this.tcpServiceHost.AddServiceEndpoint(typeof(IAdminGroup), binding, Shared.TcpServiceBaseAddress);
+            this.tcpServiceHost.AddServiceEndpoint(typeof(IAdminGroup), binding, Settings.TcpServiceBaseAddress);
             this.tcpServiceHost.Open();
         }
 
@@ -292,11 +292,18 @@ namespace SinclairCC.MakeMeAdmin
 
                     if (userIdentity != null)
                     {
+
+                        NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
+                        ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(binding, Settings.NamedPipeServiceBaseAddress);
+                        IAdminGroup channel = namedPipeFactory.CreateChannel();
+                        bool userIsAuthorizedForAutoAdd = channel.UserIsAuthorized(Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied);
+                        namedPipeFactory.Close();
+
                         // If the user is in the automatic add list, then add them to the Administrators group.
                         if (
                             (Settings.AutomaticAddAllowed != null) &&
                             (Settings.AutomaticAddAllowed.Length > 0) &&
-                            (Shared.UserIsAuthorized(userIdentity, Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied))
+                            (userIsAuthorizedForAutoAdd /*UserIsAuthorized(userIdentity, Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied)*/)
                            )
                         {
                             LocalAdministratorGroup.AddUser(userIdentity, null, null);

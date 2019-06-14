@@ -26,7 +26,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Make Me Admin Common Library")]
+[assembly: AssemblyTitle("Make Me Admin Enumerations Library")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Sinclair Community College")]
@@ -41,7 +41,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("5b04d426-3286-4af4-9dfc-639be55be614")]
+[assembly: Guid("5fb1809b-b0fd-48e9-9e47-3cb048369433")]
 
 // Version information for an assembly consists of the following four values:
 //

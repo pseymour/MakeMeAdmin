@@ -61,11 +61,155 @@ namespace SinclairCC.MakeMeAdmin.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adding the user back to the Administrators group..
+        /// </summary>
+        internal static string AddingUserBackToAdministrators {
+            get {
+                return ResourceManager.GetString("AddingUserBackToAdministrators", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adding user {0} ({1}) to the Administrators group returned error code {2}..
+        /// </summary>
+        internal static string AddingUserReturnedError {
+            get {
+                return ResourceManager.GetString("AddingUserReturnedError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exception.
+        /// </summary>
+        internal static string Exception {
+            get {
+                return ResourceManager.GetString("Exception", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Local admins group SID is null..
+        /// </summary>
+        internal static string LocalAdminsGroupSIDIsNull {
+            get {
+                return ResourceManager.GetString("LocalAdminsGroupSIDIsNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Local machine context is null..
+        /// </summary>
+        internal static string LocalMachineContextIsNull {
+            get {
+                return ResourceManager.GetString("LocalMachineContextIsNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make Me Admin service stopped.
+        /// </summary>
+        internal static string RemovalReasonServiceStopped {
+            get {
+                return ResourceManager.GetString("RemovalReasonServiceStopped", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Timeout elapsed.
+        /// </summary>
+        internal static string RemovalReasonTimeout {
+            get {
+                return ResourceManager.GetString("RemovalReasonTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown.
+        /// </summary>
+        internal static string RemovalReasonUnknown {
+            get {
+                return ResourceManager.GetString("RemovalReasonUnknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User logged off.
+        /// </summary>
+        internal static string RemovalReasonUserLogoff {
+            get {
+                return ResourceManager.GetString("RemovalReasonUserLogoff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User requested removal.
+        /// </summary>
+        internal static string RemovalReasonUserRequest {
+            get {
+                return ResourceManager.GetString("RemovalReasonUserRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Removing the user from Make Me Admin&apos;s list..
+        /// </summary>
+        internal static string RemovingUserFromList {
+            get {
+                return ResourceManager.GetString("RemovingUserFromList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Removing user {0} ({1}) from the Administrators group returned error code {1}..
+        /// </summary>
+        internal static string RemovingUserReturnedError {
+            get {
+                return ResourceManager.GetString("RemovingUserReturnedError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Request was sent from host {0}..
         /// </summary>
         internal static string RequestSentFromHost {
             get {
                 return ResourceManager.GetString("RequestSentFromHost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown Account.
+        /// </summary>
+        internal static string UnknownAccount {
+            get {
+                return ResourceManager.GetString("UnknownAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User {0} ({1}) added to the Administrators group..
+        /// </summary>
+        internal static string UserAddedToAdminsGroup {
+            get {
+                return ResourceManager.GetString("UserAddedToAdminsGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User {0} ({1}) removed from the Administrators group. Reason: {2}..
+        /// </summary>
+        internal static string UserRemoved {
+            get {
+                return ResourceManager.GetString("UserRemoved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User {0} ({1}) has been removed from the Administrators group by an outside process..
+        /// </summary>
+        internal static string UserRemovedByOutsideProcess {
+            get {
+                return ResourceManager.GetString("UserRemovedByOutsideProcess", resourceCulture);
             }
         }
     }

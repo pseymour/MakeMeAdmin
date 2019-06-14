@@ -101,7 +101,7 @@ namespace SinclairCC.MakeMeAdmin
             { // The user's administrator status has changed.
 
                 NetNamedPipeBinding namedPipeBinding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
-                ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(namedPipeBinding, Shared.NamedPipeServiceBaseAddress);
+                ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(namedPipeBinding, Settings.NamedPipeServiceBaseAddress);
                 IAdminGroup namedPipeChannel = namedPipeFactory.CreateChannel();
 
                 this.userWasAdminOnLastCheck = this.userIsAdmin;
@@ -169,7 +169,7 @@ namespace SinclairCC.MakeMeAdmin
         private void addUserBackgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
-            ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(binding, Shared.NamedPipeServiceBaseAddress);
+            ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(binding, Settings.NamedPipeServiceBaseAddress);
             IAdminGroup channel = namedPipeFactory.CreateChannel();
 
             try
@@ -260,7 +260,7 @@ namespace SinclairCC.MakeMeAdmin
         private void removeUserBackgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
-            ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(binding, Shared.NamedPipeServiceBaseAddress);
+            ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(binding, Settings.NamedPipeServiceBaseAddress);
             IAdminGroup channel = namedPipeFactory.CreateChannel();
             channel.RemoveUserFromAdministratorsGroup(RemovalReason.UserRequest);
             namedPipeFactory.Close();
@@ -392,7 +392,15 @@ namespace SinclairCC.MakeMeAdmin
         /// </param>
         private void ButtonStateWorkCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            bool userIsAuthorizedLocally = Shared.UserIsAuthorized(WindowsIdentity.GetCurrent(), Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
+            NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
+            ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(binding, Settings.NamedPipeServiceBaseAddress);
+            IAdminGroup channel = namedPipeFactory.CreateChannel();
+            bool userIsAuthorizedLocally = channel.UserIsAuthorized(Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
+            namedPipeFactory.Close();
+
+            /*
+            bool userIsAuthorizedLocally = UserIsAuthorized(WindowsIdentity.GetCurrent(), Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
+            */
 
             // Enable the "grant admin rights" button, if the user is not already
             // an administrator and is authorized to obtain those rights.

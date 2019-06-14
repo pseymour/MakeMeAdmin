@@ -57,11 +57,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.DirectoryServices.AccountManagement" />
     <Reference Include="System.IdentityModel" />
     <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdminGroupManipulator.cs" />
+    <Compile Include="LocalAdministratorGroup.cs" />
+    <Compile Include="NativeMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IAdminGroup.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -71,17 +74,25 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Enumerations\Enumerations.csproj">
+      <Project>{5fb1809b-b0fd-48e9-9e47-3cb048369433}</Project>
+      <Name>Enumerations</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Logging\Logging.csproj">
       <Project>{f5a53b43-5d6d-48ec-bc44-c0c1a0cefa8d}</Project>
       <Name>Logging</Name>
     </ProjectReference>
+    <ProjectReference Include="..\LsaLogonSessions\LsaLogonSessions.csproj">
+      <Project>{a2107c86-7cb5-45ee-89e8-1bc7261f7762}</Project>
+      <Name>LsaLogonSessions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Settings\Settings.csproj">
+      <Project>{8a516d69-ba38-429f-affe-c571b5c1e482}</Project>
+      <Name>Settings</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UserList\UserList.csproj">
       <Project>{9cfd5fa4-5ad6-463c-87e5-3f42133b5da8}</Project>
       <Name>UserList</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Shared\Shared.csproj">
-      <Project>{1d796627-c3a2-4a12-84e3-21981300b1de}</Project>
-      <Name>Shared</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

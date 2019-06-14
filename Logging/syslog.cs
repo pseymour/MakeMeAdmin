@@ -171,7 +171,7 @@ namespace SinclairCC.MakeMeAdmin
                     System.DateTimeOffset.Now,
                     SyslogNet.Client.Facility.UserLevelMessages,
                     severity,
-                    Shared.FullyQualifiedHostName,
+                    Settings.FullyQualifiedHostName,
                     AppName,
                     null,
                     messageId,

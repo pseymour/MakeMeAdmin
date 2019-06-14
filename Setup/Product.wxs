@@ -10,6 +10,8 @@
       <ComponentRef Id="ADMXFiles" />
       <ComponentRef Id="ADMLFiles" />
 
+      <ComponentRef Id="EnumerationsLibrary" />
+
       <ComponentRef Id="ElevationUserInterface" />
       <ComponentRef Id="ElevationUserInterface_fr" />
 
@@ -18,16 +20,12 @@
       <ComponentRef Id="Service" />
       <ComponentRef Id="Service_fr" />
 
-      <ComponentRef Id="SharedLibrary" />
-      <!-- <ComponentRef Id="SharedLibrary_fr" /> -->
-
       <ComponentRef Id="LoggingLibrary" />
       <ComponentRef Id="LoggingLibrary_fr" />
 
       <ComponentRef Id="SettingsLibrary" />
       
       <ComponentRef Id="UserListLibrary" />
-      <ComponentRef Id="UserListLibrary_fr" />
 
       <ComponentRef Id="ProcessCommunicationLibrary" />
       <ComponentRef Id="ProcessCommunicationLibrary_fr" />
@@ -40,9 +38,6 @@
       <ComponentRef Id="RemoteElevation_fr"/>
       
       <ComponentRef Id="MruListLibrary"/>
-
-      <ComponentRef Id="SharedLibrary" />
-      <!-- <ComponentRef Id="SharedLibrary_fr" /> -->
 
       <ComponentRef Id="LoggingLibrary" />
       <ComponentRef Id="LoggingLibrary_fr" />
@@ -76,14 +71,6 @@
             <Component Id="LoggingLibrary_fr" Guid="0A40D5F6-4C3A-4015-8240-14C628440726">
               <File Id="LoggingResources_fr" Name="$(var.Logging.TargetName).resources.dll" Source="$(var.Logging.TargetDir)fr\$(var.Logging.TargetName).resources.dll" KeyPath="no" />
             </Component>
-            <!--
-            <Component Id="SharedLibrary_fr" Guid="ECEAA942-0BFB-47DB-8D97-7C4B7AC5FF4F">
-              <File Id="SharedLibraryResources_fr" Name="$(var.Shared.TargetName).resources.dll" Source="$(var.Shared.TargetDir)fr\$(var.Shared.TargetName).resources.dll" KeyPath="no" />
-            </Component>
-            -->
-            <Component Id="UserListLibrary_fr" Guid="1BE88596-718B-4C7D-81FF-B0509B6443F6">
-              <File Id="UserListLibraryResources_fr" Name="$(var.UserList.TargetName).resources.dll" Source="$(var.UserList.TargetDir)fr\$(var.UserList.TargetName).resources.dll" KeyPath="no" />
-            </Component>
             <Component Id="Service_fr" Guid="98EABA24-D4D4-4D96-B417-946F4648F682">
               <File Id="ServiceResources_fr" Name="$(var.Service.TargetName).resources.dll" Source="$(var.Service.TargetDir)fr\$(var.Service.TargetName).resources.dll" KeyPath="no" />
             </Component>
@@ -98,15 +85,15 @@
             <File Id="ElevationUserInterfaceExe" Name="$(var.LocalUI.TargetFileName)" Source="$(var.LocalUI.TargetPath)" KeyPath="yes" />
             <Shortcut Id="LocalUserInferfaceShortcut" Directory="ProgramMenuFolder" Name="Make Me Admin" Description="Make Me Admin Local User Interface" Advertise="yes" WorkingDirectory="INSTALLDIR" Icon="SecurityLock.ico" IconIndex="0" />
           </Component>
+          <Component Id="EnumerationsLibrary" Guid="D41B7874-D819-479B-9C90-248A1563FDA4">
+            <File Id="EnumerationsDll" Name="$(var.Enumerations.TargetFileName)" Source="$(var.Enumerations.TargetPath)" KeyPath="yes" />
+          </Component>
           <Component Id="RemoteElevationUserInterface" Guid="E62C25C4-A0E8-45B4-8313-6954A8C2F6F9">
             <File Id="RemoteElevationUserInterfaceExe" Name="$(var.RemoteUI.TargetFileName)" Source="$(var.RemoteUI.TargetPath)" KeyPath="yes" />
             <Shortcut Id="RemoteUserInferfaceShortcut" Directory="ProgramMenuFolder" Name="Make Me Admin Remote" Description="Make Me Admin Remote User Interface" Advertise="yes" WorkingDirectory="INSTALLDIR" Icon="SecurityLock.ico" IconIndex="0" />
           </Component>
           <Component Id="MruListLibrary" Guid="291425FC-1060-4197-9950-D2DC5CFD3F6B">
             <File Id="MruLibrary" Name="MruList.dll" Source="$(var.RemoteUI.TargetDir)\MruList.dll" KeyPath="yes" />
-          </Component>
-          <Component Id="SharedLibrary" Guid="CE00450C-CC5A-47A8-AB6A-0E564E3AC0BD">
-            <File Id="SharedDll" Name="$(var.Shared.TargetFileName)" Source="$(var.Shared.TargetPath)" KeyPath="yes" />
           </Component>
           <Component Id="SettingsLibrary" Guid="DFF604F6-F91A-4C6C-8582-91D698EAD179">
             <File Id="SettingsDll" Name="$(var.Settings.TargetFileName)" Source="$(var.Settings.TargetPath)" KeyPath="yes" />

@@ -44,6 +44,14 @@
     <Compile Include="Product.wxs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Enumerations\Enumerations.csproj">
+      <Name>Enumerations</Name>
+      <Project>{5fb1809b-b0fd-48e9-9e47-3cb048369433}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
     <ProjectReference Include="..\LsaLogonSessions\LsaLogonSessions.csproj">
       <Name>LsaLogonSessions</Name>
       <Project>{a2107c86-7cb5-45ee-89e8-1bc7261f7762}</Project>
@@ -95,14 +103,6 @@
     <ProjectReference Include="..\Settings\Settings.csproj">
       <Name>Settings</Name>
       <Project>{8a516d69-ba38-429f-affe-c571b5c1e482}</Project>
-      <Private>True</Private>
-      <DoNotHarvest>True</DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
-      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
-    <ProjectReference Include="..\Shared\Shared.csproj">
-      <Name>Shared</Name>
-      <Project>{1d796627-c3a2-4a12-84e3-21981300b1de}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>

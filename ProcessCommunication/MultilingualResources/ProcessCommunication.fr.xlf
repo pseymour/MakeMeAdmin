@@ -10,6 +10,70 @@
           <source>Request was sent from host {0}.</source>
           <target state="final">La requête a été envoyée depuis l'hôte {0}.</target>
         </trans-unit>
+        <trans-unit id="RemovalReasonServiceStopped" translate="yes" xml:space="preserve">
+          <source>Make Me Admin service stopped</source>
+          <target state="final">Service Make Me Admin arrêté</target>
+        </trans-unit>
+        <trans-unit id="RemovalReasonTimeout" translate="yes" xml:space="preserve">
+          <source>Timeout elapsed</source>
+          <target state="final">Délai d'attente écoulé</target>
+        </trans-unit>
+        <trans-unit id="RemovalReasonUnknown" translate="yes" xml:space="preserve">
+          <source>Unknown</source>
+          <target state="final">Inconnu</target>
+        </trans-unit>
+        <trans-unit id="RemovalReasonUserLogoff" translate="yes" xml:space="preserve">
+          <source>User logged off</source>
+          <target state="final">Utilisateur déconnecté</target>
+        </trans-unit>
+        <trans-unit id="RemovalReasonUserRequest" translate="yes" xml:space="preserve">
+          <source>User requested removal</source>
+          <target state="final">Suppression demandée par l'utilisateur</target>
+        </trans-unit>
+        <trans-unit id="AddingUserReturnedError" translate="yes" xml:space="preserve">
+          <source>Adding user {0} ({1}) to the Administrators group returned error code {2}.</source>
+          <target state="final">L'ajout de l'utilisateur {0} ({1}) au groupe Administrateurs a généré une erreur avec le code {2}.</target>
+        </trans-unit>
+        <trans-unit id="Exception" translate="yes" xml:space="preserve">
+          <source>Exception</source>
+          <target state="final">Exception</target>
+        </trans-unit>
+        <trans-unit id="LocalAdminsGroupSIDIsNull" translate="yes" xml:space="preserve">
+          <source>Local admins group SID is null.</source>
+          <target state="final">Le SID du groupe local Administrateurs est invalide.</target>
+        </trans-unit>
+        <trans-unit id="LocalMachineContextIsNull" translate="yes" xml:space="preserve">
+          <source>Local machine context is null.</source>
+          <target state="final">Le contexte de la machine locale est invalide.</target>
+        </trans-unit>
+        <trans-unit id="RemovingUserReturnedError" translate="yes" xml:space="preserve">
+          <source>Removing user {0} ({1}) from the Administrators group returned error code {1}.</source>
+          <target state="final">La suppression de l'utilisateur {0} ({1}) du groupe Administrateurs a généré une erreur avec le code {1}.</target>
+        </trans-unit>
+        <trans-unit id="UnknownAccount" translate="yes" xml:space="preserve">
+          <source>Unknown Account</source>
+          <target state="final">Compte Inconnu</target>
+        </trans-unit>
+        <trans-unit id="UserAddedToAdminsGroup" translate="yes" xml:space="preserve">
+          <source>User {0} ({1}) added to the Administrators group.</source>
+          <target state="final">L'utilisateur {0} ({1}) a été ajouté au groupe Administrateurs.</target>
+        </trans-unit>
+        <trans-unit id="UserRemoved" translate="yes" xml:space="preserve">
+          <source>User {0} ({1}) removed from the Administrators group. Reason: {2}.</source>
+          <target state="final">L'utilisateur {0} ({1}) a été retiré du groupe Administrateurs. Raison: {2}.</target>
+        </trans-unit>
+        <trans-unit id="AddingUserBackToAdministrators" translate="yes" xml:space="preserve">
+          <source>Adding the user back to the Administrators group.</source>
+          <target state="final">Rajout de l'utilisateur au groupe Administrateurs.</target>
+        </trans-unit>
+        <trans-unit id="RemovingUserFromList" translate="yes" xml:space="preserve">
+          <source>Removing the user from Make Me Admin's list.</source>
+          <target state="final">Suppression de l'utilisateur de la liste de Make Me Admin.</target>
+        </trans-unit>
+        <trans-unit id="UserRemovedByOutsideProcess" translate="yes" xml:space="preserve">
+          <source>User {0} ({1}) has been removed from the Administrators group by an outside process.</source>
+          <target state="final">L'utilisateur {0} ({1}) a été retiré du groupe Administrateurs par un processus externe.</target>
+        </trans-unit>
       </group>
     </body>
   </file>

@@ -36,6 +36,51 @@ namespace SinclairCC.MakeMeAdmin
         /// The top-level registry key in which the settings will be stored.
         /// </summary>
         private static RegistryKey rootRegistryKey = Registry.LocalMachine;
+        
+        /// <summary>
+        /// Gets the base address for the service host that is available via TCP.
+        /// </summary>
+        public static string TcpServiceBaseAddress
+        {
+            get
+            {
+                return string.Format("net.tcp://{0}/MakeMeAdmin/Service", FullyQualifiedHostName);
+            }
+        }
+
+        /// <summary>
+        /// Gets the base address for the service host that is available via named pipes.
+        /// </summary>
+        public static string NamedPipeServiceBaseAddress
+        {
+            get
+            {
+                return string.Format("net.pipe://{0}/MakeMeAdmin/Service", FullyQualifiedHostName);
+            }
+        }
+
+        /// <summary>
+        /// Returns the fully-qualified host name of the local computer.
+        /// </summary>
+        /// <remarks>
+        /// If there is an error determining the fully-qualified name, the NetBIOS name is returned.
+        /// </remarks>
+        public static string FullyQualifiedHostName
+        {
+            get
+            {
+                string hostName = System.Environment.MachineName;
+                try
+                {
+                    hostName = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName()).HostName.ToLowerInvariant();
+                }
+                catch (System.Net.Sockets.SocketException) { hostName = System.Environment.MachineName; }
+                catch (System.ArgumentNullException) { hostName = System.Environment.MachineName; }
+                catch (System.ArgumentOutOfRangeException) { hostName = System.Environment.MachineName; }
+                catch (System.ArgumentException) { hostName = System.Environment.MachineName; }
+                return hostName;
+            }
+        }
 
         // TODO: i18n.
         public static string[] LocalAllowedEntities

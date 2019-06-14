@@ -117,7 +117,55 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddingUserBackToAdministrators" xml:space="preserve">
+    <value>Adding the user back to the Administrators group.</value>
+  </data>
+  <data name="AddingUserReturnedError" xml:space="preserve">
+    <value>Adding user {0} ({1}) to the Administrators group returned error code {2}.</value>
+  </data>
+  <data name="Exception" xml:space="preserve">
+    <value>Exception</value>
+  </data>
+  <data name="LocalAdminsGroupSIDIsNull" xml:space="preserve">
+    <value>Local admins group SID is null.</value>
+  </data>
+  <data name="LocalMachineContextIsNull" xml:space="preserve">
+    <value>Local machine context is null.</value>
+  </data>
+  <data name="RemovalReasonServiceStopped" xml:space="preserve">
+    <value>Make Me Admin service stopped</value>
+  </data>
+  <data name="RemovalReasonTimeout" xml:space="preserve">
+    <value>Timeout elapsed</value>
+  </data>
+  <data name="RemovalReasonUnknown" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
+  <data name="RemovalReasonUserLogoff" xml:space="preserve">
+    <value>User logged off</value>
+  </data>
+  <data name="RemovalReasonUserRequest" xml:space="preserve">
+    <value>User requested removal</value>
+  </data>
+  <data name="RemovingUserFromList" xml:space="preserve">
+    <value>Removing the user from Make Me Admin's list.</value>
+  </data>
+  <data name="RemovingUserReturnedError" xml:space="preserve">
+    <value>Removing user {0} ({1}) from the Administrators group returned error code {1}.</value>
+  </data>
   <data name="RequestSentFromHost" xml:space="preserve">
     <value>Request was sent from host {0}.</value>
+  </data>
+  <data name="UnknownAccount" xml:space="preserve">
+    <value>Unknown Account</value>
+  </data>
+  <data name="UserAddedToAdminsGroup" xml:space="preserve">
+    <value>User {0} ({1}) added to the Administrators group.</value>
+  </data>
+  <data name="UserRemoved" xml:space="preserve">
+    <value>User {0} ({1}) removed from the Administrators group. Reason: {2}.</value>
+  </data>
+  <data name="UserRemovedByOutsideProcess" xml:space="preserve">
+    <value>User {0} ({1}) has been removed from the Administrators group by an outside process.</value>
   </data>
 </root>
