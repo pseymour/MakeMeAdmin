@@ -16,6 +16,7 @@
       <ComponentRef Id="ElevationUserInterface_fr" />
 
       <ComponentRef Id="LsaLogonSessionLibrary" />
+      <ComponentRef Id="ProcessWatchLibrary" />
 
       <ComponentRef Id="Service" />
       <ComponentRef Id="Service_fr" />
@@ -107,6 +108,9 @@
           </Component>
           <Component Id="LsaLogonSessionLibrary" Guid="22E70C0A-7071-4E1D-B8C1-3E73FB3A1784">
             <File Id="LsaLogonSessionDll" Name="$(var.LsaLogonSessions.TargetFileName)" Source="$(var.LsaLogonSessions.TargetPath)" KeyPath="yes" />
+          </Component>
+          <Component Id="ProcessWatchLibrary" Guid="2CB59D83-6C5C-4C67-99D1-EB0AA95AFA91">
+            <File Id="ProcessWatchDll" Name="$(var.ProcessWatch.TargetFileName)" Source="$(var.ProcessWatch.TargetPath)" KeyPath="yes" />
           </Component>
           <Component Id="ProcessCommunicationLibrary" Guid="79FC2590-F4CD-4205-8283-3E604052224D" >
             <File Id="ProcessCommunicationDll" Name="$(var.ProcessCommunication.TargetFileName)" Source="$(var.ProcessCommunication.TargetPath)" KeyPath="yes" />

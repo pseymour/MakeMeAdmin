@@ -49,6 +49,13 @@
 
       <string id="SyslogServersDisplayName">Syslog Servers</string>
       <string id="SyslogServersExplainText">Specifies information about syslog servers to which logged information should be sent.</string>
+
+      <string id="LogElevatedProcessesDisplayName">Log Elevated Processes</string>
+      <string id="LogElevatedProcessesExplainText">Determines when Make Me Admin logs processes that are run with elevated privileges.</string>
+      <string id="ProcessLogging_Never">Never</string>
+      <string id="ProcessLogging_OnlyWhenAdmin">Only While Administrator</string>
+      <string id="ProcessLogging_Always">Always</string>
+
     </stringTable>
     <presentationTable>
       <presentation id="Admin_Rights_Timeout_Spin">
@@ -95,6 +102,12 @@
         <text>syslogserver:udp</text>
         <text>Communicates with the server called syslogserver on port 514 via UDP using RFC 3164 messages.</text>
       </presentation>
+      <presentation id="LogElevatedProcesses_Presentation">
+        <text>Choose when to log processes that are executed with elevated permissions.</text>
+        <dropdownList refId="ProcessLoggingDropDown" noSort="true" defaultItem="1">Log Elevated Processes:</dropdownList>
+      </presentation>
     </presentationTable>
   </resources>
 </policyDefinitionResources>
+
+

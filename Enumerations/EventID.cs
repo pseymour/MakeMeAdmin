@@ -68,6 +68,11 @@ namespace SinclairCC.MakeMeAdmin
         RejectedSyslogServerInfo,
 
         /// <summary>
+        /// An elevated process was detected.
+        /// </summary>
+        ElevatedProcess,
+
+        /// <summary>
         /// Event ID for debug messages.
         /// </summary>
         DebugMessage = 9000

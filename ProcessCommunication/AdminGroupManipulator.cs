@@ -119,9 +119,6 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-
-
-
         /// <summary>
         /// Determines whether the given array of strings contains the given target string.
         /// </summary>

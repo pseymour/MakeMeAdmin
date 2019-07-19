@@ -54,6 +54,7 @@ namespace SinclairCC.MakeMeAdmin
         /// </remarks>
         private ServiceHost tcpServiceHost = null;
 
+        private ProcessWatcher processWatcher = null;
 
         /// <summary>
         /// Instantiate a new instance of the Make Me Admin Windows service.
@@ -72,8 +73,103 @@ namespace SinclairCC.MakeMeAdmin
                 AutoReset = true    // Raise the Elapsed event repeatedly.
             };
             this.removalTimer.Elapsed += RemovalTimerElapsed;
+
+
+#if DEBUG
+            ApplicationLog.WriteEvent(string.Format("process logging setting: {0:N0}", (int)Settings.LogElevatedProcesses), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+            if ((Settings.LogElevatedProcesses != ElevatedProcessLogging.Never) && (this.processWatcher == null))
+            {
+                processWatcher = new ProcessWatcher();
+                processWatcher.ProcessCreated += ProcessCreatedHandler;
+                processWatcher.Start();
+            }
+
         }
 
+
+        private void ProcessCreatedHandler(WMI.Win32.Process proc)
+        {
+            bool? processIsElevated = ProcessIsElevated(proc.ProcessId);
+            if (processIsElevated.HasValue && processIsElevated.Value)
+            { // Process is elevated, so we need to log it if the settings say so.
+
+#if DEBUG
+                ApplicationLog.WriteEvent(string.Format("elevated process detected: \"{0}\"", proc.CommandLine.Trim()), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+
+                System.Diagnostics.Process process = System.Diagnostics.Process.GetProcessById((int)proc.ProcessId);
+                WindowsIdentity processOwner = NativeMethods.GetProcessOwner(process.Handle);
+                process.Dispose();
+
+#if DEBUG
+                if (processOwner == null)
+                {
+                    ApplicationLog.WriteEvent("Process owner is null.", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+                }
+                else
+                {
+                    ApplicationLog.WriteEvent(string.Format("process user SID : \"{0}\"", processOwner.User), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+                }
+#endif
+
+                bool logEvent = false;
+
+                if (Settings.LogElevatedProcesses == ElevatedProcessLogging.OnlyWhenAdmin)
+                { // The settings say only log if the user is an admin, so figure that out.
+                    if (processOwner != null)
+                    {
+                        EncryptedSettings encryptedSettings = new EncryptedSettings(EncryptedSettings.SettingsFilePath);
+                        logEvent = encryptedSettings.ContainsSID(processOwner.User);
+                    }
+                }
+                else if (Settings.LogElevatedProcesses == ElevatedProcessLogging.Always)
+                {
+                    logEvent = true;
+                }
+
+                if (logEvent)
+                {
+                    System.Text.StringBuilder eventLogMessage = new System.Text.StringBuilder("Process ");
+                    eventLogMessage.Append(proc.Name);
+                    eventLogMessage.Append(" (ID: ");
+                    eventLogMessage.Append(proc.ProcessId);
+                    eventLogMessage.Append(") created at ");
+                    eventLogMessage.Append(DateTime.Now);
+                    eventLogMessage.Append(". Path is \"");
+                    eventLogMessage.Append(proc.ExecutablePath);
+                    eventLogMessage.Append(".\"");
+                    if (processOwner != null)
+                    {
+                        eventLogMessage.Append(" User SID is \"");
+                        eventLogMessage.Append(processOwner.User.Value);
+                        eventLogMessage.Append(".\"");
+                    }
+                    ApplicationLog.WriteEvent(eventLogMessage.ToString(), EventID.ElevatedProcess, System.Diagnostics.EventLogEntryType.Information);
+                }
+            }
+        }
+
+        private bool? ProcessIsElevated(uint processId)
+        {
+            bool? returnValue = null;
+            try
+            {
+                System.Diagnostics.Process process = System.Diagnostics.Process.GetProcessById((int)processId);
+                returnValue = NativeMethods.IsProcessElevated2(process.Handle);
+                process.Dispose();
+            }
+            catch (System.ComponentModel.Win32Exception)
+            {
+            }
+            catch (System.InvalidOperationException)
+            {
+            }
+            catch (System.ArgumentException)
+            {
+            }
+            return returnValue;
+        }
 
         /// <summary>
         /// Handles the Elapsed event for the rights removal timer.
@@ -114,6 +210,14 @@ namespace SinclairCC.MakeMeAdmin
             }
 
             LocalAdministratorGroup.ValidateAllAddedUsers();
+
+            if ((Settings.LogElevatedProcesses != ElevatedProcessLogging.Never) && (this.processWatcher == null))
+            {
+                processWatcher = new ProcessWatcher();
+                processWatcher.ProcessCreated += ProcessCreatedHandler;
+                processWatcher.Start();
+            }
+
         }
 
 

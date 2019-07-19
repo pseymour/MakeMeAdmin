@@ -63,6 +63,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.ServiceProcess" />
@@ -126,6 +127,10 @@
     <ProjectReference Include="..\LsaLogonSessions\LsaLogonSessions.csproj">
       <Project>{a2107c86-7cb5-45ee-89e8-1bc7261f7762}</Project>
       <Name>LsaLogonSessions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ProcessWatch\ProcessWatch.csproj">
+      <Project>{51fece70-00cc-4b48-a0e3-ded7aac0a51a}</Project>
+      <Name>ProcessWatch</Name>
     </ProjectReference>
     <ProjectReference Include="..\UserList\UserList.csproj">
       <Project>{9cfd5fa4-5ad6-463c-87e5-3f42133b5da8}</Project>

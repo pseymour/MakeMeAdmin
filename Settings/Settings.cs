@@ -466,6 +466,48 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+        // TODO: i18n.
+        public static ElevatedProcessLogging LogElevatedProcesses
+        {
+            get
+            {
+                int? policyTimeoutSetting = GetDWord(PolicyRegistryKeyPath, null, "Log Elevated Processes");
+                int? preferenceTimeoutSetting = GetDWord(PreferenceRegistryKeyPath, null, "Log Elevated Processes");
+                if (policyTimeoutSetting.HasValue)
+                { // The policy setting has a value. Go with whatever it says.
+                    if (Enum.IsDefined(typeof(ElevatedProcessLogging), policyTimeoutSetting.Value))
+                    {
+                        return (ElevatedProcessLogging)policyTimeoutSetting.Value;
+                    }
+                    else
+                    {
+                        return ElevatedProcessLogging.OnlyWhenAdmin;
+                    }
+                }
+                else if (preferenceTimeoutSetting.HasValue)
+                { // The preference setting has a value. Go with whatever it says.
+                    if (Enum.IsDefined(typeof(ElevatedProcessLogging), preferenceTimeoutSetting.Value))
+                    {
+                        return (ElevatedProcessLogging)preferenceTimeoutSetting.Value;
+                    }
+                    else
+                    {
+                        return ElevatedProcessLogging.OnlyWhenAdmin;
+                    }
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value.
+                  // Return a default value indicating to log when the user has admin rights.
+                    return ElevatedProcessLogging.OnlyWhenAdmin;
+                }
+            }
+            set
+            {
+                SetDWord(PreferenceRegistryKeyPath, null, "Log Elevated Processes", (int)value);
+            }
+        }
+
+
         /// <summary>
         /// Removes from the computer all of the settings related to this application.
         /// </summary>

@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserList", "UserList\UserLi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enumerations", "Enumerations\Enumerations.csproj", "{5FB1809B-B0FD-48E9-9E47-3CB048369433}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessWatch", "ProcessWatch\ProcessWatch.csproj", "{51FECE70-00CC-4B48-A0E3-DED7AAC0A51A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -127,6 +129,14 @@ Global
 		{5FB1809B-B0FD-48E9-9E47-3CB048369433}.Release|x64.Build.0 = Release|x64
 		{5FB1809B-B0FD-48E9-9E47-3CB048369433}.Release|x86.ActiveCfg = Release|x86
 		{5FB1809B-B0FD-48E9-9E47-3CB048369433}.Release|x86.Build.0 = Release|x86
+		{51FECE70-00CC-4B48-A0E3-DED7AAC0A51A}.Debug|x64.ActiveCfg = Debug|x64
+		{51FECE70-00CC-4B48-A0E3-DED7AAC0A51A}.Debug|x64.Build.0 = Debug|x64
+		{51FECE70-00CC-4B48-A0E3-DED7AAC0A51A}.Debug|x86.ActiveCfg = Debug|x86
+		{51FECE70-00CC-4B48-A0E3-DED7AAC0A51A}.Debug|x86.Build.0 = Debug|x86
+		{51FECE70-00CC-4B48-A0E3-DED7AAC0A51A}.Release|x64.ActiveCfg = Release|x64
+		{51FECE70-00CC-4B48-A0E3-DED7AAC0A51A}.Release|x64.Build.0 = Release|x64
+		{51FECE70-00CC-4B48-A0E3-DED7AAC0A51A}.Release|x86.ActiveCfg = Release|x86
+		{51FECE70-00CC-4B48-A0E3-DED7AAC0A51A}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
