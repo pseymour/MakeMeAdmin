@@ -64,8 +64,13 @@ namespace SinclairCC.MakeMeAdmin
                 {
                     this.AddedUsers = new UserList();
                 }
-                this.Save(filePath);
             }
+
+            try
+            {
+                RemoveOldUsersFile();
+            }
+            catch (Exception) { }
         }
 
         /// <summary>
@@ -76,12 +81,59 @@ namespace SinclairCC.MakeMeAdmin
             get
             {
                 const string EncryptedSettingsFile = "users.xml";
-                string filePath = System.IO.Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Make Me Admin");
-                System.IO.Directory.CreateDirectory(filePath);
+                string filePath = System.IO.Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Make Me Admin");
                 filePath = System.IO.Path.Combine(filePath, EncryptedSettingsFile);
                 return filePath;
             }
         }
+
+        private static string OldSettingsFilePath
+        {
+            get
+            {
+                const string EncryptedSettingsFile = "users.xml";
+                string filePath = System.IO.Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Make Me Admin");
+                filePath = System.IO.Path.Combine(filePath, EncryptedSettingsFile);
+                return filePath;
+            }
+        }
+
+        private static void RemoveOldUsersFile()
+        {
+            try
+            {
+                System.IO.File.Delete(EncryptedSettings.OldSettingsFilePath);
+
+                string parentPath = System.IO.Path.GetDirectoryName(EncryptedSettings.OldSettingsFilePath);
+                if ((System.IO.Directory.Exists(parentPath)) && (System.IO.Directory.GetFileSystemEntries(parentPath).Length == 0))
+                {
+                    System.IO.Directory.Delete(parentPath, false);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public static void RemoveAllSettings()
+        {
+            try
+            {
+                System.IO.File.Delete(EncryptedSettings.SettingsFilePath);
+
+                string parentPath = System.IO.Path.GetDirectoryName(EncryptedSettings.SettingsFilePath);
+                if ((System.IO.Directory.Exists(parentPath)) && (System.IO.Directory.GetFileSystemEntries(parentPath).Length == 0))
+                {
+                    System.IO.Directory.Delete(parentPath, false);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        
 
         /// <summary>
         /// Adds a user to the list of users that have been added to the Administrators group.

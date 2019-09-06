@@ -1,4 +1,4 @@
-﻿// 
+// 
 // Copyright © 2010-2019, Sinclair Community College
 // Licensed under the GNU General Public License, version 3.
 // See the LICENSE file in the project root for full license information.  
@@ -26,8 +26,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Make Me Admin User Interface")]
-[assembly: AssemblyDescription("Allows users to add themselves to and remove themselves from the local Administrators group.")]
+[assembly: AssemblyTitle("Make Me Admin Custom Actions")]
+[assembly: AssemblyDescription("Custom actions for the Windows Installer.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Sinclair Community College")]
 [assembly: AssemblyProduct("Make Me Admin")]
@@ -41,7 +41,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("6ddd8596-59c3-4605-97a2-cc31edf74a90")]
+[assembly: Guid("b84efdd8-cea0-4cca-b7b8-3f8ab3a336b4")]
 
 // Version information for an assembly consists of the following four values:
 //
