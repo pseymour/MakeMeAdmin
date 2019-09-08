@@ -36,11 +36,6 @@ namespace SinclairCC.MakeMeAdmin
         private System.Windows.Forms.Button addMeButton;
 
         /// <summary>
-        /// The exit button.
-        /// </summary>
-        private System.Windows.Forms.Button exitButton;
-
-        /// <summary>
         /// A tooltip to explain other controls.
         /// </summary>
         private System.Windows.Forms.ToolTip toolTip;
@@ -105,7 +100,6 @@ namespace SinclairCC.MakeMeAdmin
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SubmitRequestForm));
             this.addMeButton = new System.Windows.Forms.Button();
-            this.exitButton = new System.Windows.Forms.Button();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.removeMeButton = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -124,15 +118,6 @@ namespace SinclairCC.MakeMeAdmin
             this.toolTip.SetToolTip(this.addMeButton, resources.GetString("addMeButton.ToolTip"));
             this.addMeButton.UseVisualStyleBackColor = true;
             this.addMeButton.Click += new System.EventHandler(this.ClickSubmitButton);
-            // 
-            // exitButton
-            // 
-            resources.ApplyResources(this.exitButton, "exitButton");
-            this.exitButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.exitButton.Name = "exitButton";
-            this.toolTip.SetToolTip(this.exitButton, resources.GetString("exitButton.ToolTip"));
-            this.exitButton.UseVisualStyleBackColor = true;
-            this.exitButton.Click += new System.EventHandler(this.ClickExitButton);
             // 
             // removeMeButton
             // 
@@ -182,10 +167,8 @@ namespace SinclairCC.MakeMeAdmin
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.exitButton;
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.removeMeButton);
-            this.Controls.Add(this.exitButton);
             this.Controls.Add(this.addMeButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;

@@ -313,22 +313,7 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-
-        /// <summary>
-        /// This function handles the Click event for the Exit button.
-        /// </summary>
-        /// <param name="sender">
-        /// The button being clicked.
-        /// </param>
-        /// <param name="e">
-        /// Data specific to this event.
-        /// </param>
-        private void ClickExitButton(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-
+        
         /// <summary>
         /// Disables the add and remove buttons.
         /// </summary>

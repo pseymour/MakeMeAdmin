@@ -103,30 +103,6 @@
           <source>Add the current Windows user to the Administrators group.</source>
           <target state="final">Ajouter l'utilisateur Windows actuel au groupe Administrateurs.</target>
         </trans-unit>
-        <trans-unit id="exitButton.Anchor" translate="no" extype="System.Windows.Forms.AnchorStyles, System.Windows.Forms" xml:space="preserve">
-          <source>Top, Left, Right</source>
-          <target state="final">Top, Left, Right</target>
-        </trans-unit>
-        <trans-unit id="exitButton.Location" translate="no" extype="System.Drawing.Point, System.Drawing" xml:space="preserve">
-          <source>12, 118</source>
-          <target state="final">12, 118</target>
-        </trans-unit>
-        <trans-unit id="exitButton.Size" translate="no" extype="System.Drawing.Size, System.Drawing" xml:space="preserve">
-          <source>313, 45</source>
-          <target state="final">313, 45</target>
-        </trans-unit>
-        <trans-unit id="exitButton.TabIndex" translate="no" extype="System.Int32, mscorlib" xml:space="preserve">
-          <source>2</source>
-          <target state="final">2</target>
-        </trans-unit>
-        <trans-unit id="exitButton.Text" translate="yes" xml:space="preserve">
-          <source>E&amp;xit</source>
-          <target state="final">&amp;Quitter</target>
-        </trans-unit>
-        <trans-unit id="exitButton.ToolTip" translate="yes" xml:space="preserve">
-          <source>Exit the application.</source>
-          <target state="final">Quitter l'application.</target>
-        </trans-unit>
         <trans-unit id="removeMeButton.Anchor" translate="no" extype="System.Windows.Forms.AnchorStyles, System.Windows.Forms" xml:space="preserve">
           <source>Top, Left, Right</source>
           <target state="final">Top, Left, Right</target>
@@ -164,8 +140,8 @@
           <target state="final">MiddleLeft</target>
         </trans-unit>
         <trans-unit id="statusStrip1.Location" translate="no" extype="System.Drawing.Point, System.Drawing" xml:space="preserve">
-          <source>0, 174</source>
-          <target state="final">0, 174</target>
+          <source>0, 121</source>
+          <target state="final">0, 121</target>
         </trans-unit>
         <trans-unit id="statusStrip1.Size" translate="no" extype="System.Drawing.Size, System.Drawing" xml:space="preserve">
           <source>337, 22</source>
@@ -188,8 +164,8 @@
           <target state="final">6, 13</target>
         </trans-unit>
         <trans-unit id="$this.ClientSize" translate="no" extype="System.Drawing.Size, System.Drawing" xml:space="preserve">
-          <source>337, 196</source>
-          <target state="final">337, 196</target>
+          <source>337, 143</source>
+          <target state="final">337, 143</target>
         </trans-unit>
         <trans-unit id="$this.Text" translate="no" xml:space="preserve">
           <source>Make Me Admin</source>

@@ -18,12 +18,6 @@
   <data name="addMeButton.ToolTip" xml:space="preserve">
     <value>Ajouter l'utilisateur Windows actuel au groupe Administrateurs.</value>
   </data>
-  <data name="exitButton.Text" xml:space="preserve">
-    <value>&amp;Quitter</value>
-  </data>
-  <data name="exitButton.ToolTip" xml:space="preserve">
-    <value>Quitter l'application.</value>
-  </data>
   <data name="removeMeButton.Text" xml:space="preserve">
     <value>M'&amp;enlever les droits administrateur</value>
   </data>

@@ -151,36 +151,6 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;addMeButton.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="exitButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Left, Right</value>
-  </data>
-  <data name="exitButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 118</value>
-  </data>
-  <data name="exitButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>313, 45</value>
-  </data>
-  <data name="exitButton.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
-  </data>
-  <data name="exitButton.Text" xml:space="preserve">
-    <value>E&amp;xit</value>
-  </data>
-  <data name="exitButton.ToolTip" xml:space="preserve">
-    <value>Exit the application.</value>
-  </data>
-  <data name="&gt;&gt;exitButton.Name" xml:space="preserve">
-    <value>exitButton</value>
-  </data>
-  <data name="&gt;&gt;exitButton.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;exitButton.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;exitButton.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
   <data name="removeMeButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
@@ -226,7 +196,7 @@
     <value>MiddleLeft</value>
   </data>
   <data name="statusStrip1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 174</value>
+    <value>0, 121</value>
   </data>
   <data name="statusStrip1.Size" type="System.Drawing.Size, System.Drawing">
     <value>337, 22</value>
@@ -271,7 +241,7 @@
     <value>6, 13</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>337, 196</value>
+    <value>337, 143</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Make Me Admin</value>
