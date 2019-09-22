@@ -12,3 +12,4 @@
 
 [Build Environment](build-environment.md) - Tools you need to build your own version of Make Me Admin.
 
+[home](/ "Make Me Admin home page")

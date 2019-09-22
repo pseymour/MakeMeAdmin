@@ -26,3 +26,5 @@ To enforce settings, you should use the Group Policy templates, which are locate
 | End Remote Sessions Upon Expiration | true (1)  | `REG_DWORD`          | Specifies whether remote sessions are terminated when the user’s administrator rights expire. |
 
 <sup>1</sup> : Create a separate `REG_SZ` value for each user or group. The name of the registry value will be the SID or name of the user or group, and the value will be the desired timeout, in minutes.
+
+[home](/ "Make Me Admin home page")

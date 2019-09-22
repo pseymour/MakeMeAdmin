@@ -24,5 +24,4 @@
 
 - Added installer (`.msi`) files to source control, so that they would appear in the git repository.
 
-
 [home](/ "Make Me Admin home page") 

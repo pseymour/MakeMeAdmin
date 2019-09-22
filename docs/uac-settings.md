@@ -15,7 +15,7 @@ Both of the aforementioned registry values can be found in `HKEY_LOCAL_MACHINE\S
 
 ### Configuring with Group Policy
 
-If you are using Group Policy to configure these settings, they can be found in **Computer Configuration | Policies | Windows Settings | Security Settings | Local Policies | Security Options**.
+If you are using Group Policy to configure these settings, they can be found in **Computer Configuration \| Policies \| Windows Settings \| Security Settings \| Local Policies \| Security Options**.
 
 `EnableLUA` corresponds to the setting "User Account Control: Run all administrators in Admin Approval Mode." Set this policy to Enabled.
 

@@ -13,3 +13,5 @@ At this point, the user can perform the actions that require administrator right
 After a configurable period, the user is removed from the Administrators group by the service. The user is notified of this, and the application closes.
 
 ![Removed from the Administrators group](images/make-me-admin-removed.png)
+
+[home](/ "Make Me Admin home page")

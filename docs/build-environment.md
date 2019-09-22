@@ -14,3 +14,5 @@ I also use some other tools while developing Make Me Admin. These are not strict
 
 * [GitHub Desktop](https://desktop.github.com/)
 * [WinMerge 2.16.4](https://winmerge.org/)
+
+[home](/ "Make Me Admin home page")
