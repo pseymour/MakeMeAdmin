@@ -202,4 +202,12 @@
       </group>
     </body>
   </file>
+  <file datatype="xml" source-language="en-US" target-language="fr" original="LOCALUI/REQUESTREASONDIALOG.RESX" tool-id="MultilingualAppToolkit" product-name="n/a" product-version="n/a" build-num="n/a">
+    <header>
+      <tool tool-id="MultilingualAppToolkit" tool-name="Multilingual App Toolkit" tool-version="4.0.6914.0" tool-company="Microsoft" />
+    </header>
+    <body>
+      <group id="LOCALUI/REQUESTREASONDIALOG.RESX" datatype="resx" />
+    </body>
+  </file>
 </xliff>

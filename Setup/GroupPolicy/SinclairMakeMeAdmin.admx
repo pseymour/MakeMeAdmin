@@ -187,6 +187,58 @@
       </elements>
     </policy>
 
+
+
+
+    <policy name="PromptForReason"
+             class="Machine"
+             displayName="$(string.PromptForReasonDisplayName)"
+             explainText="$(string.PromptForReasonExplainText)"
+             key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
+             valueName="Prompt For Reason">
+      <parentCategory ref="makemeadmin:MakeMeAdmin"></parentCategory>
+      <supportedOn ref="windows:SUPPORTED_Windows7" />
+      <enabledValue><decimal value="1" /></enabledValue>
+      <disabledValue><delete /></disabledValue>
+    </policy>
+
+    <policy name="RequireReason"
+             class="Machine"
+             displayName="$(string.RequireReasonDisplayName)"
+             explainText="$(string.RequireReasonExplainText)"
+             key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
+             valueName="Require Reason">
+      <parentCategory ref="makemeadmin:MakeMeAdmin"></parentCategory>
+      <supportedOn ref="windows:SUPPORTED_Windows7" />
+      <enabledValue><decimal value="1" /></enabledValue>
+      <disabledValue><delete /></disabledValue>
+    </policy>
+
+    <policy name="AllowFreeFormReason"
+             class="Machine"
+             displayName="$(string.AllowFreeFormReasonDisplayName)"
+             explainText="$(string.AllowFreeFormReasonExplainText)"
+             key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
+             valueName="Allow Free-Form Reason">
+      <parentCategory ref="makemeadmin:MakeMeAdmin"></parentCategory>
+      <supportedOn ref="windows:SUPPORTED_Windows7" />
+      <enabledValue><delete /></enabledValue>
+      <disabledValue><decimal value="0" /></disabledValue>
+    </policy>
+
+    <policy name="CannedReasons"
+             class="Machine"
+             displayName="$(string.CannedReasonsDisplayName)"
+             explainText="$(string.CannedReasonsExplainText)"
+             key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
+             presentation="$(presentation.CannedReasonsMultiText_Presentation)" >
+      <parentCategory ref="makemeadmin:MakeMeAdmin" />
+      <supportedOn ref="windows:SUPPORTED_Windows7" />
+      <elements>
+        <multiText id="CannedReasonsMultiText" valueName="Canned Reasons" required="false" maxLength="100" maxStrings="0" />
+      </elements>
+    </policy>
+
   </policies>
 
 </policyDefinitions>

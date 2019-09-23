@@ -86,6 +86,12 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RequestReasonDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RequestReasonDialog.designer.cs">
+      <DependentUpon>RequestReasonDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="SubmitRequestForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -96,6 +102,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.fr.resx">
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RequestReasonDialog.fr.resx">
+      <DependentUpon>RequestReasonDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RequestReasonDialog.resx">
+      <DependentUpon>RequestReasonDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SubmitRequestForm.fr.resx">
       <DependentUpon>SubmitRequestForm.cs</DependentUpon>

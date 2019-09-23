@@ -466,6 +466,110 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+
+        public static bool PromptForReason
+        {
+            get
+            {
+                
+                int? policySetting = GetDWord(PolicyRegistryKeyPath, null, "Prompt For Reason");
+                int? preferenceSetting = GetDWord(PreferenceRegistryKeyPath, null, "Prompt For Reason");
+                if (policySetting.HasValue)
+                { // The policy setting has a value. Go with whatever it says.
+                    return Convert.ToBoolean(policySetting.Value);
+                }
+                else if (preferenceSetting.HasValue)
+                { // The preference setting has a value. Go with whatever it says.
+                    return Convert.ToBoolean(preferenceSetting.Value);
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value. Return a default value of false.
+                    return false;
+                }
+            }
+            set
+            {
+                SetDWord(PreferenceRegistryKeyPath, null, "Prompt For Reason", Convert.ToInt32(value));
+            }
+        }
+
+        public static bool RequireReason
+        {
+            get
+            {
+
+                int? policySetting = GetDWord(PolicyRegistryKeyPath, null, "Require Reason");
+                int? preferenceSetting = GetDWord(PreferenceRegistryKeyPath, null, "Require Reason");
+                if (policySetting.HasValue)
+                { // The policy setting has a value. Go with whatever it says.
+                    return Convert.ToBoolean(policySetting.Value);
+                }
+                else if (preferenceSetting.HasValue)
+                { // The preference setting has a value. Go with whatever it says.
+                    return Convert.ToBoolean(preferenceSetting.Value);
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value. Return a default value of false.
+                    return false;
+                }
+            }
+            set
+            {
+                SetDWord(PreferenceRegistryKeyPath, null, "Require Reason", Convert.ToInt32(value));
+            }
+        }
+
+
+        public static bool AllowFreeFormReason
+        {
+            get
+            {
+
+                int? policySetting = GetDWord(PolicyRegistryKeyPath, null, "Allow Free-Form Reason");
+                int? preferenceSetting = GetDWord(PreferenceRegistryKeyPath, null, "Allow Free-Form Reason");
+                if (policySetting.HasValue)
+                { // The policy setting has a value. Go with whatever it says.
+                    return Convert.ToBoolean(policySetting.Value);
+                }
+                else if (preferenceSetting.HasValue)
+                { // The preference setting has a value. Go with whatever it says.
+                    return Convert.ToBoolean(preferenceSetting.Value);
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value. Return a default value of true.
+                    return true;
+                }
+            }
+            set
+            {
+                SetDWord(PreferenceRegistryKeyPath, null, "Allow Free-Form Reason", Convert.ToInt32(value));
+            }
+        }
+
+
+        // TODO: i18n.
+        public static string[] CannedReasons
+        {
+            get
+            {
+                string[] policySetting = GetMultiString(PolicyRegistryKeyPath, null, "Canned Reasons");
+                string[] preferenceSetting = GetMultiString(PreferenceRegistryKeyPath, null, "Canned Reasons");
+                if (policySetting != null)
+                { // The policy setting has a value. Go with whatever it says.
+                    return policySetting;
+                }
+                else
+                { // Go with whatever the preference setting says, even if it is null.
+                    return preferenceSetting;
+                }
+            }
+            set
+            {
+                SetMultiString(PreferenceRegistryKeyPath, null, "Canned Reasons", value);
+            }
+        }
+
+
         /// <summary>
         /// Removes from the computer all of the settings related to this application.
         /// </summary>

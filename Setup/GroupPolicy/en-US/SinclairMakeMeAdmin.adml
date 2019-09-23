@@ -49,6 +49,18 @@
 
       <string id="SyslogServersDisplayName">Syslog Servers</string>
       <string id="SyslogServersExplainText">Specifies information about syslog servers to which logged information should be sent.</string>
+
+      <string id="PromptForReasonDisplayName">Prompt for Reason</string>
+      <string id="PromptForReasonExplainText">Specifies whether to prompt the user for the reason that they require administrator privileges.</string>
+
+      <string id="RequireReasonDisplayName">Require Reason</string>
+      <string id="RequireReasonExplainText">Specifies whether to require the user to provide a reason for administrator privileges.</string>
+
+      <string id="AllowFreeFormReasonDisplayName">Allow Free-Form Reason</string>
+      <string id="AllowFreeFormReasonExplainText">Allow the user to enter a free-form text string in the administrator rights reason dialog box.</string>
+
+      <string id="CannedReasonsDisplayName">Canned Responses for Reason Dialog</string>
+      <string id="CannedReasonsExplainText">Pre-populated reasons to be shown on the administrator rights reason dialog box.</string>
     </stringTable>
     <presentationTable>
       <presentation id="Admin_Rights_Timeout_Spin">
@@ -69,6 +81,9 @@
       </presentation>
       <presentation id="RemoteDeniedEntitiesMultiText_Presentation">
         <multiTextBox refId="RemoteDeniedEntitiesMultiText">Enter denied SIDs:</multiTextBox>
+      </presentation>
+      <presentation id="CannedReasonsMultiText_Presentation">
+        <multiTextBox refId="CannedReasonsMultiText">Enter the canned responses for the reason dialog box, one per line:</multiTextBox>
       </presentation>
       <presentation id="DeniedAutomaticallyAddMultiText_Presentation">
         <multiTextBox refId="DeniedAutomaticallyAddEntitiesMultiText">Enter denied SIDs:</multiTextBox>
