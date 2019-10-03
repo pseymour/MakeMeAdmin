@@ -19,7 +19,7 @@ namespace SinclairCC.MakeMeAdmin.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -102,6 +102,53 @@ namespace SinclairCC.MakeMeAdmin.Properties {
         public static string GrantRightsButtonText {
             get {
                 return ResourceManager.GetString("GrantRightsButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to provide you with administrator rights.
+        ///A reason is required in order to obtain administrator rights, but you did not provide one..
+        /// </summary>
+        public static string MandatoryReasonNotProvided {
+            get {
+                return ResourceManager.GetString("MandatoryReasonNotProvided", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Other.
+        /// </summary>
+        public static string OtherReason {
+            get {
+                return ResourceManager.GetString("OtherReason", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to provide you with administrator rights.
+        ///A reason is required in order to obtain administrator rights, but your administrator has not allowed you to provide a reason..
+        /// </summary>
+        public static string ReasonDialogBoxPrevented {
+            get {
+                return ResourceManager.GetString("ReasonDialogBoxPrevented", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User could not be prompted for a reason. No methods for doing so are enabled..
+        /// </summary>
+        public static string ReasonDialogEmpty {
+            get {
+                return ResourceManager.GetString("ReasonDialogEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The user provided the following reason for administrator rights: {0}.
+        /// </summary>
+        public static string ReasonProvidedByUser {
+            get {
+                return ResourceManager.GetString("ReasonProvidedByUser", resourceCulture);
             }
         }
         

@@ -61,6 +61,11 @@
 
       <string id="CannedReasonsDisplayName">Canned Responses for Reason Dialog</string>
       <string id="CannedReasonsExplainText">Pre-populated reasons to be shown on the administrator rights reason dialog box.</string>
+
+      <string id="None">None</string>
+      <string id="Optional">Optional</string>
+      <string id="Required">Required</string>
+
     </stringTable>
     <presentationTable>
       <presentation id="Admin_Rights_Timeout_Spin">
@@ -109,6 +114,9 @@
         <text>Example:</text>
         <text>syslogserver:udp</text>
         <text>Communicates with the server called syslogserver on port 514 via UDP using RFC 3164 messages.</text>
+      </presentation>
+      <presentation id="PromptForReasonEnum_Presentation">
+        <dropdownList refId="PromptForReasonEnum" noSort="true" defaultItem="0">Prompt the user to provide a reason for obtaining administrator rights.</dropdownList>
       </presentation>
     </presentationTable>
   </resources>

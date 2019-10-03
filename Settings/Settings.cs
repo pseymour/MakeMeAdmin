@@ -466,7 +466,7 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-
+        /*
         public static bool PromptForReason
         {
             get
@@ -516,6 +516,57 @@ namespace SinclairCC.MakeMeAdmin
             set
             {
                 SetDWord(PreferenceRegistryKeyPath, null, "Require Reason", Convert.ToInt32(value));
+            }
+        }
+        */
+
+        public static ReasonPrompt PromptForReason
+        {
+            get
+            {
+
+                int? policySetting = GetDWord(PolicyRegistryKeyPath, null, "Prompt For Reason");
+                int? preferenceSetting = GetDWord(PreferenceRegistryKeyPath, null, "Prompt For Reason");
+                if (policySetting.HasValue)
+                { // The policy setting has a value. Go with whatever it says.
+                    ReasonPrompt convertedValue = ReasonPrompt.None;
+                    if (Enum.TryParse<ReasonPrompt>(Convert.ToString(policySetting.Value), true, out convertedValue))
+                    {
+                        if (!Enum.IsDefined(typeof(ReasonPrompt), convertedValue))
+                        {
+                            convertedValue = ReasonPrompt.None;
+                        }
+                    }
+                    else
+                    {
+                        convertedValue = ReasonPrompt.None;
+                    }
+                    return convertedValue;
+                }
+                else if (preferenceSetting.HasValue)
+                { // The preference setting has a value. Go with whatever it says.
+                    ReasonPrompt convertedValue = ReasonPrompt.None;
+                    if (Enum.TryParse<ReasonPrompt>(Convert.ToString(preferenceSetting.Value), true, out convertedValue))
+                    {
+                        if (!Enum.IsDefined(typeof(ReasonPrompt), convertedValue))
+                        {
+                            convertedValue = ReasonPrompt.None;
+                        }
+                    }
+                    else
+                    {
+                        convertedValue = ReasonPrompt.None;
+                    }
+                    return convertedValue;
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value. Return a default value of None.
+                    return ReasonPrompt.None;
+                }
+            }
+            set
+            {
+                SetDWord(PreferenceRegistryKeyPath, null, "Prompt For Reason", Convert.ToInt32(value));
             }
         }
 

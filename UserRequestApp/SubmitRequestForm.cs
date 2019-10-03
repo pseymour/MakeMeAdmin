@@ -151,9 +151,98 @@ namespace SinclairCC.MakeMeAdmin
         /// </param>
         private void ClickSubmitButton(object sender, EventArgs e)
         {
-            this.DisableButtons();
-            this.appStatus.Text = string.Format(Properties.Resources.UIMessageAddingToGroup, LocalAdministratorGroup.LocalAdminGroupName);
-            addUserBackgroundWorker.RunWorkerAsync();
+            bool enableAdminRights = false;
+
+            switch (Settings.PromptForReason)
+            {
+                case ReasonPrompt.None:
+                    // No reason dialog box required.
+                    enableAdminRights = true;
+                    break;
+
+                case ReasonPrompt.Optional:
+
+                    // The reason dialog is optional, so rights are always allowed.
+                    enableAdminRights = true;
+
+                    if ((Settings.AllowFreeFormReason) || ((Settings.CannedReasons != null) && (Settings.CannedReasons.Length > 0)))
+                    {
+                        using (RequestReasonDialog reasonDialog = new RequestReasonDialog())
+                        {
+                            switch (reasonDialog.ShowDialog(this))
+                            {
+                                case DialogResult.Cancel:
+                                    // User did not provide a reason, but is not obligated to do so.
+                                    break;
+                                case DialogResult.OK:
+                                    ApplicationLog.WriteEvent(string.Format(Properties.Resources.ReasonProvidedByUser, reasonDialog.Reason), EventID.ReasonProvidedByUser, System.Diagnostics.EventLogEntryType.Information);
+                                    break;
+                                default:
+                                    // Not sure how we got to this point, because it should never happen.
+                                    break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        ApplicationLog.WriteEvent(Properties.Resources.ReasonDialogEmpty, EventID.ReasonDialogEmpty, System.Diagnostics.EventLogEntryType.Warning);
+                    }
+
+                    break;
+
+                case ReasonPrompt.Required:
+
+                    if ((Settings.AllowFreeFormReason) || ((Settings.CannedReasons != null) && (Settings.CannedReasons.Length > 0)))
+                    {
+                        using (RequestReasonDialog reasonDialog = new RequestReasonDialog())
+                        {
+                            switch (reasonDialog.ShowDialog(this))
+                            {
+                                case DialogResult.Cancel:
+                                    enableAdminRights = false;
+                                    MessageBox.Show(this, Properties.Resources.MandatoryReasonNotProvided, "Make Me Admin", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
+                                    break;
+                                case DialogResult.OK:
+                                    if (string.Compare(reasonDialog.Reason, string.Format("{0}: ", Properties.Resources.OtherReason), true) == 0)
+                                    { // User didn't really provide a reason. The string is blank.
+                                        enableAdminRights = false;
+                                        MessageBox.Show(this, Properties.Resources.MandatoryReasonNotProvided, "Make Me Admin", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
+                                    }
+                                    else
+                                    {
+                                        enableAdminRights = true;
+                                        ApplicationLog.WriteEvent(string.Format(Properties.Resources.ReasonProvidedByUser, reasonDialog.Reason), EventID.ReasonProvidedByUser, System.Diagnostics.EventLogEntryType.Information);
+                                    }
+                                    break;
+                                default:
+                                    // Not sure how we got to this point, because it should never happen.
+                                    // Better to be safe than sorry, so no admin rights.
+                                    enableAdminRights = false;
+                                    break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show(this, Properties.Resources.ReasonDialogBoxPrevented, "Make Me Admin", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
+                        enableAdminRights = false;
+                    }
+
+                    break;
+                
+                default:
+                    // TODO: i18n
+                    ApplicationLog.WriteEvent(string.Format("Unexpected value for the reason prompt setting: {0:N0}", ((int)(Settings.PromptForReason))), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Warning);
+                    enableAdminRights = true;
+                    break;
+            }
+
+            if (enableAdminRights)
+            {
+                this.DisableButtons();
+                this.appStatus.Text = string.Format(Properties.Resources.UIMessageAddingToGroup, LocalAdministratorGroup.LocalAdminGroupName);
+                addUserBackgroundWorker.RunWorkerAsync();
+            }
         }
 
 
@@ -382,7 +471,6 @@ namespace SinclairCC.MakeMeAdmin
             IAdminGroup channel = namedPipeFactory.CreateChannel();
             bool userIsAuthorizedLocally = channel.UserIsAuthorized(Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
             namedPipeFactory.Close();
-
             /*
             bool userIsAuthorizedLocally = UserIsAuthorized(WindowsIdentity.GetCurrent(), Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
             */

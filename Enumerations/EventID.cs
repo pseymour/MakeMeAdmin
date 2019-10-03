@@ -67,6 +67,10 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         RejectedSyslogServerInfo,
 
+        ReasonDialogEmpty,
+
+        ReasonProvidedByUser,
+
         /// <summary>
         /// Event ID for debug messages.
         /// </summary>

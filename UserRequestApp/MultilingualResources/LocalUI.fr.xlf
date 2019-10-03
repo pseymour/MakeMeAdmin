@@ -70,6 +70,30 @@
           <source>An error occurred while removing you from the Administrators group.</source>
           <target state="final">Une erreur s'est produite lors de votre retrait du groupe Administrateurs.</target>
         </trans-unit>
+        <trans-unit id="MandatoryReasonNotProvided" translate="yes" xml:space="preserve">
+          <source>Unable to provide you with administrator rights.
+A reason is required in order to obtain administrator rights, but you did not provide one.</source>
+          <target state="new">Unable to provide you with administrator rights.
+A reason is required in order to obtain administrator rights, but you did not provide one.</target>
+        </trans-unit>
+        <trans-unit id="ReasonDialogBoxPrevented" translate="yes" xml:space="preserve">
+          <source>Unable to provide you with administrator rights.
+A reason is required in order to obtain administrator rights, but your administrator has not allowed you to provide a reason.</source>
+          <target state="new">Unable to provide you with administrator rights.
+A reason is required in order to obtain administrator rights, but your administrator has not allowed you to provide a reason.</target>
+        </trans-unit>
+        <trans-unit id="OtherReason" translate="yes" xml:space="preserve">
+          <source>Other</source>
+          <target state="new">Other</target>
+        </trans-unit>
+        <trans-unit id="ReasonDialogEmpty" translate="yes" xml:space="preserve">
+          <source>User could not be prompted for a reason. No methods for doing so are enabled.</source>
+          <target state="new">User could not be prompted for a reason. No methods for doing so are enabled.</target>
+        </trans-unit>
+        <trans-unit id="ReasonProvidedByUser" translate="yes" xml:space="preserve">
+          <source>The user provided the following reason for administrator rights: {0}</source>
+          <target state="new">The user provided the following reason for administrator rights: {0}</target>
+        </trans-unit>
       </group>
     </body>
   </file>

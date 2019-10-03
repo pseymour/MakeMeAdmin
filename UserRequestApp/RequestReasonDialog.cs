@@ -31,26 +31,24 @@ namespace SinclairCC.MakeMeAdmin
             
             if ((Settings.CannedReasons != null) && (Settings.CannedReasons.Length > 0))
             {
-                this.cannedResponseComboBox.Items.AddRange(Settings.CannedReasons);
+                this.responseComboBox.Items.AddRange(Settings.CannedReasons);
             }
 
             this.reasonTextBox.Enabled = Settings.AllowFreeFormReason;
 
             if (this.reasonTextBox.Enabled)
             {
-                this.cannedResponseComboBox.Items.Add("Other");
+                this.responseComboBox.Items.Add(Properties.Resources.OtherReason);
             }
-
-            /*
-            if (this.cannedResponseComboBox.Items.Count > 0)
+            
+            if (this.responseComboBox.Items.Count > 0)
             {
-                this.cannedResponseComboBox.SelectedIndex = 0;
-            }
-            */
+                this.responseComboBox.SelectedIndex = 0;
+            }            
 
-            if (this.cannedResponseComboBox.Items.Count <= 1)
+            if (this.responseComboBox.Items.Count <= 1)
             {
-                this.cannedResponseComboBox.Enabled = false;
+                this.responseComboBox.Enabled = false;
             }
         }
 
@@ -62,18 +60,74 @@ namespace SinclairCC.MakeMeAdmin
             }
             else
             {
-                this.cannedResponseComboBox.Focus();
+                this.responseComboBox.Focus();
             }
+            SetOKButtonState();
         }
 
         private void ReasonTextBoxChangedHandler(object sender, EventArgs e)
         {
-            this.cannedResponseComboBox.SelectedItem = "Other";
+            this.responseComboBox.SelectedItem = Properties.Resources.OtherReason;
+            SetOKButtonState();
+        }
+
+        private void ResponseComboBoxSelectionChangeCommitted(object sender, EventArgs e)
+        {
+            SetOKButtonState();
+        }
+
+        private void SetOKButtonState()
+        {
+            //if (Settings.PromptForReason == ReasonPrompt.Required)
+            //{
+                if (this.responseComboBox.SelectedIndex >= 0)
+                { // Something is selected in the combo box.
+                    string selectedItemText = ((string)this.responseComboBox.SelectedItem).Trim();
+                    if (string.Compare(selectedItemText, Properties.Resources.OtherReason, true) == 0)
+                    { // The "Other" item is selected in the combo box.
+                        // Enable the OK button if there is something in the text box.
+                        this.okButton.Enabled = this.reasonTextBox.Text.Trim().Length > 0;
+                    }
+                    else
+                    {
+                        this.okButton.Enabled = true;
+                    }
+                }
+                else
+                { // Nothing is selected in the combo box.
+                    // Enable the OK button if there is something in the text box.
+                    this.okButton.Enabled = this.reasonTextBox.Text.Trim().Length > 0;
+                }
+            //}
         }
 
         private void CancelButtonClickHandler(object sender, EventArgs e)
         {
             this.Close();
         }
+
+        public string Reason
+        {
+            get
+            {
+                if (this.responseComboBox.SelectedIndex >= 0)
+                { // Something is selected in the combo box.
+                    string selectedItemText = ((string)this.responseComboBox.SelectedItem).Trim();
+                    if (string.Compare(selectedItemText, Properties.Resources.OtherReason, true) == 0)
+                    {
+                        return string.Format("{0}: {1}", Properties.Resources.OtherReason, this.reasonTextBox.Text.Trim());
+                    }
+                    else
+                    {
+                        return selectedItemText;
+                    }
+                }
+                else
+                { // Nothing is selected in the combo box. Return the contents of the text box, even if empty.
+                    return this.reasonTextBox.Text.Trim();
+                }
+            }
+        }
+
     }
 }

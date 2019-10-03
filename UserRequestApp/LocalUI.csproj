@@ -143,6 +143,10 @@
       <Project>{5fb1809b-b0fd-48e9-9e47-3cb048369433}</Project>
       <Name>Enumerations</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Logging\Logging.csproj">
+      <Project>{f5a53b43-5d6d-48ec-bc44-c0c1a0cefa8d}</Project>
+      <Name>Logging</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UserList\UserList.csproj">
       <Project>{9cfd5fa4-5ad6-463c-87e5-3f42133b5da8}</Project>
       <Name>UserList</Name>
