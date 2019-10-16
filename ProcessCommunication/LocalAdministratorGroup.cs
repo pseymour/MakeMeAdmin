@@ -485,20 +485,9 @@ namespace SinclairCC.MakeMeAdmin
         {
             try
             {
-                string sidPattern = @"^S-\d-\d+-(\d+-){1,14}\d+$";
-                bool isSid = System.Text.RegularExpressions.Regex.IsMatch(accountname, sidPattern);
-
-                if (isSid)
-                {
-                    return new SecurityIdentifier(accountname);
-                }
-                else
-                {
-                    NTAccount account = new NTAccount(accountname);
-                    var sid = (SecurityIdentifier)account.Translate(typeof(SecurityIdentifier));
-                    return sid;
-
-                }
+                PrincipalContext pc = new PrincipalContext(ContextType.Machine);
+                GroupPrincipal gp = GroupPrincipal.FindByIdentity(pc, accountname);
+                return gp?.Sid;
             }
             catch (IdentityNotMappedException)
             { // Some or all identity references could not be translated.
