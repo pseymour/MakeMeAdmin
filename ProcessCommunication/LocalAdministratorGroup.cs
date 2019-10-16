@@ -471,6 +471,53 @@ namespace SinclairCC.MakeMeAdmin
         }
 
 
+        /// <summary>
+        /// Gets the security identifier (SID) corresponding to a given sid string or account name.
+        /// </summary>
+        /// <param name="accountname">
+        /// The SID string or account name that the SID should be retrieved for.
+        /// </param>
+        /// <returns>
+        /// Returns a security identifier (SID) corresponding to a given sid string or account name.
+        /// If the account name doesn't exist, null is returned.
+        /// </returns>
+        internal static SecurityIdentifier GetSIDFromAccountName(string accountname)
+        {
+            try
+            {
+                string sidPattern = @"^S-\d-\d+-(\d+-){1,14}\d+$";
+                bool isSid = System.Text.RegularExpressions.Regex.IsMatch(accountname, sidPattern);
+
+                if (isSid)
+                {
+                    return new SecurityIdentifier(accountname);
+                }
+                else
+                {
+                    NTAccount account = new NTAccount(accountname);
+                    var sid = (SecurityIdentifier)account.Translate(typeof(SecurityIdentifier));
+                    return sid;
+
+                }
+            }
+            catch (IdentityNotMappedException)
+            { // Some or all identity references could not be translated.
+                return null;
+            }
+            catch (System.ArgumentNullException)
+            { // The target translation type is null.
+                return null;
+            }
+            catch (System.ArgumentException)
+            { // The target translation type is not an IdentityReference type.
+                return null;
+            }
+            catch (System.SystemException)
+            { // A Win32 error code was returned.
+                return null;
+            }
+        }
+
         /*
         public static bool CurrentUserIsMember()
         {
