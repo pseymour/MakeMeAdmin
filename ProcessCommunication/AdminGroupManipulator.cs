@@ -121,40 +121,6 @@ namespace SinclairCC.MakeMeAdmin
 
 
 
-
-        /// <summary>
-        /// Determines whether the given array of strings contains the given target string.
-        /// </summary>
-        /// <param name="stringArray">
-        /// An array to be searched for the target string.
-        /// </param>
-        /// <param name="targetString">
-        /// The string to be searched for in the array.
-        /// </param>
-        /// <returns>
-        /// Returns true if the given target string is present in the array.
-        /// If the array is null or empty, false is returned.
-        /// </returns>
-        /// <remarks>
-        /// String comparisons are case-insensitive.
-        /// </remarks>
-        private static bool ArrayContainsString(string[] stringArray, string targetString)
-        {
-            if ((stringArray != null) && (stringArray.Length > 0))
-            {
-                for (int i = 0; i < stringArray.Length; i++)
-                {
-                    if (string.Compare(System.Environment.ExpandEnvironmentVariables(stringArray[i]), targetString, System.Globalization.CultureInfo.CurrentCulture, System.Globalization.CompareOptions.IgnoreCase) == 0)
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-
-
         /// <summary>
         /// Determines whether the given array of SIDs/Identities contains the given target user identity.
         /// </summary>
