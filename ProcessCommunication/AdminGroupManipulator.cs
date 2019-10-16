@@ -138,10 +138,12 @@ namespace SinclairCC.MakeMeAdmin
         {
             if (accountList != null)
             {
-                foreach (var sid in accountList)
+                foreach (var account in accountList)
                 {
+                    var sid = LocalAdministratorGroup.GetSIDFromAccountName(account);
+
                     // If the user's SID or name is in the list, return true
-                    if (LocalAdministratorGroup.GetSIDFromAccountName(sid) == userIdentity.User)
+                    if (sid == userIdentity.User)
                     {
                         return true;
                     }
@@ -150,7 +152,7 @@ namespace SinclairCC.MakeMeAdmin
                     foreach (IdentityReference groupsid in userIdentity.Groups)
                     {
                         // Translate the NT Account (Domain\User) to SID if needed, and check the resulting values.
-                        if (LocalAdministratorGroup.GetSIDFromAccountName(sid) == (SecurityIdentifier)groupsid.Translate(typeof(SecurityIdentifier)))
+                        if (sid == (SecurityIdentifier)groupsid.Translate(typeof(SecurityIdentifier)))
                         {
                             return true;
                         }

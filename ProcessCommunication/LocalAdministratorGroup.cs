@@ -485,7 +485,7 @@ namespace SinclairCC.MakeMeAdmin
         {
             try
             {
-                PrincipalContext pc = new PrincipalContext(ContextType.Machine);
+                PrincipalContext pc = LocalMachineContext;
                 GroupPrincipal gp = GroupPrincipal.FindByIdentity(pc, accountname);
                 return gp?.Sid;
             }
