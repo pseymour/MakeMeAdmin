@@ -474,20 +474,37 @@ namespace SinclairCC.MakeMeAdmin
         /// <summary>
         /// Gets the security identifier (SID) corresponding to a given sid string or account name.
         /// </summary>
-        /// <param name="accountname">
+        /// <param name="accountName">
         /// The SID string or account name that the SID should be retrieved for.
+        /// Environment Variables will be expanded out. The following formats are accepted:
+        ///  * S-1-5-32-545 (local, domain or well-known SID)
+        ///  * DOMAIN\xxxxx (domain user or group)
+        ///  * .\\xxxx or %COMPUTERNAME%\\xxxx (local user or group - also accepts explicitly using the computer name)
+        ///  * NT AUTHORITY\INTERACTIVE, BUILTIN\Users, etc (well-known names)
+        ///  * xxxxx (search for local, domain or well-known user or group)
         /// </param>
         /// <returns>
         /// Returns a security identifier (SID) corresponding to a given sid string or account name.
         /// If the account name doesn't exist, null is returned.
         /// </returns>
-        internal static SecurityIdentifier GetSIDFromAccountName(string accountname)
+        internal static SecurityIdentifier GetSIDFromAccountName(string accountName)
         {
             try
             {
-                PrincipalContext pc = LocalMachineContext;
-                GroupPrincipal gp = GroupPrincipal.FindByIdentity(pc, accountname);
-                return gp?.Sid;
+                string sidPattern = @"^S-\d-\d+-(\d+-){1,14}\d+$";
+                bool isSid = System.Text.RegularExpressions.Regex.IsMatch(accountName, sidPattern);
+
+                if (isSid)
+                {
+                    return new SecurityIdentifier(accountName);
+                }
+                else
+                {
+                    var resolvedAccountName = Environment.ExpandEnvironmentVariables(accountName.Replace(".\\", "%COMPUTERNAME%\\"));
+                    NTAccount account = new NTAccount(resolvedAccountName);
+                    var sid = (SecurityIdentifier)account?.Translate(typeof(SecurityIdentifier));
+                    return sid;
+                }
             }
             catch (IdentityNotMappedException)
             { // Some or all identity references could not be translated.
