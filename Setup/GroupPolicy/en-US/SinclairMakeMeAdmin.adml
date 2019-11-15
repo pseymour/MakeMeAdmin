@@ -32,6 +32,12 @@
       <string id="AdminRightsTimeoutDisplayName">Admin Rights Timeout</string>
       <string id="AdminRightsTimeoutExplainText">Specifies the amount of time, in minutes, for which administrative rights will be granted.</string>
 
+      <string id="LogOffAfterExpirationDisplayName">Log Off After Expiration</string>
+      <string id="LogOffAfterExpirationExplainText">Specifies the number of seconds after which a user is logged off, once their administrator privileges expire. A value of zero (0) prevents the logoff.</string>
+
+      <string id="LogOffMessageDisplayName">Log Off Message</string>
+      <string id="LogOffMessageExplainText">Specifies a message to be displayed before a user is logged off, once their administrator privileges expire.</string>
+
       <string id="RemoveOnLogoutDisplayName">Remove Admin Rights On Logout</string>
       <string id="RemoveOnLogoutExplainText">Specifies whether administrative rights should be revoked when a user logs off.</string>
 
@@ -54,6 +60,13 @@
       <presentation id="Admin_Rights_Timeout_Spin">
         <text>The number of minutes for which administrative rights will be granted.</text>
         <decimalTextBox refId="AdminRightsTimeoutValue" defaultValue="10" spinStep="5">admin rights timeout:</decimalTextBox>
+      </presentation>
+      <presentation id="Log_Off_After_Expiration_Spin">
+        <text>The number of seconds after which a user is logged off, once their administrative privileges expire.</text>
+        <decimalTextBox refId="LogOffAfterExpirationValue" defaultValue="60" spinStep="5">Log off after:</decimalTextBox>
+      </presentation>
+      <presentation id="Log_Off_Message_TextBox">
+        <multiTextBox refId="LogOffMessageTextBox">Enter a message to be displayed to users before they are logged off.</multiTextBox>
       </presentation>
       <presentation id="AllowedEntitiesMultiText_Presentation">
         <multiTextBox refId="AllowedEntitiesMultiText">Enter allowed SIDs:</multiTextBox>

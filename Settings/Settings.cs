@@ -361,6 +361,58 @@ namespace SinclairCC.MakeMeAdmin
         }
 
         // TODO: i18n.
+        public static int LogOffAfterExpiration
+        {
+            get
+            {
+                int? policyLogoffSetting = GetDWord(PolicyRegistryKeyPath, null, "Log Off After Expiration");
+                int? preferenceLogoffSetting = GetDWord(PreferenceRegistryKeyPath, null, "Log Off After Expiration");
+                if (policyLogoffSetting.HasValue)
+                { // The policy setting has a value. Go with whatever it says.
+                    return policyLogoffSetting.Value;
+                }
+                else if (preferenceLogoffSetting.HasValue)
+                { // The preference setting has a value. Go with whatever it says.
+                    return preferenceLogoffSetting.Value;
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value. Return a default value 0 (no logoff).
+                    return 0;
+                }
+            }
+            set
+            {
+                SetDWord(PreferenceRegistryKeyPath, null, "Log Off After Expiration", value);
+            }
+        }
+
+        // TODO: i18n.
+        public static string[] LogOffMessage
+        {
+            get
+            {
+                string[] policyLogoffSetting = GetMultiString(PolicyRegistryKeyPath, null, "Log Off Message");
+                string[] preferenceLogoffSetting = GetMultiString(PreferenceRegistryKeyPath, null, "Log Off Message");
+                if (null != policyLogoffSetting)
+                { // The policy setting has a value. Go with whatever it says.
+                    return policyLogoffSetting;
+                }
+                else if (null != preferenceLogoffSetting)
+                { // The preference setting has a value. Go with whatever it says.
+                    return preferenceLogoffSetting;
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value. Return a default value.
+                    return new string[] { Properties.Resources.DefaultLogOffMessage };
+                }
+            }
+            set
+            {
+                SetMultiString(PreferenceRegistryKeyPath, null, "Log Off Message", value);
+            }
+        }
+
+        // TODO: i18n.
         public static bool RemoveAdminRightsOnLogout
         {
             get

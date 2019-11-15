@@ -252,5 +252,28 @@ namespace LsaLogonSessions
 
             return returnArray;
         }
+
+        public static int SendMessageToSession(int sessionId, string message, int timeout, out int response)
+        {
+            // TODO: These should be customizable.
+            string messageTitle = "Make Me Admin";
+
+            int MB_OK = 0x0;
+            int MB_ICONWARNING = 0x00000030;
+            int MB_SYSTEMMODAL = 0x00001000;
+            int MB_SETFOREGROUND = 0x00010000;
+            /* int MB_SERVICE_NOTIFICATION = 0x00200000; */
+            int messageStyle = MB_OK + MB_ICONWARNING + MB_SYSTEMMODAL + MB_SETFOREGROUND + MB_SETFOREGROUND;
+
+            // TODO: Change the style parameter to use MessageBoxButtons + MessageBoxIcons data types?
+            // TODO: Change the response to be DialogResult data type?
+            return NativeMethods.WTSSendMessage(NativeMethods.WTS_CURRENT_SERVER_HANDLE, sessionId, messageTitle, messageTitle.Length, message, message.Length, messageStyle, timeout, out response, true);
+        }
+
+        public static int LogoffSession(int sessionId)
+        {
+            return NativeMethods.WTSLogoffSession(NativeMethods.WTS_CURRENT_SERVER_HANDLE, sessionId, false);
+        }
+
     }
 }

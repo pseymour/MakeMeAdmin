@@ -113,6 +113,34 @@
       </elements>
     </policy>
 
+    <policy name="LogOffAfterExpiration"
+             class="Machine"
+             displayName="$(string.LogOffAfterExpirationDisplayName)"
+             explainText="$(string.LogOffAfterExpirationExplainText)"
+             key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
+             valueName="Log Off After Expiration"
+             presentation="$(presentation.Log_Off_After_Expiration_Spin)" >
+      <parentCategory ref="makemeadmin:MakeMeAdmin"></parentCategory>
+      <supportedOn ref="windows:SUPPORTED_Windows7" />
+      <elements>
+        <decimal id="LogOffAfterExpirationValue" required="true" valueName="Log Off After Expiration" minValue="1" storeAsText="false" />
+      </elements>
+    </policy>
+
+    <policy name="LogOffMessage"
+             class="Machine"
+             displayName="$(string.LogOffMessageDisplayName)"
+             explainText="$(string.LogOffMessageExplainText)"
+             key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
+             valueName="Log Off Message"
+             presentation="$(presentation.Log_Off_Message_TextBox)" >
+      <parentCategory ref="makemeadmin:MakeMeAdmin"></parentCategory>
+      <supportedOn ref="windows:SUPPORTED_Windows7" />
+      <elements>
+        <multiText id="LogOffMessageTextBox" valueName="Log Off Message"/>
+      </elements>
+    </policy>
+
     <policy name="TimeoutOverrideList"
             class="Machine"
             displayName="$(string.TimeoutOverrideDisplayName)"
