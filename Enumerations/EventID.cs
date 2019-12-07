@@ -26,6 +26,11 @@ namespace SinclairCC.MakeMeAdmin
     public enum EventID : int
     {
         /// <summary>
+        /// The built-in service functionality uses Event ID 0 to log service start/stop events.
+        /// </summary>
+        ServiceStartStop,
+
+        /// <summary>
         /// A user was added to the Administrators group.
         /// </summary>
         UserAddedToAdminsSuccess,
