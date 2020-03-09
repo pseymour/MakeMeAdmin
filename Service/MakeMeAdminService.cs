@@ -66,6 +66,9 @@ namespace SinclairCC.MakeMeAdmin
             this.CanHandleSessionChangeEvent = true;
             */
 
+            this.EventLog.Source = "Make Me Admin";
+            this.AutoLog = false;
+
             this.removalTimer = new System.Timers.Timer()
             {
                 Interval = 10000,   // Raise the Elapsed event every ten seconds.
