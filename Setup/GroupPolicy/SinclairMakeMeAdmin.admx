@@ -192,19 +192,17 @@
              displayName="$(string.PromptForReasonDisplayName)"
              explainText="$(string.PromptForReasonExplainText)"
              key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
+             presentation="$(presentation.PromptForReasonEnum_Presentation)"
              valueName="Prompt For Reason">
       <parentCategory ref="makemeadmin:MakeMeAdmin"></parentCategory>
       <supportedOn ref="windows:SUPPORTED_Windows7" />
-      <enabledValue>
-        <elements>
-          <enum id="PromptForReasonEnum" valueName="Prompt For Reason" required="true">
-            <item displayName="$(string.None)"><value><decimal value="0"/></value></item>
-            <item displayName="$(string.Optional)"><value><decimal value="1"/></value></item>
-            <item displayName="$(string.Required)"><value><decimal value="2"/></value></item>
-          </enum>
-        </elements>
-      </enabledValue>
-      <disabledValue><delete /></disabledValue>
+      <elements>
+        <enum id="PromptForReasonEnum" valueName="Prompt For Reason" required="true">
+          <item displayName="$(string.None)"><value><decimal value="0"/></value></item>
+          <item displayName="$(string.Optional)"><value><decimal value="1"/></value></item>
+          <item displayName="$(string.Required)"><value><decimal value="2"/></value></item>
+        </enum>
+      </elements>
     </policy>
 
     <policy name="AllowFreeFormReason"
