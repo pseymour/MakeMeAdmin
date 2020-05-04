@@ -129,7 +129,7 @@ namespace SinclairCC.MakeMeAdmin
             ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(binding, remoteHostAddress);
             IAdminGroup channel = namedPipeFactory.CreateChannel();
 
-            // Submit a request for adminsitrator rights on the remote host.
+            // Submit a request for administrator rights on the remote host.
             try
             {
                 channel.AddUserToAdministratorsGroup();

@@ -262,7 +262,7 @@ namespace SinclairCC.MakeMeAdmin
 
         /// <summary>
         /// Validates that all of the users stored in the on-disk user list
-        /// are in the local Adminstrators group if they're supposed to be, and vice-vera.
+        /// are in the local Administrators group if they're supposed to be, and vice-versa.
         /// </summary>
         public static void ValidateAllAddedUsers()
         {
@@ -424,7 +424,7 @@ namespace SinclairCC.MakeMeAdmin
 
 
         /// <summary>
-        /// Gets the human-friendly account name corresponding to a givem
+        /// Gets the human-friendly account name corresponding to a given
         /// security identifier (SID).
         /// </summary>
         /// <param name="sid">
