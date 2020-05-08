@@ -28,7 +28,9 @@ namespace SinclairCC.MakeMeAdmin
         public RequestReasonDialog()
         {
             InitializeComponent();
-            
+
+            this.Icon = Properties.Resources.SecurityLock;
+
             if ((Settings.CannedReasons != null) && (Settings.CannedReasons.Length > 0))
             {
                 this.responseComboBox.Items.AddRange(Settings.CannedReasons);
