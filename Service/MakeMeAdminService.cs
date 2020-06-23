@@ -202,7 +202,7 @@ namespace SinclairCC.MakeMeAdmin
         /// Handles the stopping of the service.
         /// </summary>
         /// <remarks>
-        /// Executes when a stop command is sent to the service by the Serivce Control Manager (SCM).
+        /// Executes when a stop command is sent to the service by the Service Control Manager (SCM).
         /// </remarks>
         protected override void OnStop()
         {

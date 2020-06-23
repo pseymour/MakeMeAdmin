@@ -58,7 +58,7 @@
             // 
             // serviceInstaller
             // 
-            this.serviceInstaller.Description = "Enables users to elevate themselves to adminstrator-level rights.";
+            this.serviceInstaller.Description = "Enables users to elevate themselves to administrator-level rights.";
             this.serviceInstaller.DisplayName = "Make Me Admin";
             this.serviceInstaller.ServiceName = "MakeMeAdmin";
             this.serviceInstaller.StartType = System.ServiceProcess.ServiceStartMode.Automatic;

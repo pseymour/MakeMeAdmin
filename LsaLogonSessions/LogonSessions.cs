@@ -202,7 +202,7 @@ namespace LsaLogonSessions
         /// </summary>
         /// <returns>
         /// Returns an array of integers, which contains the sessions IDs of currently logged-on users.
-        /// Returns null if no users are logged on or the list of session IDs cannot be retrievd.
+        /// Returns null if no users are logged on or the list of session IDs cannot be retrieved.
         /// </returns>
         public static int[] GetLoggedOnUserSessionIds()
         {

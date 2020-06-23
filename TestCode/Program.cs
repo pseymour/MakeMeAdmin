@@ -576,7 +576,7 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
             }
             if (winErrorCode > 0)
             {
-                throw new ApplicationException(string.Format("Error occured in LSA, error code {0}, detail: {1}", winErrorCode, errorMessage));
+                throw new ApplicationException(string.Format("Error occurred in LSA, error code {0}, detail: {1}", winErrorCode, errorMessage));
             }
             return rights;
         }
