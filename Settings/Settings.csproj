@@ -69,6 +69,7 @@
     </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="SyslogServerInfo.cs" />
+    <Compile Include="UserSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

@@ -125,6 +125,10 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         private void OpenNamedPipeServiceHost()
         {
+            if (null != this.namedPipeServiceHost)
+            {
+                this.namedPipeServiceHost.Close();
+            }
             this.namedPipeServiceHost = new ServiceHost(typeof(AdminGroupManipulator), new Uri(Settings.NamedPipeServiceBaseAddress));
             this.namedPipeServiceHost.Faulted += ServiceHostFaulted;
             NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
@@ -138,6 +142,10 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         private void OpenTcpServiceHost()
         {
+            if (null != this.tcpServiceHost)
+            {
+                this.tcpServiceHost.Close();
+            }
             this.tcpServiceHost = new ServiceHost(typeof(AdminGroupManipulator), new Uri(Settings.TcpServiceBaseAddress));
             this.tcpServiceHost.Faulted += ServiceHostFaulted;
             NetTcpBinding binding = new NetTcpBinding(SecurityMode.Transport);
