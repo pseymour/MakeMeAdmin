@@ -465,6 +465,8 @@ namespace SinclairCC.MakeMeAdmin
                 SetDWord(PreferenceRegistryKeyPath, null, "End Remote Sessions Upon Expiration", Convert.ToInt32(value));
             }
         }
+
+        // TODO: i18n.
         public static int TCPServicePort
         {
             get
