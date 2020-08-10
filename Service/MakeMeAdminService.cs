@@ -21,6 +21,8 @@
 namespace SinclairCC.MakeMeAdmin
 {
     using System;
+    using System.Linq;
+    using System.Runtime.Serialization.Formatters.Binary;
     using System.Security.Principal;
     using System.ServiceModel;
     using System.ServiceProcess;
@@ -53,6 +55,10 @@ namespace SinclairCC.MakeMeAdmin
         /// created if the remote administrator rights setting is enabled (true).
         /// </remarks>
         private ServiceHost tcpServiceHost = null;
+
+
+        private string portSharingServiceName = "NetTcpPortSharing";
+
 
 
         /// <summary>
@@ -146,11 +152,55 @@ namespace SinclairCC.MakeMeAdmin
             {
                 this.tcpServiceHost.Close();
             }
+
             this.tcpServiceHost = new ServiceHost(typeof(AdminGroupManipulator), new Uri(Settings.TcpServiceBaseAddress));
             this.tcpServiceHost.Faulted += ServiceHostFaulted;
             NetTcpBinding binding = new NetTcpBinding(SecurityMode.Transport);
+            if (TcpPortInUse)
+            {
+                binding.PortSharingEnabled = true;
+            }
+
+            // If port sharing is enabled, then the Net.Tcp Port Sharing Service must be available as well.
+            if (binding.PortSharingEnabled)
+            {
+                if (PortSharingServiceExists)
+                {
+                    ServiceController controller = new ServiceController(portSharingServiceName);
+                    controller.Close();
+                }
+                else
+                {
+                    //ApplicationLog.WriteEvent("The Net.Tcp Port Sharing service does not exist. Unable to enable remote access.", 
+                    return;
+                }
+            }
+
             this.tcpServiceHost.AddServiceEndpoint(typeof(IAdminGroup), binding, Settings.TcpServiceBaseAddress);
             this.tcpServiceHost.Open();
+        }
+
+        private bool PortSharingServiceExists
+        {
+            get
+            {
+                bool serviceExists = false;
+                ServiceController[] services = ServiceController.GetServices();
+                for (int i = 0; (i < services.Length) && (!serviceExists); i++)
+                {
+                    serviceExists |= (string.Compare(services[i].ServiceName, portSharingServiceName, true) == 0);
+                }
+                return serviceExists;
+            }
+        }
+
+        private bool TcpPortInUse
+        {
+            get
+            {
+                System.Net.NetworkInformation.IPGlobalProperties globalIPProps = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties();
+                return globalIPProps.GetActiveTcpListeners().Where(n => n.Port == Settings.TCPServicePort).Count() > 0;
+            }
         }
 
 
