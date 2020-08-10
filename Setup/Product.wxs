@@ -44,7 +44,9 @@
     <Feature Id="MakeMeAdminRemote" Title="[ProductName] !(loc.Remote)" Level="0">
       <ComponentRef Id="RemoteElevationUserInterface"/>
       <ComponentRef Id="RemoteElevation_fr"/>
-      
+
+      <ComponentRef Id="EnumerationsLibrary" />
+
       <ComponentRef Id="MruListLibrary"/>
 
       <ComponentRef Id="LoggingLibrary" />

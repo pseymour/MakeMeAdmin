@@ -21,6 +21,7 @@
 namespace SinclairCC.MakeMeAdmin
 {
     using System;
+    using System.ComponentModel;
     using System.Linq;
     using System.Runtime.Serialization.Formatters.Binary;
     using System.Security.Principal;
@@ -167,11 +168,63 @@ namespace SinclairCC.MakeMeAdmin
                 if (PortSharingServiceExists)
                 {
                     ServiceController controller = new ServiceController(portSharingServiceName);
+                    switch (controller.StartType)
+                    {
+                        case ServiceStartMode.Disabled:
+                            ApplicationLog.WriteEvent(string.Format("Port {0} is already in use, but the Net.Tcp Port Sharing Service is disabled. Remote access will not be available.", Settings.TCPServicePort), EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
+                            return;
+                        /*
+                        case ServiceStartMode.Automatic:
+#if DEBUG
+                            ApplicationLog.WriteEvent("Port sharing service is set to start automatically.", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+                            break;
+                        case ServiceStartMode.Manual:
+#if DEBUG
+                            ApplicationLog.WriteEvent("Port sharing service is set to start manually.", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+                            int waitCount = 0;
+                            while ((controller.Status != ServiceControllerStatus.Running) && (waitCount < 10))
+                            {
+                                switch (controller.Status)
+                                {
+                                    case ServiceControllerStatus.Paused:
+                                        controller.Continue();
+                                        controller.WaitForStatus(ServiceControllerStatus.Running, new TimeSpan(0, 0, 5));
+                                        break;
+                                    case ServiceControllerStatus.Stopped:
+                                        try
+                                        {
+                                            controller.Start();
+                                            controller.WaitForStatus(ServiceControllerStatus.Running, new TimeSpan(0, 0, 5));
+                                        }
+                                        catch (Win32Exception win32Exception)
+                                        {
+                                            ApplicationLog.WriteEvent(win32Exception.Message, EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Error);
+                                        }
+                                        catch (InvalidOperationException invalidOpException)
+                                        {
+                                            ApplicationLog.WriteEvent(invalidOpException.Message, EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Error);
+                                        }
+                                        break;
+                                }
+                                System.Threading.Thread.Sleep(1000);
+                                waitCount++;
+                            }
+
+                            if (controller.Status != ServiceControllerStatus.Running)
+                            {
+                                ApplicationLog.WriteEvent(string.Format("Port {0} is already in use, but the Net.Tcp Port Sharing Service is not running. Remote access will not be available.", Settings.TCPServicePort), EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
+                            }
+
+                            break;
+                        */
+                    }
                     controller.Close();
                 }
                 else
                 {
-                    //ApplicationLog.WriteEvent("The Net.Tcp Port Sharing service does not exist. Unable to enable remote access.", 
+                    ApplicationLog.WriteEvent(string.Format("Port {0} is already in use, but the Net.Tcp Port Sharing Service does not exist. Remote access will not be available.", Settings.TCPServicePort), EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
                     return;
                 }
             }
