@@ -18,21 +18,26 @@
 // along with Make Me Admin. If not, see <http://www.gnu.org/licenses/>.
 //
 
+
 namespace SinclairCC.MakeMeAdmin
 {
-    internal enum TOKEN_ELEVATION_TYPE
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.Tracing;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+
+
+
+    /*
+    public class LoggingListener : System.Diagnostics.Tracing.EventListener
     {
-        /// <summary>
-        /// The token does not have a linked token.
-        /// </summary>
-        TokenElevationTypeDefault = 1,
-        /// <summary>
-        /// The token is an elevated token.
-        /// </summary>
-        TokenElevationTypeFull,
-        /// <summary>
-        /// The token is a limited token.
-        /// </summary>
-        TokenElevationTypeLimited
+        protected override void OnEventWritten(EventWrittenEventArgs eventData)
+        {
+            //throw new NotImplementedException();
+        }
     }
+    */
+
 }

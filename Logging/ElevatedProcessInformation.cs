@@ -20,8 +20,18 @@
 
 namespace SinclairCC.MakeMeAdmin
 {
-    internal struct TOKEN_ELEVATION
+    using System;
+
+    public class ElevatedProcessInformation
     {
-        public uint TokenIsElevated;
+        public int? ParentID { get; set; }
+
+        public int ProcessID { get; set; }
+
+        public int SessionID { get; set; }
+
+        public DateTime TimeStamp { get; set; }
+
+        public TokenElevationType ElevationType { get; set; }
     }
 }

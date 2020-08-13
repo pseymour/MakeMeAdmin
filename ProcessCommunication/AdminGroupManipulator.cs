@@ -22,9 +22,9 @@ namespace SinclairCC.MakeMeAdmin
 {
     using System;
     using System.Collections.Generic;
+    using System.Security.Principal;
     using System.ServiceModel;
     using System.ServiceModel.Channels;
-    using System.Security.Principal;
 
     /// <summary>
     /// This class implements the WCF service contract.

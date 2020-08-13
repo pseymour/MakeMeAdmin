@@ -21,7 +21,7 @@
 namespace SinclairCC.MakeMeAdmin.RemoteUI
 {
     using Microsoft.Win32;
-    
+
     /// <summary>
     /// This class manages application settings.
     /// </summary>
@@ -48,7 +48,7 @@ namespace SinclairCC.MakeMeAdmin.RemoteUI
                 SetMultiString(PreferenceRegistryKeyPath, null, "Host Name MRU", value);
             }
         }
-        
+
 
         /// <summary>
         /// Gets the value of a multi-string stored in the registry.
@@ -182,7 +182,7 @@ namespace SinclairCC.MakeMeAdmin.RemoteUI
             // TODO: i18n.
             get { return string.Format(System.Globalization.CultureInfo.InvariantCulture, @"Software\{0}\{1}", CompanyName, ProductName); }
         }
-        
+
 
         /// <summary>
         /// Gets the company name from this class's assembly.
@@ -254,7 +254,7 @@ namespace SinclairCC.MakeMeAdmin.RemoteUI
             return returnArray;
         }
         */
-        
+
         /*
         /// <summary>
         /// Gets the value of a string stored in the registry.

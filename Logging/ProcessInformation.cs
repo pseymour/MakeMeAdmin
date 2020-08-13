@@ -20,22 +20,22 @@
 
 namespace SinclairCC.MakeMeAdmin
 {
-    using System.Runtime.InteropServices;
+    using System;
 
-    /// <summary>
-    /// Contains information about the group security identifiers (SIDs) in an access token.
-    /// </summary>
-    internal struct TOKEN_GROUPS
+    public class ProcessInformation
     {
-        /// <summary>
-        /// The number of groups in the access token.
-        /// </summary>
-        public uint GroupCount;
+        public string CommandLine { get; set; }
 
-        /// <summary>
-        /// An array of SID_AND_ATTRIBUTES structures that contain a set of SIDs and corresponding attributes.
-        /// </summary>
-        [MarshalAs(UnmanagedType.ByValArray)]
-        public SID_AND_ATTRIBUTES[] Groups;
+        public string ImageFileName { get; set; }
+
+        public int? ParentID { get; set; }
+
+        public int ProcessID { get; set; }
+
+        public string ProcessName { get; set; }
+
+        public int SessionID { get; set; }
+
+        public DateTime TimeStamp { get; set; }
     }
 }

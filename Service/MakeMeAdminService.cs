@@ -20,10 +20,15 @@
 
 namespace SinclairCC.MakeMeAdmin
 {
+    using Microsoft.Diagnostics.Tracing.Parsers;
+    using Microsoft.Diagnostics.Tracing.Parsers.Kernel;
+    using Microsoft.Diagnostics.Tracing.Session;
     using System;
+    using System.Collections.Generic;
     using System.Security.Principal;
     using System.ServiceModel;
     using System.ServiceProcess;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// This class is the Windows Service, which does privileged work
@@ -54,7 +59,16 @@ namespace SinclairCC.MakeMeAdmin
         /// </remarks>
         private ServiceHost tcpServiceHost = null;
 
+        /*
         private ProcessWatcher processWatcher = null;
+        */
+
+        private TraceEventSession processWatchSession = null;
+
+        private static List<ProcessInformation> processList = new List<ProcessInformation>();
+
+        private static Queue<ElevatedProcessInformation> elevatedProcesses = new Queue<ElevatedProcessInformation>();
+
 
         /// <summary>
         /// Instantiate a new instance of the Make Me Admin Windows service.
@@ -78,98 +92,93 @@ namespace SinclairCC.MakeMeAdmin
 #if DEBUG
             ApplicationLog.WriteEvent(string.Format("process logging setting: {0:N0}", (int)Settings.LogElevatedProcesses), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
 #endif
-            if ((Settings.LogElevatedProcesses != ElevatedProcessLogging.Never) && (this.processWatcher == null))
-            {
-                processWatcher = new ProcessWatcher();
-                processWatcher.ProcessCreated += ProcessCreatedHandler;
-                processWatcher.Start();
-            }
+
 
         }
 
-
-        private void ProcessCreatedHandler(WMI.Win32.Process proc)
+        private void Dynamic_All(Microsoft.Diagnostics.Tracing.TraceEvent obj)
         {
-            bool? processIsElevated = ProcessIsElevated(proc.ProcessId);
-            if (processIsElevated.HasValue && processIsElevated.Value)
-            { // Process is elevated, so we need to log it if the settings say so.
+            if ((obj.Opcode == Microsoft.Diagnostics.Tracing.TraceEventOpcode.Start) && (string.Compare(obj.TaskName, "ProcessStart", true) == 0))
+            {
+                int processIsElevated = 0;
+                int processElevationType = 0;
+                int processId = int.MinValue;
+                int parentProcessId = int.MinValue;
+                int sessionId = int.MinValue;
+                DateTime createTime = DateTime.MinValue;
+                int index = int.MinValue;
+
+                index = obj.PayloadIndex("ProcessTokenIsElevated");
+                if (index >= 0)
+                {
+                    processIsElevated = (int)obj.PayloadValue(index);
+                }
+
+                if (processIsElevated == 1)
+                {
+                    index = obj.PayloadIndex("ProcessID");
+                    if (index >= 0)
+                    {
+                        processId = (int)obj.PayloadValue(index);
+                    }
+
+                    ElevatedProcessInformation elevatedProcess = new ElevatedProcessInformation();
+                    elevatedProcess.ProcessID = processId;
+
+                    index = obj.PayloadIndex("ProcessTokenElevationType");
+                    if (index >= 0)
+                    {
+                        processElevationType = (int)obj.PayloadValue(index);
+                        elevatedProcess.ElevationType = (TokenElevationType)processElevationType;
+                    }
+
+                    index = obj.PayloadIndex("ParentProcessID");
+                    if (index >= 0)
+                    {
+                        parentProcessId = (int)obj.PayloadValue(index);
+                        elevatedProcess.ParentID = parentProcessId;
+                    }
+
+                    index = obj.PayloadIndex("SessionID");
+                    if (index >= 0)
+                    {
+                        sessionId = (int)obj.PayloadValue(index);
+                        elevatedProcess.SessionID = sessionId;
+                    }
+
+                    index = obj.PayloadIndex("CreateTime");
+                    if (index >= 0)
+                    {
+                        createTime = (DateTime)obj.PayloadValue(index);
+                        elevatedProcess.TimeStamp = createTime;
+                    }
+
+                    elevatedProcesses.Enqueue(elevatedProcess);
 
 #if DEBUG
-                ApplicationLog.WriteEvent(string.Format("elevated process detected: \"{0}\"", proc.CommandLine.Trim()), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+                    ApplicationLog.WriteEvent(string.Format("elevated process {0} created at {2} in session {1}", elevatedProcess.ProcessID, elevatedProcess.SessionID, elevatedProcess.TimeStamp), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
 #endif
 
-                System.Diagnostics.Process process = System.Diagnostics.Process.GetProcessById((int)proc.ProcessId);
-                WindowsIdentity processOwner = NativeMethods.GetProcessOwner(process.Handle);
-                process.Dispose();
-
-#if DEBUG
-                if (processOwner == null)
-                {
-                    ApplicationLog.WriteEvent("Process owner is null.", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
-                }
-                else
-                {
-                    ApplicationLog.WriteEvent(string.Format("process user SID : \"{0}\"", processOwner.User), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
-                }
-#endif
-
-                bool logEvent = false;
-
-                if (Settings.LogElevatedProcesses == ElevatedProcessLogging.OnlyWhenAdmin)
-                { // The settings say only log if the user is an admin, so figure that out.
-                    if (processOwner != null)
-                    {
-                        EncryptedSettings encryptedSettings = new EncryptedSettings(EncryptedSettings.SettingsFilePath);
-                        logEvent = encryptedSettings.ContainsSID(processOwner.User);
-                    }
-                }
-                else if (Settings.LogElevatedProcesses == ElevatedProcessLogging.Always)
-                {
-                    logEvent = true;
-                }
-
-                if (logEvent)
-                {
-                    System.Text.StringBuilder eventLogMessage = new System.Text.StringBuilder("Process ");
-                    eventLogMessage.Append(proc.Name);
-                    eventLogMessage.Append(" (ID: ");
-                    eventLogMessage.Append(proc.ProcessId);
-                    eventLogMessage.Append(") created at ");
-                    eventLogMessage.Append(DateTime.Now);
-                    eventLogMessage.Append(". Path is \"");
-                    eventLogMessage.Append(proc.ExecutablePath);
-                    eventLogMessage.Append(".\"");
-                    if (processOwner != null)
-                    {
-                        eventLogMessage.Append(" User SID is \"");
-                        eventLogMessage.Append(processOwner.User.Value);
-                        eventLogMessage.Append(".\"");
-                    }
-                    ApplicationLog.WriteEvent(eventLogMessage.ToString(), EventID.ElevatedProcess, System.Diagnostics.EventLogEntryType.Information);
                 }
             }
         }
 
-        private bool? ProcessIsElevated(uint processId)
+        private void Kernel_ProcessStart(ProcessTraceData processInfo)
         {
-            bool? returnValue = null;
-            try
+            if (processInfo.Opcode == Microsoft.Diagnostics.Tracing.TraceEventOpcode.Start)
             {
-                System.Diagnostics.Process process = System.Diagnostics.Process.GetProcessById((int)processId);
-                returnValue = NativeMethods.IsProcessElevated2(process.Handle);
-                process.Dispose();
+                ProcessInformation startedProcess = new ProcessInformation();
+                startedProcess.CommandLine = processInfo.CommandLine;
+                startedProcess.ImageFileName = processInfo.ImageFileName;
+                startedProcess.ParentID = processInfo.ParentID;
+                startedProcess.ProcessID = processInfo.ProcessID;
+                startedProcess.ProcessName = processInfo.ProcessName;
+                startedProcess.SessionID = processInfo.SessionID;
+                startedProcess.TimeStamp = processInfo.TimeStamp;
+                processList.Add(startedProcess);
             }
-            catch (System.ComponentModel.Win32Exception)
-            {
-            }
-            catch (System.InvalidOperationException)
-            {
-            }
-            catch (System.ArgumentException)
-            {
-            }
-            return returnValue;
         }
+
 
         /// <summary>
         /// Handles the Elapsed event for the rights removal timer.
@@ -211,13 +220,104 @@ namespace SinclairCC.MakeMeAdmin
 
             LocalAdministratorGroup.ValidateAllAddedUsers();
 
-            if ((Settings.LogElevatedProcesses != ElevatedProcessLogging.Never) && (this.processWatcher == null))
+            if (Settings.LogElevatedProcesses != ElevatedProcessLogging.Never)
             {
-                processWatcher = new ProcessWatcher();
-                processWatcher.ProcessCreated += ProcessCreatedHandler;
-                processWatcher.Start();
+                if (this.processWatchSession == null) { StartTracing(); }
+                if (this.processWatchSession != null) { LogProcesses(); }
             }
+        }
 
+
+        private void LogProcesses()
+        {
+            processList.RemoveAll(pi => DateTime.Now.Subtract(pi.TimeStamp).TotalMinutes > 2);
+
+
+#if DEBUG
+            if ((processList.Count + elevatedProcesses.Count) > 0)
+            {
+                System.Text.StringBuilder message = new System.Text.StringBuilder();
+
+                message.Append(string.Format("Process list contains {0:N0} processes.", processList.Count));
+                message.Append(System.Environment.NewLine);
+                foreach (ProcessInformation pi in processList)
+                {
+                    message.Append(pi.ProcessID);
+                    message.Append(": ");
+                    message.Append(pi.ImageFileName);
+                    message.Append(System.Environment.NewLine);
+                }
+                message.Append(System.Environment.NewLine);
+
+                message.Append(string.Format("Elevated process list contains {0:N0} processes.", elevatedProcesses.Count));
+                message.Append(System.Environment.NewLine);
+                foreach (ElevatedProcessInformation epi in elevatedProcesses)
+                {
+                    message.Append(epi.ProcessID);
+                    message.Append(System.Environment.NewLine);
+                }
+
+                ApplicationLog.WriteEvent(message.ToString(), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+            }
+#endif
+
+            bool itemDequeued = false;
+            do
+            {
+                itemDequeued = false;
+                if (elevatedProcesses.Count > 0)
+                {
+                    ElevatedProcessInformation nextProcess = elevatedProcesses.Peek();
+                    if (DateTime.Now.Subtract(nextProcess.TimeStamp).TotalSeconds >= 30)
+                    {
+                        // TODO: Process has been in the queue longer than 30 seconds. Log that it could not be matched, and move on.
+                        elevatedProcesses.Dequeue();
+                        itemDequeued = true;
+                    }
+                    else
+                    {
+                        nextProcess = elevatedProcesses.Dequeue();
+                        itemDequeued = true;
+
+                        processList.FindAll(p => (p.ProcessID == nextProcess.ProcessID) && (p.SessionID == nextProcess.SessionID)).ForEach(action =>
+                        {
+                            System.Diagnostics.Process parentProcess = null;
+                            ProcessInformation parentProcessInfo = null;
+                            try
+                            {
+                                if (action.ParentID.HasValue)
+                                {
+                                    parentProcess = System.Diagnostics.Process.GetProcessById(action.ParentID.Value);
+                                }
+                            }
+                            catch (System.ArgumentException) { }
+                            catch (System.InvalidOperationException) { }
+                            if (parentProcess != null)
+                            {
+                                parentProcessInfo = new ProcessInformation();
+                                try
+                                {
+                                    if (parentProcess.MainModule != null)
+                                    {
+                                        parentProcessInfo.CommandLine = parentProcess.MainModule.FileName;
+                                        parentProcessInfo.ImageFileName = parentProcess.MainModule.ModuleName;
+                                    }
+                                }
+                                catch (System.ComponentModel.Win32Exception) { }
+
+                                parentProcessInfo.ProcessID = parentProcess.Id;
+                                parentProcessInfo.ProcessName = parentProcess.ProcessName;
+                                parentProcessInfo.SessionID = parentProcess.SessionId;
+                                parentProcessInfo.TimeStamp = parentProcess.StartTime;
+                                processList.Add(parentProcessInfo);
+                            }
+
+                            LoggingProvider.Log.ElevatedProcessDetected(nextProcess.ElevationType, action /*, parentProcessInfo */);
+
+                        });
+                    }
+                }
+            } while ((itemDequeued) && (elevatedProcesses.Count > 0));
         }
 
 
@@ -294,10 +394,50 @@ namespace SinclairCC.MakeMeAdmin
                 this.OpenTcpServiceHost();
             }
 
+            if ((Settings.LogElevatedProcesses != ElevatedProcessLogging.Never) && (this.processWatchSession == null))
+            {
+                StartTracing();
+            }
+
             // Start the timer that watches for expired administrator rights.
             this.removalTimer.Start();
         }
 
+        private void StartTracing()
+        {
+            /*
+            Task.Delay(TimeSpan.FromSeconds(30)).Wait();
+            */
+
+            Task.Factory.StartNew(
+                () =>
+                {
+                    if (this.processWatchSession == null)
+                    {
+                        processWatchSession = new TraceEventSession("Make Me Admin Process Watch")
+                        {
+                            StopOnDispose = true
+                        };
+
+                        try
+                        {
+                            // Turn on the process events (includes starts and stops).  
+                            processWatchSession.EnableKernelProvider(KernelTraceEventParser.Keywords.Process);
+                            processWatchSession.EnableProvider(Guid.Parse("22fb2cd6-0e7b-422b-a0c7-2fad1fd0e716"));
+
+                            processWatchSession.Source.Dynamic.All += Dynamic_All;
+                            processWatchSession.Source.Kernel.ProcessStart += Kernel_ProcessStart;
+
+                            processWatchSession.Source.Process(); // Listen for events.
+                        }
+                        catch (Exception exxx)
+                        {
+                            ApplicationLog.WriteEvent(exxx.Message, EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Error);
+                        }
+                    }
+                },
+                TaskCreationOptions.LongRunning);
+        }
 
         /// <summary>
         /// Handles the stopping of the service.
@@ -324,6 +464,11 @@ namespace SinclairCC.MakeMeAdmin
             for (int i = 0; i < sids.Length; i++)
             {
                 LocalAdministratorGroup.RemoveUser(sids[i], RemovalReason.ServiceStopped);
+            }
+
+            if (processWatchSession != null)
+            {
+                processWatchSession.Dispose();
             }
 
             base.OnStop();
@@ -420,33 +565,33 @@ namespace SinclairCC.MakeMeAdmin
 
                     break;
 
-                /*
-                // The user has reconnected or logged on to a remote session.
-                case SessionChangeReason.RemoteConnect:
-                    ApplicationLog.WriteInformationEvent(string.Format("Remote connect. Session ID: {0}", changeDescription.SessionId), EventID.SessionChangeEvent);
-                    break;
-                */
+                    /*
+                    // The user has reconnected or logged on to a remote session.
+                    case SessionChangeReason.RemoteConnect:
+                        ApplicationLog.WriteInformationEvent(string.Format("Remote connect. Session ID: {0}", changeDescription.SessionId), EventID.SessionChangeEvent);
+                        break;
+                    */
 
-                /*
-                // The user has disconnected or logged off from a remote session.
-                case SessionChangeReason.RemoteDisconnect:
-                    ApplicationLog.WriteInformationEvent(string.Format("Remote disconnect. Session ID: {0}", changeDescription.SessionId), EventID.SessionChangeEvent);
-                    break;
-                */
+                    /*
+                    // The user has disconnected or logged off from a remote session.
+                    case SessionChangeReason.RemoteDisconnect:
+                        ApplicationLog.WriteInformationEvent(string.Format("Remote disconnect. Session ID: {0}", changeDescription.SessionId), EventID.SessionChangeEvent);
+                        break;
+                    */
 
-                /*
-                // The user has locked their session.
-                case SessionChangeReason.SessionLock:
-                    ApplicationLog.WriteInformationEvent(string.Format("Session lock. Session ID: {0}", changeDescription.SessionId), EventID.SessionChangeEvent);
-                    break;
-                */
+                    /*
+                    // The user has locked their session.
+                    case SessionChangeReason.SessionLock:
+                        ApplicationLog.WriteInformationEvent(string.Format("Session lock. Session ID: {0}", changeDescription.SessionId), EventID.SessionChangeEvent);
+                        break;
+                    */
 
-                /*
-                // The user has unlocked their session.
-                case SessionChangeReason.SessionUnlock:
-                    ApplicationLog.WriteInformationEvent(string.Format("Session unlock. Session ID: {0}", changeDescription.SessionId), EventID.SessionChangeEvent);
-                    break;
-                */
+                    /*
+                    // The user has unlocked their session.
+                    case SessionChangeReason.SessionUnlock:
+                        ApplicationLog.WriteInformationEvent(string.Format("Session unlock. Session ID: {0}", changeDescription.SessionId), EventID.SessionChangeEvent);
+                        break;
+                    */
 
             }
 

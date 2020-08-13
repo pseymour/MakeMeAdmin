@@ -25,7 +25,7 @@ namespace SinclairCC.MakeMeAdmin
         [XmlArray("addedUsers")]
         [XmlArrayItem("user")]
         public UserList AddedUsers { get; set; }
-        
+
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -122,7 +122,7 @@ namespace SinclairCC.MakeMeAdmin
             }
             this.Save();
         }
-        
+
         /// <summary>
         /// Removes a user from the list of added users.
         /// </summary>
@@ -283,7 +283,7 @@ namespace SinclairCC.MakeMeAdmin
             {
                 throw;
             }
-            
+
             /*
             // This is the unencrypted version.
             try
@@ -329,7 +329,7 @@ namespace SinclairCC.MakeMeAdmin
                     ciphertextMemoryStream.Write(buffer, 0, bytesRead);
                 }
                 ciphertextFileStream.Close();
-                
+
                 // Convert the encrypted bytes to an array.
                 byte[] ciphertextBytes = ciphertextMemoryStream.ToArray();
 

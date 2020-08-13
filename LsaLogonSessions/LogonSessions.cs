@@ -36,7 +36,7 @@ namespace LsaLogonSessions
         private LogonSessions()
         {
         }
-        
+
 
         /// <summary>
         /// Gets the security identifier (SID) associated with a particular session ID.
@@ -91,7 +91,7 @@ namespace LsaLogonSessions
             return returnIdentity;
         }
 
-        
+
         /// <summary>
         /// Gets the security identifier (SID) for a token.
         /// </summary>

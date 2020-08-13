@@ -20,8 +20,8 @@
 
 namespace SinclairCC.MakeMeAdmin
 {
-    using System;
     using Microsoft.Win32;
+    using System;
     using System.Collections.Generic;
     /*
     using System.Security.Cryptography;
@@ -36,7 +36,7 @@ namespace SinclairCC.MakeMeAdmin
         /// The top-level registry key in which the settings will be stored.
         /// </summary>
         private static RegistryKey rootRegistryKey = Registry.LocalMachine;
-        
+
         /// <summary>
         /// Gets the base address for the service host that is available via TCP.
         /// </summary>
@@ -318,7 +318,7 @@ namespace SinclairCC.MakeMeAdmin
                 SetKeyValuePairs(PreferenceRegistryKeyPath, "Timeout Overrides", value);
             }
         }
-        
+
         // TODO: Remove this registry value from PCs.
         /*
         public static string[] SIDs
@@ -369,7 +369,7 @@ namespace SinclairCC.MakeMeAdmin
                 int? preferenceRemovalSetting = GetDWord(PreferenceRegistryKeyPath, null, "Remove Admin Rights On Logout");
                 if (policyRemovalSetting.HasValue)
                 { // The policy setting has a value. Go with whatever it says.
-                    
+
                     return Convert.ToBoolean(policyRemovalSetting.Value);
                 }
                 else if (preferenceRemovalSetting.HasValue)
@@ -498,7 +498,11 @@ namespace SinclairCC.MakeMeAdmin
                 else
                 { // Neither the policy nor the preference registry entries had a value.
                   // Return a default value indicating to log when the user has admin rights.
-                    return ElevatedProcessLogging.OnlyWhenAdmin;
+#if DEBUG
+                    return ElevatedProcessLogging.Always;
+#else
+                    return ElevatedProcessLogging.Never;
+#endif
                 }
             }
             set

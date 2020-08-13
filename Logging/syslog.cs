@@ -148,7 +148,7 @@ namespace SinclairCC.MakeMeAdmin
         /// <param name="severity">
         /// The severity of the message.
         /// </param>
-        public void SendMessage(string message,  string messageId, SyslogNet.Client.Severity severity)
+        public void SendMessage(string message, string messageId, SyslogNet.Client.Severity severity)
         {
 
             System.Net.IPHostEntry hostEntry = null;

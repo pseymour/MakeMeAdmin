@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2000
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30406.217
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalUI", "UserRequestApp\LocalUI.csproj", "{63CAF2AD-A016-43BD-AA27-02CB848E2067}"
 EndProject
@@ -30,8 +30,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserList", "UserList\UserList.csproj", "{9CFD5FA4-5AD6-463C-87E5-3F42133B5DA8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enumerations", "Enumerations\Enumerations.csproj", "{5FB1809B-B0FD-48E9-9E47-3CB048369433}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessWatch", "ProcessWatch\ProcessWatch.csproj", "{51FECE70-00CC-4B48-A0E3-DED7AAC0A51A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -129,14 +127,6 @@ Global
 		{5FB1809B-B0FD-48E9-9E47-3CB048369433}.Release|x64.Build.0 = Release|x64
 		{5FB1809B-B0FD-48E9-9E47-3CB048369433}.Release|x86.ActiveCfg = Release|x86
 		{5FB1809B-B0FD-48E9-9E47-3CB048369433}.Release|x86.Build.0 = Release|x86
-		{51FECE70-00CC-4B48-A0E3-DED7AAC0A51A}.Debug|x64.ActiveCfg = Debug|x64
-		{51FECE70-00CC-4B48-A0E3-DED7AAC0A51A}.Debug|x64.Build.0 = Debug|x64
-		{51FECE70-00CC-4B48-A0E3-DED7AAC0A51A}.Debug|x86.ActiveCfg = Debug|x86
-		{51FECE70-00CC-4B48-A0E3-DED7AAC0A51A}.Debug|x86.Build.0 = Debug|x86
-		{51FECE70-00CC-4B48-A0E3-DED7AAC0A51A}.Release|x64.ActiveCfg = Release|x64
-		{51FECE70-00CC-4B48-A0E3-DED7AAC0A51A}.Release|x64.Build.0 = Release|x64
-		{51FECE70-00CC-4B48-A0E3-DED7AAC0A51A}.Release|x86.ActiveCfg = Release|x86
-		{51FECE70-00CC-4B48-A0E3-DED7AAC0A51A}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

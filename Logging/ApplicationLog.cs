@@ -30,13 +30,13 @@ namespace SinclairCC.MakeMeAdmin
         /// <summary>
         /// The source name to use when writing events to the Event Log.
         /// </summary>
-        private const string SourceName = "Make Me Admin";        
+        private const string SourceName = "Make Me Admin";
 
         /// <summary>
         /// An EventLog object for interacting with this service's event log.
         /// </summary>
         private static System.Diagnostics.EventLog log;
-        
+
         /// <summary>
         /// Constructor
         /// </summary>
