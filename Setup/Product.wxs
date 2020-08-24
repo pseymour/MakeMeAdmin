@@ -6,17 +6,11 @@
     <MajorUpgrade DowngradeErrorMessage="!(loc.NewerVersionInstalled)" />
     <MediaTemplate EmbedCab="yes" />
 
-    <Binary Id="WiXCustomAction.CA.dll" SourceFile="$(var.WiXCustomAction.TargetDir)$(var.WiXCustomAction.TargetName).CA$(var.WiXCustomAction.TargetExt)" />
-
-    <CustomAction Id="RemoveUserList" Return="check" Execute="immediate" BinaryKey="WiXCustomAction.CA.dll" DllEntry="RemoveUserList" />
-
-    <InstallExecuteSequence>
-      <Custom Action="RemoveUserList" After="StopServices" />
-    </InstallExecuteSequence>
-    
     <Feature Id="MakeMeAdmin" Title="[ProductName]" Level="1">
       <ComponentRef Id="ADMXFiles" />
       <ComponentRef Id="ADMLFiles" />
+
+      <ComponentRef Id="MMAAppDataFolder" />
 
       <ComponentRef Id="EnumerationsLibrary" />
 
@@ -149,7 +143,17 @@
           </Directory>
         </Directory>
       </Directory>
-      
+
+      <Directory Id="CommonAppDataFolder" Name="CommonAppDataFolder">
+        <Directory Id="MMAAppDataFolder" Name="!(loc.SoftwareName)">
+          <Component Id="MMAAppDataFolder" Guid="F0AD91C7-577C-459F-A214-F7B84A9BDD64">
+            <CreateFolder />
+            <RemoveFile Id="UsersXmlFile" Name="users.xml" On="both" />
+            <RemoveFolder Id="MMAAppDataFolder" On="both"/>
+          </Component>
+        </Directory>
+      </Directory>
+
       <Directory Id="ProgramMenuFolder" Name="Programs" />
     </Directory>
   </Product>

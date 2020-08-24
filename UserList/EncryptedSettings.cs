@@ -14,11 +14,6 @@ namespace SinclairCC.MakeMeAdmin
     public class EncryptedSettings
     {
         /// <summary>
-        /// The path of the file containing the settings.
-        /// </summary>
-        private string filePath;
-
-        /// <summary>
         /// The list of users that have been added to the
         /// local Administrators group.
         /// </summary>
@@ -34,7 +29,6 @@ namespace SinclairCC.MakeMeAdmin
         /// </remarks>
         public EncryptedSettings()
         {
-            this.filePath = EncryptedSettings.SettingsFilePath;
             if (this.AddedUsers == null)
             {
                 this.AddedUsers = new UserList();
@@ -53,7 +47,6 @@ namespace SinclairCC.MakeMeAdmin
             {
                 this.AddedUsers = new UserList();
             }
-            this.filePath = filePath;
             if (System.IO.File.Exists(filePath))
             {
                 this.Load(filePath);
@@ -102,7 +95,10 @@ namespace SinclairCC.MakeMeAdmin
         {
             try
             {
-                System.IO.File.Delete(EncryptedSettings.OldSettingsFilePath);
+                if (System.IO.File.Exists(EncryptedSettings.OldSettingsFilePath))
+                {
+                    System.IO.File.Delete(EncryptedSettings.OldSettingsFilePath);
+                }
 
                 string parentPath = System.IO.Path.GetDirectoryName(EncryptedSettings.OldSettingsFilePath);
                 if ((System.IO.Directory.Exists(parentPath)) && (System.IO.Directory.GetFileSystemEntries(parentPath).Length == 0))
@@ -120,7 +116,10 @@ namespace SinclairCC.MakeMeAdmin
         {
             try
             {
-                System.IO.File.Delete(EncryptedSettings.SettingsFilePath);
+                if (System.IO.File.Exists(EncryptedSettings.SettingsFilePath))
+                {
+                    System.IO.File.Delete(EncryptedSettings.SettingsFilePath);
+                }
 
                 string parentPath = System.IO.Path.GetDirectoryName(EncryptedSettings.SettingsFilePath);
                 if ((System.IO.Directory.Exists(parentPath)) && (System.IO.Directory.GetFileSystemEntries(parentPath).Length == 0))
@@ -317,19 +316,25 @@ namespace SinclairCC.MakeMeAdmin
 
                 // Convert the plaintext memory stream to an array of bytes.
                 byte[] plaintextBytes = plaintextStream.ToArray();
+                /*plaintextStream.Close();*/
+                plaintextStream.Dispose();
+
+                /*plaintextWriter.Close();*/
+                plaintextWriter.Dispose();
 
                 // Encrypt the plaintext byte array.
                 byte[] ciphertextBytes = ProtectedData.Protect(plaintextBytes, null, DataProtectionScope.LocalMachine);
 
-                plaintextWriter.Close();
-                plaintextWriter.Dispose();
-
-                System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(filePath));
+                if (!System.IO.Directory.Exists(System.IO.Path.GetDirectoryName(filePath)))
+                {
+                    System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(filePath));
+                }
 
                 // Write the encrypted byte array to the file.
                 System.IO.FileStream ciphertextStream = new System.IO.FileStream(filePath, System.IO.FileMode.Create, System.IO.FileAccess.Write);
                 ciphertextStream.Write(ciphertextBytes, 0, ciphertextBytes.Length);
-                ciphertextStream.Close();
+                /*ciphertextStream.Close();*/
+                ciphertextStream.Dispose();
             }
             catch (System.InvalidOperationException)
             {
@@ -370,6 +375,7 @@ namespace SinclairCC.MakeMeAdmin
         {
             if (System.IO.File.Exists(filePath))
             { // The specified file exists.
+
                 byte[] buffer = new byte[128];
                 int bytesRead = int.MinValue;
 
@@ -380,7 +386,7 @@ namespace SinclairCC.MakeMeAdmin
                 {
                     ciphertextMemoryStream.Write(buffer, 0, bytesRead);
                 }
-                ciphertextFileStream.Close();
+                ciphertextFileStream.Dispose();
                 
                 // Convert the encrypted bytes to an array.
                 byte[] ciphertextBytes = ciphertextMemoryStream.ToArray();
@@ -388,7 +394,7 @@ namespace SinclairCC.MakeMeAdmin
                 // Decrypt the byte array.
                 byte[] plaintextBytes = System.Security.Cryptography.ProtectedData.Unprotect(ciphertextBytes, null, DataProtectionScope.LocalMachine);
 
-                ciphertextMemoryStream.Close();
+                ciphertextMemoryStream.Dispose();
 
                 // Deserialize the plaintext byte array.
                 EncryptedSettings deserializedSettings = null;
@@ -399,8 +405,8 @@ namespace SinclairCC.MakeMeAdmin
                 {
                     deserializedSettings = (EncryptedSettings)serializer.Deserialize(reader);
                 }
-                reader.Close();
-                plaintextStream.Close();
+                reader.Dispose();
+                plaintextStream.Dispose();
 
                 /*
                 // This is the unencrypted version.
