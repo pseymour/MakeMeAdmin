@@ -21,6 +21,7 @@
 namespace SinclairCC.MakeMeAdmin
 {
     using System;
+    using System.Security.AccessControl;
     using System.Security.Principal;
     using System.ServiceModel;
     using System.ServiceProcess;
@@ -193,6 +194,8 @@ namespace SinclairCC.MakeMeAdmin
                 this.OpenTcpServiceHost();
             }
 
+            this.CreateSettingsFolder();
+
             // Start the timer that watches for expired administrator rights.
             this.removalTimer.Start();
         }
@@ -226,6 +229,64 @@ namespace SinclairCC.MakeMeAdmin
             }
 
             base.OnStop();
+        }
+
+
+        private void CreateSettingsFolder()
+        {
+            try
+            {
+                string settingsFolderPath = System.IO.Path.GetDirectoryName(EncryptedSettings.SettingsFilePath);
+                if (!System.IO.Directory.Exists(settingsFolderPath))
+                {
+                    System.IO.Directory.CreateDirectory(settingsFolderPath);
+                }
+                if (System.IO.Directory.Exists(settingsFolderPath))
+                {
+                    DirectorySecurity security = System.IO.Directory.GetAccessControl(settingsFolderPath, AccessControlSections.Access);
+
+                    if (security.AreAccessRulesCanonical)
+                    {
+                        security.SetAccessRuleProtection(true, true);
+                        System.IO.Directory.SetAccessControl(settingsFolderPath, security);
+
+                        security = System.IO.Directory.GetAccessControl(settingsFolderPath, AccessControlSections.Access);
+                        AuthorizationRuleCollection rules = security.GetAccessRules(true, true, typeof(SecurityIdentifier));
+
+                        foreach (FileSystemAccessRule rule in rules)
+                        {
+                            try
+                            {
+                                if (rule.IdentityReference.IsValidTargetType(typeof(SecurityIdentifier)))
+                                {
+                                    SecurityIdentifier ruleSid = (SecurityIdentifier)rule.IdentityReference.Translate(typeof(SecurityIdentifier));
+                                    if (ruleSid.IsWellKnown(WellKnownSidType.BuiltinUsersSid))
+                                    {
+                                        FileSystemAccessRule newRule = new FileSystemAccessRule(rule.IdentityReference, (FileSystemRights.ReadAndExecute | FileSystemRights.Synchronize), InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
+                                        bool modified = false;
+                                        security.ModifyAccessRule(AccessControlModification.Reset, newRule, out modified);
+                                    }
+                                    else if (!(ruleSid.IsWellKnown(WellKnownSidType.BuiltinAdministratorsSid) || (ruleSid.IsWellKnown(WellKnownSidType.LocalSystemSid))))
+                                    {
+                                        security.RemoveAccessRule(rule);
+                                    }
+                                }
+                            }
+                            catch (IdentityNotMappedException)
+                            {
+                            }
+
+                        }
+
+                        System.IO.Directory.SetAccessControl(settingsFolderPath, security);
+
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
 
