@@ -90,6 +90,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Properties\Resources.da.resx" />
     <EmbeddedResource Include="Properties\Resources.fr.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -101,6 +102,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="SubmitRequestForm.da.resx">
+      <DependentUpon>SubmitRequestForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SubmitRequestForm.fr.resx">
       <DependentUpon>SubmitRequestForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -130,6 +134,7 @@
     <None Include="Resources\SecurityLock.ico" />
   </ItemGroup>
   <ItemGroup>
+    <XliffResource Include="MultilingualResources\RemoteUI.da.xlf" />
     <XliffResource Include="MultilingualResources\RemoteUI.fr.xlf" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

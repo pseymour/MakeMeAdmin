@@ -94,8 +94,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Properties\Resources.da.resx" />
     <EmbeddedResource Include="Properties\Resources.fr.resx">
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SubmitRequestForm.da.resx">
+      <DependentUpon>SubmitRequestForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SubmitRequestForm.fr.resx">
       <DependentUpon>SubmitRequestForm.cs</DependentUpon>
@@ -170,6 +174,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <XliffResource Include="MultilingualResources\LocalUI.da.xlf" />
     <XliffResource Include="MultilingualResources\LocalUI.fr.xlf" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
