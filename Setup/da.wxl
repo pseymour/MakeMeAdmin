@@ -3,8 +3,8 @@
   <String Id='LANG'>1030</String>
   <String Id="SoftwareName">Make Me Admin</String>
   <String Id="SoftwareManufacturer">Sinclair Community College</String>
-  <String Id="AdminRightsRequired">You must have administrator rights to install this software.</String>
-  <String Id="NewerVersionInstalled">A newer version of [ProductName] is already installed.</String>
+  <String Id="AdminRightsRequired">Du skal have administrator rettigheder for at installere denne software.</String>
+  <String Id="NewerVersionInstalled">En nyere version af [ProductName] er allerede installeret.</String>
   <String Id="Remote">Remote</String>
-  <String Id="ServiceDescription">Enables users to elevate themselves to administrator-level rights.</String>
+  <String Id="ServiceDescription">Gør det muligt for brugerne at opnå midlertidge administrator rettigheder.</String>
 </WixLocalization>

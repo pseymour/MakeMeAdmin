@@ -16,23 +16,23 @@
       <group id="REMOTEUI/PROPERTIES/RESOURCES.RESX" datatype="resx">
         <trans-unit id="AdminRightsRequestedOnHost" translate="yes" xml:space="preserve">
           <source>Administrator rights requested on {0}.</source>
-          <target state="new">Administrator rights requested on {0}.</target>
+          <target state="translated">Administrator rettigheder anmodet på {0}.</target>
         </trans-unit>
         <trans-unit id="ErrorMessage" translate="yes" xml:space="preserve">
           <source>Error Message</source>
-          <target state="new">Error Message</target>
+          <target state="translated">Fejlbesked</target>
         </trans-unit>
         <trans-unit id="ErrorRequestingRightsOn" translate="yes" xml:space="preserve">
           <source>An error occurred while requesting administrator rights on </source>
-          <target state="new">An error occurred while requesting administrator rights on </target>
+          <target state="translated">En fejl opstod ved anmodning om administrator rettigeheder på </target>
         </trans-unit>
         <trans-unit id="MyCompany" translate="yes" xml:space="preserve">
           <source>My Company</source>
-          <target state="new">My Company</target>
+          <target state="translated">Mit Firma</target>
         </trans-unit>
         <trans-unit id="MyProduct" translate="yes" xml:space="preserve">
           <source>My Product</source>
-          <target state="new">My Product</target>
+          <target state="translated">Mit Produkt</target>
         </trans-unit>
         <trans-unit id="SecurityLock" translate="yes" extype="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
           <source>..\Resources\SecurityLock.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</source>
