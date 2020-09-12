@@ -12,7 +12,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="SecurityLock" xml:space="preserve" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\SecurityLock.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="AdminRightsRequestedOnHost" xml:space="preserve">
+    <value>Administrator rettigheder anmodet på {0}.</value>
+  </data>
+  <data name="ErrorMessage" xml:space="preserve">
+    <value>Fejlbesked</value>
+  </data>
+  <data name="ErrorRequestingRightsOn" xml:space="preserve">
+    <value>En fejl opstod ved anmodning om administrator rettigeheder på </value>
+  </data>
+  <data name="MyCompany" xml:space="preserve">
+    <value>Mit Firma</value>
+  </data>
+  <data name="MyProduct" xml:space="preserve">
+    <value>Mit Produkt</value>
   </data>
 </root>

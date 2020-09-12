@@ -8,71 +8,71 @@
       <group id="PROCESSCOMMUNICATION/PROPERTIES/RESOURCES.RESX" datatype="resx">
         <trans-unit id="AddingUserBackToAdministrators" translate="yes" xml:space="preserve">
           <source>Adding the user back to the Administrators group.</source>
-          <target state="translated">Tilføjer igen brugeren til Administrator gruppen.</target>
+          <target state="final">Tilføjer igen brugeren til Administrator gruppen.</target>
         </trans-unit>
         <trans-unit id="AddingUserReturnedError" translate="yes" xml:space="preserve">
           <source>Adding user {0} ({1}) to the Administrators group returned error code {2}.</source>
-          <target state="translated">Tilføjelse af bruger {0} ({1}) til Administrator gruppen gav fejlkode {2}.</target>
+          <target state="final">Tilføjelse af bruger {0} ({1}) til Administrator gruppen gav fejlkode {2}.</target>
         </trans-unit>
         <trans-unit id="Exception" translate="yes" xml:space="preserve">
           <source>Exception</source>
-          <target state="translated">Undtagelse</target>
+          <target state="final">Undtagelse</target>
         </trans-unit>
         <trans-unit id="LocalAdminsGroupSIDIsNull" translate="yes" xml:space="preserve">
           <source>Local admins group SID is null.</source>
-          <target state="translated">Lokal admin gruppes SID er null.</target>
+          <target state="final">Lokal admin gruppes SID er null.</target>
         </trans-unit>
         <trans-unit id="LocalMachineContextIsNull" translate="yes" xml:space="preserve">
           <source>Local machine context is null.</source>
-          <target state="translated">Lokal maskines kontekst er null.</target>
+          <target state="final">Lokal maskines kontekst er null.</target>
         </trans-unit>
         <trans-unit id="RemovalReasonServiceStopped" translate="yes" xml:space="preserve">
           <source>Make Me Admin service stopped</source>
-          <target state="translated">Make Me Admin servicen er stoppet</target>
+          <target state="final">Make Me Admin servicen er stoppet</target>
         </trans-unit>
         <trans-unit id="RemovalReasonTimeout" translate="yes" xml:space="preserve">
           <source>Timeout elapsed</source>
-          <target state="translated">Timeout udløbet</target>
+          <target state="final">Timeout udløbet</target>
         </trans-unit>
         <trans-unit id="RemovalReasonUnknown" translate="yes" xml:space="preserve">
           <source>Unknown</source>
-          <target state="translated">Ukendt</target>
+          <target state="final">Ukendt</target>
         </trans-unit>
         <trans-unit id="RemovalReasonUserLogoff" translate="yes" xml:space="preserve">
           <source>User logged off</source>
-          <target state="translated">Bruger logget af</target>
+          <target state="final">Bruger logget af</target>
         </trans-unit>
         <trans-unit id="RemovalReasonUserRequest" translate="yes" xml:space="preserve">
           <source>User requested removal</source>
-          <target state="translated">Bruger har bedt om at blive fjernet</target>
+          <target state="final">Bruger har bedt om at blive fjernet</target>
         </trans-unit>
         <trans-unit id="RemovingUserFromList" translate="yes" xml:space="preserve">
           <source>Removing the user from Make Me Admin's list.</source>
-          <target state="translated">Fjerner brugeren fra Make Me Admin's liste.</target>
+          <target state="final">Fjerner brugeren fra Make Me Admin's liste.</target>
         </trans-unit>
         <trans-unit id="RemovingUserReturnedError" translate="yes" xml:space="preserve">
           <source>Removing user {0} ({1}) from the Administrators group returned error code {1}.</source>
-          <target state="translated">Fjernelse af bruger {0} ({1}) fra Administrator gruppen gav fejlkode {1}.</target>
+          <target state="final">Fjernelse af bruger {0} ({1}) fra Administrator gruppen gav fejlkode {1}.</target>
         </trans-unit>
         <trans-unit id="RequestSentFromHost" translate="yes" xml:space="preserve">
           <source>Request was sent from host {0}.</source>
-          <target state="translated">Forespørgsel blev sendt fra host {0}.</target>
+          <target state="final">Forespørgsel blev sendt fra host {0}.</target>
         </trans-unit>
         <trans-unit id="UnknownAccount" translate="yes" xml:space="preserve">
           <source>Unknown Account</source>
-          <target state="translated">Ukendt Account</target>
+          <target state="final">Ukendt Account</target>
         </trans-unit>
         <trans-unit id="UserAddedToAdminsGroup" translate="yes" xml:space="preserve">
           <source>User {0} ({1}) added to the Administrators group.</source>
-          <target state="translated">Bruger {0} ({1}) tilføjet Administrator gruppen.</target>
+          <target state="final">Bruger {0} ({1}) tilføjet Administrator gruppen.</target>
         </trans-unit>
         <trans-unit id="UserRemoved" translate="yes" xml:space="preserve">
           <source>User {0} ({1}) removed from the Administrators group. Reason: {2}.</source>
-          <target state="translated">Bruger {0} ({1}) fjernet fra Administrator gruppen. Årsag: {2}.</target>
+          <target state="final">Bruger {0} ({1}) fjernet fra Administrator gruppen. Årsag: {2}.</target>
         </trans-unit>
         <trans-unit id="UserRemovedByOutsideProcess" translate="yes" xml:space="preserve">
           <source>User {0} ({1}) has been removed from the Administrators group by an outside process.</source>
-          <target state="translated">Bruger {0} ({1}) er fjernet fra Administrator gruppen af en ekstern process.</target>
+          <target state="final">Bruger {0} ({1}) er fjernet fra Administrator gruppen af en ekstern process.</target>
         </trans-unit>
       </group>
     </body>

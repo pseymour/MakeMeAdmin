@@ -8,7 +8,7 @@
       <group id="LOGGING/PROPERTIES/RESOURCES.RESX" datatype="resx">
         <trans-unit id="ApplicationLogName" translate="yes" xml:space="preserve">
           <source>Application</source>
-          <target state="translated">Applikation</target>
+          <target state="final">Applikation</target>
           <note from="MultilingualEditor" annotates="source" priority="4">This is the name of the Windows Event Log to which events will be logged.</note>
         </trans-unit>
       </group>

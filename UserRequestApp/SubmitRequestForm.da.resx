@@ -12,35 +12,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="addMeButton.Anchor" xml:space="preserve" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Left, Right</value>
-  </data>
-  <data name="addMeButton.Location" xml:space="preserve" type="System.Drawing.Point, System.Drawing">
-    <value>12, 12</value>
-  </data>
-  <data name="addMeButton.Size" xml:space="preserve" type="System.Drawing.Size, System.Drawing">
-    <value>313, 45</value>
-  </data>
-  <data name="addMeButton.TabIndex" xml:space="preserve" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
   <data name="addMeButton.Text" xml:space="preserve">
     <value>&amp;Giv mig Administrator Rettigheder</value>
   </data>
   <data name="addMeButton.ToolTip" xml:space="preserve">
     <value>Tilføj den nuværende Windows bruger til Administrator gruppen.</value>
-  </data>
-  <data name="removeMeButton.Anchor" xml:space="preserve" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Left, Right</value>
-  </data>
-  <data name="removeMeButton.Location" xml:space="preserve" type="System.Drawing.Point, System.Drawing">
-    <value>12, 65</value>
-  </data>
-  <data name="removeMeButton.Size" xml:space="preserve" type="System.Drawing.Size, System.Drawing">
-    <value>313, 45</value>
-  </data>
-  <data name="removeMeButton.TabIndex" xml:space="preserve" type="System.Int32, mscorlib">
-    <value>1</value>
   </data>
   <data name="removeMeButton.Text" xml:space="preserve">
     <value>&amp;Fjern mine Administrator Rettigheder</value>
@@ -48,52 +24,7 @@
   <data name="removeMeButton.ToolTip" xml:space="preserve">
     <value>Fjern nuværende Windows bruger fra Administrator gruppen.</value>
   </data>
-  <data name="appStatus.Size" xml:space="preserve" type="System.Drawing.Size, System.Drawing">
-    <value>322, 17</value>
-  </data>
   <data name="appStatus.Text" xml:space="preserve">
     <value>Klar.</value>
   </data>
-  <data name="appStatus.TextAlign" xml:space="preserve" type="System.Drawing.ContentAlignment, System.Drawing">
-    <value>MiddleLeft</value>
-  </data>
-  <data name="statusStrip1.Location" xml:space="preserve" type="System.Drawing.Point, System.Drawing">
-    <value>0, 121</value>
-  </data>
-  <data name="statusStrip1.Size" xml:space="preserve" type="System.Drawing.Size, System.Drawing">
-    <value>337, 22</value>
-  </data>
-  <data name="statusStrip1.TabIndex" xml:space="preserve" type="System.Int32, mscorlib">
-    <value>3</value>
-  </data>
-  <data name="statusStrip1.Text" xml:space="preserve">
-    <value>statusStrip1</value>
-  </data>
-  <data name="$this.AutoScaleDimensions" xml:space="preserve" type="System.Drawing.SizeF, System.Drawing">
-    <value>6, 13</value>
-  </data>
-  <data name="$this.ClientSize" xml:space="preserve" type="System.Drawing.Size, System.Drawing">
-    <value>337, 143</value>
-  </data>
-  <metadata name="toolTip.TrayLocation" xml:space="preserve" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
-  <metadata name="statusStrip1.TrayLocation" xml:space="preserve" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>263, 17</value>
-  </metadata>
-  <metadata name="buttonStateWorker.TrayLocation" xml:space="preserve" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>107, 17</value>
-  </metadata>
-  <metadata name="addUserBackgroundWorker.TrayLocation" xml:space="preserve" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>379, 17</value>
-  </metadata>
-  <metadata name="removeUserBackgroundWorker.TrayLocation" xml:space="preserve" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>581, 17</value>
-  </metadata>
-  <metadata name="notifyIcon.TrayLocation" xml:space="preserve" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>803, 17</value>
-  </metadata>
-  <metadata name="$this.Localizable" xml:space="preserve" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
 </root>
