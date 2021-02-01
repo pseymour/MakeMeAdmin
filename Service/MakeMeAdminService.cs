@@ -21,6 +21,9 @@
 namespace SinclairCC.MakeMeAdmin
 {
     using System;
+    using System.ComponentModel;
+    using System.Linq;
+    using System.Runtime.Serialization.Formatters.Binary;
     using System.Security.Principal;
     using System.ServiceModel;
     using System.ServiceProcess;
@@ -34,7 +37,7 @@ namespace SinclairCC.MakeMeAdmin
         /// <summary>
         /// A timer to monitor when administrator rights should be removed.
         /// </summary>
-        private System.Timers.Timer removalTimer;
+        private readonly System.Timers.Timer removalTimer;
 
         /// <summary>
         /// A Windows Communication Foundation (WCF) service host which communicates over named pipes.
@@ -53,6 +56,10 @@ namespace SinclairCC.MakeMeAdmin
         /// created if the remote administrator rights setting is enabled (true).
         /// </remarks>
         private ServiceHost tcpServiceHost = null;
+
+
+        private readonly string portSharingServiceName = "NetTcpPortSharing";
+
 
 
         /// <summary>
@@ -125,6 +132,10 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         private void OpenNamedPipeServiceHost()
         {
+            if (null != this.namedPipeServiceHost)
+            {
+                this.namedPipeServiceHost.Close();
+            }
             this.namedPipeServiceHost = new ServiceHost(typeof(AdminGroupManipulator), new Uri(Settings.NamedPipeServiceBaseAddress));
             this.namedPipeServiceHost.Faulted += ServiceHostFaulted;
             NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
@@ -138,13 +149,130 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         private void OpenTcpServiceHost()
         {
+            if ((null != this.tcpServiceHost) && (this.tcpServiceHost.State == CommunicationState.Opened))
+            {
+                this.tcpServiceHost.Close();
+            }
+
             this.tcpServiceHost = new ServiceHost(typeof(AdminGroupManipulator), new Uri(Settings.TcpServiceBaseAddress));
             this.tcpServiceHost.Faulted += ServiceHostFaulted;
-            NetTcpBinding binding = new NetTcpBinding(SecurityMode.Transport);
+            NetTcpBinding binding = new NetTcpBinding(SecurityMode.Transport)
+            {
+                PortSharingEnabled = true
+            };
+
+            // If port sharing is enabled, then the Net.Tcp Port Sharing Service must be available as well.
+            if (PortSharingServiceExists)
+            {
+                ServiceController controller = new ServiceController(portSharingServiceName);
+                switch (controller.StartType)
+                {
+                    case ServiceStartMode.Disabled:
+                        ApplicationLog.WriteEvent("The Net.Tcp Port Sharing Service is disabled. Remote access will not be available.", EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
+                        return;
+                    /*
+                    case ServiceStartMode.Automatic:
+#if DEBUG
+                        ApplicationLog.WriteEvent("Port sharing service is set to start automatically.", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+                        break;
+                    case ServiceStartMode.Manual:
+#if DEBUG
+                        ApplicationLog.WriteEvent("Port sharing service is set to start manually.", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+                        int waitCount = 0;
+                        while ((controller.Status != ServiceControllerStatus.Running) && (waitCount < 10))
+                        {
+                            switch (controller.Status)
+                            {
+                                case ServiceControllerStatus.Paused:
+                                    controller.Continue();
+                                    controller.WaitForStatus(ServiceControllerStatus.Running, new TimeSpan(0, 0, 5));
+                                    break;
+                                case ServiceControllerStatus.Stopped:
+                                    try
+                                    {
+                                        controller.Start();
+                                        controller.WaitForStatus(ServiceControllerStatus.Running, new TimeSpan(0, 0, 5));
+                                    }
+                                    catch (Win32Exception win32Exception)
+                                    {
+                                        ApplicationLog.WriteEvent(win32Exception.Message, EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Error);
+                                    }
+                                    catch (InvalidOperationException invalidOpException)
+                                    {
+                                        ApplicationLog.WriteEvent(invalidOpException.Message, EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Error);
+                                    }
+                                    break;
+                            }
+                            System.Threading.Thread.Sleep(1000);
+                            waitCount++;
+                        }
+
+                        if (controller.Status != ServiceControllerStatus.Running)
+                        {
+                            ApplicationLog.WriteEvent(string.Format("Port {0} is already in use, but the Net.Tcp Port Sharing Service is not running. Remote access will not be available.", Settings.TCPServicePort), EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
+                        }
+
+                        break;
+                    */
+                }
+                controller.Close();
+            }
+            else
+            {
+                ApplicationLog.WriteEvent(string.Format("Port {0} is already in use, but the Net.Tcp Port Sharing Service does not exist. Remote access will not be available.", Settings.TCPServicePort), EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
+                return;
+            }
+
             this.tcpServiceHost.AddServiceEndpoint(typeof(IAdminGroup), binding, Settings.TcpServiceBaseAddress);
-            this.tcpServiceHost.Open();
+
+            try
+            {
+                this.tcpServiceHost.Open();
+            }
+            catch (ObjectDisposedException)
+            {
+                ApplicationLog.WriteEvent("The communication object is in a Closing or Closed state and cannot be modified.", EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
+            }
+            catch (InvalidOperationException)
+            {
+                ApplicationLog.WriteEvent("The communication object is not in a Opened or Opening state and cannot be modified.", EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
+            }
+            catch (CommunicationObjectFaultedException)
+            {
+                ApplicationLog.WriteEvent("The communication object is in a Faulted state and cannot be modified.", EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
+            }
+            catch (System.TimeoutException)
+            {
+                ApplicationLog.WriteEvent("The default interval of time that was allotted for the operation was exceeded before the operation was completed.", EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
+            }
         }
 
+        private bool PortSharingServiceExists
+        {
+            get
+            {
+                bool serviceExists = false;
+                ServiceController[] services = ServiceController.GetServices();
+                for (int i = 0; (i < services.Length) && (!serviceExists); i++)
+                {
+                    serviceExists |= (string.Compare(services[i].ServiceName, portSharingServiceName, true) == 0);
+                }
+                return serviceExists;
+            }
+        }
+
+        /*
+        private bool TcpPortInUse
+        {
+            get
+            {
+                System.Net.NetworkInformation.IPGlobalProperties globalIPProps = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties();
+                return globalIPProps.GetActiveTcpListeners().Where(n => n.Port == Settings.TCPServicePort).Count() > 0;
+            }
+        }
+        */
 
         /// <summary>
         /// Handles the faulted event for a WCF service host.
@@ -190,7 +318,21 @@ namespace SinclairCC.MakeMeAdmin
             // is accessible via TCP.
             if (Settings.AllowRemoteRequests)
             {
-                this.OpenTcpServiceHost();
+                try
+                {
+                    this.OpenTcpServiceHost();
+                }
+                catch (AddressAlreadyInUseException addressInUseException)
+                {
+                    System.Text.StringBuilder logMessage = new System.Text.StringBuilder(addressInUseException.Message);
+                    logMessage.Append(System.Environment.NewLine);
+                    logMessage.Append(string.Format("Determine whether another application is using TCP port {0:N0}.", Settings.TCPServicePort));
+                    ApplicationLog.WriteEvent(logMessage.ToString(), EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
+                }
+                catch (Exception)
+                {
+                    ApplicationLog.WriteEvent("Unhandled exception while opening the remote request handler. Remote requests may not be honored.", EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
+                }
             }
 
             // Start the timer that watches for expired administrator rights.

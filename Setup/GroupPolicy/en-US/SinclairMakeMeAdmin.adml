@@ -32,6 +32,9 @@
       <string id="AdminRightsTimeoutDisplayName">Admin Rights Timeout</string>
       <string id="AdminRightsTimeoutExplainText">Specifies the amount of time, in minutes, for which administrative rights will be granted.</string>
 
+      <string id="TCPServicePortDisplayName">TCP Service Port</string>
+      <string id="TCPServicePortExplainText">Specifies the TCP port to be used for remote administrative rights requests.</string>
+
       <string id="RemoveOnLogoutDisplayName">Remove Admin Rights On Logout</string>
       <string id="RemoveOnLogoutExplainText">Specifies whether administrative rights should be revoked when a user logs off.</string>
 
@@ -54,6 +57,10 @@
       <presentation id="Admin_Rights_Timeout_Spin">
         <text>The number of minutes for which administrative rights will be granted.</text>
         <decimalTextBox refId="AdminRightsTimeoutValue" defaultValue="10" spinStep="5">admin rights timeout:</decimalTextBox>
+      </presentation>
+      <presentation id="TCP_Service_Port_Spin">
+        <text>The TCP port to be used for remote administrative rights requests.</text>
+        <decimalTextBox refId="TCPServicePortValue" defaultValue="808" spin="false">TCP Service Port:</decimalTextBox>
       </presentation>
       <presentation id="AllowedEntitiesMultiText_Presentation">
         <multiTextBox refId="AllowedEntitiesMultiText">Enter allowed SIDs:</multiTextBox>

@@ -68,6 +68,11 @@ namespace SinclairCC.MakeMeAdmin
         RejectedSyslogServerInfo,
 
         /// <summary>
+        /// Indicates that an issue has occurred while setting up remote access.
+        /// </summary>
+        RemoteAccessFailure,
+
+        /// <summary>
         /// Event ID for debug messages.
         /// </summary>
         DebugMessage = 9000
