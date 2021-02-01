@@ -35,7 +35,7 @@ namespace SinclairCC.MakeMeAdmin
         /// <summary>
         /// The top-level registry key in which the settings will be stored.
         /// </summary>
-        private static RegistryKey rootRegistryKey = Registry.LocalMachine;
+        private readonly static RegistryKey rootRegistryKey = Registry.LocalMachine;
         
         /// <summary>
         /// Gets the base address for the service host that is available via TCP.
