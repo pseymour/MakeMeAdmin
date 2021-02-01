@@ -41,7 +41,9 @@
       <ComponentRef Id="RemoteElevationUserInterface"/>
       <ComponentRef Id="RemoteElevation_da"/>
       <ComponentRef Id="RemoteElevation_fr"/>
-      
+
+      <ComponentRef Id="EnumerationsLibrary" />
+
       <ComponentRef Id="MruListLibrary"/>
 
       <ComponentRef Id="LoggingLibrary" />

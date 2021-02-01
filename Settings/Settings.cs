@@ -35,7 +35,7 @@ namespace SinclairCC.MakeMeAdmin
         /// <summary>
         /// The top-level registry key in which the settings will be stored.
         /// </summary>
-        private static RegistryKey rootRegistryKey = Registry.LocalMachine;
+        private readonly static RegistryKey rootRegistryKey = Registry.LocalMachine;
         
         /// <summary>
         /// Gets the base address for the service host that is available via TCP.
@@ -44,7 +44,7 @@ namespace SinclairCC.MakeMeAdmin
         {
             get
             {
-                return string.Format("net.tcp://{0}/MakeMeAdmin/Service", FullyQualifiedHostName);
+                return string.Format("net.tcp://{0}:{1}/MakeMeAdmin/Service", FullyQualifiedHostName, Settings.TCPServicePort);
             }
         }
 
@@ -463,6 +463,32 @@ namespace SinclairCC.MakeMeAdmin
             set
             {
                 SetDWord(PreferenceRegistryKeyPath, null, "End Remote Sessions Upon Expiration", Convert.ToInt32(value));
+            }
+        }
+
+        // TODO: i18n.
+        public static int TCPServicePort
+        {
+            get
+            {
+                int? policyPortSetting = GetDWord(PolicyRegistryKeyPath, null, "TCP Service Port");
+                int? preferencePortSetting = GetDWord(PreferenceRegistryKeyPath, null, "TCP Service Port");
+                if (policyPortSetting.HasValue)
+                { // The policy setting has a value. Go with whatever it says.
+                    return policyPortSetting.Value;
+                }
+                else if (preferencePortSetting.HasValue)
+                { // The preference setting has a value. Go with whatever it says.
+                    return preferencePortSetting.Value;
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value. Return a default timeout value of 808.
+                    return 808;
+                }
+            }
+            set
+            {
+                SetDWord(PreferenceRegistryKeyPath, null, "TCP Service Port", value);
             }
         }
 
