@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
-  <Product Id="*" Name="!(loc.SoftwareName)" Language="!(loc.LANG)" Version="2.3" Manufacturer="!(loc.SoftwareManufacturer)" UpgradeCode="9c690479-3987-48a8-8bda-118ef1f93cdd">
+  <Product Id="*" Name="!(loc.SoftwareName) - Process Logging" Language="!(loc.LANG)" Version="2.3" Manufacturer="!(loc.SoftwareManufacturer)" UpgradeCode="9c690479-3987-48a8-8bda-118ef1f93cdd">
     <Package InstallerVersion="400" Compressed="yes" InstallScope="perMachine" />
     <Condition Message="!(loc.AdminRightsRequired)">Privileged</Condition>
     <MajorUpgrade DowngradeErrorMessage="!(loc.NewerVersionInstalled)" />
@@ -110,6 +110,12 @@
           <Component Id="LoggingLibrary" Guid="17760ABA-01B0-4E35-9AD8-3F168B171CCE">
             <File Id="LoggingDll" Name="$(var.Logging.TargetFileName)" Source="$(var.Logging.TargetPath)" KeyPath="yes" />
             <File Id="LoggingManifestDll" Name="$(var.Logging.TargetName).MakeMeAdmin.etwManifest$(var.Logging.TargetExt)" Source="$(var.Logging.TargetDir)$(var.Logging.TargetName).MakeMeAdmin.etwManifest$(var.Logging.TargetExt)" KeyPath="no" />
+            <File Id="LoggingManifest" Name="$(var.Logging.TargetName).MakeMeAdmin.etwManifest.man" Source="$(var.Logging.TargetDir)$(var.Logging.TargetName).MakeMeAdmin.etwManifest.man" KeyPath="no">
+              <util:EventManifest  MessageFile="[#LoggingManifestDll]"  ResourceFile="[#LoggingManifestDll]"></util:EventManifest>            
+              <!--
+              <util:EventManifest  MessageFile="[INSTALLFOLDER]Logging.MakeMeAdmin.etwManifest.man" ResourceFile="[INSTALLFOLDER]Logging.MakeMeAdmin.etwManifest.dll"></util:EventManifest>            
+              -->
+            </File>
             <File Id="SyslogNetClientDll"  Source="$(var.Logging.TargetDir)\SyslogNet.Client.dll" KeyPath="no" />
           </Component>
           <Component Id="LsaLogonSessionLibrary" Guid="22E70C0A-7071-4E1D-B8C1-3E73FB3A1784">
