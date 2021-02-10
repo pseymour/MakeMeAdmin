@@ -39,7 +39,7 @@ namespace SinclairCC.MakeMeAdmin
         /// <summary>
         /// A timer to monitor when administrator rights should be removed.
         /// </summary>
-        private System.Timers.Timer removalTimer;
+        private readonly System.Timers.Timer removalTimer;
 
         /// <summary>
         /// A Windows Communication Foundation (WCF) service host which communicates over named pipes.
@@ -65,9 +65,9 @@ namespace SinclairCC.MakeMeAdmin
 
         private TraceEventSession processWatchSession = null;
 
-        private static List<ProcessInformation> processList = new List<ProcessInformation>();
+        private readonly static List<ProcessInformation> processList = new List<ProcessInformation>();
 
-        private static Queue<ElevatedProcessInformation> elevatedProcesses = new Queue<ElevatedProcessInformation>();
+        private readonly static Queue<ElevatedProcessInformation> elevatedProcesses = new Queue<ElevatedProcessInformation>();
 
 
         /// <summary>
@@ -103,7 +103,9 @@ namespace SinclairCC.MakeMeAdmin
                 int processIsElevated = 0;
                 int processElevationType = 0;
                 int processId = int.MinValue;
+                /*
                 int parentProcessId = int.MinValue;
+                */
                 int sessionId = int.MinValue;
                 DateTime createTime = DateTime.MinValue;
                 int index = int.MinValue;
@@ -122,8 +124,10 @@ namespace SinclairCC.MakeMeAdmin
                         processId = (int)obj.PayloadValue(index);
                     }
 
-                    ElevatedProcessInformation elevatedProcess = new ElevatedProcessInformation();
-                    elevatedProcess.ProcessID = processId;
+                    ElevatedProcessInformation elevatedProcess = new ElevatedProcessInformation
+                    {
+                        ProcessID = processId
+                    };
 
                     index = obj.PayloadIndex("ProcessTokenElevationType");
                     if (index >= 0)
@@ -132,18 +136,27 @@ namespace SinclairCC.MakeMeAdmin
                         elevatedProcess.ElevationType = (TokenElevationType)processElevationType;
                     }
 
+                    /*
                     index = obj.PayloadIndex("ParentProcessID");
                     if (index >= 0)
                     {
                         parentProcessId = (int)obj.PayloadValue(index);
                         elevatedProcess.ParentID = parentProcessId;
                     }
+                    */
 
                     index = obj.PayloadIndex("SessionID");
                     if (index >= 0)
                     {
                         sessionId = (int)obj.PayloadValue(index);
                         elevatedProcess.SessionID = sessionId;
+                        /*
+                        SecurityIdentifier sid = LsaLogonSessions.LogonSessions.GetSidForSessionId(sessionId);
+                        if (sid != null)
+                        {
+                            elevatedProcess.UserSID = sid;
+                        }
+                        */
                     }
 
                     index = obj.PayloadIndex("CreateTime");
@@ -167,14 +180,24 @@ namespace SinclairCC.MakeMeAdmin
         {
             if (processInfo.Opcode == Microsoft.Diagnostics.Tracing.TraceEventOpcode.Start)
             {
-                ProcessInformation startedProcess = new ProcessInformation();
-                startedProcess.CommandLine = processInfo.CommandLine;
-                startedProcess.ImageFileName = processInfo.ImageFileName;
-                startedProcess.ParentID = processInfo.ParentID;
-                startedProcess.ProcessID = processInfo.ProcessID;
-                startedProcess.ProcessName = processInfo.ProcessName;
-                startedProcess.SessionID = processInfo.SessionID;
-                startedProcess.TimeStamp = processInfo.TimeStamp;
+                ProcessInformation startedProcess = new ProcessInformation()
+                {
+                    CommandLine = processInfo.CommandLine,
+                    ImageFileName = processInfo.ImageFileName,
+                    /*
+                    ParentID = processInfo.ParentID;
+                    */
+                    ProcessID = processInfo.ProcessID,
+                    ProcessName = processInfo.ProcessName,
+                    SessionID = processInfo.SessionID,
+                    TimeStamp = processInfo.TimeStamp,
+                };
+                SecurityIdentifier sid = LsaLogonSessions.LogonSessions.GetSidForSessionId(startedProcess.SessionID);
+                if (sid != null)
+                {
+                    startedProcess.UserSIDString = sid.Value;
+                }
+
                 processList.Add(startedProcess);
             }
         }
@@ -209,6 +232,7 @@ namespace SinclairCC.MakeMeAdmin
                             userName = userName.Substring(userName.LastIndexOf("\\") + 1);
                         }
 
+                        // TODO: Log this return code if it's not a success?
                         int returnCode = 0;
                         if (!string.IsNullOrEmpty(userName))
                         {
@@ -281,6 +305,7 @@ namespace SinclairCC.MakeMeAdmin
 
                         processList.FindAll(p => (p.ProcessID == nextProcess.ProcessID) && (p.SessionID == nextProcess.SessionID)).ForEach(action =>
                         {
+                            /*
                             System.Diagnostics.Process parentProcess = null;
                             ProcessInformation parentProcessInfo = null;
                             try
@@ -311,6 +336,7 @@ namespace SinclairCC.MakeMeAdmin
                                 parentProcessInfo.TimeStamp = parentProcess.StartTime;
                                 processList.Add(parentProcessInfo);
                             }
+                            */
 
                             LoggingProvider.Log.ElevatedProcessDetected(nextProcess.ElevationType, action /*, parentProcessInfo */);
 

@@ -24,8 +24,6 @@ namespace SinclairCC.MakeMeAdmin
 
     public class ElevatedProcessInformation
     {
-        public int? ParentID { get; set; }
-
         public int ProcessID { get; set; }
 
         public int SessionID { get; set; }

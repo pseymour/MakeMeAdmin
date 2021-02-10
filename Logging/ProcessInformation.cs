@@ -28,13 +28,13 @@ namespace SinclairCC.MakeMeAdmin
 
         public string ImageFileName { get; set; }
 
-        public int? ParentID { get; set; }
-
         public int ProcessID { get; set; }
 
         public string ProcessName { get; set; }
 
         public int SessionID { get; set; }
+
+        public string UserSIDString { get; set; }
 
         public DateTime TimeStamp { get; set; }
     }
