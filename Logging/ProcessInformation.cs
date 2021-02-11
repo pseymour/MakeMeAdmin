@@ -22,20 +22,39 @@ namespace SinclairCC.MakeMeAdmin
 {
     using System;
 
+    /// <summary>
+    /// Contains information about an elevated process.
+    /// </summary>
     public class ProcessInformation
     {
+        /// <summary>
+        /// The full command line used to start the process.
+        /// </summary>
         public string CommandLine { get; set; }
 
+        /// <summary>
+        /// The file name of the executable file.
+        /// </summary>
         public string ImageFileName { get; set; }
 
+        /// <summary>
+        /// The ID of the process.
+        /// </summary>
         public int ProcessID { get; set; }
 
-        public string ProcessName { get; set; }
-
+        /// <summary>
+        /// The ID of the session in which the process is running.
+        /// </summary>
         public int SessionID { get; set; }
 
+        /// <summary>
+        /// The SID of the user corresponding to the given session ID.
+        /// </summary>
         public string UserSIDString { get; set; }
 
-        public DateTime TimeStamp { get; set; }
+        /// <summary>
+        /// The date and time at which the process was created.
+        /// </summary>
+        public DateTime CreateTime { get; set; }
     }
 }

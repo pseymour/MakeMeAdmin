@@ -119,6 +119,22 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+
+        public bool UserSessionIsInList(int sessionID)
+        {
+            SecurityIdentifier sid = LsaLogonSessions.LogonSessions.GetSidForSessionId(sessionID);
+            if (sid != null)
+            {
+                EncryptedSettings encryptedSettings = new EncryptedSettings(EncryptedSettings.SettingsFilePath);
+                return encryptedSettings.ContainsSID(sid);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
         /// <summary>
         /// Determines whether the given array of strings contains the given target string.
         /// </summary>

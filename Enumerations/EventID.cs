@@ -70,7 +70,7 @@ namespace SinclairCC.MakeMeAdmin
         /// <summary>
         /// An elevated process was detected.
         /// </summary>
-        ElevatedProcess,
+        ElevatedProcess = 101,
 
         /// <summary>
         /// Event ID for debug messages.

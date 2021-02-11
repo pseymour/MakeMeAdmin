@@ -18,7 +18,6 @@
 // along with Make Me Admin. If not, see <http://www.gnu.org/licenses/>.
 //
 
-
 namespace SinclairCC.MakeMeAdmin
 {
     using System;
@@ -30,7 +29,7 @@ namespace SinclairCC.MakeMeAdmin
         public static LoggingProvider Log = new LoggingProvider();
 
         [NonEvent]
-        public void ElevatedProcessDetected(TokenElevationType elevationType, ProcessInformation elevatedProcess /*, ProcessInformation parentProcess */)
+        public void ElevatedProcessDetected(TokenElevationType elevationType, ProcessInformation elevatedProcess)
         {
             string elevationTypeString = "Unknown";
             switch (elevationType)
@@ -46,11 +45,11 @@ namespace SinclairCC.MakeMeAdmin
                     break;
             }
 
-            ElevatedProcessDetected(elevatedProcess.ImageFileName, elevatedProcess.TimeStamp, elevatedProcess.UserSIDString, elevatedProcess.SessionID, elevationTypeString, elevatedProcess.CommandLine, elevatedProcess.ProcessID);
+            ElevatedProcessDetected(elevatedProcess.ImageFileName, elevatedProcess.CreateTime, elevatedProcess.UserSIDString, elevatedProcess.SessionID, elevationTypeString, elevatedProcess.CommandLine, elevatedProcess.ProcessID);
         }
         
         [Event(
-            101,
+            (int)EventID.ElevatedProcess,
             Message = "Process {0} created at {1} by user {2} in session {3} with an elevation type of {4}." + "\r\ncommand line: \"{5}\"" + "\r\nprocess ID: \"{6}\"",
             Channel = EventChannel.Operational,
             Level = EventLevel.Informational
@@ -59,7 +58,7 @@ namespace SinclairCC.MakeMeAdmin
         {
             if (IsEnabled())
             {
-                WriteEvent(101, imageFileName, creationTime, userSIDString, sessionId, elevationType, commandLine, processId);
+                WriteEvent((int)EventID.ElevatedProcess, imageFileName, creationTime, userSIDString, sessionId, elevationType, commandLine, processId);
             }
         }
         

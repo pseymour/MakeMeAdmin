@@ -22,14 +22,29 @@ namespace SinclairCC.MakeMeAdmin
 {
     using System;
 
+    /// <summary>
+    /// Contains information about an elevated process.
+    /// </summary>
     public class ElevatedProcessInformation
     {
+        /// <summary>
+        /// The ID of the process.
+        /// </summary>
         public int ProcessID { get; set; }
 
+        /// <summary>
+        /// The ID of the session in which the process is running.
+        /// </summary>
         public int SessionID { get; set; }
 
-        public DateTime TimeStamp { get; set; }
+        /// <summary>
+        /// The date and time at which the process was created.
+        /// </summary>
+        public DateTime CreateTime { get; set; }
 
+        /// <summary>
+        /// The type of elevation used for the process.
+        /// </summary>
         public TokenElevationType ElevationType { get; set; }
     }
 }

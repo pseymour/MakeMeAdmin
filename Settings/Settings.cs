@@ -497,12 +497,8 @@ namespace SinclairCC.MakeMeAdmin
                 }
                 else
                 { // Neither the policy nor the preference registry entries had a value.
-                  // Return a default value indicating to log when the user has admin rights.
-#if DEBUG
-                    return ElevatedProcessLogging.Always;
-#else
+                  // Return a default value indicating that logging should not be done.
                     return ElevatedProcessLogging.Never;
-#endif
                 }
             }
             set
