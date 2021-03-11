@@ -41,6 +41,9 @@
       <string id="OverrideOutsideProcessDisplayName">Override Removal By Outside Process</string>
       <string id="OverrideOutsideProcessExplainText">Specifies whether administrative rights should be added back if an outside process removes them before the timeout has expired.</string>
 
+      <string id="RequireAuthForPrivilegesDisplayName">Require Authentication to Obtain Privileges</string>
+      <string id="RequireAuthForPrivilegesExplainText">Specifies whether the user must authenticate before being granted administrative privileges.</string>
+
       <string id="AllowRemoteRequestsDisplayName">Allow Remote Requests</string>
       <string id="AllowRemoteRequestsExplainText">Specifies whether administrative rights can be requested by authorized users on a remote computer.</string>
 

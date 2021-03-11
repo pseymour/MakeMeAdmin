@@ -86,6 +86,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NativeMethods.cs" />
     <Compile Include="SubmitRequestForm.cs">
       <SubType>Form</SubType>
     </Compile>

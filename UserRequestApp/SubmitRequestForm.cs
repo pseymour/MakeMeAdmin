@@ -151,9 +151,35 @@ namespace SinclairCC.MakeMeAdmin
         /// </param>
         private void ClickSubmitButton(object sender, EventArgs e)
         {
-            this.DisableButtons();
-            this.appStatus.Text = string.Format(Properties.Resources.UIMessageAddingToGroup, LocalAdministratorGroup.LocalAdminGroupName);
-            addUserBackgroundWorker.RunWorkerAsync();
+            bool authenticationSuccessful = true;
+            if (Settings.RequireAuthenticationForPrivileges)
+            {
+                authenticationSuccessful = false;
+
+                try
+                {
+                    authenticationSuccessful = NativeMethods.ValidateCredentials(NativeMethods.GetCredentials());
+                }
+                catch (ArgumentException excep)
+                {
+                    MessageBox.Show(this, string.Format("{0}: {1}", excep.GetType().Name, excep.Message), Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, 0);
+                }
+                catch (System.ComponentModel.Win32Exception excep)
+                {
+                    MessageBox.Show(this, string.Format("{0}: {1}", excep.GetType().Name, excep.Message), Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, 0);
+                }
+                catch (Exception excep)
+                {
+                    MessageBox.Show(this, string.Format("{0}: {1}", excep.GetType().Name, excep.Message), Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, 0);
+                }
+            }
+
+            if (authenticationSuccessful)
+            {
+                this.DisableButtons();
+                this.appStatus.Text = string.Format(Properties.Resources.UIMessageAddingToGroup, LocalAdministratorGroup.LocalAdminGroupName);
+                addUserBackgroundWorker.RunWorkerAsync();
+            }
         }
 
 

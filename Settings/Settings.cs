@@ -404,13 +404,39 @@ namespace SinclairCC.MakeMeAdmin
                     return Convert.ToBoolean(preferenceOverrideSetting.Value);
                 }
                 else
-                { // Neither the policy nor the preference registry entries had a value. Return a default value of true.
+                { // Neither the policy nor the preference registry entries had a value. Return a default value of false.
                     return false;
                 }
             }
             set
             {
                 SetDWord(PreferenceRegistryKeyPath, null, "Override Removal By Outside Process", Convert.ToInt32(value));
+            }
+        }
+
+        // TODO: i18n.
+        public static bool RequireAuthenticationForPrivileges
+        {
+            get
+            {
+                int? policyOverrideSetting = GetDWord(PolicyRegistryKeyPath, null, "Require Authentication For Privileges");
+                int? preferenceOverrideSetting = GetDWord(PreferenceRegistryKeyPath, null, "Require Authentication For Privileges");
+                if (policyOverrideSetting.HasValue)
+                { // The policy setting has a value. Go with whatever it says.
+                    return Convert.ToBoolean(policyOverrideSetting.Value);
+                }
+                else if (preferenceOverrideSetting.HasValue)
+                { // The preference setting has a value. Go with whatever it says.
+                    return Convert.ToBoolean(preferenceOverrideSetting.Value);
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value. Return a default value of false.
+                    return false;
+                }
+            }
+            set
+            {
+                SetDWord(PreferenceRegistryKeyPath, null, "Require Authentication For Privileges", Convert.ToInt32(value));
             }
         }
 
