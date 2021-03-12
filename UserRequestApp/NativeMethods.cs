@@ -38,10 +38,29 @@ namespace SinclairCC.MakeMeAdmin
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         private struct CREDUI_INFO
         {
+            /// <summary>
+            /// The size of the struct.
+            /// </summary>
             public int cbSize;
+
+            /// <summary>
+            /// Specifies the handle to the parent window of the dialog box. The dialog box is modal with respect to the parent window. If this member is NULL, the desktop is the parent window of the dialog box.
+            /// </summary>
             public IntPtr hwndParent;
+
+            /// <summary>
+            /// Pointer to a string containing a brief message to display in the dialog box. The length of this string should not exceed CREDUI_MAX_MESSAGE_LENGTH.
+            /// </summary>
             public string pszMessageText;
+
+            /// <summary>
+            /// Pointer to a string containing the title for the dialog box. The length of this string should not exceed CREDUI_MAX_CAPTION_LENGTH.
+            /// </summary>
             public string pszCaptionText;
+
+            /// <summary>
+            /// Bitmap to display in the dialog box. If this member is NULL, a default bitmap is used. The bitmap size is limited to 320x60 pixels.
+            /// </summary>
             public IntPtr hbmBanner;
         }
 
@@ -104,9 +123,10 @@ namespace SinclairCC.MakeMeAdmin
         */
 
 
-        internal static System.Net.NetworkCredential GetCredentials()
+        internal static System.Net.NetworkCredential GetCredentials(IntPtr parentWindow)
         {
             CREDUI_INFO credui = new CREDUI_INFO();
+            credui.hwndParent = parentWindow;
             credui.pszCaptionText = "Please enter your credentials.";
             credui.pszMessageText = "Message Displayed Here";
             credui.cbSize = Marshal.SizeOf(credui);
@@ -114,6 +134,7 @@ namespace SinclairCC.MakeMeAdmin
             IntPtr outCredBuffer = new IntPtr();
             uint outCredSize;
             bool save = false;
+
             int result = CredUIPromptForWindowsCredentials(ref credui,
                                                            0,
                                                            ref authPackage,
@@ -124,13 +145,22 @@ namespace SinclairCC.MakeMeAdmin
                                                            ref save,
                                                            0 /* 1:  Generic */);
 
-            var usernameBuf = new StringBuilder(100);
-            var passwordBuf = new StringBuilder(100);
-            var domainBuf = new StringBuilder(100);
 
-            int maxUserName = 100;
-            int maxDomain = 100;
-            int maxPassword = 100;
+            StringBuilder usernameBuf = new StringBuilder(1);
+            StringBuilder passwordBuf = new StringBuilder(1);
+            StringBuilder domainBuf = new StringBuilder(1);
+            int maxUserName = usernameBuf.Length;
+            int maxPassword = passwordBuf.Length;
+            int maxDomain = domainBuf.Length;
+
+            if (!CredUnPackAuthenticationBuffer(0, outCredBuffer, outCredSize, usernameBuf, ref maxUserName, domainBuf, ref maxDomain, passwordBuf, ref maxPassword))
+            {
+                usernameBuf = new StringBuilder(maxUserName);
+                passwordBuf = new StringBuilder(maxPassword);
+                domainBuf = new StringBuilder(maxDomain);
+            }
+
+
             if (result == 0)
             {
                 if (CredUnPackAuthenticationBuffer(0, outCredBuffer, outCredSize, usernameBuf, ref maxUserName,
@@ -149,12 +179,14 @@ namespace SinclairCC.MakeMeAdmin
                         Domain = domainBuf.ToString()
                     };
 
+                    /*
                     if ((string.IsNullOrEmpty(returnCreds.Domain)) && (returnCreds.UserName.IndexOf('\\') >= 0))
                     {
                         int slashIndex = returnCreds.UserName.IndexOf('\\');
                         returnCreds.Domain = returnCreds.UserName.Substring(0, slashIndex);
                         returnCreds.UserName = returnCreds.UserName.Substring(slashIndex + 1);
                     }
+                    */
 
                     return returnCreds;
                 }
@@ -168,6 +200,16 @@ namespace SinclairCC.MakeMeAdmin
         {
             if (null == credentials) { return false; }
 
+            string userName = credentials.UserName;
+            string domain = credentials.Domain;
+            if ((string.IsNullOrEmpty(domain)) && (userName.IndexOf('\\') >= 0))
+            {
+                int slashIndex = userName.IndexOf('\\');
+                domain = userName.Substring(0, slashIndex);
+                userName = userName.Substring(slashIndex + 1);
+            }
+
+
             IntPtr tokenHandle = IntPtr.Zero;
             IntPtr passwordPtr = IntPtr.Zero;
             bool returnValue = false;
@@ -177,7 +219,7 @@ namespace SinclairCC.MakeMeAdmin
             passwordPtr = Marshal.SecureStringToGlobalAllocUnicode(credentials.SecurePassword);
 
             // Pass LogonUser the unmanaged (and decrypted) copy of the password.
-            returnValue = LogonUser(credentials.UserName, credentials.Domain, passwordPtr,
+            returnValue = LogonUser(userName, domain, passwordPtr,
                                     LOGON32_LOGON_NETWORK, LOGON32_PROVIDER_DEFAULT,
                                     ref tokenHandle);
 

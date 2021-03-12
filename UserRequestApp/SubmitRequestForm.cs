@@ -155,10 +155,19 @@ namespace SinclairCC.MakeMeAdmin
             if (Settings.RequireAuthenticationForPrivileges)
             {
                 authenticationSuccessful = false;
-
+                WindowsIdentity currentIdentity = WindowsIdentity.GetCurrent();
                 try
                 {
-                    authenticationSuccessful = NativeMethods.ValidateCredentials(NativeMethods.GetCredentials());
+                    System.Net.NetworkCredential credentials = null;
+                    do
+                    {
+                        credentials = NativeMethods.GetCredentials(this.Handle);
+                    } while ((null != credentials) && (string.Compare(credentials.UserName, currentIdentity.Name, true) != 0));
+
+                    if (null != credentials)
+                    {
+                        authenticationSuccessful = NativeMethods.ValidateCredentials(credentials);
+                    }
                 }
                 catch (ArgumentException excep)
                 {
