@@ -64,6 +64,9 @@ namespace SinclairCC.MakeMeAdmin
             public IntPtr hbmBanner;
         }
 
+        [DllImport("credui.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        private static extern bool CredPackAuthenticationBuffer(int dwFlags, string pszUserName, string pszPassword, IntPtr pPackedCredentials, ref int pcbPackedCredentials);
+
 
         [DllImport("credui.dll", CharSet = CharSet.Auto)]
         private static extern bool CredUnPackAuthenticationBuffer(int dwFlags,
@@ -81,7 +84,7 @@ namespace SinclairCC.MakeMeAdmin
                                                                      int authError,
                                                                      ref uint authPackage,
                                                                      IntPtr InAuthBuffer,
-                                                                     uint InAuthBufferSize,
+                                                                     int InAuthBufferSize,
                                                                      out IntPtr refOutAuthBuffer,
                                                                      out uint refOutAuthBufferSize,
                                                                      ref bool fSave,
@@ -91,8 +94,6 @@ namespace SinclairCC.MakeMeAdmin
         // Define the Windows LogonUser and CloseHandle functions.
         [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         private static extern bool LogonUser(String username, String domain, IntPtr password, int logonType, int logonProvider, ref IntPtr token);
-
-
 
         /*
         [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Auto)]
@@ -123,28 +124,35 @@ namespace SinclairCC.MakeMeAdmin
         */
 
 
-        internal static System.Net.NetworkCredential GetCredentials(IntPtr parentWindow)
+        internal static System.Net.NetworkCredential GetCredentials(IntPtr parentWindow, string userName = null, int errorCode = 0)
         {
             CREDUI_INFO credui = new CREDUI_INFO();
             credui.hwndParent = parentWindow;
-            credui.pszCaptionText = "Please enter your credentials.";
-            credui.pszMessageText = "Message Displayed Here";
+            credui.pszCaptionText = "Enter your credentials.";
+            credui.pszMessageText = "These credentials will confirm your identity before granting administrative privileges.";
             credui.cbSize = Marshal.SizeOf(credui);
             uint authPackage = 0;
             IntPtr outCredBuffer = new IntPtr();
             uint outCredSize;
             bool save = false;
+            /*int errorCode = 0;*/
+
+            GetInputBuffer(userName, out var inCredBuffer, out var inCredSize);
 
             int result = CredUIPromptForWindowsCredentials(ref credui,
-                                                           0,
+                                                           errorCode,
                                                            ref authPackage,
-                                                           IntPtr.Zero,
-                                                           0,
+                                                           inCredBuffer,
+                                                           inCredSize,
                                                            out outCredBuffer,
                                                            out outCredSize,
                                                            ref save,
-                                                           0 /* 1:  Generic */);
+                                                           0x200);
 
+            if (inCredBuffer != IntPtr.Zero)
+            {
+                Marshal.FreeCoTaskMem(inCredBuffer);
+            }
 
             StringBuilder usernameBuf = new StringBuilder(1);
             StringBuilder passwordBuf = new StringBuilder(1);
@@ -166,27 +174,17 @@ namespace SinclairCC.MakeMeAdmin
                 if (CredUnPackAuthenticationBuffer(0, outCredBuffer, outCredSize, usernameBuf, ref maxUserName,
                                                    domainBuf, ref maxDomain, passwordBuf, ref maxPassword))
                 {
-                    //TODO: ms documentation says we should call this but i can't get it to work
-                    //SecureZeroMemory(outCredBuffer, new UIntPtr(outCredSize));
                     Marshal.Copy(new byte[outCredSize], 0, outCredBuffer, (int)outCredSize);
 
-                    //clear the memory allocated by CredUIPromptForWindowsCredentials 
+                    // Clear the memory allocated by CredUIPromptForWindowsCredentials.
                     CoTaskMemFree(outCredBuffer);
+
                     System.Net.NetworkCredential returnCreds = new System.Net.NetworkCredential()
                     {
                         UserName = usernameBuf.ToString(),
                         Password = passwordBuf.ToString(),
                         Domain = domainBuf.ToString()
                     };
-
-                    /*
-                    if ((string.IsNullOrEmpty(returnCreds.Domain)) && (returnCreds.UserName.IndexOf('\\') >= 0))
-                    {
-                        int slashIndex = returnCreds.UserName.IndexOf('\\');
-                        returnCreds.Domain = returnCreds.UserName.Substring(0, slashIndex);
-                        returnCreds.UserName = returnCreds.UserName.Substring(slashIndex + 1);
-                    }
-                    */
 
                     return returnCreds;
                 }
@@ -195,10 +193,27 @@ namespace SinclairCC.MakeMeAdmin
             return null;
         }
 
-
-        internal static bool ValidateCredentials(System.Net.NetworkCredential credentials)
+        // TODO: Change user to string? when moving to C# 8.
+        private static void GetInputBuffer(string user, out IntPtr inCredBuffer, out int inCredSize)
         {
-            if (null == credentials) { return false; }
+            if (!string.IsNullOrEmpty(user))
+            {
+                inCredSize = 1024;
+                inCredBuffer = Marshal.AllocCoTaskMem(inCredSize);
+                if (CredPackAuthenticationBuffer(0, user, pszPassword: "", inCredBuffer, ref inCredSize))
+                {
+                    return;
+                }
+            }
+
+            inCredBuffer = IntPtr.Zero;
+            inCredSize = 0;
+        }
+
+
+        internal static int ValidateCredentials(System.Net.NetworkCredential credentials)
+        {
+            if (null == credentials) { return 0x0000000D; }
 
             string userName = credentials.UserName;
             string domain = credentials.Domain;
@@ -235,6 +250,9 @@ namespace SinclairCC.MakeMeAdmin
             // Close the token handle.
             CloseHandle(tokenHandle);
 
+            return error;
+
+            /*
             // Throw an exception if an error occurred.
             if (error != 0)
             {
@@ -242,6 +260,7 @@ namespace SinclairCC.MakeMeAdmin
             }
 
             return returnValue;
+            */
         }
     }
 }
