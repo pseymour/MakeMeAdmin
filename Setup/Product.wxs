@@ -6,14 +6,6 @@
     <MajorUpgrade DowngradeErrorMessage="!(loc.NewerVersionInstalled)" />
     <MediaTemplate EmbedCab="yes" />
 
-    <Binary Id="WiXCustomAction.CA.dll" SourceFile="$(var.WiXCustomAction.TargetDir)$(var.WiXCustomAction.TargetName).CA$(var.WiXCustomAction.TargetExt)" />
-
-    <CustomAction Id="RemoveUserList" Return="check" Execute="immediate" BinaryKey="WiXCustomAction.CA.dll" DllEntry="RemoveUserList" />
-
-    <InstallExecuteSequence>
-      <Custom Action="RemoveUserList" After="StopServices" />
-    </InstallExecuteSequence>
-    
     <Feature Id="MakeMeAdmin" Title="[ProductName]" Level="1">
       <ComponentRef Id="ADMXFiles" />
       <ComponentRef Id="ADMLFiles" />
@@ -44,7 +36,9 @@
     <Feature Id="MakeMeAdminRemote" Title="[ProductName] !(loc.Remote)" Level="0">
       <ComponentRef Id="RemoteElevationUserInterface"/>
       <ComponentRef Id="RemoteElevation_fr"/>
-      
+
+      <ComponentRef Id="EnumerationsLibrary" />
+
       <ComponentRef Id="MruListLibrary"/>
 
       <ComponentRef Id="LoggingLibrary" />
