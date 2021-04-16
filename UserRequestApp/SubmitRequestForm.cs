@@ -200,13 +200,13 @@ namespace SinclairCC.MakeMeAdmin
                             {
                                 case DialogResult.Cancel:
                                     enableAdminRights = false;
-                                    MessageBox.Show(this, Properties.Resources.MandatoryReasonNotProvided, "Make Me Admin", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
+                                    MessageBox.Show(this, Properties.Resources.MandatoryReasonNotProvided, Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
                                     break;
                                 case DialogResult.OK:
                                     if (string.Compare(reasonDialog.Reason, string.Format("{0}: ", Properties.Resources.OtherReason), true) == 0)
                                     { // User didn't really provide a reason. The string is blank.
                                         enableAdminRights = false;
-                                        MessageBox.Show(this, Properties.Resources.MandatoryReasonNotProvided, "Make Me Admin", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
+                                        MessageBox.Show(this, Properties.Resources.MandatoryReasonNotProvided, Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
                                     }
                                     else
                                     {
@@ -224,7 +224,7 @@ namespace SinclairCC.MakeMeAdmin
                     }
                     else
                     {
-                        MessageBox.Show(this, Properties.Resources.ReasonDialogBoxPrevented, "Make Me Admin", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
+                        MessageBox.Show(this, Properties.Resources.ReasonDialogBoxPrevented, Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
                         enableAdminRights = false;
                     }
 
@@ -469,8 +469,28 @@ namespace SinclairCC.MakeMeAdmin
             NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
             ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(binding, Settings.NamedPipeServiceBaseAddress);
             IAdminGroup channel = namedPipeFactory.CreateChannel();
-            bool userIsAuthorizedLocally = channel.UserIsAuthorized(Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
-            namedPipeFactory.Close();
+            bool userIsAuthorizedLocally = false;
+            try
+            {
+                userIsAuthorizedLocally = channel.UserIsAuthorized(Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
+                namedPipeFactory.Close();
+            }
+            catch (EndpointNotFoundException exception)
+            {
+                System.Text.StringBuilder message = new System.Text.StringBuilder(exception.Message);
+                if (null != exception.InnerException)
+                {
+                    message.Append(Environment.NewLine);
+                    message.Append("Inner Exception:");
+                    message.Append(Environment.NewLine);
+                    message.Append(exception.InnerException.Message);
+                }
+                MessageBox.Show(this, exception.Message, Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
+            }
+            catch (CommunicationObjectFaultedException)
+            {
+                // This typically happens when trying to dispose of the ChannelFactory<> object.
+            }
             /*
             bool userIsAuthorizedLocally = UserIsAuthorized(WindowsIdentity.GetCurrent(), Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
             */

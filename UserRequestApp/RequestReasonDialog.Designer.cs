@@ -59,30 +59,33 @@ namespace SinclairCC.MakeMeAdmin
             // 
             this.responseComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.responseComboBox.FormattingEnabled = true;
-            this.responseComboBox.Location = new System.Drawing.Point(12, 39);
+            this.responseComboBox.Location = new System.Drawing.Point(18, 60);
+            this.responseComboBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.responseComboBox.Name = "responseComboBox";
-            this.responseComboBox.Size = new System.Drawing.Size(231, 21);
-            this.responseComboBox.TabIndex = 0;
+            this.responseComboBox.Size = new System.Drawing.Size(344, 28);
+            this.responseComboBox.TabIndex = 1;
             this.responseComboBox.SelectionChangeCommitted += new System.EventHandler(this.ResponseComboBoxSelectionChangeCommitted);
             // 
             // reasonTextBox
             // 
-            this.reasonTextBox.Location = new System.Drawing.Point(12, 66);
+            this.reasonTextBox.Location = new System.Drawing.Point(18, 100);
+            this.reasonTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.reasonTextBox.Multiline = true;
             this.reasonTextBox.Name = "reasonTextBox";
             this.reasonTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.reasonTextBox.Size = new System.Drawing.Size(232, 113);
-            this.reasonTextBox.TabIndex = 1;
+            this.reasonTextBox.Size = new System.Drawing.Size(346, 172);
+            this.reasonTextBox.TabIndex = 2;
             this.reasonTextBox.TextChanged += new System.EventHandler(this.ReasonTextBoxChangedHandler);
             // 
             // okButton
             // 
             this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.okButton.Location = new System.Drawing.Point(88, 191);
+            this.okButton.Location = new System.Drawing.Point(132, 294);
+            this.okButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.okButton.Name = "okButton";
-            this.okButton.Size = new System.Drawing.Size(75, 30);
-            this.okButton.TabIndex = 2;
+            this.okButton.Size = new System.Drawing.Size(112, 46);
+            this.okButton.TabIndex = 3;
             this.okButton.Text = "&OK";
             this.okButton.UseVisualStyleBackColor = true;
             // 
@@ -90,36 +93,37 @@ namespace SinclairCC.MakeMeAdmin
             // 
             this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(169, 191);
+            this.cancelButton.Location = new System.Drawing.Point(254, 294);
+            this.cancelButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(75, 30);
-            this.cancelButton.TabIndex = 3;
+            this.cancelButton.Size = new System.Drawing.Size(112, 46);
+            this.cancelButton.TabIndex = 4;
             this.cancelButton.Text = "&Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.CancelButtonClickHandler);
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(8, 6);
-            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(240, 32);
-            this.label1.TabIndex = 4;
+            this.label1.Size = new System.Drawing.Size(360, 49);
+            this.label1.TabIndex = 0;
             this.label1.Text = "Please provide a reason for requesting administrator rights.";
             // 
             // RequestReasonDialog
             // 
             this.AcceptButton = this.okButton;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(256, 233);
+            this.ClientSize = new System.Drawing.Size(384, 358);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.okButton);
             this.Controls.Add(this.reasonTextBox);
             this.Controls.Add(this.responseComboBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "RequestReasonDialog";
