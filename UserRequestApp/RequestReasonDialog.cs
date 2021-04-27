@@ -30,6 +30,7 @@ namespace SinclairCC.MakeMeAdmin
             InitializeComponent();
 
             this.Icon = Properties.Resources.SecurityLock;
+            this.reasonTextBox.MaxLength = Settings.MaximumReasonLength;
 
             if ((Settings.CannedReasons != null) && (Settings.CannedReasons.Length > 0))
             {

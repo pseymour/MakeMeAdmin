@@ -62,6 +62,9 @@
       <string id="CannedReasonsDisplayName">Canned Responses for Reason Dialog</string>
       <string id="CannedReasonsExplainText">Pre-populated reasons to be shown on the administrator rights reason dialog box.</string>
 
+      <string id="MaximumReasonLengthDisplayName">Maximum Reason Length</string>
+      <string id="MaximumReasonLengthExplainText">Specifies the maximum number of characters that a user may enter in the reason dialog box.</string>
+
       <string id="None">None</string>
       <string id="Optional">Optional</string>
       <string id="Required">Required</string>
@@ -89,6 +92,10 @@
       </presentation>
       <presentation id="CannedReasonsMultiText_Presentation">
         <multiTextBox refId="CannedReasonsMultiText">Enter the canned responses for the reason dialog box, one per line:</multiTextBox>
+      </presentation>
+      <presentation id="Maximum_Reason_Length_Spin">
+        <text>The maximum number of characters that a user may enter in the free-form portion of the reason dialog box.</text>
+        <decimalTextBox refId="MaximumReasonLengthValue" defaultValue="333" spinStep="5">maximum reason length:</decimalTextBox>
       </presentation>
       <presentation id="DeniedAutomaticallyAddMultiText_Presentation">
         <multiTextBox refId="DeniedAutomaticallyAddEntitiesMultiText">Enter denied SIDs:</multiTextBox>

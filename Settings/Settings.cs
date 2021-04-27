@@ -621,6 +621,33 @@ namespace SinclairCC.MakeMeAdmin
         }
 
 
+        // TODO: i18n.
+        public static int MaximumReasonLength
+        {
+            get
+            {
+                int? policyTimeoutSetting = GetDWord(PolicyRegistryKeyPath, null, "Maximum Reason Length");
+                int? preferenceTimeoutSetting = GetDWord(PreferenceRegistryKeyPath, null, "Maximum Reason Length");
+                if (policyTimeoutSetting.HasValue)
+                { // The policy setting has a value. Go with whatever it says.
+                    return policyTimeoutSetting.Value;
+                }
+                else if (preferenceTimeoutSetting.HasValue)
+                { // The preference setting has a value. Go with whatever it says.
+                    return preferenceTimeoutSetting.Value;
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value. Return a default timeout value of 333.
+                    return 333;
+                }
+            }
+            set
+            {
+                SetDWord(PreferenceRegistryKeyPath, null, "Maximum Reason Length", value);
+            }
+        }
+
+
         /// <summary>
         /// Removes from the computer all of the settings related to this application.
         /// </summary>
