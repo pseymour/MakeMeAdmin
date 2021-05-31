@@ -55,6 +55,26 @@
 
       <string id="SyslogServersDisplayName">Syslog Servers</string>
       <string id="SyslogServersExplainText">Specifies information about syslog servers to which logged information should be sent.</string>
+
+      <string id="PromptForReasonDisplayName">Prompt for Reason</string>
+      <string id="PromptForReasonExplainText">Specifies whether to prompt the user for the reason that they require administrator privileges.</string>
+
+      <string id="RequireReasonDisplayName">Require Reason</string>
+      <string id="RequireReasonExplainText">Specifies whether to require the user to provide a reason for administrator privileges.</string>
+
+      <string id="AllowFreeFormReasonDisplayName">Allow Free-Form Reason</string>
+      <string id="AllowFreeFormReasonExplainText">Allow the user to enter a free-form text string in the administrator rights reason dialog box.</string>
+
+      <string id="CannedReasonsDisplayName">Canned Responses for Reason Dialog</string>
+      <string id="CannedReasonsExplainText">Pre-populated reasons to be shown on the administrator rights reason dialog box.</string>
+
+      <string id="MaximumReasonLengthDisplayName">Maximum Reason Length</string>
+      <string id="MaximumReasonLengthExplainText">Specifies the maximum number of characters that a user may enter in the reason dialog box.</string>
+
+      <string id="None">None</string>
+      <string id="Optional">Optional</string>
+      <string id="Required">Required</string>
+
     </stringTable>
     <presentationTable>
       <presentation id="Admin_Rights_Timeout_Spin">
@@ -80,6 +100,13 @@
       <presentation id="RemoteDeniedEntitiesMultiText_Presentation">
         <multiTextBox refId="RemoteDeniedEntitiesMultiText">Enter denied SIDs:</multiTextBox>
       </presentation>
+      <presentation id="CannedReasonsMultiText_Presentation">
+        <multiTextBox refId="CannedReasonsMultiText">Enter the canned responses for the reason dialog box, one per line:</multiTextBox>
+      </presentation>
+      <presentation id="Maximum_Reason_Length_Spin">
+        <text>The maximum number of characters that a user may enter in the free-form portion of the reason dialog box.</text>
+        <decimalTextBox refId="MaximumReasonLengthValue" defaultValue="333" spinStep="5">maximum reason length:</decimalTextBox>
+      </presentation>
       <presentation id="DeniedAutomaticallyAddMultiText_Presentation">
         <multiTextBox refId="DeniedAutomaticallyAddEntitiesMultiText">Enter denied SIDs:</multiTextBox>
       </presentation>
@@ -104,6 +131,9 @@
         <text>Example:</text>
         <text>syslogserver:udp</text>
         <text>Communicates with the server called syslogserver on port 514 via UDP using RFC 3164 messages.</text>
+      </presentation>
+      <presentation id="PromptForReasonEnum_Presentation">
+        <dropdownList refId="PromptForReasonEnum" noSort="true" defaultItem="0">Prompt the user to provide a reason for obtaining administrator rights.</dropdownList>
       </presentation>
     </presentationTable>
   </resources>

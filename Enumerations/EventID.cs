@@ -67,6 +67,10 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         RejectedSyslogServerInfo,
 
+        ReasonDialogEmpty,
+
+        ReasonProvidedByUser,
+
         /// <summary>
         /// Indicates that an issue has occurred while setting up remote access.
         /// </summary>

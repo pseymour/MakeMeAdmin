@@ -492,6 +492,133 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+        public static ReasonPrompt PromptForReason
+        {
+            get
+            {
+
+                int? policySetting = GetDWord(PolicyRegistryKeyPath, null, "Prompt For Reason");
+                int? preferenceSetting = GetDWord(PreferenceRegistryKeyPath, null, "Prompt For Reason");
+                if (policySetting.HasValue)
+                { // The policy setting has a value. Go with whatever it says.
+                    ReasonPrompt convertedValue = ReasonPrompt.None;
+                    if (Enum.TryParse<ReasonPrompt>(Convert.ToString(policySetting.Value), true, out convertedValue))
+                    {
+                        if (!Enum.IsDefined(typeof(ReasonPrompt), convertedValue))
+                        {
+                            convertedValue = ReasonPrompt.None;
+                        }
+                    }
+                    else
+                    {
+                        convertedValue = ReasonPrompt.None;
+                    }
+                    return convertedValue;
+                }
+                else if (preferenceSetting.HasValue)
+                { // The preference setting has a value. Go with whatever it says.
+                    ReasonPrompt convertedValue = ReasonPrompt.None;
+                    if (Enum.TryParse<ReasonPrompt>(Convert.ToString(preferenceSetting.Value), true, out convertedValue))
+                    {
+                        if (!Enum.IsDefined(typeof(ReasonPrompt), convertedValue))
+                        {
+                            convertedValue = ReasonPrompt.None;
+                        }
+                    }
+                    else
+                    {
+                        convertedValue = ReasonPrompt.None;
+                    }
+                    return convertedValue;
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value. Return a default value of None.
+                    return ReasonPrompt.None;
+                }
+            }
+            set
+            {
+                SetDWord(PreferenceRegistryKeyPath, null, "Prompt For Reason", Convert.ToInt32(value));
+            }
+        }
+
+
+        public static bool AllowFreeFormReason
+        {
+            get
+            {
+
+                int? policySetting = GetDWord(PolicyRegistryKeyPath, null, "Allow Free-Form Reason");
+                int? preferenceSetting = GetDWord(PreferenceRegistryKeyPath, null, "Allow Free-Form Reason");
+                if (policySetting.HasValue)
+                { // The policy setting has a value. Go with whatever it says.
+                    return Convert.ToBoolean(policySetting.Value);
+                }
+                else if (preferenceSetting.HasValue)
+                { // The preference setting has a value. Go with whatever it says.
+                    return Convert.ToBoolean(preferenceSetting.Value);
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value. Return a default value of true.
+                    return true;
+                }
+            }
+            set
+            {
+                SetDWord(PreferenceRegistryKeyPath, null, "Allow Free-Form Reason", Convert.ToInt32(value));
+            }
+        }
+
+
+        // TODO: i18n.
+        public static string[] CannedReasons
+        {
+            get
+            {
+                string[] policySetting = GetMultiString(PolicyRegistryKeyPath, null, "Canned Reasons");
+                string[] preferenceSetting = GetMultiString(PreferenceRegistryKeyPath, null, "Canned Reasons");
+                if (policySetting != null)
+                { // The policy setting has a value. Go with whatever it says.
+                    return policySetting;
+                }
+                else
+                { // Go with whatever the preference setting says, even if it is null.
+                    return preferenceSetting;
+                }
+            }
+            set
+            {
+                SetMultiString(PreferenceRegistryKeyPath, null, "Canned Reasons", value);
+            }
+        }
+
+
+        // TODO: i18n.
+        public static int MaximumReasonLength
+        {
+            get
+            {
+                int? policyTimeoutSetting = GetDWord(PolicyRegistryKeyPath, null, "Maximum Reason Length");
+                int? preferenceTimeoutSetting = GetDWord(PreferenceRegistryKeyPath, null, "Maximum Reason Length");
+                if (policyTimeoutSetting.HasValue)
+                { // The policy setting has a value. Go with whatever it says.
+                    return policyTimeoutSetting.Value;
+                }
+                else if (preferenceTimeoutSetting.HasValue)
+                { // The preference setting has a value. Go with whatever it says.
+                    return preferenceTimeoutSetting.Value;
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value. Return a default timeout value of 333.
+                    return 333;
+                }
+            }
+            set
+            {
+                SetDWord(PreferenceRegistryKeyPath, null, "Maximum Reason Length", value);
+            }
+        }
+
         // TODO: i18n.
         public static int TCPServicePort
         {

@@ -151,6 +151,93 @@ namespace SinclairCC.MakeMeAdmin
         /// </param>
         private void ClickSubmitButton(object sender, EventArgs e)
         {
+            bool enableAdminRights = false;
+
+            switch (Settings.PromptForReason)
+            {
+                case ReasonPrompt.None:
+                    // No reason dialog box required.
+                    enableAdminRights = true;
+                    break;
+
+                case ReasonPrompt.Optional:
+
+                    // The reason dialog is optional, so rights are always allowed.
+                    enableAdminRights = true;
+
+                    if ((Settings.AllowFreeFormReason) || ((Settings.CannedReasons != null) && (Settings.CannedReasons.Length > 0)))
+                    {
+                        using (RequestReasonDialog reasonDialog = new RequestReasonDialog())
+                        {
+                            switch (reasonDialog.ShowDialog(this))
+                            {
+                                case DialogResult.Cancel:
+                                    // User did not provide a reason, but is not obligated to do so.
+                                    break;
+                                case DialogResult.OK:
+                                    ApplicationLog.WriteEvent(string.Format(Properties.Resources.ReasonProvidedByUser, reasonDialog.Reason), EventID.ReasonProvidedByUser, System.Diagnostics.EventLogEntryType.Information);
+                                    break;
+                                default:
+                                    // Not sure how we got to this point, because it should never happen.
+                                    break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        ApplicationLog.WriteEvent(Properties.Resources.ReasonDialogEmpty, EventID.ReasonDialogEmpty, System.Diagnostics.EventLogEntryType.Warning);
+                    }
+
+                    break;
+
+                case ReasonPrompt.Required:
+
+                    if ((Settings.AllowFreeFormReason) || ((Settings.CannedReasons != null) && (Settings.CannedReasons.Length > 0)))
+                    {
+                        using (RequestReasonDialog reasonDialog = new RequestReasonDialog())
+                        {
+                            switch (reasonDialog.ShowDialog(this))
+                            {
+                                case DialogResult.Cancel:
+                                    enableAdminRights = false;
+                                    MessageBox.Show(this, Properties.Resources.MandatoryReasonNotProvided, Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
+                                    break;
+                                case DialogResult.OK:
+                                    if (string.Compare(reasonDialog.Reason, string.Format("{0}: ", Properties.Resources.OtherReason), true) == 0)
+                                    { // User didn't really provide a reason. The string is blank.
+                                        enableAdminRights = false;
+                                        MessageBox.Show(this, Properties.Resources.MandatoryReasonNotProvided, Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
+                                    }
+                                    else
+                                    {
+                                        enableAdminRights = true;
+                                        ApplicationLog.WriteEvent(string.Format(Properties.Resources.ReasonProvidedByUser, reasonDialog.Reason), EventID.ReasonProvidedByUser, System.Diagnostics.EventLogEntryType.Information);
+                                    }
+                                    break;
+                                default:
+                                    // Not sure how we got to this point, because it should never happen.
+                                    // Better to be safe than sorry, so no admin rights.
+                                    enableAdminRights = false;
+                                    break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show(this, Properties.Resources.ReasonDialogBoxPrevented, Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
+                        enableAdminRights = false;
+                    }
+
+                    break;
+                
+                default:
+                    // TODO: i18n
+                    ApplicationLog.WriteEvent(string.Format("Unexpected value for the reason prompt setting: {0:N0}", ((int)(Settings.PromptForReason))), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Warning);
+                    enableAdminRights = true;
+                    break;
+            }
+
+            if (enableAdminRights)
             bool authenticationSuccessful = true;
             if (Settings.RequireAuthenticationForPrivileges)
             {
@@ -423,9 +510,28 @@ namespace SinclairCC.MakeMeAdmin
             NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
             ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(binding, Settings.NamedPipeServiceBaseAddress);
             IAdminGroup channel = namedPipeFactory.CreateChannel();
-            bool userIsAuthorizedLocally = channel.UserIsAuthorized(Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
-            namedPipeFactory.Close();
-
+            bool userIsAuthorizedLocally = false;
+            try
+            {
+                userIsAuthorizedLocally = channel.UserIsAuthorized(Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
+                namedPipeFactory.Close();
+            }
+            catch (EndpointNotFoundException exception)
+            {
+                System.Text.StringBuilder message = new System.Text.StringBuilder(exception.Message);
+                if (null != exception.InnerException)
+                {
+                    message.Append(Environment.NewLine);
+                    message.Append("Inner Exception:");
+                    message.Append(Environment.NewLine);
+                    message.Append(exception.InnerException.Message);
+                }
+                MessageBox.Show(this, exception.Message, Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
+            }
+            catch (CommunicationObjectFaultedException)
+            {
+                // This typically happens when trying to dispose of the ChannelFactory<> object.
+            }
             /*
             bool userIsAuthorizedLocally = UserIsAuthorized(WindowsIdentity.GetCurrent(), Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
             */
