@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SinclairCC.MakeMeAdmin</RootNamespace>
     <AssemblyName>Logging</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -76,6 +76,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.da.resx" />
     <EmbeddedResource Include="Properties\Resources.fr.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -83,6 +84,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <XliffResource Include="MultilingualResources\Logging.da.xlf" />
     <XliffResource Include="MultilingualResources\Logging.fr.xlf" />
   </ItemGroup>
   <ItemGroup>

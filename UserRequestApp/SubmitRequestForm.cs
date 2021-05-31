@@ -238,6 +238,47 @@ namespace SinclairCC.MakeMeAdmin
             }
 
             if (enableAdminRights)
+            bool authenticationSuccessful = true;
+            if (Settings.RequireAuthenticationForPrivileges)
+            {
+                authenticationSuccessful = false;
+
+                System.Net.NetworkCredential credentials = null;
+                int authenticationReturnCode = 0;
+                WindowsIdentity currentIdentity = WindowsIdentity.GetCurrent();
+                try
+                {
+                    do
+                    {
+                        do
+                        {
+                            credentials = NativeMethods.GetCredentials(this.Handle, currentIdentity.Name, authenticationReturnCode);
+                        } while ((null != credentials) && (string.Compare(credentials.UserName, currentIdentity.Name, true) != 0));
+
+                        if (null != credentials)
+                        {
+                            authenticationReturnCode = NativeMethods.ValidateCredentials(credentials);
+                        }
+                    } while ((null != credentials) && (authenticationReturnCode != 0));
+                }
+                catch (ArgumentException excep)
+                {
+                    MessageBox.Show(this, string.Format("{0}: {1}", excep.GetType().Name, excep.Message), Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, 0);
+                }
+                catch (System.ComponentModel.Win32Exception excep)
+                {
+                    MessageBox.Show(this, string.Format("{0}: {1}", excep.GetType().Name, excep.Message), Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, 0);
+                }
+                catch (Exception excep)
+                {
+                    MessageBox.Show(this, string.Format("{0}: {1}", excep.GetType().Name, excep.Message), Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, 0);
+                }
+
+                authenticationSuccessful = (null != credentials);
+                authenticationSuccessful &= (authenticationReturnCode == 0);
+            }
+
+            if (authenticationSuccessful)
             {
                 this.DisableButtons();
                 this.appStatus.Text = string.Format(Properties.Resources.UIMessageAddingToGroup, LocalAdministratorGroup.LocalAdminGroupName);

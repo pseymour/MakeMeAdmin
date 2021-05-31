@@ -113,6 +113,20 @@
       </elements>
     </policy>
 
+    <policy name="TCPServicePort"
+             class="Machine"
+             displayName="$(string.TCPServicePortDisplayName)"
+             explainText="$(string.TCPServicePortExplainText)"
+             key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
+             valueName="TCP Service Port"
+             presentation="$(presentation.TCP_Service_Port_Spin)" >
+      <parentCategory ref="makemeadmin:MakeMeAdmin"></parentCategory>
+      <supportedOn ref="windows:SUPPORTED_Windows7" />
+      <elements>
+        <decimal id="TCPServicePortValue" required="true" valueName="TCP Service Port" minValue="1" maxValue="1440" storeAsText="false" />
+      </elements>
+    </policy>
+
     <policy name="TimeoutOverrideList"
             class="Machine"
             displayName="$(string.TimeoutOverrideDisplayName)"
@@ -148,6 +162,22 @@
       <supportedOn ref="windows:SUPPORTED_Windows7" />
       <enabledValue><decimal value="1" /></enabledValue>
       <disabledValue><delete /></disabledValue>
+    </policy>
+
+    <policy name="RequireAuthForPrivileges"
+             class="Machine"
+             displayName="$(string.RequireAuthForPrivilegesDisplayName)"
+             explainText="$(string.RequireAuthForPrivilegesExplainText)"
+             key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
+             valueName="Require Authentication For Privileges">
+      <parentCategory ref="makemeadmin:MakeMeAdmin"></parentCategory>
+      <supportedOn ref="windows:SUPPORTED_Windows7" />
+      <enabledValue>
+        <decimal value="1" />
+      </enabledValue>
+      <disabledValue>
+        <delete />
+      </disabledValue>
     </policy>
 
     <policy name="AllowRemoteRequests"

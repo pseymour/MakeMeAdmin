@@ -373,7 +373,7 @@ namespace SinclairCC.MakeMeAdmin
                 byte[] buffer = new byte[128];
                 int bytesRead = int.MinValue;
 
-                // Read the encrpyted bytes from the file.
+                // Read the encrypted bytes from the file.
                 System.IO.MemoryStream ciphertextMemoryStream = new System.IO.MemoryStream();
                 System.IO.FileStream ciphertextFileStream = new System.IO.FileStream(filePath, System.IO.FileMode.Open, System.IO.FileAccess.Read);
                 while ((bytesRead = ciphertextFileStream.Read(buffer, 0, buffer.Length)) > 0)

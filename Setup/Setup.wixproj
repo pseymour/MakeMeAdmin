@@ -134,6 +134,7 @@
     </WixExtension>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="da.wxl" />
     <EmbeddedResource Include="en-US.wxl" />
     <EmbeddedResource Include="fr.wxl" />
   </ItemGroup>

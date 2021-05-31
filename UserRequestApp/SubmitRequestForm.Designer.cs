@@ -61,12 +61,12 @@ namespace SinclairCC.MakeMeAdmin
         private System.ComponentModel.BackgroundWorker buttonStateWorker;
 
         /// <summary>
-        /// A background workr to add the current user to the Administrators group.
+        /// A background worker to add the current user to the Administrators group.
         /// </summary>
         private System.ComponentModel.BackgroundWorker addUserBackgroundWorker;
 
         /// <summary>
-        /// A background workr to remove the current user from the Administrators group.
+        /// A background worker to remove the current user from the Administrators group.
         /// </summary>
         private System.ComponentModel.BackgroundWorker removeUserBackgroundWorker;
 

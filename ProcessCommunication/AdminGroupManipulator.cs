@@ -121,32 +121,41 @@ namespace SinclairCC.MakeMeAdmin
 
 
 
-
         /// <summary>
-        /// Determines whether the given array of strings contains the given target string.
+        /// Determines whether the given array of SIDs/Identities contains the given target user identity.
         /// </summary>
-        /// <param name="stringArray">
-        /// An array to be searched for the target string.
+        /// <param name="accountList">
+        /// An array to be searched for the target identity.
         /// </param>
-        /// <param name="targetString">
-        /// The string to be searched for in the array.
+        /// <param name="userIdentity">
+        /// The user identity to check to see if they or one of the groups they belong to are in the list of identities.
         /// </param>
         /// <returns>
-        /// Returns true if the given target string is present in the array.
+        /// Returns true if the given target identity is present in the array of SIDs/Identities.
         /// If the array is null or empty, false is returned.
         /// </returns>
-        /// <remarks>
-        /// String comparisons are case-insensitive.
-        /// </remarks>
-        private static bool ArrayContainsString(string[] stringArray, string targetString)
+        private static bool AccountListContainsIdentity(string[] accountList, WindowsIdentity userIdentity)
         {
-            if ((stringArray != null) && (stringArray.Length > 0))
+            if (accountList != null)
             {
-                for (int i = 0; i < stringArray.Length; i++)
+                foreach (var account in accountList)
                 {
-                    if (string.Compare(System.Environment.ExpandEnvironmentVariables(stringArray[i]), targetString, System.Globalization.CultureInfo.CurrentCulture, System.Globalization.CompareOptions.IgnoreCase) == 0)
+                    var sid = LocalAdministratorGroup.GetSIDFromAccountName(account);
+
+                    // If the user's SID or name is in the list, return true
+                    if (sid == userIdentity.User)
                     {
                         return true;
+                    }
+
+                    // If any of the user's authorization groups are in the denied list, the user is not authorized.
+                    foreach (IdentityReference groupsid in userIdentity.Groups)
+                    {
+                        // Translate the NT Account (Domain\User) to SID if needed, and check the resulting values.
+                        if (sid == (SecurityIdentifier)groupsid.Translate(typeof(SecurityIdentifier)))
+                        {
+                            return true;
+                        }
                     }
                 }
             }
@@ -183,30 +192,10 @@ namespace SinclairCC.MakeMeAdmin
                 return false;
             }
 
-            if ((deniedSidsList != null) && (deniedSidsList.Length > 0))
-            { // The denied list contains entries. Check the user against that list first.
-
-                // If the user's SID or name is in the denied list, the user is not authorized.
-                if ((ArrayContainsString(deniedSidsList, userIdentity.User.Value)) || (ArrayContainsString(deniedSidsList, userIdentity.Name)))
-                {
-                    return false;
-                }
-
-                // If any of the user's authorization groups are in the denied list, the user is not authorized.
-                foreach (SecurityIdentifier sid in userIdentity.Groups)
-                {
-                    // Check the SID values.
-                    if (ArrayContainsString(deniedSidsList, sid.Value))
-                    {
-                        return false;
-                    }
-
-                    // Translate the SID to an NT Account (Domain\User), and check the resulting values.
-                    if (ArrayContainsString(deniedSidsList, LocalAdministratorGroup.GetAccountNameFromSID(sid)))
-                    {
-                        return false;
-                    }
-                }
+            // The denied list contains entries. Check the user against that list first.
+            if ((deniedSidsList != null) && AccountListContainsIdentity(deniedSidsList, userIdentity))
+            { 
+                return false;
             }
 
             // The user hasn't been denied yet, so now we check for authorization.
@@ -222,27 +211,9 @@ namespace SinclairCC.MakeMeAdmin
             }
             else
             { // The allowed list has entries.
-
-                // If the user's SID is in the allowed list, the user is authorized.
-                if ((ArrayContainsString(allowedSidsList, userIdentity.User.Value)) || (ArrayContainsString(allowedSidsList, userIdentity.Name)))
+                if (AccountListContainsIdentity(allowedSidsList, userIdentity))
                 {
                     return true;
-                }
-
-                // If any of the user's authorization groups are in the allowed list, the user is authorized.
-                foreach (SecurityIdentifier sid in userIdentity.Groups)
-                {
-                    // Check the SID values.
-                    if (ArrayContainsString(allowedSidsList, sid.Value))
-                    {
-                        return true;
-                    }
-
-                    // Translate the SID to an NT Account (Domain\User), and check the resulting values.
-                    if (ArrayContainsString(allowedSidsList, LocalAdministratorGroup.GetAccountNameFromSID(sid)))
-                    {
-                        return true;
-                    }
                 }
 
                 // The user was not found in the allowed list, so the user is not authorized.

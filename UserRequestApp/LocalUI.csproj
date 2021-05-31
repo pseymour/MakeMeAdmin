@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SinclairCC.MakeMeAdmin</RootNamespace>
     <AssemblyName>MakeMeAdminUI</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -92,6 +92,7 @@
     <Compile Include="RequestReasonDialog.designer.cs">
       <DependentUpon>RequestReasonDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="NativeMethods.cs" />
     <Compile Include="SubmitRequestForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -100,6 +101,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Properties\Resources.da.resx" />
     <EmbeddedResource Include="Properties\Resources.fr.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -108,6 +110,8 @@
     </EmbeddedResource>
     <EmbeddedResource Include="RequestReasonDialog.resx">
       <DependentUpon>RequestReasonDialog.cs</DependentUpon>
+    <EmbeddedResource Include="SubmitRequestForm.da.resx">
+      <DependentUpon>SubmitRequestForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SubmitRequestForm.fr.resx">
       <DependentUpon>SubmitRequestForm.cs</DependentUpon>
@@ -186,6 +190,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <XliffResource Include="MultilingualResources\LocalUI.da.xlf" />
     <XliffResource Include="MultilingualResources\LocalUI.fr.xlf" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

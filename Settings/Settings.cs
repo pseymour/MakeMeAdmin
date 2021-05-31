@@ -35,7 +35,7 @@ namespace SinclairCC.MakeMeAdmin
         /// <summary>
         /// The top-level registry key in which the settings will be stored.
         /// </summary>
-        private static RegistryKey rootRegistryKey = Registry.LocalMachine;
+        private readonly static RegistryKey rootRegistryKey = Registry.LocalMachine;
         
         /// <summary>
         /// Gets the base address for the service host that is available via TCP.
@@ -44,7 +44,7 @@ namespace SinclairCC.MakeMeAdmin
         {
             get
             {
-                return string.Format("net.tcp://{0}/MakeMeAdmin/Service", FullyQualifiedHostName);
+                return string.Format("net.tcp://{0}:{1}/MakeMeAdmin/Service", FullyQualifiedHostName, Settings.TCPServicePort);
             }
         }
 
@@ -404,13 +404,39 @@ namespace SinclairCC.MakeMeAdmin
                     return Convert.ToBoolean(preferenceOverrideSetting.Value);
                 }
                 else
-                { // Neither the policy nor the preference registry entries had a value. Return a default value of true.
+                { // Neither the policy nor the preference registry entries had a value. Return a default value of false.
                     return false;
                 }
             }
             set
             {
                 SetDWord(PreferenceRegistryKeyPath, null, "Override Removal By Outside Process", Convert.ToInt32(value));
+            }
+        }
+
+        // TODO: i18n.
+        public static bool RequireAuthenticationForPrivileges
+        {
+            get
+            {
+                int? policyOverrideSetting = GetDWord(PolicyRegistryKeyPath, null, "Require Authentication For Privileges");
+                int? preferenceOverrideSetting = GetDWord(PreferenceRegistryKeyPath, null, "Require Authentication For Privileges");
+                if (policyOverrideSetting.HasValue)
+                { // The policy setting has a value. Go with whatever it says.
+                    return Convert.ToBoolean(policyOverrideSetting.Value);
+                }
+                else if (preferenceOverrideSetting.HasValue)
+                { // The preference setting has a value. Go with whatever it says.
+                    return Convert.ToBoolean(preferenceOverrideSetting.Value);
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value. Return a default value of false.
+                    return false;
+                }
+            }
+            set
+            {
+                SetDWord(PreferenceRegistryKeyPath, null, "Require Authentication For Privileges", Convert.ToInt32(value));
             }
         }
 
@@ -465,60 +491,6 @@ namespace SinclairCC.MakeMeAdmin
                 SetDWord(PreferenceRegistryKeyPath, null, "End Remote Sessions Upon Expiration", Convert.ToInt32(value));
             }
         }
-
-        /*
-        public static bool PromptForReason
-        {
-            get
-            {
-                
-                int? policySetting = GetDWord(PolicyRegistryKeyPath, null, "Prompt For Reason");
-                int? preferenceSetting = GetDWord(PreferenceRegistryKeyPath, null, "Prompt For Reason");
-                if (policySetting.HasValue)
-                { // The policy setting has a value. Go with whatever it says.
-                    return Convert.ToBoolean(policySetting.Value);
-                }
-                else if (preferenceSetting.HasValue)
-                { // The preference setting has a value. Go with whatever it says.
-                    return Convert.ToBoolean(preferenceSetting.Value);
-                }
-                else
-                { // Neither the policy nor the preference registry entries had a value. Return a default value of false.
-                    return false;
-                }
-            }
-            set
-            {
-                SetDWord(PreferenceRegistryKeyPath, null, "Prompt For Reason", Convert.ToInt32(value));
-            }
-        }
-
-        public static bool RequireReason
-        {
-            get
-            {
-
-                int? policySetting = GetDWord(PolicyRegistryKeyPath, null, "Require Reason");
-                int? preferenceSetting = GetDWord(PreferenceRegistryKeyPath, null, "Require Reason");
-                if (policySetting.HasValue)
-                { // The policy setting has a value. Go with whatever it says.
-                    return Convert.ToBoolean(policySetting.Value);
-                }
-                else if (preferenceSetting.HasValue)
-                { // The preference setting has a value. Go with whatever it says.
-                    return Convert.ToBoolean(preferenceSetting.Value);
-                }
-                else
-                { // Neither the policy nor the preference registry entries had a value. Return a default value of false.
-                    return false;
-                }
-            }
-            set
-            {
-                SetDWord(PreferenceRegistryKeyPath, null, "Require Reason", Convert.ToInt32(value));
-            }
-        }
-        */
 
         public static ReasonPrompt PromptForReason
         {
@@ -647,6 +619,31 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+        // TODO: i18n.
+        public static int TCPServicePort
+        {
+            get
+            {
+                int? policyPortSetting = GetDWord(PolicyRegistryKeyPath, null, "TCP Service Port");
+                int? preferencePortSetting = GetDWord(PreferenceRegistryKeyPath, null, "TCP Service Port");
+                if (policyPortSetting.HasValue)
+                { // The policy setting has a value. Go with whatever it says.
+                    return policyPortSetting.Value;
+                }
+                else if (preferencePortSetting.HasValue)
+                { // The preference setting has a value. Go with whatever it says.
+                    return preferencePortSetting.Value;
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value. Return a default timeout value of 808.
+                    return 808;
+                }
+            }
+            set
+            {
+                SetDWord(PreferenceRegistryKeyPath, null, "TCP Service Port", value);
+            }
+        }
 
         /// <summary>
         /// Removes from the computer all of the settings related to this application.
