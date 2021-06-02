@@ -17,7 +17,7 @@
     <OutputPath>bin\$(Configuration) $(Platform)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration) $(Platform)\</IntermediateOutputPath>
     <DefineConstants>Debug</DefineConstants>
-    <SuppressIces>ICE57</SuppressIces>
+    <SuppressIces>ICE57;ICE43;</SuppressIces>
     <Cultures>
     </Cultures>
   </PropertyGroup>
@@ -36,7 +36,7 @@
     <OutputPath>bin\$(Configuration) $(Platform)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration) $(Platform)\</IntermediateOutputPath>
     <SuppressValidation>False</SuppressValidation>
-    <SuppressIces>ICE57</SuppressIces>
+    <SuppressIces>ICE57;ICE43;</SuppressIces>
     <Cultures>
     </Cultures>
   </PropertyGroup>
