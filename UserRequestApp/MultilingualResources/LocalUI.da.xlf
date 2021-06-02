@@ -27,8 +27,8 @@
           <target state="final">Giv mig Administrator Rettigheder</target>
         </trans-unit>
         <trans-unit id="SecurityLock" translate="no" extype="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
-          <source>..\Resources\SecurityLock.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</source>
-          <target state="final">..\Resources\SecurityLock.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</target>
+          <source>..\Resources\SecurityLock.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</source>
+          <target state="final">..\Resources\SecurityLock.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</target>
         </trans-unit>
         <trans-unit id="StackTrace" translate="yes" xml:space="preserve">
           <source>Stack Trace</source>
