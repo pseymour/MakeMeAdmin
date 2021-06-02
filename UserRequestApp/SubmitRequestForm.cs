@@ -151,134 +151,7 @@ namespace SinclairCC.MakeMeAdmin
         /// </param>
         private void ClickSubmitButton(object sender, EventArgs e)
         {
-            bool enableAdminRights = false;
-
-            switch (Settings.PromptForReason)
-            {
-                case ReasonPrompt.None:
-                    // No reason dialog box required.
-                    enableAdminRights = true;
-                    break;
-
-                case ReasonPrompt.Optional:
-
-                    // The reason dialog is optional, so rights are always allowed.
-                    enableAdminRights = true;
-
-                    if ((Settings.AllowFreeFormReason) || ((Settings.CannedReasons != null) && (Settings.CannedReasons.Length > 0)))
-                    {
-                        using (RequestReasonDialog reasonDialog = new RequestReasonDialog())
-                        {
-                            switch (reasonDialog.ShowDialog(this))
-                            {
-                                case DialogResult.Cancel:
-                                    // User did not provide a reason, but is not obligated to do so.
-                                    break;
-                                case DialogResult.OK:
-                                    ApplicationLog.WriteEvent(string.Format(Properties.Resources.ReasonProvidedByUser, reasonDialog.Reason), EventID.ReasonProvidedByUser, System.Diagnostics.EventLogEntryType.Information);
-                                    break;
-                                default:
-                                    // Not sure how we got to this point, because it should never happen.
-                                    break;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        ApplicationLog.WriteEvent(Properties.Resources.ReasonDialogEmpty, EventID.ReasonDialogEmpty, System.Diagnostics.EventLogEntryType.Warning);
-                    }
-
-                    break;
-
-                case ReasonPrompt.Required:
-
-                    if ((Settings.AllowFreeFormReason) || ((Settings.CannedReasons != null) && (Settings.CannedReasons.Length > 0)))
-                    {
-                        using (RequestReasonDialog reasonDialog = new RequestReasonDialog())
-                        {
-                            switch (reasonDialog.ShowDialog(this))
-                            {
-                                case DialogResult.Cancel:
-                                    enableAdminRights = false;
-                                    MessageBox.Show(this, Properties.Resources.MandatoryReasonNotProvided, Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
-                                    break;
-                                case DialogResult.OK:
-                                    if (string.Compare(reasonDialog.Reason, string.Format("{0}: ", Properties.Resources.OtherReason), true) == 0)
-                                    { // User didn't really provide a reason. The string is blank.
-                                        enableAdminRights = false;
-                                        MessageBox.Show(this, Properties.Resources.MandatoryReasonNotProvided, Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
-                                    }
-                                    else
-                                    {
-                                        enableAdminRights = true;
-                                        ApplicationLog.WriteEvent(string.Format(Properties.Resources.ReasonProvidedByUser, reasonDialog.Reason), EventID.ReasonProvidedByUser, System.Diagnostics.EventLogEntryType.Information);
-                                    }
-                                    break;
-                                default:
-                                    // Not sure how we got to this point, because it should never happen.
-                                    // Better to be safe than sorry, so no admin rights.
-                                    enableAdminRights = false;
-                                    break;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show(this, Properties.Resources.ReasonDialogBoxPrevented, Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
-                        enableAdminRights = false;
-                    }
-
-                    break;
-                
-                default:
-                    // TODO: i18n
-                    ApplicationLog.WriteEvent(string.Format("Unexpected value for the reason prompt setting: {0:N0}", ((int)(Settings.PromptForReason))), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Warning);
-                    enableAdminRights = true;
-                    break;
-            }
-
-            if (enableAdminRights)
-            bool authenticationSuccessful = true;
-            if (Settings.RequireAuthenticationForPrivileges)
-            {
-                authenticationSuccessful = false;
-
-                System.Net.NetworkCredential credentials = null;
-                int authenticationReturnCode = 0;
-                WindowsIdentity currentIdentity = WindowsIdentity.GetCurrent();
-                try
-                {
-                    do
-                    {
-                        do
-                        {
-                            credentials = NativeMethods.GetCredentials(this.Handle, currentIdentity.Name, authenticationReturnCode);
-                        } while ((null != credentials) && (string.Compare(credentials.UserName, currentIdentity.Name, true) != 0));
-
-                        if (null != credentials)
-                        {
-                            authenticationReturnCode = NativeMethods.ValidateCredentials(credentials);
-                        }
-                    } while ((null != credentials) && (authenticationReturnCode != 0));
-                }
-                catch (ArgumentException excep)
-                {
-                    MessageBox.Show(this, string.Format("{0}: {1}", excep.GetType().Name, excep.Message), Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, 0);
-                }
-                catch (System.ComponentModel.Win32Exception excep)
-                {
-                    MessageBox.Show(this, string.Format("{0}: {1}", excep.GetType().Name, excep.Message), Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, 0);
-                }
-                catch (Exception excep)
-                {
-                    MessageBox.Show(this, string.Format("{0}: {1}", excep.GetType().Name, excep.Message), Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, 0);
-                }
-
-                authenticationSuccessful = (null != credentials);
-                authenticationSuccessful &= (authenticationReturnCode == 0);
-            }
-
-            if (authenticationSuccessful)
+            if (AuthenticationSuccessful && ReasonDialogSatisfied)
             {
                 this.DisableButtons();
                 this.appStatus.Text = string.Format(Properties.Resources.UIMessageAddingToGroup, LocalAdministratorGroup.LocalAdminGroupName);
@@ -286,6 +159,147 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+        private bool AuthenticationSuccessful
+        {
+            get
+            {
+                bool authenticationSuccessful = true;
+                if (Settings.RequireAuthenticationForPrivileges)
+                {
+                    authenticationSuccessful = false;
+
+                    System.Net.NetworkCredential credentials = null;
+                    int authenticationReturnCode = 0;
+                    WindowsIdentity currentIdentity = WindowsIdentity.GetCurrent();
+                    try
+                    {
+                        do
+                        {
+                            do
+                            {
+                                credentials = NativeMethods.GetCredentials(this.Handle, currentIdentity.Name, authenticationReturnCode);
+                            } while ((null != credentials) && (string.Compare(credentials.UserName, currentIdentity.Name, true) != 0));
+
+                            if (null != credentials)
+                            {
+                                authenticationReturnCode = NativeMethods.ValidateCredentials(credentials);
+                            }
+                        } while ((null != credentials) && (authenticationReturnCode != 0));
+                    }
+                    catch (ArgumentException excep)
+                    {
+                        MessageBox.Show(this, string.Format("{0}: {1}", excep.GetType().Name, excep.Message), Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, 0);
+                    }
+                    catch (System.ComponentModel.Win32Exception excep)
+                    {
+                        MessageBox.Show(this, string.Format("{0}: {1}", excep.GetType().Name, excep.Message), Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, 0);
+                    }
+                    catch (Exception excep)
+                    {
+                        MessageBox.Show(this, string.Format("{0}: {1}", excep.GetType().Name, excep.Message), Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, 0);
+                    }
+
+                    authenticationSuccessful = (null != credentials);
+                    authenticationSuccessful &= (authenticationReturnCode == 0);
+                }
+                return authenticationSuccessful;
+            }
+        }
+
+
+        private bool ReasonDialogSatisfied
+        {
+            get
+            {
+                bool dialogSatisfied = false;
+
+                switch (Settings.PromptForReason)
+                {
+                    case ReasonPrompt.None:
+                        // No reason dialog box required.
+                        dialogSatisfied = true;
+                        break;
+
+                    case ReasonPrompt.Optional:
+
+                        // The reason dialog is optional, so rights are always allowed.
+                        dialogSatisfied = true;
+
+                        if ((Settings.AllowFreeFormReason) || ((Settings.CannedReasons != null) && (Settings.CannedReasons.Length > 0)))
+                        {
+                            using (RequestReasonDialog reasonDialog = new RequestReasonDialog())
+                            {
+                                switch (reasonDialog.ShowDialog(this))
+                                {
+                                    case DialogResult.Cancel:
+                                        // User did not provide a reason, but is not obligated to do so.
+                                        break;
+                                    case DialogResult.OK:
+                                        ApplicationLog.WriteEvent(string.Format(Properties.Resources.ReasonProvidedByUser, reasonDialog.Reason), EventID.ReasonProvidedByUser, System.Diagnostics.EventLogEntryType.Information);
+                                        break;
+                                    default:
+                                        // Not sure how we got to this point, because it should never happen.
+                                        break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            ApplicationLog.WriteEvent(Properties.Resources.ReasonDialogEmpty, EventID.ReasonDialogEmpty, System.Diagnostics.EventLogEntryType.Warning);
+                        }
+
+                        break;
+
+                    case ReasonPrompt.Required:
+
+                        if ((Settings.AllowFreeFormReason) || ((Settings.CannedReasons != null) && (Settings.CannedReasons.Length > 0)))
+                        {
+                            using (RequestReasonDialog reasonDialog = new RequestReasonDialog())
+                            {
+                                switch (reasonDialog.ShowDialog(this))
+                                {
+                                    case DialogResult.Cancel:
+                                        dialogSatisfied = false;
+                                        MessageBox.Show(this, Properties.Resources.MandatoryReasonNotProvided, Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
+                                        break;
+                                    case DialogResult.OK:
+                                        if (string.Compare(reasonDialog.Reason, string.Format("{0}: ", Properties.Resources.OtherReason), true) == 0)
+                                        { // User didn't really provide a reason. The string is blank.
+                                            dialogSatisfied = false;
+                                            MessageBox.Show(this, Properties.Resources.MandatoryReasonNotProvided, Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
+                                        }
+                                        else
+                                        {
+                                            dialogSatisfied = true;
+                                            ApplicationLog.WriteEvent(string.Format(Properties.Resources.ReasonProvidedByUser, reasonDialog.Reason), EventID.ReasonProvidedByUser, System.Diagnostics.EventLogEntryType.Information);
+                                        }
+                                        break;
+                                    default:
+                                        // Not sure how we got to this point, because it should never happen.
+                                        // Better to be safe than sorry, so no admin rights.
+                                        dialogSatisfied = false;
+                                        break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show(this, Properties.Resources.ReasonDialogBoxPrevented, Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
+                            dialogSatisfied = false;
+                        }
+
+                        break;
+
+                    default:
+                        // TODO: i18n
+                        ApplicationLog.WriteEvent(string.Format("Unexpected value for the reason prompt setting: {0:N0}", ((int)(Settings.PromptForReason))), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Warning);
+                        dialogSatisfied = true;
+                        break;
+                }
+
+                return dialogSatisfied;
+            }
+        }
 
         /// <summary>
         /// This function runs when RunWorkerAsync() is called by the "grant admin rights" BackgroundWorker object.

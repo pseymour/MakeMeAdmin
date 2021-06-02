@@ -138,9 +138,9 @@ namespace SinclairCC.MakeMeAdmin
         {
             if (accountList != null)
             {
-                foreach (var account in accountList)
+                foreach (string account in accountList)
                 {
-                    var sid = LocalAdministratorGroup.GetSIDFromAccountName(account);
+                    SecurityIdentifier sid = LocalAdministratorGroup.GetSIDFromAccountName(account);
 
                     // If the user's SID or name is in the list, return true
                     if (sid == userIdentity.User)

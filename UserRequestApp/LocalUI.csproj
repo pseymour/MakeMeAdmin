@@ -105,11 +105,16 @@
     <EmbeddedResource Include="Properties\Resources.fr.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="RequestReasonDialog.da.resx">
+      <DependentUpon>RequestReasonDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="RequestReasonDialog.fr.resx">
       <DependentUpon>RequestReasonDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="RequestReasonDialog.resx">
       <DependentUpon>RequestReasonDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="SubmitRequestForm.da.resx">
       <DependentUpon>SubmitRequestForm.cs</DependentUpon>
     </EmbeddedResource>

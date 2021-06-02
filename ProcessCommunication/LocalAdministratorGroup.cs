@@ -39,7 +39,7 @@ namespace SinclairCC.MakeMeAdmin
         /// <summary>
         /// The security identifier (SID) of the local Administrators group.
         /// </summary>
-        private static SecurityIdentifier _localAdminsGroupSid = null;
+        private static SecurityIdentifier localAdminsGroupSid = null;
 
         /// <summary>
         /// Represents the local Administrators group.
@@ -88,11 +88,11 @@ namespace SinclairCC.MakeMeAdmin
         {
             get
             {
-                if (_localAdminsGroupSid == null)
+                if (localAdminsGroupSid == null)
                 {
-                    _localAdminsGroupSid = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
+                    localAdminsGroupSid = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
                 }
-                return _localAdminsGroupSid;
+                return localAdminsGroupSid;
             }
         }
 
@@ -102,7 +102,7 @@ namespace SinclairCC.MakeMeAdmin
         public static string LocalAdminGroupName
         {
             get {
-                var localAdminGroupNTAccount = LocalAdminsGroupSid.Translate(typeof(NTAccount));
+                IdentityReference localAdminGroupNTAccount = LocalAdminsGroupSid.Translate(typeof(NTAccount));
                 return localAdminGroupNTAccount?.Value.Split('\\').ElementAtOrDefault(1);
             }
         }
@@ -504,9 +504,9 @@ namespace SinclairCC.MakeMeAdmin
                 }
                 else
                 {
-                    var resolvedAccountName = Environment.ExpandEnvironmentVariables(accountName.Replace(".\\", "%COMPUTERNAME%\\"));
+                    string resolvedAccountName = Environment.ExpandEnvironmentVariables(accountName.Replace(".\\", "%COMPUTERNAME%\\"));
                     NTAccount account = new NTAccount(resolvedAccountName);
-                    var sid = (SecurityIdentifier)account?.Translate(typeof(SecurityIdentifier));
+                    SecurityIdentifier sid = (SecurityIdentifier)account?.Translate(typeof(SecurityIdentifier));
                     return sid;
                 }
             }

@@ -186,7 +186,7 @@ namespace SinclairCC.MakeMeAdmin
 
         public static IntPtr Create(string name)
         {
-            var securityAttributes = new SECURITY_ATTRIBUTES();
+            SECURITY_ATTRIBUTES securityAttributes = new SECURITY_ATTRIBUTES();
             securityAttributes.nLength = Marshal.SizeOf(securityAttributes);
 
             return CreateDesktop(name, null, null, (int)DF_ALLOWOTHERACCOUNTHOOK, AccessRights, ref securityAttributes);
@@ -226,7 +226,7 @@ namespace SinclairCC.MakeMeAdmin
 
             PROCESS_INFORMATION pi = new PROCESS_INFORMATION();
 
-            var lpCurrentDirectory = System.IO.Path.GetDirectoryName(path);
+            string lpCurrentDirectory = System.IO.Path.GetDirectoryName(path);
             CreateProcess(path, null, IntPtr.Zero, IntPtr.Zero, true, NORMAL_PRIORITY_CLASS, IntPtr.Zero, lpCurrentDirectory, ref si, ref pi);
         }
 
