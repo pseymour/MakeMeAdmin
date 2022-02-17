@@ -30,7 +30,8 @@
       <string id="AutomaticallyAddDeniedEntitiesExplainText">List of SIDs or names for users or groups that are never allowed to be added automatically to the Administrators group upon logon. Denials take precedence over allowed entities.</string>
 
       <string id="AdminRightsTimeoutDisplayName">Admin Rights Timeout</string>
-      <string id="AdminRightsTimeoutExplainText">Specifies the amount of time, in minutes, for which administrative rights will be granted.</string>
+      <string id="AdminRightsTimeoutExplainText"><![CDATA[Specifies the amount of time, in minutes, for which administrative rights will be granted.
+Default: 10 minutes]]></string>
 
       <string id="TCPServicePortDisplayName">TCP Service Port</string>
       <string id="TCPServicePortExplainText">Specifies the TCP port to be used for remote administrative rights requests.</string>
