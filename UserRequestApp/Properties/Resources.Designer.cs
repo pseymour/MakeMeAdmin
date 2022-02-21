@@ -79,6 +79,16 @@ namespace SinclairCC.MakeMeAdmin.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mon 02/21/2022 14:43:45.62 
+        ///.
+        /// </summary>
+        public static string BuildDate {
+            get {
+                return ResourceManager.GetString("BuildDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Checking administrator status....
         /// </summary>
         public static string CheckingAdminStatus {

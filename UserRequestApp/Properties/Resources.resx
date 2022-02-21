@@ -123,6 +123,10 @@
   <data name="ApplicationName" xml:space="preserve">
     <value>Make Me Admin</value>
   </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="BuildDate" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BuildDate.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
   <data name="CheckingAdminStatus" xml:space="preserve">
     <value>Checking administrator status...</value>
   </data>
@@ -149,7 +153,6 @@ A reason is required in order to obtain administrator rights, but your administr
   <data name="ReasonProvidedByUser" xml:space="preserve">
     <value>The user provided the following reason for administrator rights: {0}</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="SecurityLock" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SecurityLock.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
