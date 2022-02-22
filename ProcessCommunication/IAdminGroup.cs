@@ -21,11 +21,16 @@
 namespace SinclairCC.MakeMeAdmin
 {
     using System.ServiceModel;
+    using System;
 
     /// <summary>
     /// This interface defines the WCF service contract.
     /// </summary>
-    [ServiceContract(Namespace = "http://apps.sinclair.edu/makemeadmin/2017/10/")]
+
+    // JDM: I feel like since I'm changing the definition of the interface that I should change the ServiceContract namespace, to avoid confusion.
+    [ServiceContract(Namespace = "https://github.com/misartg/MakeMeAdmin/2022/02/21/")]
+    //[ServiceContract(Namespace = "http://apps.sinclair.edu/makemeadmin/2017/10/")]
+
     public interface IAdminGroup
     {
         /// <summary>
@@ -56,5 +61,19 @@ namespace SinclairCC.MakeMeAdmin
 
         [OperationContract]
         bool UserIsAuthorized(string[] allowedSidsList, string[] deniedSidsList);
+
+        // JDM: We're adding this alternative to "UserIsAuthorized" where the user's identity is sent to the function for evaluation.
+        //
+        //      This is because on my systems/environmment, the identity obtained from inside the implementation UserIsAuthorized(2) function
+        //      will refer to the SYSTEM user, rather than the logged in user. I think it's getting the user account of the user running the
+        //      MakeMeAdmin service instead of the user that's logged in to the computer. 
+        //
+        //      I'm hoping by implementing a version that takes an identity that it will evaluate properly on my computers.
+        //
+        //      NOTE: I'm using the IntPtr for the Windows Identity "Token" because I had trouble sending a full Windows Identity object; I think
+        //      it might be too complex to be easily serialized. Sending the token and building the object on this side seemed the simplest way
+        //      out for a non-expert like me. 
+        [OperationContract]
+        bool UserIsAuthorizedWithIdentityToken(IntPtr userIdentityToken, string[] allowedSidsList, string[] deniedSidsList);
     }
 }

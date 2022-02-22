@@ -166,9 +166,6 @@ namespace SinclairCC.MakeMeAdmin
         /// <summary>
         /// Determines whether the given user is authorized to obtain administrator rights.
         /// </summary>
-        /// <param name="userIdentity">
-        /// An identity object representing the user whose authorization is to be checked.
-        /// </param>
         /// <param name="allowedSidsList">
         /// The list of allowed SIDs and principal names against which the user's identity is checked.
         /// </param>
@@ -185,7 +182,73 @@ namespace SinclairCC.MakeMeAdmin
             if (ServiceSecurityContext.Current != null)
             {
                 userIdentity = ServiceSecurityContext.Current.WindowsIdentity;
+                return this.UserIsAuthorizedWithIdentityToken(userIdentity.Token, allowedSidsList, deniedSidsList);
             }
+            
+            return false; 
+
+            // JDM: Original code commented out as we'll call the UserIsAuthorizedWithIdentityToken() function instead. 
+            /*if (userIdentity == null)
+            {
+                return false;
+            }
+
+            // The denied list contains entries. Check the user against that list first.
+            if ((deniedSidsList != null) && AccountListContainsIdentity(deniedSidsList, userIdentity))
+            { 
+                return false;
+            }
+
+            // The user hasn't been denied yet, so now we check for authorization.
+
+            // Check the authorization list.
+            if (allowedSidsList == null)
+            { // The allowed list is null, meaning everyone is allowed administrator rights.
+                return true;
+            }
+            else if (allowedSidsList.Length == 0)
+            { // The allowed list is empty, meaning no one is allowed administrator rights.
+                return false;
+            }
+            else
+            { // The allowed list has entries.
+                if (AccountListContainsIdentity(allowedSidsList, userIdentity))
+                {
+                    return true;
+                }
+
+                // The user was not found in the allowed list, so the user is not authorized.
+                return false;
+            }*/
+        }
+
+        // JDM: Adding this implementation, largely a copy/paste of the 2-param UserIsAuthorized version to call this one. 
+        //      Going to refactor the 2-param UserIsAuthorized to call this function, to make things a little simpler to understand. 
+
+        /// <summary>
+        /// Determines whether the given user is authorized to obtain administrator rights.
+        /// </summary>
+        /// <param name="userIdentityToken">
+        /// A token that can be used to re-create an identity object representing the user whose authorization is to be checked.
+        /// </param>
+        /// <param name="allowedSidsList">
+        /// The list of allowed SIDs and principal names against which the user's identity is checked.
+        /// </param>
+        /// <param name="deniedSidsList">
+        /// The list of denied SIDs and principal names against which the user's identity is checked.
+        /// </param>
+        /// <returns>
+        /// Returns true if the user is authorized to obtain administrator rights.
+        /// </returns>
+        public bool UserIsAuthorizedWithIdentityToken(IntPtr userIdentityToken, string[] allowedSidsList, string[] deniedSidsList)
+        {
+            // JDM: Reconstitute our userIdentity since we had trouble sending it over directly.  
+            //      Our errors kind of looked like this:
+            /*
+             * Failed to process session change. System.ServiceModel.CommunicationException: There was an error while trying to serialize parameter http://apps.sinclair.edu/makemeadmin/2017/10/:userIdentity. The InnerException message was 'Type 'System.IntPtr' with data contract name 'IntPtr:http://schemas.datacontract.org/2004/07/System' is not expected. Consider using a DataContractResolver if you are using DataContractSerializer or add any types not known statically to the list of known types - for example, by using the KnownTypeAttribute attribute or by adding them to the list of known types passed to the serializer.'.  Please see InnerException for more details. ---> System.Runtime.Serialization.SerializationException: Type 'System.IntPtr' with data contract name 'IntPtr:http://schemas.datacontract.org/2004/07/System' is not expected. Consider using a DataContractResolver if you are using DataContractSerializer or add any types not known statically to the list of known types - for example, by using the KnownTypeAttribute attribute or by adding them
+             */
+            //      But going to the IntPtr token instead seems to work. 
+            WindowsIdentity userIdentity = new WindowsIdentity(userIdentityToken);  
 
             if (userIdentity == null)
             {
@@ -194,7 +257,7 @@ namespace SinclairCC.MakeMeAdmin
 
             // The denied list contains entries. Check the user against that list first.
             if ((deniedSidsList != null) && AccountListContainsIdentity(deniedSidsList, userIdentity))
-            { 
+            {
                 return false;
             }
 

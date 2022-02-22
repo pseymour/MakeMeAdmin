@@ -444,7 +444,11 @@ namespace SinclairCC.MakeMeAdmin
                         NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
                         ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(binding, Settings.NamedPipeServiceBaseAddress);
                         IAdminGroup channel = namedPipeFactory.CreateChannel();
-                        bool userIsAuthorizedForAutoAdd = channel.UserIsAuthorized(Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied);
+
+                        // JDM: Switch from using the 2-parameter UserIsAuthorized to the 3-paramater UserIsAuthorizedWithIdentityToken().
+                        //      On my systems, the 2-param version was evaluting the "NT AUTHORITY\SYSTEM" (S-1-5-18) user instead of the logged-in user.
+                        //bool userIsAuthorizedForAutoAdd = channel.UserIsAuthorized(Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied);
+                        bool userIsAuthorizedForAutoAdd = channel.UserIsAuthorizedWithIdentityToken(userIdentity.Token, Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied);
                         namedPipeFactory.Close();
 
                         // If the user is in the automatic add list, then add them to the Administrators group.

@@ -11,8 +11,9 @@
           <target state="final">Prêt.</target>
         </trans-unit>
         <trans-unit id="ApplicationName" translate="yes" xml:space="preserve">
-          <source>Make Me Admin</source>
-          <target state="final">Make Me Admin</target>
+          <source>Make Me Admin (MIS ARTG fork)</source>
+          <target state="needs-review-translation">Make Me Admin</target>
+          <note from="MultilingualUpdate" annotates="source" priority="2">Please verify the translation’s accuracy as the source string was updated after it was translated.</note>
         </trans-unit>
         <trans-unit id="CheckingAdminStatus" translate="yes" xml:space="preserve">
           <source>Checking administrator status...</source>
@@ -47,8 +48,9 @@
           <target state="final">Nous vous retirons du groupe {0}.</target>
         </trans-unit>
         <trans-unit id="UIMessageUnauthorized" translate="yes" xml:space="preserve">
-          <source>You are not authorized to use this application.</source>
-          <target state="final">Vous n'êtes pas autorisé à utiliser cette application.</target>
+          <source>You are not authorized to escalate privileges using this application.</source>
+          <target state="needs-review-translation">Vous n'êtes pas autorisé à utiliser cette application.</target>
+          <note from="MultilingualUpdate" annotates="source" priority="2">Please verify the translation’s accuracy as the source string was updated after it was translated.</note>
         </trans-unit>
         <trans-unit id="ErrorMessage" translate="yes" xml:space="preserve">
           <source>Error Message</source>

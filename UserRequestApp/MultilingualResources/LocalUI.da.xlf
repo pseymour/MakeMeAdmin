@@ -11,8 +11,8 @@
           <target state="final">Klar.</target>
         </trans-unit>
         <trans-unit id="ApplicationName" translate="yes" xml:space="preserve">
-          <source>Make Me Admin</source>
-          <target state="new">Make Me Admin</target>
+          <source>Make Me Admin (MIS ARTG fork)</source>
+          <target state="new">Make Me Admin (MIS ARTG fork)</target>
         </trans-unit>
         <trans-unit id="CheckingAdminStatus" translate="yes" xml:space="preserve">
           <source>Checking administrator status...</source>
@@ -67,8 +67,9 @@
           <target state="final">Fjerner dig fra {0} gruppen.</target>
         </trans-unit>
         <trans-unit id="UIMessageUnauthorized" translate="yes" xml:space="preserve">
-          <source>You are not authorized to use this application.</source>
-          <target state="final">Du har ikke rettigheder til at bruge denne applikation.</target>
+          <source>You are not authorized to escalate privileges using this application.</source>
+          <target state="needs-review-translation">Du har ikke rettigheder til at bruge denne applikation.</target>
+          <note from="MultilingualUpdate" annotates="source" priority="2">Please verify the translation’s accuracy as the source string was updated after it was translated.</note>
         </trans-unit>
         <trans-unit id="MandatoryReasonNotProvided" translate="yes" xml:space="preserve">
           <source>Unable to provide you with administrator rights.

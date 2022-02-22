@@ -161,7 +161,9 @@ namespace SinclairCC.MakeMeAdmin
             // TODO: Only do this if the user is not a member of the group?
 
             AdminGroupManipulator adminGroupManipulator = new AdminGroupManipulator();
-            bool userIsAuthorized = adminGroupManipulator.UserIsAuthorized(Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
+            // JDM: Change this call to the version that uses the identity token. 
+            //bool userIsAuthorized = adminGroupManipulator.UserIsAuthorized(Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
+            bool userIsAuthorized = adminGroupManipulator.UserIsAuthorizedWithIdentityToken(userIdentity.Token, Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
 
             if (!string.IsNullOrEmpty(remoteAddress))
             { // Request is from a remote computer. Check the remote authorization list.

@@ -121,7 +121,7 @@
     <value>Ready.</value>
   </data>
   <data name="ApplicationName" xml:space="preserve">
-    <value>Make Me Admin</value>
+    <value>Make Me Admin (MIS ARTG fork)</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="BuildDate" type="System.Resources.ResXFileRef, System.Windows.Forms">
@@ -184,6 +184,6 @@ A reason is required in order to obtain administrator rights, but your administr
     <value>Removing you from the {0} group.</value>
   </data>
   <data name="UIMessageUnauthorized" xml:space="preserve">
-    <value>You are not authorized to use this application.</value>
+    <value>You are not authorized to escalate privileges using this application.</value>
   </data>
 </root>

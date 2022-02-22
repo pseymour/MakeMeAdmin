@@ -70,7 +70,7 @@ namespace SinclairCC.MakeMeAdmin.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Make Me Admin.
+        ///   Looks up a localized string similar to Make Me Admin (MIS ARTG fork).
         /// </summary>
         public static string ApplicationName {
             get {
@@ -79,7 +79,7 @@ namespace SinclairCC.MakeMeAdmin.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mon 02/21/2022 14:43:45.62 
+        ///   Looks up a localized string similar to Tue 02/22/2022 13:57:19.65 
         ///.
         /// </summary>
         public static string BuildDate {
@@ -254,7 +254,7 @@ namespace SinclairCC.MakeMeAdmin.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You are not authorized to use this application..
+        ///   Looks up a localized string similar to You are not authorized to escalate privileges using this application..
         /// </summary>
         public static string UIMessageUnauthorized {
             get {
