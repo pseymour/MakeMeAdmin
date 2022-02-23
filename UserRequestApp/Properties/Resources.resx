@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ApplicationIsReady" xml:space="preserve">
-    <value>Ready.</value>
+    <value>Ready; misartg's fork of Make Me Admin.</value>
   </data>
   <data name="ApplicationName" xml:space="preserve">
-    <value>Make Me Admin (MIS ARTG fork)</value>
+    <value>Make Me Admin</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="BuildDate" type="System.Resources.ResXFileRef, System.Windows.Forms">

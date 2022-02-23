@@ -408,7 +408,7 @@ namespace SinclairCC.MakeMeAdmin
                             if (
                                 (Settings.AutomaticAddAllowed != null) &&
                                 (Settings.AutomaticAddAllowed.Length > 0) &&
-                                (adminGroup.UserIsAuthorized(Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied))
+                                (adminGroup.UserIsAuthorizedWithIdentityToken(userIdentity.Token, Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied))  //JDM: I'm not sure we need to change this one. I think it might come into play if we had the "enforcing" settings of MMA in play, where it would remove admins added outside of MMA. I think we want to change it, since it still has potential to return the wrong value and we have right one easily available.
                                )
                             { // The user is an automatically-added user.
 

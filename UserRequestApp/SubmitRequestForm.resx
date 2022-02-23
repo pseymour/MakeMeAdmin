@@ -123,13 +123,10 @@
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="addMeButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>18, 18</value>
-  </data>
-  <data name="addMeButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 5, 4, 5</value>
+    <value>12, 12</value>
   </data>
   <data name="addMeButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>470, 69</value>
+    <value>313, 45</value>
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="addMeButton.TabIndex" type="System.Int32, mscorlib">
@@ -160,13 +157,10 @@
     <value>Top, Left, Right</value>
   </data>
   <data name="removeMeButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>18, 100</value>
-  </data>
-  <data name="removeMeButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 5, 4, 5</value>
+    <value>12, 65</value>
   </data>
   <data name="removeMeButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>470, 69</value>
+    <value>313, 45</value>
   </data>
   <data name="removeMeButton.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -193,7 +187,7 @@
     <value>263, 17</value>
   </metadata>
   <data name="appStatus.Size" type="System.Drawing.Size, System.Drawing">
-    <value>483, 25</value>
+    <value>322, 17</value>
   </data>
   <data name="appStatus.Text" xml:space="preserve">
     <value>Ready.</value>
@@ -202,13 +196,10 @@
     <value>MiddleLeft</value>
   </data>
   <data name="statusStrip1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 188</value>
-  </data>
-  <data name="statusStrip1.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>2, 0, 21, 0</value>
+    <value>0, 121</value>
   </data>
   <data name="statusStrip1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>506, 32</value>
+    <value>337, 22</value>
   </data>
   <data name="statusStrip1.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -247,13 +238,10 @@
     <value>True</value>
   </metadata>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>9, 20</value>
+    <value>6, 13</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>506, 220</value>
-  </data>
-  <data name="$this.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 5, 4, 5</value>
+    <value>337, 143</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Make Me Admin</value>

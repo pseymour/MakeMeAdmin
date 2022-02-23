@@ -7,12 +7,13 @@
     <body>
       <group id="LOCALUI/PROPERTIES/RESOURCES.RESX" datatype="resx">
         <trans-unit id="ApplicationIsReady" translate="yes" xml:space="preserve">
-          <source>Ready.</source>
-          <target state="final">Klar.</target>
+          <source>Ready; misartg's fork of Make Me Admin.</source>
+          <target state="needs-review-translation">Klar.</target>
+          <note from="MultilingualUpdate" annotates="source" priority="2">Please verify the translation’s accuracy as the source string was updated after it was translated.</note>
         </trans-unit>
         <trans-unit id="ApplicationName" translate="yes" xml:space="preserve">
-          <source>Make Me Admin (MIS ARTG fork)</source>
-          <target state="new">Make Me Admin (MIS ARTG fork)</target>
+          <source>Make Me Admin</source>
+          <target state="new">Make Me Admin</target>
         </trans-unit>
         <trans-unit id="CheckingAdminStatus" translate="yes" xml:space="preserve">
           <source>Checking administrator status...</source>
@@ -113,12 +114,12 @@ A reason is required in order to obtain administrator rights, but your administr
           <target state="final">Top, Left, Right</target>
         </trans-unit>
         <trans-unit id="addMeButton.Location" translate="no" extype="System.Drawing.Point, System.Drawing" xml:space="preserve">
-          <source>18, 18</source>
-          <target state="final">18, 18</target>
+          <source>12, 12</source>
+          <target state="final">12, 12</target>
         </trans-unit>
         <trans-unit id="addMeButton.Size" translate="no" extype="System.Drawing.Size, System.Drawing" xml:space="preserve">
-          <source>470, 69</source>
-          <target state="final">470, 69</target>
+          <source>313, 45</source>
+          <target state="final">313, 45</target>
         </trans-unit>
         <trans-unit id="addMeButton.TabIndex" translate="no" extype="System.Int32, mscorlib" xml:space="preserve">
           <source>0</source>
@@ -137,12 +138,12 @@ A reason is required in order to obtain administrator rights, but your administr
           <target state="final">Top, Left, Right</target>
         </trans-unit>
         <trans-unit id="removeMeButton.Location" translate="no" extype="System.Drawing.Point, System.Drawing" xml:space="preserve">
-          <source>18, 100</source>
-          <target state="final">18, 100</target>
+          <source>12, 65</source>
+          <target state="final">12, 65</target>
         </trans-unit>
         <trans-unit id="removeMeButton.Size" translate="no" extype="System.Drawing.Size, System.Drawing" xml:space="preserve">
-          <source>470, 69</source>
-          <target state="final">470, 69</target>
+          <source>313, 45</source>
+          <target state="final">313, 45</target>
         </trans-unit>
         <trans-unit id="removeMeButton.TabIndex" translate="no" extype="System.Int32, mscorlib" xml:space="preserve">
           <source>1</source>
@@ -157,8 +158,8 @@ A reason is required in order to obtain administrator rights, but your administr
           <target state="final">Fjern nuværende Windows bruger fra Administrator gruppen.</target>
         </trans-unit>
         <trans-unit id="appStatus.Size" translate="no" extype="System.Drawing.Size, System.Drawing" xml:space="preserve">
-          <source>483, 25</source>
-          <target state="final">483, 25</target>
+          <source>322, 17</source>
+          <target state="final">322, 17</target>
         </trans-unit>
         <trans-unit id="appStatus.Text" translate="yes" xml:space="preserve">
           <source>Ready.</source>
@@ -169,12 +170,12 @@ A reason is required in order to obtain administrator rights, but your administr
           <target state="final">MiddleLeft</target>
         </trans-unit>
         <trans-unit id="statusStrip1.Location" translate="no" extype="System.Drawing.Point, System.Drawing" xml:space="preserve">
-          <source>0, 188</source>
-          <target state="final">0, 188</target>
+          <source>0, 121</source>
+          <target state="final">0, 121</target>
         </trans-unit>
         <trans-unit id="statusStrip1.Size" translate="no" extype="System.Drawing.Size, System.Drawing" xml:space="preserve">
-          <source>506, 32</source>
-          <target state="final">506, 32</target>
+          <source>337, 22</source>
+          <target state="final">337, 22</target>
         </trans-unit>
         <trans-unit id="statusStrip1.TabIndex" translate="no" extype="System.Int32, mscorlib" xml:space="preserve">
           <source>2</source>
@@ -189,12 +190,12 @@ A reason is required in order to obtain administrator rights, but your administr
           <target state="new">Make Me Admin</target>
         </trans-unit>
         <trans-unit id="$this.AutoScaleDimensions" translate="no" extype="System.Drawing.SizeF, System.Drawing" xml:space="preserve">
-          <source>9, 20</source>
-          <target state="final">9, 20</target>
+          <source>6, 13</source>
+          <target state="final">6, 13</target>
         </trans-unit>
         <trans-unit id="$this.ClientSize" translate="no" extype="System.Drawing.Size, System.Drawing" xml:space="preserve">
-          <source>506, 220</source>
-          <target state="final">506, 220</target>
+          <source>337, 143</source>
+          <target state="final">337, 143</target>
         </trans-unit>
         <trans-unit id="$this.Text" translate="yes" xml:space="preserve">
           <source>Make Me Admin</source>
@@ -227,22 +228,6 @@ A reason is required in order to obtain administrator rights, but your administr
         <trans-unit id="$this.Localizable" translate="no" extype="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" extradata="metadata" xml:space="preserve">
           <source>True</source>
           <target state="final">True</target>
-        </trans-unit>
-        <trans-unit id="addMeButton.Margin" translate="yes" xml:space="preserve" extype="System.Windows.Forms.Padding, System.Windows.Forms">
-          <source>4, 5, 4, 5</source>
-          <target state="needs-review-translation">4, 5, 4, 5</target>
-        </trans-unit>
-        <trans-unit id="removeMeButton.Margin" translate="yes" xml:space="preserve" extype="System.Windows.Forms.Padding, System.Windows.Forms">
-          <source>4, 5, 4, 5</source>
-          <target state="needs-review-translation">4, 5, 4, 5</target>
-        </trans-unit>
-        <trans-unit id="statusStrip1.Padding" translate="yes" xml:space="preserve" extype="System.Windows.Forms.Padding, System.Windows.Forms">
-          <source>2, 0, 21, 0</source>
-          <target state="needs-review-translation">2, 0, 21, 0</target>
-        </trans-unit>
-        <trans-unit id="$this.Margin" translate="yes" xml:space="preserve" extype="System.Windows.Forms.Padding, System.Windows.Forms">
-          <source>4, 5, 4, 5</source>
-          <target state="needs-review-translation">4, 5, 4, 5</target>
         </trans-unit>
       </group>
     </body>

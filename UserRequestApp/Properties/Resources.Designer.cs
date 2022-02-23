@@ -61,7 +61,7 @@ namespace SinclairCC.MakeMeAdmin.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ready..
+        ///   Looks up a localized string similar to Ready; misartg&apos;s fork of Make Me Admin..
         /// </summary>
         public static string ApplicationIsReady {
             get {
@@ -70,7 +70,7 @@ namespace SinclairCC.MakeMeAdmin.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Make Me Admin (MIS ARTG fork).
+        ///   Looks up a localized string similar to Make Me Admin.
         /// </summary>
         public static string ApplicationName {
             get {
@@ -79,7 +79,7 @@ namespace SinclairCC.MakeMeAdmin.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tue 02/22/2022 13:57:19.65 
+        ///   Looks up a localized string similar to Wed 02/23/2022 11:24:59.45 
         ///.
         /// </summary>
         public static string BuildDate {
