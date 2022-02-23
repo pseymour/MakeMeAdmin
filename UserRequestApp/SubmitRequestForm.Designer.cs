@@ -141,6 +141,7 @@ namespace SinclairCC.MakeMeAdmin
             this.appStatus.Name = "appStatus";
             resources.ApplyResources(this.appStatus, "appStatus");
             this.appStatus.Spring = true;
+            this.appStatus.Click += new System.EventHandler(this.appStatus_Click);
             // 
             // buttonStateWorker
             // 

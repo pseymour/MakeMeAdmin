@@ -640,5 +640,10 @@ namespace SinclairCC.MakeMeAdmin
                 this.Close();
             }
         }
+
+        private void appStatus_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

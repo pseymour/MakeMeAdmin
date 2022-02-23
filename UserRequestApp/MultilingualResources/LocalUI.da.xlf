@@ -158,12 +158,13 @@ A reason is required in order to obtain administrator rights, but your administr
           <target state="final">Fjern nuværende Windows bruger fra Administrator gruppen.</target>
         </trans-unit>
         <trans-unit id="appStatus.Size" translate="no" extype="System.Drawing.Size, System.Drawing" xml:space="preserve">
-          <source>322, 17</source>
-          <target state="final">322, 17</target>
+          <source>291, 17</source>
+          <target state="final">291, 17</target>
         </trans-unit>
         <trans-unit id="appStatus.Text" translate="yes" xml:space="preserve">
           <source>Ready.</source>
-          <target state="final">Klar.</target>
+          <target state="needs-review-translation">Klar.</target>
+          <note from="MultilingualUpdate" annotates="source" priority="2">Please verify the translation’s accuracy as the source string was updated after it was translated.</note>
         </trans-unit>
         <trans-unit id="appStatus.TextAlign" translate="no" extype="System.Drawing.ContentAlignment, System.Drawing" xml:space="preserve">
           <source>MiddleLeft</source>

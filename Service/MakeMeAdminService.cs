@@ -313,8 +313,9 @@ namespace SinclairCC.MakeMeAdmin
             ApplicationLog.CreateSource();
 
             // JDM: Print out the build date 
-            ApplicationLog.WriteEvent("In MakeMeAdminService::OnStart(1). MakeMeAdmin-misartg fork. Build date: " + Properties.Resources.BuildDate, EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
-
+            //ApplicationLog.WriteEvent("In MakeMeAdminService::OnStart(1). MakeMeAdmin-misartg fork. Build date: " + Properties.Resources.BuildDate, EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+            ApplicationLog.WriteEvent("MakeMeAdmin service started. Make Me Admin, misartg's fork. Build date: " + Properties.Resources.BuildDate, EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+            
             // Open the service host which is accessible via named pipes.
             this.OpenNamedPipeServiceHost();
 

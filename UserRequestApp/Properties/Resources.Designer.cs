@@ -79,7 +79,7 @@ namespace SinclairCC.MakeMeAdmin.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Wed 02/23/2022 11:24:59.45 
+        ///   Looks up a localized string similar to Wed 02/23/2022 14:25:37.46 
         ///.
         /// </summary>
         public static string BuildDate {
