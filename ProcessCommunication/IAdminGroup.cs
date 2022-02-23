@@ -26,10 +26,7 @@ namespace SinclairCC.MakeMeAdmin
     /// <summary>
     /// This interface defines the WCF service contract.
     /// </summary>
-
-    // JDM: I feel like since I'm changing the definition of the interface that I should change the ServiceContract namespace, to avoid confusion.
-    [ServiceContract(Namespace = "https://github.com/misartg/MakeMeAdmin/2022/02/21/")]
-    //[ServiceContract(Namespace = "http://apps.sinclair.edu/makemeadmin/2017/10/")]
+    [ServiceContract(Namespace = "http://apps.sinclair.edu/makemeadmin/2017/10/")]
 
     public interface IAdminGroup
     {

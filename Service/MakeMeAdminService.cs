@@ -104,6 +104,7 @@ namespace SinclairCC.MakeMeAdmin
             {
                 foreach (User prin in expiredUsers)
                 {
+                    //ApplicationLog.WriteEvent("In MMAS::RTE(2). About to call LAG::RU(" + prin.Name + ", RemovalReason.Timeout).", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
                     LocalAdministratorGroup.RemoveUser(prin.Sid, RemovalReason.Timeout);
 
                     if ((Settings.EndRemoteSessionsUponExpiration) && (!string.IsNullOrEmpty(prin.RemoteAddress)))

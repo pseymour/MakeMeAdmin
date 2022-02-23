@@ -29,22 +29,29 @@ namespace SinclairCC.MakeMeAdmin
     /// <summary>
     /// This class implements the WCF service contract.
     /// </summary>
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, IncludeExceptionDetailInFaults = false)]
+    //JDM: Setting the IncludeExceptionDetailInFaults to true will allow us to see verbose service output.
+    //     This is useful while debugging, especially if you're a bad programmer, as I am. 
+    //[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, IncludeExceptionDetailInFaults = false)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, IncludeExceptionDetailInFaults = true)]
+
     public class AdminGroupManipulator : IAdminGroup
     {
         /// <summary>
         /// Adds a user to the local Administrators group.
         /// </summary>
         public void AddUserToAdministratorsGroup()
-        {
+        {           
             string remoteAddress = null;
 
             WindowsIdentity userIdentity = null;
 
             if (ServiceSecurityContext.Current != null)
             {
+                //JDM: I worry that we'll need a version of this function that takes a WindowsIdentity token as well, as this lookup might pick up the wrong account...
                 userIdentity = ServiceSecurityContext.Current.WindowsIdentity;
             }
+
+            //ApplicationLog.WriteEvent("In AGM::AUTAG(0). userIdentity: " + userIdentity.Name, EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
 
             if (OperationContext.Current != null)
             {
@@ -66,6 +73,7 @@ namespace SinclairCC.MakeMeAdmin
             {
                 int timeoutMinutes = GetTimeoutForUser(userIdentity);
                 DateTime expirationTime = DateTime.Now.AddMinutes(timeoutMinutes);
+                //ApplicationLog.WriteEvent("In AGM::AUTAG(0). About to call LAG::AU(" + userIdentity.Name + ", " + expirationTime + ", " + remoteAddress + ").", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
                 LocalAdministratorGroup.AddUser(userIdentity, expirationTime, remoteAddress);
             }
         }
@@ -182,6 +190,7 @@ namespace SinclairCC.MakeMeAdmin
             if (ServiceSecurityContext.Current != null)
             {
                 userIdentity = ServiceSecurityContext.Current.WindowsIdentity;
+                //ApplicationLog.WriteEvent("In AGM::UIAWIT(2). About to call this.UIAWIT(3) for userIdentity: " + userIdentity.Name + ".", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
                 return this.UserIsAuthorizedWithIdentityToken(userIdentity.Token, allowedSidsList, deniedSidsList);
             }
             
@@ -248,7 +257,8 @@ namespace SinclairCC.MakeMeAdmin
              * Failed to process session change. System.ServiceModel.CommunicationException: There was an error while trying to serialize parameter http://apps.sinclair.edu/makemeadmin/2017/10/:userIdentity. The InnerException message was 'Type 'System.IntPtr' with data contract name 'IntPtr:http://schemas.datacontract.org/2004/07/System' is not expected. Consider using a DataContractResolver if you are using DataContractSerializer or add any types not known statically to the list of known types - for example, by using the KnownTypeAttribute attribute or by adding them to the list of known types passed to the serializer.'.  Please see InnerException for more details. ---> System.Runtime.Serialization.SerializationException: Type 'System.IntPtr' with data contract name 'IntPtr:http://schemas.datacontract.org/2004/07/System' is not expected. Consider using a DataContractResolver if you are using DataContractSerializer or add any types not known statically to the list of known types - for example, by using the KnownTypeAttribute attribute or by adding them
              */
             //      But going to the IntPtr token instead seems to work. 
-            WindowsIdentity userIdentity = new WindowsIdentity(userIdentityToken);  
+            WindowsIdentity userIdentity = new WindowsIdentity(userIdentityToken);
+            //ApplicationLog.WriteEvent("In AGM::UIAWIT(3). userIdentity: " + userIdentity.Name + ".", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
 
             if (userIdentity == null)
             {

@@ -167,7 +167,9 @@ namespace SinclairCC.MakeMeAdmin
 
             if (!string.IsNullOrEmpty(remoteAddress))
             { // Request is from a remote computer. Check the remote authorization list.
-                userIsAuthorized &= adminGroupManipulator.UserIsAuthorized(Settings.RemoteAllowedEntities, Settings.RemoteDeniedEntities);
+                //JDM: We should probably change it here too. 
+                //userIsAuthorized &= adminGroupManipulator.UserIsAuthorized(Settings.RemoteAllowedEntities, Settings.RemoteDeniedEntities);
+                userIsAuthorized &= adminGroupManipulator.UserIsAuthorizedWithIdentityToken(userIdentity.Token, Settings.RemoteAllowedEntities, Settings.RemoteDeniedEntities);
             }
 
             if (
@@ -178,9 +180,11 @@ namespace SinclairCC.MakeMeAdmin
                )
             {
                 // Save the user's information to the list of users.
+                //ApplicationLog.WriteEvent("In LAG::AU(3). expirationTime: " + expirationTime + ". (expirationTime == null): " + (expirationTime == null) + ". About to get encryptedSettings.", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
                 EncryptedSettings encryptedSettings = new EncryptedSettings(EncryptedSettings.SettingsFilePath);
                 encryptedSettings.AddUser(userIdentity, expirationTime, remoteAddress);
-
+                //ApplicationLog.WriteEvent("In LAG::AU(3). After getting encryptedSettings. expirationTime: " + expirationTime + ". (expirationTime == null): " + (expirationTime == null), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+                //ApplicationLog.WriteEvent("In LAG::AU(3). About to call LAG::AUTA(" + userIdentity.Name + "). expirationTime: " + expirationTime, EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
                 AddUserToAdministrators(userIdentity.User);
             }
         }
@@ -300,6 +304,8 @@ namespace SinclairCC.MakeMeAdmin
 
                         DateTime? expirationTime = encryptedSettings.GetExpirationTime(addedUserList[i]);
 
+                        //ApplicationLog.WriteEvent("In LAG::VAAU(0). addedUserList[i]: " + addedUserList[i].Value, EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+
                         if (expirationTime.HasValue)
                         { // The user's rights expire at some point.
                             if (expirationTime.Value > DateTime.Now)
@@ -321,6 +327,7 @@ namespace SinclairCC.MakeMeAdmin
                             WindowsIdentity sessionIdentity = null;
                             WindowsIdentity userIdentity = null;
                             int[] loggedOnSessionIDs = LsaLogonSessions.LogonSessions.GetLoggedOnUserSessionIds();
+                            
                             foreach (int sessionId in loggedOnSessionIDs)
                             {
                                 sessionIdentity = LsaLogonSessions.LogonSessions.GetWindowsIdentityForSessionId(sessionId);
@@ -331,10 +338,12 @@ namespace SinclairCC.MakeMeAdmin
                                 }
                             }
 
+                            //ApplicationLog.WriteEvent("In LAG::VAAU(0), \"never expire\" area. userIdentity: " + userIdentity.User, EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+
                             if (
                                 (Settings.AutomaticAddAllowed != null) &&
                                 (Settings.AutomaticAddAllowed.Length > 0) &&
-                                (adminGroup.UserIsAuthorized(Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied))
+                                (adminGroup.UserIsAuthorizedWithIdentityToken(userIdentity.Token, Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied)) //JDM: This one needs to be changed as well, otherwise the UIA(2) function may return a result for a different user. 
                                )
                             { // The user is an automatically-added user.
 
@@ -344,6 +353,7 @@ namespace SinclairCC.MakeMeAdmin
                             { // The user is not an automatically-added user.
 
                                 // Users who are not automatically added should not have non-expiring rights. Remove this user.
+                                //ApplicationLog.WriteEvent("In LAG::VAAU(0), about to run LAG::RU(" + addedUserList[i].Value, EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
                                 LocalAdministratorGroup.RemoveUser(addedUserList[i], RemovalReason.Timeout);
                             }
                         }
