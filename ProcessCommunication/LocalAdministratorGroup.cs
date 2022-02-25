@@ -160,12 +160,21 @@ namespace SinclairCC.MakeMeAdmin
         {
             // TODO: Only do this if the user is not a member of the group?
 
-            AdminGroupManipulator adminGroupManipulator = new AdminGroupManipulator();
-            bool userIsAuthorized = adminGroupManipulator.UserIsAuthorized(Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
+#if DEBUG
+            ApplicationLog.WriteEvent(string.Format("Calling UserIsAuthorized(3) from AddUser() beginning of function."), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+
+            //AdminGroupManipulator adminGroupManipulator = new AdminGroupManipulator();
+            bool userIsAuthorized = AdminGroupManipulator.UserIsAuthorized(userIdentity, Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
 
             if (!string.IsNullOrEmpty(remoteAddress))
             { // Request is from a remote computer. Check the remote authorization list.
-                userIsAuthorized &= adminGroupManipulator.UserIsAuthorized(Settings.RemoteAllowedEntities, Settings.RemoteDeniedEntities);
+
+#if DEBUG
+                ApplicationLog.WriteEvent(string.Format("Calling UserIsAuthorized(3) from AddUser() where remote address is not null or empty."), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+
+                userIsAuthorized &= AdminGroupManipulator.UserIsAuthorized(userIdentity, Settings.RemoteAllowedEntities, Settings.RemoteDeniedEntities);
             }
 
             if (
@@ -266,6 +275,11 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         public static void ValidateAllAddedUsers()
         {
+#if DEBUG
+            //ApplicationLog.WriteEvent("Entering ValidateAllAddedUsers().", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+
+
             // Get a list of the users stored in the on-disk list.
             EncryptedSettings encryptedSettings = new EncryptedSettings(EncryptedSettings.SettingsFilePath);
             SecurityIdentifier[] addedUserList = encryptedSettings.AddedUserSIDs;
@@ -279,6 +293,11 @@ namespace SinclairCC.MakeMeAdmin
 
             for (int i = 0; i < addedUserList.Length; i++)
             {
+
+#if DEBUG
+                ApplicationLog.WriteEvent(string.Format("Validating {0}.", addedUserList[i]), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif                
+
                 bool sidFoundInAdminsGroup = false;
                 if ((addedUserList[i] != null) && (localAdminSids != null))
                 {
@@ -329,10 +348,15 @@ namespace SinclairCC.MakeMeAdmin
                                 }
                             }
 
+#if DEBUG
+                            ApplicationLog.WriteEvent(string.Format("Calling UserIsAuthorized(3) from ValidateAllAddedUsers() line 351."), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+
+
                             if (
                                 (Settings.AutomaticAddAllowed != null) &&
                                 (Settings.AutomaticAddAllowed.Length > 0) &&
-                                (adminGroup.UserIsAuthorized(Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied))
+                                (AdminGroupManipulator.UserIsAuthorized(userIdentity, Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied))
                                )
                             { // The user is an automatically-added user.
 
@@ -340,6 +364,10 @@ namespace SinclairCC.MakeMeAdmin
                             }
                             else
                             { // The user is not an automatically-added user.
+
+#if DEBUG
+                                ApplicationLog.WriteEvent(string.Format("Removing {0}. Not an automatically added user.", addedUserList[i]), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif                
 
                                 // Users who are not automatically added should not have non-expiring rights. Remove this user.
                                 LocalAdministratorGroup.RemoveUser(addedUserList[i], RemovalReason.Timeout);
@@ -393,15 +421,23 @@ namespace SinclairCC.MakeMeAdmin
                                 }
                             }
 
+#if DEBUG
+                            ApplicationLog.WriteEvent(string.Format("Calling UserIsAuthorized(3) from ValidateAllAddedUsers() line 418."), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+
                             if (
                                 (Settings.AutomaticAddAllowed != null) &&
                                 (Settings.AutomaticAddAllowed.Length > 0) &&
-                                (adminGroup.UserIsAuthorized(Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied))
+                                (AdminGroupManipulator.UserIsAuthorized(userIdentity, Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied))
                                )
                             { // The user is an automatically-added user.
 
                                 // The users rights do not expire, but they are an automatically-added user and are missing
                                 // from the Administrators group. Add the user back in.
+
+#if DEBUG
+                                ApplicationLog.WriteEvent(string.Format("Adding {0}. User is an automatically added user.", addedUserList[i]), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif                
 
                                 AddUserToAdministrators(addedUserList[i]);
                             }
@@ -420,6 +456,12 @@ namespace SinclairCC.MakeMeAdmin
                     }
                 }
             }
+
+
+#if DEBUG
+            //ApplicationLog.WriteEvent("Leaving ValidateAllAddedUsers().", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+
         }
 
 

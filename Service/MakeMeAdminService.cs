@@ -433,22 +433,40 @@ namespace SinclairCC.MakeMeAdmin
                 // The user has logged on to a session, either locally or remotely.
                 case SessionChangeReason.SessionLogon:
 
+#if DEBUG
+                    ApplicationLog.WriteEvent(string.Format("In OnSessionChange(), the SessionLogon case. The session logging on is session #{0}.", changeDescription.SessionId), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+
                     WindowsIdentity userIdentity = LsaLogonSessions.LogonSessions.GetWindowsIdentityForSessionId(changeDescription.SessionId);
 
-                    if (userIdentity != null)
+#if DEBUG
+                    if (null != userIdentity)
+                    {
+                        ApplicationLog.WriteEvent(string.Format(string.Format("User Identity is \"{0}.\"", userIdentity.Name)), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+                    }
+#endif
+
+                    if (null != userIdentity)
                     {
 
+#if DEBUG
+                        ApplicationLog.WriteEvent(string.Format("Calling UserIsAuthorized(3) from Service's OnSessionChange event."), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+
+                        bool userIsAuthorizedForAutoAdd = AdminGroupManipulator.UserIsAuthorized(userIdentity, Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied);
+                        /*
                         NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
                         ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(binding, Settings.NamedPipeServiceBaseAddress);
                         IAdminGroup channel = namedPipeFactory.CreateChannel();
                         bool userIsAuthorizedForAutoAdd = channel.UserIsAuthorized(Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied);
                         namedPipeFactory.Close();
+                        */
 
                         // If the user is in the automatic add list, then add them to the Administrators group.
                         if (
                             (Settings.AutomaticAddAllowed != null) &&
                             (Settings.AutomaticAddAllowed.Length > 0) &&
-                            (userIsAuthorizedForAutoAdd /*UserIsAuthorized(userIdentity, Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied)*/)
+                            (userIsAuthorizedForAutoAdd)
                            )
                         {
                             LocalAdministratorGroup.AddUser(userIdentity, null, null);

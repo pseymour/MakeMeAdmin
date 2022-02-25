@@ -546,9 +546,6 @@ namespace SinclairCC.MakeMeAdmin
             {
                 // This typically happens when trying to dispose of the ChannelFactory<> object.
             }
-            /*
-            bool userIsAuthorizedLocally = UserIsAuthorized(WindowsIdentity.GetCurrent(), Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
-            */
 
             // Enable the "grant admin rights" button, if the user is not already
             // an administrator and is authorized to obtain those rights.

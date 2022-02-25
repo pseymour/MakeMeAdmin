@@ -44,6 +44,12 @@ namespace SinclairCC.MakeMeAdmin
             if (ServiceSecurityContext.Current != null)
             {
                 userIdentity = ServiceSecurityContext.Current.WindowsIdentity;
+
+#if DEBUG
+                ApplicationLog.WriteEvent(string.Format("In AddUserToAdministratorsGroup(), WindowsIdentity.Name is {0} ({1})", ServiceSecurityContext.Current.WindowsIdentity.Name, ServiceSecurityContext.Current.WindowsIdentity.User.Value), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+                ApplicationLog.WriteEvent(string.Format("In AddUserToAdministratorsGroup(), PrimaryIdentity.Name is {0}", ServiceSecurityContext.Current.PrimaryIdentity.Name), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+
             }
 
             if (OperationContext.Current != null)
@@ -162,7 +168,6 @@ namespace SinclairCC.MakeMeAdmin
             return false;
         }
 
-
         /// <summary>
         /// Determines whether the given user is authorized to obtain administrator rights.
         /// </summary>
@@ -178,23 +183,25 @@ namespace SinclairCC.MakeMeAdmin
         /// <returns>
         /// Returns true if the user is authorized to obtain administrator rights.
         /// </returns>
-        public bool UserIsAuthorized(string[] allowedSidsList, string[] deniedSidsList)
+        public static bool UserIsAuthorized(WindowsIdentity userIdentity, string[] allowedSidsList, string[] deniedSidsList)
         {
-            WindowsIdentity userIdentity = null;
-
-            if (ServiceSecurityContext.Current != null)
+            if (null == userIdentity)
             {
-                userIdentity = ServiceSecurityContext.Current.WindowsIdentity;
-            }
-
-            if (userIdentity == null)
-            {
+#if DEBUG
+                ApplicationLog.WriteEvent("In UserIsAuthorized(3), userIdentity is null. Returning false.", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
                 return false;
             }
+            /*
+
+#if DEBUG
+            ApplicationLog.WriteEvent(string.Format("In UserIsAuthorized(3), userIdentity.Name is {0} ({1})", userIdentity.Name, userIdentity.User.Value), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+            */
 
             // The denied list contains entries. Check the user against that list first.
             if ((deniedSidsList != null) && AccountListContainsIdentity(deniedSidsList, userIdentity))
-            { 
+            {
                 return false;
             }
 
@@ -219,6 +226,47 @@ namespace SinclairCC.MakeMeAdmin
                 // The user was not found in the allowed list, so the user is not authorized.
                 return false;
             }
+        }
+
+
+        /// <summary>
+        /// Determines whether the given user is authorized to obtain administrator rights.
+        /// </summary>
+        /// <param name="allowedSidsList">
+        /// The list of allowed SIDs and principal names against which the user's identity is checked.
+        /// </param>
+        /// <param name="deniedSidsList">
+        /// The list of denied SIDs and principal names against which the user's identity is checked.
+        /// </param>
+        /// <returns>
+        /// Returns true if the user is authorized to obtain administrator rights.
+        /// </returns>
+        public bool UserIsAuthorized(string[] allowedSidsList, string[] deniedSidsList)
+        {
+            WindowsIdentity userIdentity = null;
+
+            if (ServiceSecurityContext.Current != null)
+            {
+                userIdentity = ServiceSecurityContext.Current.WindowsIdentity;
+
+#if DEBUG
+                ApplicationLog.WriteEvent(string.Format("In UserIsAuthorized(2), WindowsIdentity.Name is {0} ({1})", ServiceSecurityContext.Current.WindowsIdentity.Name, ServiceSecurityContext.Current.WindowsIdentity.User.Value), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+                ApplicationLog.WriteEvent(string.Format("In UserIsAuthorized(2), PrimaryIdentity.Name is {0}", ServiceSecurityContext.Current.PrimaryIdentity.Name), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+            }
+
+            if (null == userIdentity)
+            {
+#if DEBUG
+                ApplicationLog.WriteEvent("In UserIsAuthorized(2), userIdentity is null. Returning false.", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+                return false;
+            }
+            else
+            {
+                return UserIsAuthorized(userIdentity, allowedSidsList, deniedSidsList);
+            }
+
         }
 
         /// <summary>
