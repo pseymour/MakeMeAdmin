@@ -77,6 +77,11 @@ namespace SinclairCC.MakeMeAdmin
         RemoteAccessFailure,
 
         /// <summary>
+        /// An elevated process was detected.
+        /// </summary>
+        ElevatedProcess = 101,
+
+        /// <summary>
         /// Event ID for debug messages.
         /// </summary>
         DebugMessage = 9000

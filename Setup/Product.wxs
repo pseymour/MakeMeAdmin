@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
-  <Product Id="*" Name="!(loc.SoftwareName)" Language="!(loc.LANG)" Version="2.3" Manufacturer="!(loc.SoftwareManufacturer)" UpgradeCode="9c690479-3987-48a8-8bda-118ef1f93cdd">
+  <Product Id="*" Name="!(loc.SoftwareName) - Process Logging" Language="!(loc.LANG)" Version="2.3" Manufacturer="!(loc.SoftwareManufacturer)" UpgradeCode="9c690479-3987-48a8-8bda-118ef1f93cdd">
     <Package InstallerVersion="400" Compressed="yes" InstallScope="perMachine" />
     <Condition Message="!(loc.AdminRightsRequired)">Privileged</Condition>
     <MajorUpgrade DowngradeErrorMessage="!(loc.NewerVersionInstalled)" />
@@ -17,10 +17,16 @@
       <ComponentRef Id="ElevationUserInterface_fr" />
 
       <ComponentRef Id="LsaLogonSessionLibrary" />
+      <!--
+      <ComponentRef Id="ProcessWatchLibrary" />
+      -->
 
       <ComponentRef Id="Service" />
       <ComponentRef Id="Service_da" />
       <ComponentRef Id="Service_fr" />
+      <ComponentRef Id="MicrosoftTraceEventNuGetCommon" />
+      <ComponentRef Id="MicrosoftTraceEventNuGet_amd64" />
+      <ComponentRef Id="MicrosoftTraceEventNuGet_x86" />
 
       <ComponentRef Id="LoggingLibrary" />
       <ComponentRef Id="LoggingLibrary_da" />
@@ -132,16 +138,30 @@
           </Component>
           <Component Id="LoggingLibrary" Guid="17760ABA-01B0-4E35-9AD8-3F168B171CCE">
             <File Id="LoggingDll" Name="$(var.Logging.TargetFileName)" Source="$(var.Logging.TargetPath)" KeyPath="yes" />
+            <File Id="LoggingManifestDll" Name="$(var.Logging.TargetName).MakeMeAdmin.etwManifest$(var.Logging.TargetExt)" Source="$(var.Logging.TargetDir)$(var.Logging.TargetName).MakeMeAdmin.etwManifest$(var.Logging.TargetExt)" KeyPath="no" />
+            <File Id="LoggingManifest" Name="$(var.Logging.TargetName).MakeMeAdmin.etwManifest.man" Source="$(var.Logging.TargetDir)$(var.Logging.TargetName).MakeMeAdmin.etwManifest.man" KeyPath="no">
+              <util:EventManifest  MessageFile="[#LoggingManifestDll]"  ResourceFile="[#LoggingManifestDll]"></util:EventManifest>            
+              <!--
+              <util:EventManifest  MessageFile="[INSTALLFOLDER]Logging.MakeMeAdmin.etwManifest.man" ResourceFile="[INSTALLFOLDER]Logging.MakeMeAdmin.etwManifest.dll"></util:EventManifest>            
+              -->
+            </File>
             <File Id="SyslogNetClientDll"  Source="$(var.Logging.TargetDir)\SyslogNet.Client.dll" KeyPath="no" />
           </Component>
           <Component Id="LsaLogonSessionLibrary" Guid="22E70C0A-7071-4E1D-B8C1-3E73FB3A1784">
             <File Id="LsaLogonSessionDll" Name="$(var.LsaLogonSessions.TargetFileName)" Source="$(var.LsaLogonSessions.TargetPath)" KeyPath="yes" />
           </Component>
+          <!--
+          <Component Id="ProcessWatchLibrary" Guid="2CB59D83-6C5C-4C67-99D1-EB0AA95AFA91">
+            <File Id="ProcessWatchDll" Name="$(var.ProcessWatch.TargetFileName)" Source="$(var.ProcessWatch.TargetPath)" KeyPath="yes" />
+          </Component>
+          -->
           <Component Id="ProcessCommunicationLibrary" Guid="79FC2590-F4CD-4205-8283-3E604052224D" >
             <File Id="ProcessCommunicationDll" Name="$(var.ProcessCommunication.TargetFileName)" Source="$(var.ProcessCommunication.TargetPath)" KeyPath="yes" />
           </Component>
           <Component Id="Service" Guid="DE98A440-7542-4394-9CAB-086B2906D29A">
             <File Id="ServiceExe" Name="$(var.Service.TargetFileName)" Source="$(var.Service.TargetPath)" KeyPath="yes" />
+            <File Id="ServiceExeConfig" Name="$(var.Service.TargetFileName).config" Source="$(var.Service.TargetPath).config" KeyPath="no" />
+
             <ServiceInstall DisplayName="[ProductName]" Name="MakeMeAdmin" Start="auto" Type="shareProcess" Vital="yes"
                             Description="!(loc.ServiceDescription)"
                             EraseDescription="no" ErrorControl="normal">
@@ -155,7 +175,31 @@
             <RemoveRegistryKey Action="removeOnUninstall" Id="AddedSIDsValue" Key="Software\Sinclair Community College\Make Me Admin" Root="HKLM" />
             <RemoveFolder Id="INSTALLFOLDER" On="uninstall" />
           </Component>
-            
+          <Component Id="MicrosoftTraceEventNuGetCommon" Guid="5685B8EB-59F0-4BD7-B0B6-9C1EA3DE9DF6">
+            <File Id="Dia2Lib.dll" Source="$(var.Service.TargetDir)\Dia2Lib.dll" KeyPath="no" />
+            <File Id="Microsoft.Diagnostics.FastSerialization.dll" Source="$(var.Service.TargetDir)\Microsoft.Diagnostics.FastSerialization.dll" KeyPath="no" />
+            <File Id="Microsoft.Diagnostics.FastSerialization.xml" Source="$(var.Service.TargetDir)\Microsoft.Diagnostics.FastSerialization.xml" KeyPath="no" />
+            <File Id="Microsoft.Diagnostics.Tracing.TraceEvent.dll" Source="$(var.Service.TargetDir)\Microsoft.Diagnostics.Tracing.TraceEvent.dll" KeyPath="no" />
+            <File Id="Microsoft.Diagnostics.Tracing.TraceEvent.xml" Source="$(var.Service.TargetDir)\Microsoft.Diagnostics.Tracing.TraceEvent.xml" KeyPath="no" />
+            <File Id="OSExtensions.dll" Source="$(var.Service.TargetDir)\OSExtensions.dll" KeyPath="no" />
+            <File Id="System.Runtime.CompilerServices.Unsafe.dll" Source="$(var.Service.TargetDir)\System.Runtime.CompilerServices.Unsafe.dll" KeyPath="no" />
+            <File Id="System.Runtime.CompilerServices.Unsafe.xml" Source="$(var.Service.TargetDir)\System.Runtime.CompilerServices.Unsafe.xml" KeyPath="no" />
+            <File Id="TraceReloggerLib.dll" Source="$(var.Service.TargetDir)\TraceReloggerLib.dll" KeyPath="no" />
+          </Component>
+          <Directory Id="MicrosoftTraceEventNuGet_amd64" Name="amd64">
+            <Component Id="MicrosoftTraceEventNuGet_amd64" Guid="D94C30C0-A979-47BA-895C-ABB5EC619C5B">
+              <File Id="amd64_KernelTraceControl.dll" Source="$(var.Service.TargetDir)\amd64\KernelTraceControl.dll" KeyPath="no" />
+              <File Id="amd64_msdia140.dll" Source="$(var.Service.TargetDir)\amd64\msdia140.dll" KeyPath="no" />
+            </Component>
+          </Directory>
+          <Directory Id="MicrosoftTraceEventNuGet_x86" Name="x86">
+            <Component Id="MicrosoftTraceEventNuGet_x86" Guid="8B5C1067-9130-4C1E-8D81-9415520D368E">
+              <File Id="x86_KernelTraceControl.dll" Source="$(var.Service.TargetDir)\x86\KernelTraceControl.dll" KeyPath="no" />
+              <File Id="x86_KernelTraceControl.Win61.dll" Source="$(var.Service.TargetDir)\x86\KernelTraceControl.Win61.dll" KeyPath="no" />
+              <File Id="x86_msdia140.dll" Source="$(var.Service.TargetDir)\x86\msdia140.dll" KeyPath="no" />
+            </Component>
+          </Directory>
+
           <Directory Id="GroupPolicyFolder" Name="Group Policy">
             <Component Id="ADMXFiles" Guid="7DBE019F-9512-43DE-BB62-B6C3B83A90ED">
               <File Id="SinclairBase.admx" Source="GroupPolicy\SinclairBase.admx" KeyPath="yes" />

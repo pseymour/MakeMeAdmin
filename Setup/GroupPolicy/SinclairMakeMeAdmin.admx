@@ -271,6 +271,32 @@
       <supportedOn ref="windows:SUPPORTED_Windows7" />
       <elements>
         <decimal id="MaximumReasonLengthValue" required="true" valueName="Maximum Reason Length" minValue="5" maxValue="4096" storeAsText="false" />
+    <policy name="LogElevatedProcesses"
+             class="Machine"
+             displayName="$(string.LogElevatedProcessesDisplayName)"
+             explainText="$(string.LogElevatedProcessesExplainText)"
+             key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
+             presentation="$(presentation.LogElevatedProcesses_Presentation)">
+      <parentCategory ref="makemeadmin:MakeMeAdmin" />
+      <supportedOn ref="windows:SUPPORTED_Windows7" />
+      <elements>
+        <enum id="ProcessLoggingDropDown" valueName="Log Elevated Processes" required="true">
+          <item displayName="$(string.ProcessLogging_Never)">
+            <value>
+              <decimal value="0" storeAsText="false" />
+            </value>
+          </item>
+          <item displayName="$(string.ProcessLogging_OnlyWhenAdmin)">
+            <value>
+              <decimal value="1" storeAsText="false" />
+            </value>
+          </item>
+          <item displayName="$(string.ProcessLogging_Always)">
+            <value>
+              <decimal value="2" storeAsText="false" />
+            </value>
+          </item>
+        </enum>
       </elements>
     </policy>
 

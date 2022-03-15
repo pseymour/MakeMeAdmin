@@ -20,8 +20,8 @@
 
 namespace SinclairCC.MakeMeAdmin
 {
-    using System;
     using Microsoft.Win32;
+    using System;
     using System.Collections.Generic;
     /*
     using System.Security.Cryptography;
@@ -36,7 +36,7 @@ namespace SinclairCC.MakeMeAdmin
         /// The top-level registry key in which the settings will be stored.
         /// </summary>
         private readonly static RegistryKey rootRegistryKey = Registry.LocalMachine;
-        
+
         /// <summary>
         /// Gets the base address for the service host that is available via TCP.
         /// </summary>
@@ -318,7 +318,7 @@ namespace SinclairCC.MakeMeAdmin
                 SetKeyValuePairs(PreferenceRegistryKeyPath, "Timeout Overrides", value);
             }
         }
-        
+
         // TODO: Remove this registry value from PCs.
         /*
         public static string[] SIDs
@@ -369,7 +369,7 @@ namespace SinclairCC.MakeMeAdmin
                 int? preferenceRemovalSetting = GetDWord(PreferenceRegistryKeyPath, null, "Remove Admin Rights On Logout");
                 if (policyRemovalSetting.HasValue)
                 { // The policy setting has a value. Go with whatever it says.
-                    
+
                     return Convert.ToBoolean(policyRemovalSetting.Value);
                 }
                 else if (preferenceRemovalSetting.HasValue)
@@ -592,6 +592,46 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+        // TODO: i18n.
+        public static ElevatedProcessLogging LogElevatedProcesses
+        {
+            get
+            {
+                int? policyTimeoutSetting = GetDWord(PolicyRegistryKeyPath, null, "Log Elevated Processes");
+                int? preferenceTimeoutSetting = GetDWord(PreferenceRegistryKeyPath, null, "Log Elevated Processes");
+                if (policyTimeoutSetting.HasValue)
+                { // The policy setting has a value. Go with whatever it says.
+                    if (Enum.IsDefined(typeof(ElevatedProcessLogging), policyTimeoutSetting.Value))
+                    {
+                        return (ElevatedProcessLogging)policyTimeoutSetting.Value;
+                    }
+                    else
+                    {
+                        return ElevatedProcessLogging.OnlyWhenAdmin;
+                    }
+                }
+                else if (preferenceTimeoutSetting.HasValue)
+                { // The preference setting has a value. Go with whatever it says.
+                    if (Enum.IsDefined(typeof(ElevatedProcessLogging), preferenceTimeoutSetting.Value))
+                    {
+                        return (ElevatedProcessLogging)preferenceTimeoutSetting.Value;
+                    }
+                    else
+                    {
+                        return ElevatedProcessLogging.OnlyWhenAdmin;
+                    }
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value.
+                  // Return a default value indicating that logging should not be done.
+                    return ElevatedProcessLogging.Never;
+                }
+            }
+            set
+            {
+                SetDWord(PreferenceRegistryKeyPath, null, "Log Elevated Processes", (int)value);
+            }
+        }
 
         // TODO: i18n.
         public static int MaximumReasonLength

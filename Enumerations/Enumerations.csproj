@@ -61,10 +61,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LogElevatedProcesses.cs" />
     <Compile Include="EventID.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReasonPrompt.cs" />
     <Compile Include="RemovalReason.cs" />
+    <Compile Include="TokenElevationType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

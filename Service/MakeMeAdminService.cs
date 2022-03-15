@@ -20,13 +20,18 @@
 
 namespace SinclairCC.MakeMeAdmin
 {
+    using Microsoft.Diagnostics.Tracing.Parsers;
+    using Microsoft.Diagnostics.Tracing.Parsers.Kernel;
+    using Microsoft.Diagnostics.Tracing.Session;
     using System;
     using System.ComponentModel;
     using System.Linq;
     using System.Runtime.Serialization.Formatters.Binary;
+    using System.Collections.Generic;
     using System.Security.Principal;
     using System.ServiceModel;
     using System.ServiceProcess;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// This class is the Windows Service, which does privileged work
@@ -57,6 +62,12 @@ namespace SinclairCC.MakeMeAdmin
         /// </remarks>
         private ServiceHost tcpServiceHost = null;
 
+        private TraceEventSession processWatchSession = null;
+
+        private readonly static List<ProcessInformation> processList = new List<ProcessInformation>();
+
+        private readonly static Queue<ElevatedProcessInformation> elevatedProcessList = new Queue<ElevatedProcessInformation>();
+
 
         private readonly string portSharingServiceName = "NetTcpPortSharing";
 
@@ -82,8 +93,109 @@ namespace SinclairCC.MakeMeAdmin
                 AutoReset = true    // Raise the Elapsed event repeatedly.
             };
             this.removalTimer.Elapsed += RemovalTimerElapsed;
+
+
+#if DEBUG
+            ApplicationLog.WriteEvent(string.Format("process logging setting: {0:N0}", (int)Settings.LogElevatedProcesses), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+
+
         }
 
+        private void Dynamic_All(Microsoft.Diagnostics.Tracing.TraceEvent obj)
+        {
+            if ((obj.Opcode == Microsoft.Diagnostics.Tracing.TraceEventOpcode.Start) && (string.Compare(obj.TaskName, "ProcessStart", true) == 0))
+            {
+                int processIsElevated = 0;
+                int processElevationType = 0;
+                int processId = int.MinValue;
+                int sessionId = int.MinValue;
+                DateTime createTime = DateTime.MinValue;
+                int index = int.MinValue;
+
+                index = obj.PayloadIndex("ProcessTokenIsElevated");
+                if (index >= 0)
+                {
+                    processIsElevated = (int)obj.PayloadValue(index);
+                }
+
+                if (processIsElevated == 1)
+                {
+                    index = obj.PayloadIndex("ProcessID");
+                    if (index >= 0)
+                    {
+                        processId = (int)obj.PayloadValue(index);
+                    }
+
+                    ElevatedProcessInformation elevatedProcess = new ElevatedProcessInformation
+                    {
+                        ProcessID = processId
+                    };
+
+                    index = obj.PayloadIndex("ProcessTokenElevationType");
+                    if (index >= 0)
+                    {
+                        processElevationType = (int)obj.PayloadValue(index);
+                        elevatedProcess.ElevationType = (TokenElevationType)processElevationType;
+                    }
+
+                    index = obj.PayloadIndex("SessionID");
+                    if (index >= 0)
+                    {
+                        sessionId = (int)obj.PayloadValue(index);
+                        elevatedProcess.SessionID = sessionId;
+                    }
+
+                    index = obj.PayloadIndex("CreateTime");
+                    if (index >= 0)
+                    {
+                        createTime = (DateTime)obj.PayloadValue(index);
+                        elevatedProcess.CreateTime = createTime;
+                    }
+
+                    // Determine whether the process should be logged. It should be logged if
+                    // 1. The process logging setting is set to always, or
+                    // 2. The process logging is set to "Only When Admin" and the user is in the admins group.
+                    bool processShouldBeLogged = (Settings.LogElevatedProcesses == ElevatedProcessLogging.Always);
+                    if (Settings.LogElevatedProcesses == ElevatedProcessLogging.OnlyWhenAdmin)
+                    {
+                        NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
+                        ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(binding, Settings.NamedPipeServiceBaseAddress);
+                        IAdminGroup channel = namedPipeFactory.CreateChannel();
+                        processShouldBeLogged = channel.UserSessionIsInList(elevatedProcess.SessionID);
+                        namedPipeFactory.Close();
+                    }
+
+                    if (processShouldBeLogged)
+                    {
+                        elevatedProcessList.Enqueue(elevatedProcess);
+                    }
+                }
+            }
+        }
+
+        private void Kernel_ProcessStart(ProcessTraceData processInfo)
+        {
+            if (processInfo.Opcode == Microsoft.Diagnostics.Tracing.TraceEventOpcode.Start)
+            {
+                ProcessInformation startedProcess = new ProcessInformation()
+                {
+                    CommandLine = processInfo.CommandLine,
+                    ImageFileName = processInfo.ImageFileName,
+                    ProcessID = processInfo.ProcessID,
+                    SessionID = processInfo.SessionID,
+                    CreateTime = processInfo.TimeStamp,
+                };
+
+                SecurityIdentifier sid = LsaLogonSessions.LogonSessions.GetSidForSessionId(startedProcess.SessionID);
+                if (sid != null)
+                {
+                    startedProcess.UserSIDString = sid.Value;
+                }
+
+                processList.Add(startedProcess);
+            }
+        }
 
         /// <summary>
         /// Handles the Elapsed event for the rights removal timer.
@@ -114,6 +226,7 @@ namespace SinclairCC.MakeMeAdmin
                             userName = userName.Substring(userName.LastIndexOf("\\") + 1);
                         }
 
+                        // TODO: Log this return code if it's not a success?
                         int returnCode = 0;
                         if (!string.IsNullOrEmpty(userName))
                         {
@@ -124,6 +237,44 @@ namespace SinclairCC.MakeMeAdmin
             }
 
             LocalAdministratorGroup.ValidateAllAddedUsers();
+
+            if (Settings.LogElevatedProcesses != ElevatedProcessLogging.Never)
+            {
+                if (this.processWatchSession == null) { StartTracing(); }
+                if (this.processWatchSession != null) { LogProcesses(); }
+            }
+        }
+
+
+        private void LogProcesses()
+        {
+            processList.RemoveAll(pi => DateTime.Now.Subtract(pi.CreateTime).TotalMinutes > 2);
+
+            bool itemDequeued = false;
+            do
+            {
+                itemDequeued = false;
+                if (elevatedProcessList.Count > 0)
+                {
+                    ElevatedProcessInformation nextProcess = elevatedProcessList.Peek();
+                    if (DateTime.Now.Subtract(nextProcess.CreateTime).TotalSeconds >= 60)
+                    {
+                        // TODO: Process has been in the queue longer than 60 seconds. Log that it could not be matched, and move on.
+                        elevatedProcessList.Dequeue();
+                        itemDequeued = true;
+                    }
+                    else
+                    {
+                        nextProcess = elevatedProcessList.Dequeue();
+                        itemDequeued = true;
+
+                        processList.FindAll(p => (p.ProcessID == nextProcess.ProcessID) && (p.SessionID == nextProcess.SessionID)).ForEach(action =>
+                        {
+                            LoggingProvider.Log.ElevatedProcessDetected(nextProcess.ElevationType, action);
+                        });
+                    }
+                }
+            } while ((itemDequeued) && (elevatedProcessList.Count > 0));
         }
 
 
@@ -335,10 +486,52 @@ namespace SinclairCC.MakeMeAdmin
                 }
             }
 
+            if ((Settings.LogElevatedProcesses != ElevatedProcessLogging.Never) && (this.processWatchSession == null))
+            {
+                StartTracing();
+            }
+
             // Start the timer that watches for expired administrator rights.
             this.removalTimer.Start();
         }
 
+        private void StartTracing()
+        {
+            Task.Factory.StartNew(
+                () =>
+                {
+                    if (this.processWatchSession == null)
+                    {
+                        processWatchSession = new TraceEventSession("Make Me Admin Process Watch")
+                        {
+                            StopOnDispose = true
+                        };
+
+                        try
+                        {
+                            // Turn on the process events (includes starts and stops).  
+                            processWatchSession.EnableKernelProvider(KernelTraceEventParser.Keywords.Process);
+
+                            // Enable the Microsoft-Windows-Kernel-Process provider.
+                            processWatchSession.EnableProvider(Guid.Parse("22fb2cd6-0e7b-422b-a0c7-2fad1fd0e716"));
+
+                            // Ask the DynamicTraceEventParser to raise an event for all events that it knows about.
+                            processWatchSession.Source.Dynamic.All += Dynamic_All;
+
+                            // Raise an event for every process start event that the kernel knows about.
+                            processWatchSession.Source.Kernel.ProcessStart += Kernel_ProcessStart;
+
+                            // Listen for events.
+                            processWatchSession.Source.Process();
+                        }
+                        catch (Exception exxx)
+                        {
+                            ApplicationLog.WriteEvent(exxx.Message, EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Error);
+                        }
+                    }
+                },
+                TaskCreationOptions.LongRunning);
+        }
 
         /// <summary>
         /// Handles the stopping of the service.
@@ -365,6 +558,11 @@ namespace SinclairCC.MakeMeAdmin
             for (int i = 0; i < sids.Length; i++)
             {
                 LocalAdministratorGroup.RemoveUser(sids[i], RemovalReason.ServiceStopped);
+            }
+
+            if (processWatchSession != null)
+            {
+                processWatchSession.Dispose();
             }
 
             base.OnStop();
@@ -479,33 +677,33 @@ namespace SinclairCC.MakeMeAdmin
 
                     break;
 
-                /*
-                // The user has reconnected or logged on to a remote session.
-                case SessionChangeReason.RemoteConnect:
-                    ApplicationLog.WriteInformationEvent(string.Format("Remote connect. Session ID: {0}", changeDescription.SessionId), EventID.SessionChangeEvent);
-                    break;
-                */
+                    /*
+                    // The user has reconnected or logged on to a remote session.
+                    case SessionChangeReason.RemoteConnect:
+                        ApplicationLog.WriteInformationEvent(string.Format("Remote connect. Session ID: {0}", changeDescription.SessionId), EventID.SessionChangeEvent);
+                        break;
+                    */
 
-                /*
-                // The user has disconnected or logged off from a remote session.
-                case SessionChangeReason.RemoteDisconnect:
-                    ApplicationLog.WriteInformationEvent(string.Format("Remote disconnect. Session ID: {0}", changeDescription.SessionId), EventID.SessionChangeEvent);
-                    break;
-                */
+                    /*
+                    // The user has disconnected or logged off from a remote session.
+                    case SessionChangeReason.RemoteDisconnect:
+                        ApplicationLog.WriteInformationEvent(string.Format("Remote disconnect. Session ID: {0}", changeDescription.SessionId), EventID.SessionChangeEvent);
+                        break;
+                    */
 
-                /*
-                // The user has locked their session.
-                case SessionChangeReason.SessionLock:
-                    ApplicationLog.WriteInformationEvent(string.Format("Session lock. Session ID: {0}", changeDescription.SessionId), EventID.SessionChangeEvent);
-                    break;
-                */
+                    /*
+                    // The user has locked their session.
+                    case SessionChangeReason.SessionLock:
+                        ApplicationLog.WriteInformationEvent(string.Format("Session lock. Session ID: {0}", changeDescription.SessionId), EventID.SessionChangeEvent);
+                        break;
+                    */
 
-                /*
-                // The user has unlocked their session.
-                case SessionChangeReason.SessionUnlock:
-                    ApplicationLog.WriteInformationEvent(string.Format("Session unlock. Session ID: {0}", changeDescription.SessionId), EventID.SessionChangeEvent);
-                    break;
-                */
+                    /*
+                    // The user has unlocked their session.
+                    case SessionChangeReason.SessionUnlock:
+                        ApplicationLog.WriteInformationEvent(string.Format("Session unlock. Session ID: {0}", changeDescription.SessionId), EventID.SessionChangeEvent);
+                        break;
+                    */
 
             }
 

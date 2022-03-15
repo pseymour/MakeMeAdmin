@@ -122,7 +122,7 @@ namespace LsaLogonSessions
         /// GetLastError.
         /// </returns>
         [DllImport("wtsapi32.dll", SetLastError = true)]
-        internal static extern int WTSQueryUserToken([MarshalAs (UnmanagedType.U4)] [In] int sessionId, [Out] out IntPtr phToken);
+        internal static extern int WTSQueryUserToken([MarshalAs(UnmanagedType.U4)][In] int sessionId, [Out] out IntPtr phToken);
 
         /// <summary>
         /// Frees memory allocated by a Remote Desktop Services function.
@@ -196,7 +196,7 @@ namespace LsaLogonSessions
         internal static extern bool GetTokenInformation(
             [In] IntPtr TokenHandle,
             [In] TOKEN_INFORMATION_CLASS TokenInformationClass,
-            [Out] [Optional] IntPtr TokenInformation,
+            [Out][Optional] IntPtr TokenInformation,
             [In] int TokenInformationLength,
             [Out] out int ReturnLength);
 

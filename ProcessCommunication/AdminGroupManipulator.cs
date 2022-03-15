@@ -22,9 +22,9 @@ namespace SinclairCC.MakeMeAdmin
 {
     using System;
     using System.Collections.Generic;
+    using System.Security.Principal;
     using System.ServiceModel;
     using System.ServiceModel.Channels;
-    using System.Security.Principal;
 
     /// <summary>
     /// This class implements the WCF service contract.
@@ -126,6 +126,19 @@ namespace SinclairCC.MakeMeAdmin
         }
 
 
+        public bool UserSessionIsInList(int sessionID)
+        {
+            SecurityIdentifier sid = LsaLogonSessions.LogonSessions.GetSidForSessionId(sessionID);
+            if (sid != null)
+            {
+                EncryptedSettings encryptedSettings = new EncryptedSettings(EncryptedSettings.SettingsFilePath);
+                return encryptedSettings.ContainsSID(sid);
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         /// <summary>
         /// Determines whether the given array of SIDs/Identities contains the given target user identity.

@@ -77,7 +77,7 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
         */
-                
+
         /// <summary>
         /// Removes a user's security ID (SID) from the collection.
         /// </summary>

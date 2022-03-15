@@ -39,7 +39,7 @@ namespace SinclairCC.MakeMeAdmin
         /// RegEx for validating protocol initialisms.
         /// </summary>
         private readonly string protocolPattern = "^(udp|tcp)$";
-        
+
         /// <summary>
         /// RegEx for validating the RFC to which the server conforms.
         /// </summary>
@@ -147,7 +147,7 @@ namespace SinclairCC.MakeMeAdmin
                 }
             }
         }
-        
+
         /// <summary>
         /// Gets a value indicating whether the information for this object
         /// represents valid syslog server information that we can use for

@@ -399,7 +399,7 @@ namespace SinclairCC.MakeMeAdmin
                             { // The user's administrator rights have expired.
                               // No need to remove from the administrators group, as we already know the SID
                               // is not present in the group.
-                                
+
                                 encryptedSettings.RemoveUser(addedUserList[i]);
 
                             }

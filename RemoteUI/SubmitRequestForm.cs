@@ -20,12 +20,12 @@
 
 namespace SinclairCC.MakeMeAdmin
 {
+    using SinclairCC.Collections.MruList;
     using System;
     using System.Reflection;
     using System.ServiceModel;
     using System.Threading.Tasks;
     using System.Windows.Forms;
-    using SinclairCC.Collections.MruList;
 
     /// <summary>
     /// This form allows a user to submit a request for administrator rights
@@ -182,7 +182,7 @@ namespace SinclairCC.MakeMeAdmin
                     else
                     {
                         MessageBox.Show(string.Format(Properties.Resources.AdminRightsRequestedOnHost, hostName), "Make Me Admin Remote", MessageBoxButtons.OK);
-                    }                    
+                    }
                 });
         }
 
