@@ -150,7 +150,7 @@ namespace SinclairCC.MakeMeAdmin
         /// </param>
         public void SendMessage(string message, string messageId, SyslogNet.Client.Severity severity)
         {
-
+            /*
             System.Net.IPHostEntry hostEntry = null;
             try
             {
@@ -167,6 +167,7 @@ namespace SinclairCC.MakeMeAdmin
             }
             else
             {
+            */
                 SyslogNet.Client.SyslogMessage syslogMessage = new SyslogNet.Client.SyslogMessage(
                     System.DateTimeOffset.Now,
                     SyslogNet.Client.Facility.UserLevelMessages,
@@ -192,7 +193,9 @@ namespace SinclairCC.MakeMeAdmin
                 {
                     Sender.Send(syslogMessage, Serializer);
                 }
+            /*
             }
+            */
         }
 
         /// <summary>

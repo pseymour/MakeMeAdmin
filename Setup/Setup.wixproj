@@ -160,12 +160,14 @@
     </CreateProperty>
     <!-- In debug configuration, name the .msi file after the solution platform, shortened version
          number, platform and configuration, e.g., MakeMeAdmin 1.2.3 x64 Debug.msi. -->
-    <CreateProperty Condition=" '$(Configuration)' == 'Debug' " Value="$(SolutionName) $(ShortVersionNumber) $(Platform) $(Configuration) - Process Logging">
+    <CreateProperty Condition=" '$(Configuration)' == 'Debug' " Value="$(SolutionName) $(ShortVersionNumber) $(Platform) $(Configuration)">
+    <CreateProperty Condition=" '$(Configuration)' == 'Debug' " Value="$(SolutionName) $(ShortVersionNumber) $(Platform) $(Configuration)">
       <Output TaskParameter="Value" PropertyName="TargetName" />
     </CreateProperty>
     <!-- In non-debug (release) configuration, name the .msi file after the solution platform,
          shortened version number and platform, e.g., MakeMeAdmin 1.2.3 x64.msi. -->
-    <CreateProperty Condition=" '$(Configuration)' != 'Debug' " Value="$(SolutionName) $(ShortVersionNumber) $(Platform) - Process Logging">
+    <CreateProperty Condition=" '$(Configuration)' != 'Debug' " Value="$(SolutionName) $(ShortVersionNumber) $(Platform)">
+    <CreateProperty Condition=" '$(Configuration)' != 'Debug' " Value="$(SolutionName) $(ShortVersionNumber) $(Platform)">
       <Output TaskParameter="Value" PropertyName="TargetName" />
     </CreateProperty>
     <!-- Name the .wixpdb file after the .msi file, e.g., [MSI file base name].wixpdb. -->
