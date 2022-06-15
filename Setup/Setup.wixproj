@@ -18,18 +18,19 @@
     <IntermediateOutputPath>obj\$(Configuration) $(Platform)\</IntermediateOutputPath>
     <DefineConstants>Debug</DefineConstants>
     <SuppressIces>ICE57</SuppressIces>
-    <Cultures>
-    </Cultures>
+    <Cultures>en-US</Cultures>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\$(Configuration) $(Platform)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration) $(Platform)\</IntermediateOutputPath>
     <SuppressIces>ICE57</SuppressIces>
+    <Cultures>en-US</Cultures>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <OutputPath>bin\$(Configuration) $(Platform)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration) $(Platform)\</IntermediateOutputPath>
     <SuppressIces>ICE57</SuppressIces>
+    <Cultures>en-US</Cultures>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <DefineConstants>Debug</DefineConstants>
@@ -161,12 +162,10 @@
     <!-- In debug configuration, name the .msi file after the solution platform, shortened version
          number, platform and configuration, e.g., MakeMeAdmin 1.2.3 x64 Debug.msi. -->
     <CreateProperty Condition=" '$(Configuration)' == 'Debug' " Value="$(SolutionName) $(ShortVersionNumber) $(Platform) $(Configuration)">
-    <CreateProperty Condition=" '$(Configuration)' == 'Debug' " Value="$(SolutionName) $(ShortVersionNumber) $(Platform) $(Configuration)">
       <Output TaskParameter="Value" PropertyName="TargetName" />
     </CreateProperty>
     <!-- In non-debug (release) configuration, name the .msi file after the solution platform,
          shortened version number and platform, e.g., MakeMeAdmin 1.2.3 x64.msi. -->
-    <CreateProperty Condition=" '$(Configuration)' != 'Debug' " Value="$(SolutionName) $(ShortVersionNumber) $(Platform)">
     <CreateProperty Condition=" '$(Configuration)' != 'Debug' " Value="$(SolutionName) $(ShortVersionNumber) $(Platform)">
       <Output TaskParameter="Value" PropertyName="TargetName" />
     </CreateProperty>

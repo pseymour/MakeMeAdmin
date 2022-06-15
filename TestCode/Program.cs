@@ -591,6 +591,7 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
         }
         */
 
+        /*
         public static void GetLocalAdminNames()
         {
             // LDAP://servername/<SID=XXXXX>
@@ -599,34 +600,11 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
             Console.WriteLine(localAdmins.Name);
             localAdmins.UsePropertyCache = true;
             object members = localAdmins.Invoke("members", null);
-            /*
-            foreach (string propName in localAdmins.Properties.PropertyNames)
-            {
-                Console.WriteLine(propName);
-            }
-            */
-            /*
-            localAdmins.Children
-
-            string[] nameArray = new string[localAdmins.Properties.PropertyNames.Count];
-            localAdmins.Properties.PropertyNames.CopyTo(nameArray, 0);
-            for(int i = 0; i < nameArray.Length; i++)
-            {
-                Console.WriteLine("Property: \"{0}\"", nameArray[i]);
-            }
-            */
-            
-            /*
-            localAdmins.Children.sc
-            foreach (DirectoryEntry de in localAdmins.Children)
-            {
-                //de.UsePropertyCache = true;
-                Console.WriteLine(de.Name);
-            }
-            */
             localAdmins.Dispose();
         }
+        */
 
+        /*
         public static List<string> GetLocalAdministratorsNames()
         {
             List<string> admins = new List<string>();
@@ -648,11 +626,12 @@ static long POLICY_EXECUTE    =    (STANDARD_RIGHTS_EXECUTE          |\
             {
                 DirectoryEntry member = new DirectoryEntry(groupMember);
 
-                string sidAsText = member.Path; /* GetTextualSID(member); */
+                string sidAsText = member.Path; // GetTextualSID(member);
                 admins.Add(member.Name);
             }
             return admins;
         }
+        */
 
         /// <summary>
         /// The main entry point for the application.
