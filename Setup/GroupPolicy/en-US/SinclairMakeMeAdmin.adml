@@ -72,7 +72,10 @@ Default: 10 minutes]]></string>
       <string id="MaximumReasonLengthDisplayName">Maximum Reason Length</string>
       <string id="MaximumReasonLengthExplainText">Specifies the maximum number of characters that a user may enter in the reason dialog box.</string>
 
-      <string id="None">None</string>
+      <string id="AllowSCCMPrimaryUserDisplayName">Allow the SCCM Primary User</string>
+      <string id="AllowSCCMPrimaryUserExplainText">Specifies whether the primary user, according to SCCM, is allowed to gain administrative rights.</string>
+
+	  <string id="None">None</string>
       <string id="Optional">Optional</string>
       <string id="Required">Required</string>
       <string id="LogElevatedProcessesDisplayName">Log Elevated Processes</string>
@@ -138,8 +141,9 @@ Default: 10 minutes]]></string>
         <text>syslogserver:udp</text>
         <text>Communicates with the server called syslogserver on port 514 via UDP using RFC 3164 messages.</text>
       </presentation>
-      <presentation id="PromptForReasonEnum_Presentation">
-        <dropdownList refId="PromptForReasonEnum" noSort="true" defaultItem="0">Prompt the user to provide a reason for obtaining administrator rights.</dropdownList>
+		<presentation id="PromptForReasonEnum_Presentation">
+			<dropdownList refId="PromptForReasonEnum" noSort="true" defaultItem="0">Prompt the user to provide a reason for obtaining administrator rights.</dropdownList>
+		</presentation>
       <presentation id="LogElevatedProcesses_Presentation">
         <text>Choose when to log processes that are executed with elevated permissions.</text>
         <dropdownList refId="ProcessLoggingDropDown" noSort="true" defaultItem="1">Log Elevated Processes:</dropdownList>

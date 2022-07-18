@@ -22,6 +22,7 @@ namespace SinclairCC.MakeMeAdmin
 {
     using System;
     using System.Collections.Generic;
+    using System.Management;
     using System.Security.Principal;
     using System.ServiceModel;
     using System.ServiceModel.Channels;
@@ -32,6 +33,8 @@ namespace SinclairCC.MakeMeAdmin
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, IncludeExceptionDetailInFaults = false)]
     public class AdminGroupManipulator : IAdminGroup
     {
+        private static string SCCMPrimaryUserName { get; set; }
+
         /// <summary>
         /// Adds a user to the local Administrators group.
         /// </summary>
@@ -220,22 +223,60 @@ namespace SinclairCC.MakeMeAdmin
 
             // The user hasn't been denied yet, so now we check for authorization.
 
+            if (Settings.AllowSCCMTopConsoleUser)
+            {
+#if DEBUG
+                ApplicationLog.WriteEvent("Retrieving SCCM top console user.", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+                //if (null == AdminGroupManipulator.SCCMPrimaryUserName)
+                //{
+                    AdminGroupManipulator.SCCMPrimaryUserName = GetSCCMPrimaryUser();
+                    if (null == AdminGroupManipulator.SCCMPrimaryUserName) { AdminGroupManipulator.SCCMPrimaryUserName = string.Empty; }
+                //}
+
+                if (!string.IsNullOrEmpty(AdminGroupManipulator.SCCMPrimaryUserName))
+                {
+                    if (string.Compare(AdminGroupManipulator.SCCMPrimaryUserName, userIdentity.Name, true) == 0)
+                    {
+#if DEBUG
+                        ApplicationLog.WriteEvent(string.Format("User {0} is SCCM primary user.", AdminGroupManipulator.SCCMPrimaryUserName), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+                        return true;
+                    }
+                }
+#if DEBUG
+                ApplicationLog.WriteEvent(string.Format("Finished retrieving SCCM top console user. primary user is \"{0}.\"", AdminGroupManipulator.SCCMPrimaryUserName), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+            }
+
             // Check the authorization list.
             if (allowedSidsList == null)
             { // The allowed list is null, meaning everyone is allowed administrator rights.
+#if DEBUG
+                ApplicationLog.WriteEvent(string.Format("Allowed SID NULL - Allow all users."), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
                 return true;
             }
             else if (allowedSidsList.Length == 0)
             { // The allowed list is empty, meaning no one is allowed administrator rights.
+#if DEBUG
+                ApplicationLog.WriteEvent(string.Format("Allowed SID Empty - Allow no users."), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
                 return false;
             }
             else
             { // The allowed list has entries.
                 if (AccountListContainsIdentity(allowedSidsList, userIdentity))
                 {
+#if DEBUG
+                    ApplicationLog.WriteEvent(string.Format("Allowed SID {0} match - Allow user {1}.", userIdentity.User, userIdentity.Name), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
                     return true;
                 }
 
+#if DEBUG
+                ApplicationLog.WriteEvent(string.Format("Allowed SID {0} no match - Deny user {1}.", userIdentity.User, userIdentity.Name), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
                 // The user was not found in the allowed list, so the user is not authorized.
                 return false;
             }
@@ -320,6 +361,94 @@ namespace SinclairCC.MakeMeAdmin
             }
 
             return timeoutMinutes;
+        }
+
+        private static string GetSCCMPrimaryUser()
+        {
+            string returnValue = null;
+            try
+            {
+                ManagementScope scope = new ManagementScope("\\root\\ccm\\policy\\machine");
+                scope.Connect();
+                ObjectQuery oq = new ObjectQuery("SELECT ConsoleUser FROM CCM_UserAffinity");
+                ManagementObjectSearcher searcher = new ManagementObjectSearcher(scope, oq);
+                ManagementObjectCollection collection = searcher.Get();
+
+                foreach (ManagementObject mo in collection)
+                {
+                    ApplicationLog.WriteEvent(string.Format("GetSCCMPrimaryUser: Collection found {0}", mo.ToString()), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+                    foreach (PropertyData pd in mo.Properties)
+                    {
+                        ApplicationLog.WriteEvent(string.Format("GetSCCMPrimaryUser: PropertyData found {0}", pd.ToString()), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+                        if (null != pd.Value)
+                        {
+                            returnValue = ConvertPropDataToString(pd);
+                            // Stop on first match
+                            break;
+                        }
+                    }
+                }
+
+                if(returnValue == null)
+                {
+                    ApplicationLog.WriteEvent(string.Format("GetSCCMPrimaryUser: No ConsoleUser found"), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Warning);
+                }
+
+                collection.Dispose();
+                searcher.Dispose();
+            }
+            catch (ManagementException ex)
+            {
+                ApplicationLog.WriteEvent(string.Format("GetSCCMPrimaryUser: ManagementException {0}", ex.ToString()), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Error);                
+            }
+            catch (System.UnauthorizedAccessException ex)
+            {
+                ApplicationLog.WriteEvent(string.Format("GetSCCMPrimaryUser: UnauthorizedAccessException {0}", ex.ToString()), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Error);
+            }
+
+            return returnValue;
+        }
+
+
+        /// <summary>
+        /// Converts the given PropertyData object to a string.
+        /// </summary>
+        /// <param name="propData"></param>
+        /// <returns></returns>
+        /// <remarks>This function only works for single-valued WMI values.</remarks>
+        private static string ConvertPropDataToString(PropertyData propData)
+        {
+            string propValue;
+
+            switch (propData.Type)
+            {
+                case CimType.String:
+                    //if (propData.IsArray)
+                    //{
+                    //    // TODO: Handle arrays of data!
+                    //    string[] stringArrayData = (string[])propData.Value;
+
+                    //    foreach (string stringData in stringArrayData)
+                    //    {
+                    //        // Replace multiple whitespace characters with a single space character.
+                    //        stringData = System.Text.RegularExpressions.Regex.Replace(stringData, "\\s+", " ");
+
+                    //        propValue = stringData;
+                    //    }
+                    //}
+                    //else
+                    //{
+                    string stringData = (string)propData.Value;
+
+                    propValue = stringData;
+                    break;
+
+                default:
+                    propValue = default(string);
+                    break;
+            }
+
+            return propValue;
         }
 
     }

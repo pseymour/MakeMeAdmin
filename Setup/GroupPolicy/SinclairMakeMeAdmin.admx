@@ -260,17 +260,19 @@
       </elements>
     </policy>
 
-    <policy name="MaximumReasonLength"
-             class="Machine"
-             displayName="$(string.MaximumReasonLengthDisplayName)"
-             explainText="$(string.MaximumReasonLengthExplainText)"
-             key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
-             valueName="Maximum Reason Length"
-             presentation="$(presentation.Maximum_Reason_Length_Spin)" >
-      <parentCategory ref="makemeadmin:MakeMeAdmin"></parentCategory>
-      <supportedOn ref="windows:SUPPORTED_Windows7" />
-      <elements>
-        <decimal id="MaximumReasonLengthValue" required="true" valueName="Maximum Reason Length" minValue="5" maxValue="4096" storeAsText="false" />
+	  <policy name="MaximumReasonLength"
+			   class="Machine"
+			   displayName="$(string.MaximumReasonLengthDisplayName)"
+			   explainText="$(string.MaximumReasonLengthExplainText)"
+			   key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
+			   valueName="Maximum Reason Length"
+			   presentation="$(presentation.Maximum_Reason_Length_Spin)" >
+		  <parentCategory ref="makemeadmin:MakeMeAdmin"></parentCategory>
+		  <supportedOn ref="windows:SUPPORTED_Windows7" />
+		  <elements>
+			  <decimal id="MaximumReasonLengthValue" required="true" valueName="Maximum Reason Length" minValue="5" maxValue="4096" storeAsText="false" />
+		  </elements>
+	  </policy>
     <policy name="LogElevatedProcesses"
              class="Machine"
              displayName="$(string.LogElevatedProcessesDisplayName)"
@@ -299,6 +301,21 @@
         </enum>
       </elements>
     </policy>
+	<policy name="AllowSCCMPrimaryUser"
+			   class="Machine"
+			   displayName="$(string.AllowSCCMPrimaryUserDisplayName)"
+			   explainText="$(string.AllowSCCMPrimaryUserExplainText)"
+			   key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
+			   valueName="Allow SCCM Primary User">
+		  <parentCategory ref="makemeadmin:MakeMeAdmin"></parentCategory>
+		  <supportedOn ref="windows:SUPPORTED_Windows7" />
+		  <enabledValue>
+			  <decimal value="1" />
+		  </enabledValue>
+		  <disabledValue>
+			  <delete />
+		  </disabledValue>
+	  </policy>
 
   </policies>
 

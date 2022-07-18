@@ -685,6 +685,32 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+        public static bool AllowSCCMTopConsoleUser
+        {
+            get
+            {
+                int? policySCCMPrimaryUserSetting = GetDWord(PolicyRegistryKeyPath, null, "Allow SCCM Primary User");
+                int? preferenceSCCMPrimaryUserSetting = GetDWord(PreferenceRegistryKeyPath, null, "Allow SCCM Primary User");
+                if (policySCCMPrimaryUserSetting.HasValue)
+                { // The policy setting has a value. Go with whatever it says.
+                    return Convert.ToBoolean(policySCCMPrimaryUserSetting.Value);
+                }
+                else if (preferenceSCCMPrimaryUserSetting.HasValue)
+                { // The preference setting has a value. Go with whatever it says.
+                    return Convert.ToBoolean(preferenceSCCMPrimaryUserSetting.Value);
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value. Return a default value of false.
+                    return true;
+                }
+            }
+            set
+            {
+                SetDWord(PreferenceRegistryKeyPath, null, "Allow SCCM Primary User", Convert.ToInt32(value));
+            }
+        }
+
+
         /// <summary>
         /// Removes from the computer all of the settings related to this application.
         /// </summary>
