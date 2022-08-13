@@ -94,6 +94,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="ElevatedProcessInformation.cs" />
     <Compile Include="LoggingProvider.cs" />
     <Compile Include="ProcessInformation.cs" />
