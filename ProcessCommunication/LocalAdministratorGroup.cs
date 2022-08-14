@@ -652,7 +652,7 @@ namespace SinclairCC.MakeMeAdmin
         /// <returns>
         /// Returns an array of security identifiers (SIDs), each representing a group member.
         /// </returns>
-        private static SecurityIdentifier[] GetLocalGroupMembers(string GroupName)
+        public static SecurityIdentifier[] GetLocalGroupMembers(string GroupName)
         {
             SecurityIdentifier[] returnValue = null;
             IntPtr buffer = IntPtr.Zero;

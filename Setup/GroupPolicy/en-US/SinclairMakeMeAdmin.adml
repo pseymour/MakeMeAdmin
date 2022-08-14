@@ -75,7 +75,10 @@ Default: 10 minutes]]></string>
       <string id="AllowSCCMPrimaryUserDisplayName">Allow the SCCM Primary User</string>
       <string id="AllowSCCMPrimaryUserExplainText">Specifies whether the primary user, according to SCCM, is allowed to gain administrative rights.</string>
 
-	  <string id="None">None</string>
+	  <string id="AllowGroupMembersDisplayName">Allow users from local Group</string>
+	  <string id="AllowGroupMembersExplainText">Specifies a local group with users allowed to gain administrative rights.</string>
+
+		<string id="None">None</string>
       <string id="Optional">Optional</string>
       <string id="Required">Required</string>
       <string id="LogElevatedProcessesDisplayName">Log Elevated Processes</string>
@@ -148,7 +151,12 @@ Default: 10 minutes]]></string>
         <text>Choose when to log processes that are executed with elevated permissions.</text>
         <dropdownList refId="ProcessLoggingDropDown" noSort="true" defaultItem="1">Log Elevated Processes:</dropdownList>
       </presentation>
-    </presentationTable>
+	  <presentation id="AllowGroupMembers_Presentation">
+		 <textBox refId="NewAllowGroupMembersHeading">
+		   <label>Local Group Name:</label>
+		  </textBox>
+	  </presentation>
+	</presentationTable>
   </resources>
 </policyDefinitionResources>
 

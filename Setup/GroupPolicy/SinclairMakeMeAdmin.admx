@@ -317,6 +317,18 @@
 		  </disabledValue>
 	  </policy>
 
+	  <policy name="AllowGroupMembers"
+			 class="Machine"
+			 displayName="$(string.AllowGroupMembersDisplayName)"
+			 explainText="$(string.AllowGroupMembersExplainText)"
+			 presentation="$(presentation.AllowGroupMembers_Presentation)"
+			 key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin">
+		  <parentCategory ref="makemeadmin:MakeMeAdmin"></parentCategory>
+		  <supportedOn ref="windows:SUPPORTED_Windows7" />
+		  <elements>
+			  <text id="NewAllowGroupMembersHeading" valueName="Allow Group Members" required="true" maxLength="255" />
+		  </elements>
+	  </policy>
   </policies>
 
 </policyDefinitions>

@@ -249,6 +249,11 @@ namespace SinclairCC.MakeMeAdmin
 #endif
             }
 
+            if(IsInAllowedGroup(userIdentity))
+            {
+                return true;
+            }
+
             // Check the authorization list.
             if (allowedSidsList == null)
             { // The allowed list is null, meaning everyone is allowed administrator rights.
@@ -361,6 +366,37 @@ namespace SinclairCC.MakeMeAdmin
             }
 
             return timeoutMinutes;
+        }
+
+        private static bool IsInAllowedGroup(WindowsIdentity currentUser)
+        {
+            string allowGroupMembers = Settings.AllowGroupMembers;
+            if (!String.IsNullOrEmpty(allowGroupMembers))
+            {
+#if DEBUG
+                ApplicationLog.WriteEvent(String.Format("Retrieving Users from group {0}.", allowGroupMembers), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+               
+                SecurityIdentifier[] allowedGroupSid = LocalAdministratorGroup.GetLocalGroupMembers(allowGroupMembers);
+
+                foreach (SecurityIdentifier sid in allowedGroupSid)
+                {
+                    string accountName = LocalAdministratorGroup.GetAccountNameFromSID(sid);
+#if DEBUG
+                    ApplicationLog.WriteEvent(String.Format("Group {0}: User {1}.", allowGroupMembers, accountName), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+
+                    if (currentUser.User.Equals(sid))
+                    {
+#if DEBUG
+                        ApplicationLog.WriteEvent(String.Format("Group {0}: Current User {1} ({2}) matches", allowGroupMembers, currentUser.Name, currentUser.User), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         private static string GetSCCMPrimaryUser()

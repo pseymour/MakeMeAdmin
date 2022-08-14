@@ -710,6 +710,31 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+        public static string AllowGroupMembers
+        {
+            get
+            {
+                string policyAllowGroupMembersSetting = GetString(PolicyRegistryKeyPath, null, "Allow Group Members");
+                string preferenceAllowGroupMembersSetting = GetString(PreferenceRegistryKeyPath, null, "Allow Group Members");
+                if (!String.IsNullOrEmpty(policyAllowGroupMembersSetting))
+                { // The policy setting has a value. Go with whatever it says.
+                    return policyAllowGroupMembersSetting;
+                }
+                else if (!String.IsNullOrEmpty(preferenceAllowGroupMembersSetting))
+                { // The preference setting has a value. Go with whatever it says.
+                    return preferenceAllowGroupMembersSetting;
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value. Return a default value of false.
+                    return String.Empty;
+                }
+            }
+            set
+            {
+                SetString(PreferenceRegistryKeyPath, null, "Allow Group Members", value);
+            }
+        }
+
 
         /// <summary>
         /// Removes from the computer all of the settings related to this application.
