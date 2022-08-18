@@ -140,6 +140,7 @@ Default: 10 minutes]]></string>
       </presentation>
       <presentation id="PromptForReasonEnum_Presentation">
         <dropdownList refId="PromptForReasonEnum" noSort="true" defaultItem="0">Prompt the user to provide a reason for obtaining administrator rights.</dropdownList>
+      </presentation>
       <presentation id="LogElevatedProcesses_Presentation">
         <text>Choose when to log processes that are executed with elevated permissions.</text>
         <dropdownList refId="ProcessLoggingDropDown" noSort="true" defaultItem="1">Log Elevated Processes:</dropdownList>
@@ -147,5 +148,3 @@ Default: 10 minutes]]></string>
     </presentationTable>
   </resources>
 </policyDefinitionResources>
-
-

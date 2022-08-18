@@ -271,6 +271,9 @@
       <supportedOn ref="windows:SUPPORTED_Windows7" />
       <elements>
         <decimal id="MaximumReasonLengthValue" required="true" valueName="Maximum Reason Length" minValue="5" maxValue="4096" storeAsText="false" />
+      </elements>
+    </policy>
+    
     <policy name="LogElevatedProcesses"
              class="Machine"
              displayName="$(string.LogElevatedProcessesDisplayName)"
