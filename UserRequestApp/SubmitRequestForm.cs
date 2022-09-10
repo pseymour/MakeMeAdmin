@@ -363,7 +363,7 @@ namespace SinclairCC.MakeMeAdmin
                 this.appStatus.Text = Properties.Resources.ApplicationIsReady;
                 this.userWasAdminOnLastCheck = this.userIsAdmin;
                 this.notifyIconTimer.Start();
-                notifyIcon.Visible = true;
+                this.notifyIcon.Visible = true;
                 this.Visible = false;
                 this.ShowInTaskbar = false;
                 notifyIcon.ShowBalloonTip(5000, Properties.Resources.ApplicationName, string.Format(Properties.Resources.UIMessageAddedToGroup, LocalAdministratorGroup.LocalAdminGroupName), ToolTipIcon.Info);
@@ -626,6 +626,28 @@ namespace SinclairCC.MakeMeAdmin
         /// Data specific to the event.
         /// </param>
         private void notifyIcon_BalloonTipClosed(object sender, EventArgs e)
+        {
+            // Update the enabled/disabled state of the buttons, if the worker
+            // is not already doing so.
+            if (!buttonStateWorker.IsBusy)
+            {
+                buttonStateWorker.RunWorkerAsync();
+            }
+
+            this.CloseFormAfterBalloonTip();
+        }
+
+        private void notifyIcon_BalloonTipClicked(object sender, EventArgs e)
+        {
+            // Update the enabled/disabled state of the buttons, if the worker
+            // is not already doing so.
+            if (!buttonStateWorker.IsBusy)
+            {
+                buttonStateWorker.RunWorkerAsync();
+            }
+        }
+
+        private void CloseFormAfterBalloonTip()
         {
             if (!this.userIsAdmin)
             {
