@@ -51,6 +51,9 @@ Default: 10 minutes]]></string>
       <string id="EndRemoteSessionsDisplayName">End Remote Sessions When Rights Expire</string>
       <string id="EndRemoteSessionsExplainText">Specifies whether remote sessions are closed when the corresponding user's rights expire.</string>
 
+      <string id="CloseApplicationDisplayName">Close Application When Rights Expire</string>
+      <string id="CloseApplicationExplainText">Specifies whether the application is closed when the user's rights expire.</string>
+
       <string id="TimeoutOverrideDisplayName">Admin Rights Timeout Overrides</string>
       <string id="TimeoutOverrideExplainText">Specifies different timeout values for particular users or groups.</string>
 

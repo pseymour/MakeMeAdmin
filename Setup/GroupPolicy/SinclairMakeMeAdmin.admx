@@ -204,6 +204,18 @@
       <disabledValue><decimal value="0" /></disabledValue>
     </policy>
 
+    <policy name="CloseApplicationOnExpiration"
+             class="Machine"
+             displayName="$(string.CloseApplicationDisplayName)"
+             explainText="$(string.CloseApplicationExplainText)"
+             key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
+             valueName="Close Application Upon Expiration">
+      <parentCategory ref="makemeadmin:MakeMeAdmin"></parentCategory>
+      <supportedOn ref="windows:SUPPORTED_Windows7" />
+      <enabledValue><delete /></enabledValue>
+      <disabledValue><decimal value="0" /></disabledValue>
+    </policy>
+
     <policy name="SyslogServers"
              class="Machine"
              displayName="$(string.SyslogServersDisplayName)"

@@ -492,6 +492,32 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
+        // TODO: i18n.
+        public static bool CloseApplicationOnExpiration
+        {
+            get
+            {
+                int? policyCloseApplicationSetting = GetDWord(PolicyRegistryKeyPath, null, "Close Application Upon Expiration");
+                int? preferenceCloseApplicationSetting = GetDWord(PreferenceRegistryKeyPath, null, "Close Application Upon Expiration");
+                if (policyCloseApplicationSetting.HasValue)
+                { // The policy setting has a value. Go with whatever it says.
+                    return Convert.ToBoolean(policyCloseApplicationSetting.Value);
+                }
+                else if (preferenceCloseApplicationSetting.HasValue)
+                { // The preference setting has a value. Go with whatever it says.
+                    return Convert.ToBoolean(preferenceCloseApplicationSetting.Value);
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value. Return a default value of true.
+                    return true;
+                }
+            }
+            set
+            {
+                SetDWord(PreferenceRegistryKeyPath, null, "Close Application Upon Expiration", Convert.ToInt32(value));
+            }
+        }
+
         public static ReasonPrompt PromptForReason
         {
             get

@@ -627,37 +627,33 @@ namespace SinclairCC.MakeMeAdmin
         /// </param>
         private void notifyIcon_BalloonTipClosed(object sender, EventArgs e)
         {
-            // Update the enabled/disabled state of the buttons, if the worker
-            // is not already doing so.
-            if (!buttonStateWorker.IsBusy)
-            {
-                buttonStateWorker.RunWorkerAsync();
-            }
-
-            this.CloseFormAfterBalloonTip();
+            this.UpdateFormAfterBalloonTip();
         }
 
         private void notifyIcon_BalloonTipClicked(object sender, EventArgs e)
         {
-            // Update the enabled/disabled state of the buttons, if the worker
-            // is not already doing so.
-            if (!buttonStateWorker.IsBusy)
-            {
-                buttonStateWorker.RunWorkerAsync();
-            }
+            this.UpdateFormAfterBalloonTip();
         }
 
-        private void CloseFormAfterBalloonTip()
+        private void UpdateFormAfterBalloonTip()
         {
             if (!this.userIsAdmin)
             {
-                /*
-                notifyIcon.Visible = false;
-                this.Visible = true;
-                this.ShowInTaskbar = true;
-                */
-                this.Close();
-            }
+                if (Settings.CloseApplicationOnExpiration)
+                {
+                    this.Close();
+                }
+                else
+                { // Do not close the form.
+
+                    // Update the enabled/disabled state of the buttons, if the worker is not already doing so.
+                    if (!buttonStateWorker.IsBusy) { buttonStateWorker.RunWorkerAsync(); }
+
+                    this.notifyIcon.Visible = false;
+                    this.Visible = true;
+                    this.ShowInTaskbar = true;
+                }
+            }            
         }
     }
 }
