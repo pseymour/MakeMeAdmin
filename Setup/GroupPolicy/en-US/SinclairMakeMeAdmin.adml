@@ -51,6 +51,9 @@ Default: 10 minutes]]></string>
       <string id="EndRemoteSessionsDisplayName">End Remote Sessions When Rights Expire</string>
       <string id="EndRemoteSessionsExplainText">Specifies whether remote sessions are closed when the corresponding user's rights expire.</string>
 
+      <string id="CloseApplicationDisplayName">Close Application When Rights Expire</string>
+      <string id="CloseApplicationExplainText">Specifies whether the application is closed when the user's rights expire.</string>
+
       <string id="TimeoutOverrideDisplayName">Admin Rights Timeout Overrides</string>
       <string id="TimeoutOverrideExplainText">Specifies different timeout values for particular users or groups.</string>
 
@@ -75,10 +78,10 @@ Default: 10 minutes]]></string>
       <string id="AllowSCCMPrimaryUserDisplayName">Allow the SCCM Primary User</string>
       <string id="AllowSCCMPrimaryUserExplainText">Specifies whether the primary user, according to SCCM, is allowed to gain administrative rights.</string>
 
-	  <string id="AllowGroupMembersDisplayName">Allow users from local Group</string>
-	  <string id="AllowGroupMembersExplainText">Specifies a local group with users allowed to gain administrative rights.</string>
+      <string id="AllowGroupMembersDisplayName">Allow users from local Group</string>
+      <string id="AllowGroupMembersExplainText">Specifies a local group with users allowed to gain administrative rights.</string>
 
-		<string id="None">None</string>
+      <string id="None">None</string>
       <string id="Optional">Optional</string>
       <string id="Required">Required</string>
       <string id="LogElevatedProcessesDisplayName">Log Elevated Processes</string>
@@ -144,20 +147,18 @@ Default: 10 minutes]]></string>
         <text>syslogserver:udp</text>
         <text>Communicates with the server called syslogserver on port 514 via UDP using RFC 3164 messages.</text>
       </presentation>
-		<presentation id="PromptForReasonEnum_Presentation">
-			<dropdownList refId="PromptForReasonEnum" noSort="true" defaultItem="0">Prompt the user to provide a reason for obtaining administrator rights.</dropdownList>
-		</presentation>
+      <presentation id="PromptForReasonEnum_Presentation">
+        <dropdownList refId="PromptForReasonEnum" noSort="true" defaultItem="0">Prompt the user to provide a reason for obtaining administrator rights.</dropdownList>
+      </presentation>
       <presentation id="LogElevatedProcesses_Presentation">
         <text>Choose when to log processes that are executed with elevated permissions.</text>
         <dropdownList refId="ProcessLoggingDropDown" noSort="true" defaultItem="1">Log Elevated Processes:</dropdownList>
       </presentation>
-	  <presentation id="AllowGroupMembers_Presentation">
-		 <textBox refId="NewAllowGroupMembersHeading">
-		   <label>Local Group Name:</label>
-		  </textBox>
-	  </presentation>
-	</presentationTable>
+      <presentation id="AllowGroupMembers_Presentation">
+         <textBox refId="NewAllowGroupMembersHeading">
+           <label>Local Group Name:</label>
+          </textBox>
+      </presentation>
+    </presentationTable>
   </resources>
 </policyDefinitionResources>
-
-

@@ -79,6 +79,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="SidAttributes.cs" />
     <Compile Include="SID_AND_ATTRIBUTES.cs" />
     <Compile Include="TOKEN_GROUPS.cs" />

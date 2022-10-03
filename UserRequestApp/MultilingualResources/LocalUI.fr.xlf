@@ -200,24 +200,24 @@ A reason is required in order to obtain administrator rights, but your administr
           <target state="final">17, 17</target>
         </trans-unit>
         <trans-unit id="statusStrip1.TrayLocation" translate="no" extype="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" extradata="metadata" xml:space="preserve">
-          <source>263, 17</source>
-          <target state="final">263, 17</target>
+          <source>354, 17</source>
+          <target state="final">354, 17</target>
         </trans-unit>
         <trans-unit id="buttonStateWorker.TrayLocation" translate="no" extype="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" extradata="metadata" xml:space="preserve">
-          <source>107, 17</source>
-          <target state="final">107, 17</target>
+          <source>136, 17</source>
+          <target state="final">136, 17</target>
         </trans-unit>
         <trans-unit id="addUserBackgroundWorker.TrayLocation" translate="no" extype="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" extradata="metadata" xml:space="preserve">
-          <source>379, 17</source>
-          <target state="final">379, 17</target>
+          <source>512, 17</source>
+          <target state="final">512, 17</target>
         </trans-unit>
         <trans-unit id="removeUserBackgroundWorker.TrayLocation" translate="no" extype="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" extradata="metadata" xml:space="preserve">
-          <source>581, 17</source>
-          <target state="final">581, 17</target>
+          <source>799, 17</source>
+          <target state="final">799, 17</target>
         </trans-unit>
         <trans-unit id="notifyIcon.TrayLocation" translate="no" extype="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" extradata="metadata" xml:space="preserve">
-          <source>803, 17</source>
-          <target state="final">803, 17</target>
+          <source>1117, 17</source>
+          <target state="final">1117, 17</target>
         </trans-unit>
         <trans-unit id="$this.Localizable" translate="no" extype="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" extradata="metadata" xml:space="preserve">
           <source>True</source>
