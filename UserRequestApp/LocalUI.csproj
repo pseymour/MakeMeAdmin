@@ -105,13 +105,15 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.da.resx" />
-    <EmbeddedResource Include="Properties\Resources.fr.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.fr.resx" />
+    <EmbeddedResource Include="Properties\Resources.nb.resx" />
     <EmbeddedResource Include="RequestReasonDialog.da.resx">
       <DependentUpon>RequestReasonDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="RequestReasonDialog.fr.resx">
+      <DependentUpon>RequestReasonDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RequestReasonDialog.nb.resx">
       <DependentUpon>RequestReasonDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="RequestReasonDialog.resx">
@@ -122,6 +124,9 @@
       <DependentUpon>SubmitRequestForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SubmitRequestForm.fr.resx">
+      <DependentUpon>SubmitRequestForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SubmitRequestForm.nb.resx">
       <DependentUpon>SubmitRequestForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SubmitRequestForm.resx">
@@ -197,6 +202,7 @@
   <ItemGroup>
     <XliffResource Include="MultilingualResources\LocalUI.da.xlf" />
     <XliffResource Include="MultilingualResources\LocalUI.fr.xlf" />
+    <XliffResource Include="MultilingualResources\LocalUI.nb.xlf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\SecurityLock.ico" />

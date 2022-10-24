@@ -15,6 +15,7 @@
       <ComponentRef Id="ElevationUserInterface" />
       <ComponentRef Id="ElevationUserInterface_da" />
       <ComponentRef Id="ElevationUserInterface_fr" />
+      <ComponentRef Id="ElevationUserInterface_nb" />
 
       <ComponentRef Id="LsaLogonSessionLibrary" />
       <!--
@@ -24,6 +25,7 @@
       <ComponentRef Id="Service" />
       <ComponentRef Id="Service_da" />
       <ComponentRef Id="Service_fr" />
+      <ComponentRef Id="Service_nb" />
       <ComponentRef Id="MicrosoftTraceEventNuGetCommon" />
       <ComponentRef Id="MicrosoftTraceEventNuGet_amd64" />
       <ComponentRef Id="MicrosoftTraceEventNuGet_x86" />
@@ -31,6 +33,7 @@
       <ComponentRef Id="LoggingLibrary" />
       <ComponentRef Id="LoggingLibrary_da" />
       <ComponentRef Id="LoggingLibrary_fr" />
+      <ComponentRef Id="LoggingLibrary_nb" />
 
       <ComponentRef Id="SettingsLibrary" />
       
@@ -39,6 +42,7 @@
       <ComponentRef Id="ProcessCommunicationLibrary" />
       <ComponentRef Id="ProcessCommunicationLibrary_da" />
       <ComponentRef Id="ProcessCommunicationLibrary_fr" />
+      <ComponentRef Id="ProcessCommunicationLibrary_nb" />
       
       <Condition Level="0">INSTALLMAKEMEADMIN = "0"</Condition>
     </Feature>
@@ -47,6 +51,7 @@
       <ComponentRef Id="RemoteElevationUserInterface"/>
       <ComponentRef Id="RemoteElevation_da"/>
       <ComponentRef Id="RemoteElevation_fr"/>
+      <ComponentRef Id="RemoteElevation_nb"/>
 
       <ComponentRef Id="EnumerationsLibrary" />
 
@@ -55,12 +60,14 @@
       <ComponentRef Id="LoggingLibrary" />
       <ComponentRef Id="LoggingLibrary_da" />
       <ComponentRef Id="LoggingLibrary_fr" />
+      <ComponentRef Id="LoggingLibrary_nb" />
       
       <ComponentRef Id="SettingsLibrary" />
 
       <ComponentRef Id="ProcessCommunicationLibrary" />
       <ComponentRef Id="ProcessCommunicationLibrary_da" />
       <ComponentRef Id="ProcessCommunicationLibrary_fr" />
+      <ComponentRef Id="ProcessCommunicationLibrary_nb" />
       
       <Condition Level="1">(INSTALLREMOTE = "1") OR REMOVE</Condition>
     </Feature>
@@ -115,7 +122,25 @@
               <File Id="ElevationUserInterfaceResources_da" Name="$(var.LocalUI.TargetName).resources.dll" Source="$(var.LocalUI.TargetDir)da\$(var.LocalUI.TargetName).resources.dll" KeyPath="no" />
             </Component>
           </Directory>
-          
+
+          <Directory Id="nb_Localization" Name="nb">
+            <Component Id="RemoteElevation_nb" Guid="C1027621-BD66-45C1-9CA7-42A8DD0C1FD2">
+              <File Id="RemoteElevationResources_nb" Name="$(var.RemoteUI.TargetName).resources.dll" Source="$(var.RemoteUI.TargetDir)nb\$(var.RemoteUI.TargetName).resources.dll" KeyPath="no" />
+            </Component>
+            <Component Id="LoggingLibrary_nb" Guid="5B896882-F930-4945-9DD3-D19B5FE82C73">
+              <File Id="LoggingResources_nb" Name="$(var.Logging.TargetName).resources.dll" Source="$(var.Logging.TargetDir)nb\$(var.Logging.TargetName).resources.dll" KeyPath="no" />
+            </Component>
+            <Component Id="Service_nb" Guid="68825327-2115-41C3-8D66-411B04FA1BBB">
+              <File Id="ServiceResources_nb" Name="$(var.Service.TargetName).resources.dll" Source="$(var.Service.TargetDir)nb\$(var.Service.TargetName).resources.dll" KeyPath="no" />
+            </Component>
+            <Component Id="ProcessCommunicationLibrary_nb" Guid="F700A135-14E1-4EA8-8B52-66DA5B9A1480">
+              <File Id="ProcessCommunicationLibraryResources_nb" Name="$(var.ProcessCommunication.TargetName).resources.dll" Source="$(var.ProcessCommunication.TargetDir)nb\$(var.ProcessCommunication.TargetName).resources.dll" KeyPath="no" />
+            </Component>
+            <Component Id="ElevationUserInterface_nb" Guid="ABE9F89D-26C8-4292-ADC6-731D4618E230">
+              <File Id="ElevationUserInterfaceResources_nb" Name="$(var.LocalUI.TargetName).resources.dll" Source="$(var.LocalUI.TargetDir)nb\$(var.LocalUI.TargetName).resources.dll" KeyPath="no" />
+            </Component>
+          </Directory>
+
           <Component Id="ElevationUserInterface" Guid="562B228B-6029-457D-96C9-6B4BCA69660D">
             <File Id="ElevationUserInterfaceExe" Name="$(var.LocalUI.TargetFileName)" Source="$(var.LocalUI.TargetPath)" KeyPath="yes" />
             <Shortcut Id="LocalUserInferfaceShortcut" Directory="ProgramMenuFolder" Name="Make Me Admin" Description="Make Me Admin Local User Interface" Advertise="yes" WorkingDirectory="INSTALLDIR" Icon="SecurityLock.ico" IconIndex="0" />

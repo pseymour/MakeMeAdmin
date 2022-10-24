@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="addMeButton.Text" xml:space="preserve">
+    <value>&amp;Gi meg administratorrettigheter</value>
+  </data>
+  <data name="addMeButton.ToolTip" xml:space="preserve">
+    <value>Legg den påloggede brukeren i Administrator-gruppa</value>
+  </data>
+  <data name="removeMeButton.Text" xml:space="preserve">
+    <value>&amp;Fjern mine administratorrettigheter</value>
+  </data>
+  <data name="removeMeButton.ToolTip" xml:space="preserve">
+    <value>Fjerner pålogget bruker fra Administrator-gruppa</value>
+  </data>
+  <data name="appStatus.Text" xml:space="preserve">
+    <value>Klar</value>
+  </data>
+  <data name="addMeButton.Margin" xml:space="preserve" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 5, 4, 5</value>
+  </data>
+  <data name="removeMeButton.Margin" xml:space="preserve" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 5, 4, 5</value>
+  </data>
+  <data name="statusStrip1.Padding" xml:space="preserve" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>2, 0, 21, 0</value>
+  </data>
+  <data name="$this.Margin" xml:space="preserve" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 5, 4, 5</value>
+  </data>
+</root>
