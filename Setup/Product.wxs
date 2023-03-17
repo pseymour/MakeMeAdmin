@@ -181,7 +181,7 @@
             <File Id="Microsoft.Diagnostics.FastSerialization.xml" Source="$(var.Service.TargetDir)\Microsoft.Diagnostics.FastSerialization.xml" KeyPath="no" />
             <File Id="Microsoft.Diagnostics.Tracing.TraceEvent.dll" Source="$(var.Service.TargetDir)\Microsoft.Diagnostics.Tracing.TraceEvent.dll" KeyPath="no" />
             <File Id="Microsoft.Diagnostics.Tracing.TraceEvent.xml" Source="$(var.Service.TargetDir)\Microsoft.Diagnostics.Tracing.TraceEvent.xml" KeyPath="no" />
-            <File Id="OSExtensions.dll" Source="$(var.Service.TargetDir)\OSExtensions.dll" KeyPath="no" />
+			<!-- Removed from Microsoft.Diagnostics.Tracing.TraceEvent: <File Id="OSExtensions.dll" Source="$(var.Service.TargetDir)\OSExtensions.dll" KeyPath="no" /> -->
             <File Id="System.Runtime.CompilerServices.Unsafe.dll" Source="$(var.Service.TargetDir)\System.Runtime.CompilerServices.Unsafe.dll" KeyPath="no" />
             <File Id="System.Runtime.CompilerServices.Unsafe.xml" Source="$(var.Service.TargetDir)\System.Runtime.CompilerServices.Unsafe.xml" KeyPath="no" />
             <File Id="TraceReloggerLib.dll" Source="$(var.Service.TargetDir)\TraceReloggerLib.dll" KeyPath="no" />

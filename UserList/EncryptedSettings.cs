@@ -66,11 +66,13 @@ namespace SinclairCC.MakeMeAdmin
                 }
             }
 
+            /*
             try
             {
                 RemoveOldUsersFile();
             }
             catch (Exception) { }
+            */
         }
 
         /// <summary>
@@ -98,13 +100,13 @@ namespace SinclairCC.MakeMeAdmin
             }
         }
 
-        private static void RemoveOldUsersFile()
+        public static void RemoveOldUsersFile()
         {
             try
             {
-                System.IO.File.Delete(EncryptedSettings.OldSettingsFilePath);
+                if (System.IO.File.Exists(OldSettingsFilePath)) { System.IO.File.Delete(OldSettingsFilePath); }
 
-                string parentPath = System.IO.Path.GetDirectoryName(EncryptedSettings.OldSettingsFilePath);
+                string parentPath = System.IO.Path.GetDirectoryName(OldSettingsFilePath);
                 if ((System.IO.Directory.Exists(parentPath)) && (System.IO.Directory.GetFileSystemEntries(parentPath).Length == 0))
                 {
                     System.IO.Directory.Delete(parentPath, false);
@@ -321,6 +323,9 @@ namespace SinclairCC.MakeMeAdmin
                 // Encrypt the plaintext byte array.
                 byte[] ciphertextBytes = ProtectedData.Protect(plaintextBytes, null, DataProtectionScope.LocalMachine);
 
+                /*
+                string byteHashString = ComputeHash(ciphertextBytes);
+                */
                 plaintextWriter.Close();
                 plaintextWriter.Dispose();
 
@@ -330,6 +335,13 @@ namespace SinclairCC.MakeMeAdmin
                 System.IO.FileStream ciphertextStream = new System.IO.FileStream(filePath, System.IO.FileMode.Create, System.IO.FileAccess.Write);
                 ciphertextStream.Write(ciphertextBytes, 0, ciphertextBytes.Length);
                 ciphertextStream.Close();
+
+                /*
+                string fileHashString = ComputeHash(filePath);
+                ApplicationLog.WriteEvent(string.Format("encrypted byte hash: {0}", byteHashString), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+                ApplicationLog.WriteEvent(string.Format("user XML file hash: {0}", fileHashString), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+                ApplicationLog.WriteEvent(string.Format("hashes match: {0}", (string.Compare(fileHashString, byteHashString, true) == 0)), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+                */
             }
             catch (System.InvalidOperationException)
             {
@@ -422,5 +434,73 @@ namespace SinclairCC.MakeMeAdmin
                 this.Save(filePath);
             }
         }
+
+        /*
+        /// <summary>
+        /// Computes the SHA-1 hash for the file with the given path.
+        /// </summary>
+        /// <param name="filePath">
+        /// The path of the file to be hashed.
+        /// </param>
+        /// <returns>
+        /// The SHA-1 hash of the file, or null if the file could not be hashed.
+        /// </returns>
+        /// <remarks>
+        /// The returned hash is in lower case without dashes.
+        /// </remarks>
+        private static string ComputeHash(System.IO.Stream stream)
+        {
+            // Create an object for computing SHA-1 hashes.
+            System.Security.Cryptography.SHA256Managed sha256 = new System.Security.Cryptography.SHA256Managed();
+
+            // Create a hash of the streams's contents.
+            byte[] hashArray;
+            stream.Seek(0, System.IO.SeekOrigin.Begin);
+            hashArray = sha256.ComputeHash(stream);
+            //stream.Close();
+
+            string hashString = System.BitConverter.ToString(hashArray).Replace("-", null).ToLower(System.Globalization.CultureInfo.CurrentCulture);
+
+            // Convert the byte array to a string. Remove the dashes. Convert the string to lower case.
+            return hashString;
+        }
+
+        
+        private static string ComputeHash(string filePath)
+        {
+            string returnString = string.Empty;
+            // If the given file exists, try to compute a hash of its contents.
+            if (System.IO.File.Exists(filePath))
+            {
+                try
+                {
+                    // Create a stream by opening the file for reading.
+                    System.IO.FileStream stream = System.IO.File.OpenRead(filePath);
+                    returnString = ComputeHash(stream);
+                    stream.Close();
+                    return returnString;
+                }
+                catch
+                {
+                    throw;
+                }
+            }
+            else
+            {
+                return string.Empty;
+            }
+    
+        }
+        
+
+        private static string ComputeHash(byte[] bytes)
+        {
+            string returnValue = string.Empty;
+            System.IO.MemoryStream ms = new System.IO.MemoryStream(bytes);
+            returnValue = ComputeHash(ms);
+            ms.Close();
+            return returnValue;
+        }
+        */
     }
 }

@@ -541,6 +541,8 @@ namespace SinclairCC.MakeMeAdmin
         /// </remarks>
         protected override void OnStop()
         {
+            EncryptedSettings.RemoveOldUsersFile();
+            
             if ((this.namedPipeServiceHost != null) && (this.namedPipeServiceHost.State == CommunicationState.Opened))
             {
                 this.namedPipeServiceHost.Close();
