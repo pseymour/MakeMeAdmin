@@ -391,34 +391,52 @@ namespace SinclairCC.MakeMeAdmin
                 // Convert the encrypted bytes to an array.
                 byte[] ciphertextBytes = ciphertextMemoryStream.ToArray();
 
-                // Decrypt the byte array.
-                byte[] plaintextBytes = System.Security.Cryptography.ProtectedData.Unprotect(ciphertextBytes, null, DataProtectionScope.LocalMachine);
+                byte[] plaintextBytes = null;
+                EncryptedSettings deserializedSettings = null;
+
+                try
+                {
+                    plaintextBytes = System.Security.Cryptography.ProtectedData.Unprotect(ciphertextBytes, null, DataProtectionScope.LocalMachine);
+                    // Deserialize the plaintext byte array.
+                    System.IO.MemoryStream plaintextStream = new System.IO.MemoryStream(plaintextBytes);
+                    XmlTextReader reader = new XmlTextReader(plaintextStream);
+                    XmlSerializer serializer = Serializer;
+                    lock (serializer)
+                    {
+                        deserializedSettings = (EncryptedSettings)serializer.Deserialize(reader);
+                    }
+                    reader.Dispose();
+                    plaintextStream.Dispose();
+                }
+                catch (System.Security.Cryptography.CryptographicException)
+                { // The encrypted data seems to be invalid.
+
+                    int fileCounter = 1;
+                    string newFilePath = string.Empty;
+                    string fileNamePattern = string.Empty;
+                    do
+                    {
+                        if (fileCounter > 1)
+                        {
+                            fileNamePattern = "{0} - corrupt ({2}) {1}";
+                        }
+                        else
+                        {
+                            fileNamePattern = "{0} - corrupt{1}";
+                        }
+                        newFilePath = string.Format(fileNamePattern, System.IO.Path.GetFileNameWithoutExtension(EncryptedSettings.SettingsFilePath), System.IO.Path.GetExtension(EncryptedSettings.SettingsFilePath), fileCounter);
+                        newFilePath = System.IO.Path.Combine(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(EncryptedSettings.SettingsFilePath)), newFilePath);
+                        fileCounter++;
+                    } while (System.IO.File.Exists(newFilePath));
+
+                    System.IO.File.Move(filePath, newFilePath);
+                    ApplicationLog.WriteEvent(string.Format("Invalid user list file found at \"{0}.\" File has been replaced with an empty file. Previously added users will likely not be removed.", filePath), EventID.InvalidUserListFile, System.Diagnostics.EventLogEntryType.Warning);
+                    plaintextBytes = null;
+                    deserializedSettings = new EncryptedSettings();
+                    deserializedSettings.Save(filePath);
+                }
 
                 ciphertextMemoryStream.Dispose();
-
-                // Deserialize the plaintext byte array.
-                EncryptedSettings deserializedSettings = null;
-                System.IO.MemoryStream plaintextStream = new System.IO.MemoryStream(plaintextBytes);
-                System.Xml.XmlTextReader reader = new XmlTextReader(plaintextStream);
-                XmlSerializer serializer = EncryptedSettings.Serializer;
-                lock (serializer)
-                {
-                    deserializedSettings = (EncryptedSettings)serializer.Deserialize(reader);
-                }
-                reader.Dispose();
-                plaintextStream.Dispose();
-
-                /*
-                // This is the unencrypted version.
-                EncryptedSettings deserializedSettings = null;
-                System.Xml.XmlTextReader reader = new XmlTextReader(filePath);
-                XmlSerializer serializer = EncryptedSettings.Serializer;
-                lock (serializer)
-                {
-                    deserializedSettings = (EncryptedSettings)serializer.Deserialize(reader);
-                }
-                reader.Close();
-                */
 
                 this.AddedUsers = deserializedSettings.AddedUsers;
             }

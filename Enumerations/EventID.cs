@@ -68,6 +68,11 @@ namespace SinclairCC.MakeMeAdmin
         RejectedSyslogServerInfo,
 
         /// <summary>
+        /// The file that stores the list of added users, users.xml, is corrupted.
+        /// </summary>
+        InvalidUserListFile,
+
+        /// <summary>
         /// Event ID for debug messages.
         /// </summary>
         DebugMessage = 9000
