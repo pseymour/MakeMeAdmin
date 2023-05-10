@@ -25,10 +25,13 @@
       <ComponentRef Id="Service_da" />
       <ComponentRef Id="Service_fr" />
       <ComponentRef Id="MicrosoftTraceEventNuGetCommon" />
-      <ComponentRef Id="MicrosoftTraceEventNuGet_amd64" />
-      <ComponentRef Id="MicrosoftTraceEventNuGet_x86" />
+      <?if $(var.Platform) = x64 ?>
+        <ComponentRef Id="MicrosoftTraceEventNuGet_amd64" />
+	  <?else ?>
+		<ComponentRef Id="MicrosoftTraceEventNuGet_x86" />
+      <?endif ?>
 
-      <ComponentRef Id="LoggingLibrary" />
+		<ComponentRef Id="LoggingLibrary" />
       <ComponentRef Id="LoggingLibrary_da" />
       <ComponentRef Id="LoggingLibrary_fr" />
 
@@ -182,25 +185,34 @@
             <File Id="Microsoft.Diagnostics.Tracing.TraceEvent.dll" Source="$(var.Service.TargetDir)\Microsoft.Diagnostics.Tracing.TraceEvent.dll" KeyPath="no" />
             <File Id="Microsoft.Diagnostics.Tracing.TraceEvent.xml" Source="$(var.Service.TargetDir)\Microsoft.Diagnostics.Tracing.TraceEvent.xml" KeyPath="no" />
 			<!-- Removed from Microsoft.Diagnostics.Tracing.TraceEvent: <File Id="OSExtensions.dll" Source="$(var.Service.TargetDir)\OSExtensions.dll" KeyPath="no" /> -->
+			<File Id="System.Buffers.dll" Source="$(var.Service.TargetDir)\System.Buffers.dll" KeyPath="no" />
+			<File Id="System.Memory.dll" Source="$(var.Service.TargetDir)\System.Memory.dll" KeyPath="no" />
+			<File Id="System.Numerics.Vectors.dll" Source="$(var.Service.TargetDir)\System.Numerics.Vectors.dll" KeyPath="no" />
             <File Id="System.Runtime.CompilerServices.Unsafe.dll" Source="$(var.Service.TargetDir)\System.Runtime.CompilerServices.Unsafe.dll" KeyPath="no" />
             <File Id="System.Runtime.CompilerServices.Unsafe.xml" Source="$(var.Service.TargetDir)\System.Runtime.CompilerServices.Unsafe.xml" KeyPath="no" />
             <File Id="TraceReloggerLib.dll" Source="$(var.Service.TargetDir)\TraceReloggerLib.dll" KeyPath="no" />
           </Component>
-          <Directory Id="MicrosoftTraceEventNuGet_amd64" Name="amd64">
-            <Component Id="MicrosoftTraceEventNuGet_amd64" Guid="D94C30C0-A979-47BA-895C-ABB5EC619C5B">
-              <File Id="amd64_KernelTraceControl.dll" Source="$(var.Service.TargetDir)\amd64\KernelTraceControl.dll" KeyPath="no" />
-              <File Id="amd64_msdia140.dll" Source="$(var.Service.TargetDir)\amd64\msdia140.dll" KeyPath="no" />
-            </Component>
-          </Directory>
-          <Directory Id="MicrosoftTraceEventNuGet_x86" Name="x86">
+		  <?if $(var.Platform) = x64 ?>
+              <Directory Id="MicrosoftTraceEventNuGet_amd64" Name="amd64">
+                <Component Id="MicrosoftTraceEventNuGet_amd64" Guid="D94C30C0-A979-47BA-895C-ABB5EC619C5B">
+                  <File Id="amd64_KernelTraceControl.dll" Source="$(var.Service.TargetDir)\amd64\KernelTraceControl.dll" KeyPath="no" />
+                  <File Id="amd64_msdia140.dll" Source="$(var.Service.TargetDir)\amd64\msdia140.dll" KeyPath="no" />
+                  <File Id="amd64_msvcp140.dll" Source="$(var.Service.TargetDir)\amd64\msvcp140.dll" KeyPath="no" />
+                  <File Id="amd64_vcruntime140.dll" Source="$(var.Service.TargetDir)\amd64\vcruntime140.dll" KeyPath="no" />
+                  <File Id="amd64_vcruntime140_1.dll" Source="$(var.Service.TargetDir)\amd64\vcruntime140_1.dll" KeyPath="no" />
+                </Component>
+              </Directory>
+			<?else ?>
+			<Directory Id="MicrosoftTraceEventNuGet_x86" Name="x86">
             <Component Id="MicrosoftTraceEventNuGet_x86" Guid="8B5C1067-9130-4C1E-8D81-9415520D368E">
               <File Id="x86_KernelTraceControl.dll" Source="$(var.Service.TargetDir)\x86\KernelTraceControl.dll" KeyPath="no" />
               <File Id="x86_KernelTraceControl.Win61.dll" Source="$(var.Service.TargetDir)\x86\KernelTraceControl.Win61.dll" KeyPath="no" />
               <File Id="x86_msdia140.dll" Source="$(var.Service.TargetDir)\x86\msdia140.dll" KeyPath="no" />
             </Component>
           </Directory>
+			<?endif ?>
 
-          <Directory Id="GroupPolicyFolder" Name="Group Policy">
+			<Directory Id="GroupPolicyFolder" Name="Group Policy">
             <Component Id="ADMXFiles" Guid="7DBE019F-9512-43DE-BB62-B6C3B83A90ED">
               <File Id="SinclairBase.admx" Source="GroupPolicy\SinclairBase.admx" KeyPath="yes" />
               <File Id="SinclairMakeMeAdmin.admx" Source="GroupPolicy\SinclairMakeMeAdmin.admx" />
