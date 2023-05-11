@@ -542,7 +542,7 @@ namespace SinclairCC.MakeMeAdmin
         protected override void OnStop()
         {
             EncryptedSettings.RemoveOldUsersFile();
-            
+
             if ((this.namedPipeServiceHost != null) && (this.namedPipeServiceHost.State == CommunicationState.Opened))
             {
                 this.namedPipeServiceHost.Close();
@@ -564,7 +564,14 @@ namespace SinclairCC.MakeMeAdmin
 
             if (processWatchSession != null)
             {
-                processWatchSession.Dispose();
+                try
+                {
+                    processWatchSession.Dispose();
+                }
+                catch (Exception e)
+                {
+                    ApplicationLog.WriteEvent(string.Format("{0} exception while stopping process watcher. Message: {1}", e.GetType().Name, e.Message), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Error);
+                }
             }
 
             base.OnStop();

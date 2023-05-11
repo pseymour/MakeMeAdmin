@@ -174,7 +174,8 @@
             <!-- <File Id="System.Buffers.dll" Source="$(var.Logging.TargetDir)\System.Buffers.dll" KeyPath="no" /> -->
             <!-- <File Id="System.Memory.dll" Source="$(var.Logging.TargetDir)\System.Memory.dll" KeyPath="no" /> -->
             <!-- <File Id="System.Numerics.Vectors.dll" Source="$(var.Logging.TargetDir)\System.Numerics.Vectors.dll" KeyPath="no" /> -->
-            <File Id="System.Runtime.CompilerServices.Unsafe.dll" Source="$(var.Logging.TargetDir)\System.Runtime.CompilerServices.Unsafe.dll" KeyPath="no" />
+			<File Id="Microsoft.Win32.Registry.dll" Source="$(var.Logging.TargetDir)\Microsoft.Win32.Registry.dll" KeyPath="no" />
+			<File Id="System.Runtime.CompilerServices.Unsafe.dll" Source="$(var.Logging.TargetDir)\System.Runtime.CompilerServices.Unsafe.dll" KeyPath="no" />
             <!-- <File Id="System.Runtime.CompilerServices.Unsafe.xml" Source="$(var.Logging.TargetDir)\System.Runtime.CompilerServices.Unsafe.xml" KeyPath="no" /> -->
             <File Id="TraceReloggerLib.dll" Source="$(var.Logging.TargetDir)\TraceReloggerLib.dll" KeyPath="no" />
           </Component>
