@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AddingUserBackToAdministrators" xml:space="preserve">
+    <value>Legger brukeren tilbake i Administrator-gruppa</value>
+  </data>
+  <data name="AddingUserReturnedError" xml:space="preserve">
+    <value>Ileggelse av bruker {0} ({1}) i Administrator-gruppa returnerte feilkode {2}.</value>
+  </data>
+  <data name="RemovalReasonUnknown" xml:space="preserve">
+    <value>Ukjent</value>
+  </data>
+  <data name="RemovalReasonUserLogoff" xml:space="preserve">
+    <value>Bruker logget av</value>
+  </data>
+  <data name="RemovalReasonUserRequest" xml:space="preserve">
+    <value>Bruker forespurte fjerning</value>
+  </data>
+  <data name="RemovingUserFromList" xml:space="preserve">
+    <value>Fjerner brukeren fra Make Me Admins liste</value>
+  </data>
+  <data name="RemovingUserReturnedError" xml:space="preserve">
+    <value>Fjerning av bruker {0} ({1}) fra Administrator-gruppa returnerte feilkode {1}.</value>
+  </data>
+  <data name="RequestSentFromHost" xml:space="preserve">
+    <value>Forespørsel fra host {0}.</value>
+  </data>
+  <data name="UnknownAccount" xml:space="preserve">
+    <value>Ukjent konto</value>
+  </data>
+  <data name="UserAddedToAdminsGroup" xml:space="preserve">
+    <value>Bruker {0} ({1}) lagt til i Administrator-gruppa</value>
+  </data>
+  <data name="UserRemoved" xml:space="preserve">
+    <value>Bruker {0} ({1}) fjernet fra Administrator-gruppa. Grunn: {2}.</value>
+  </data>
+  <data name="UserRemovedByOutsideProcess" xml:space="preserve">
+    <value>Bruker {0} ({1}) ble fjernet fra Administratorer-gruppa av en annen prosess.</value>
+  </data>
+</root>

@@ -109,6 +109,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.da.resx" />
     <EmbeddedResource Include="Properties\Resources.fr.resx" />
+    <EmbeddedResource Include="Properties\Resources.nb.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -117,6 +118,7 @@
   <ItemGroup>
     <XliffResource Include="MultilingualResources\Logging.da.xlf" />
     <XliffResource Include="MultilingualResources\Logging.fr.xlf" />
+    <XliffResource Include="MultilingualResources\Logging.nb.xlf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

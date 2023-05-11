@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ApplicationIsReady" xml:space="preserve">
+    <value>Klar</value>
+  </data>
+  <data name="CheckingAdminStatus" xml:space="preserve">
+    <value>Sjekker administratorstatus...</value>
+  </data>
+  <data name="ErrorMessage" xml:space="preserve">
+    <value>Feilmelding</value>
+  </data>
+  <data name="GrantRightsButtonText" xml:space="preserve">
+    <value>Gi meg administratorrettigheter</value>
+  </data>
+  <data name="UIMessageAddedToGroup" xml:space="preserve">
+    <value>Du er nå medlem av {0}-gruppa</value>
+  </data>
+  <data name="UIMessageAddingToGroup" xml:space="preserve">
+    <value>Legger deg til i {0}-gruppa</value>
+  </data>
+  <data name="UIMessageAlreadyHaveRights" xml:space="preserve">
+    <value>Du har allerede administratorrettigheter</value>
+  </data>
+  <data name="UIMessageEnsureServiceRunning" xml:space="preserve">
+    <value>Sjekk at Make Me Admin-tjenesten kjører</value>
+  </data>
+  <data name="UIMessageErrorWhileAdding" xml:space="preserve">
+    <value>Det skjedde noe feil ved ileggelse i Administrator-gruppa</value>
+  </data>
+  <data name="UIMessageErrorWhileRemoving" xml:space="preserve">
+    <value>Det skjedde en feil ved fjerning fra Administrator-gruppa</value>
+  </data>
+  <data name="UIMessageRemovedFromGroup" xml:space="preserve">
+    <value>Du er nå fjernet fra {0}-gruppa</value>
+  </data>
+  <data name="UIMessageRemovingFromGroup" xml:space="preserve">
+    <value>Fjerner deg fra {0}-gruppa</value>
+  </data>
+  <data name="UIMessageUnauthorized" xml:space="preserve">
+    <value>Du har ikke lov til å bruke denne applikasjonen</value>
+  </data>
+  <data name="MandatoryReasonNotProvided" xml:space="preserve">
+    <value>Kunne ikke tildele administratorrettigheter.
+Det er krav om at det angis en grunn, men det ser ikke ut til at du spesifiserte en.</value>
+  </data>
+  <data name="OtherReason" xml:space="preserve">
+    <value>Annen</value>
+  </data>
+  <data name="ReasonDialogBoxPrevented" xml:space="preserve">
+    <value>Kunne ikke tildele administratorrettigheter.
+Det er påkrevd å angi et grunnlag, men IT-administratoren din tillater deg ikke å skrive en grunn</value>
+  </data>
+  <data name="ReasonDialogEmpty" xml:space="preserve">
+    <value>Brukeren kunne ikke bli spurt om å angi grunn. Ingen metode for å gjøre det er aktivert</value>
+  </data>
+  <data name="ReasonProvidedByUser" xml:space="preserve">
+    <value>Brukeren oppga følgende begrunnelse for administratorrettigheter: {0}</value>
+  </data>
+</root>

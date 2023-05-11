@@ -1,0 +1,253 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en-US" target-language="nb" original="LOCALUI/PROPERTIES/RESOURCES.RESX" tool-id="MultilingualAppToolkit" product-name="n/a" product-version="n/a" build-num="n/a">
+    <header>
+      <tool tool-id="MultilingualAppToolkit" tool-name="Multilingual App Toolkit" tool-version="4.0.6916.0" tool-company="Microsoft" />
+    </header>
+    <body>
+      <group id="LOCALUI/PROPERTIES/RESOURCES.RESX" datatype="resx">
+        <trans-unit id="ApplicationIsReady" translate="yes" xml:space="preserve">
+          <source>Ready.</source>
+          <target state="translated">Klar</target>
+        </trans-unit>
+        <trans-unit id="ApplicationName" translate="yes" xml:space="preserve">
+          <source>Make Me Admin</source>
+          <target state="new">Make Me Admin</target>
+        </trans-unit>
+        <trans-unit id="CheckingAdminStatus" translate="yes" xml:space="preserve">
+          <source>Checking administrator status...</source>
+          <target state="translated">Sjekker administratorstatus...</target>
+        </trans-unit>
+        <trans-unit id="ErrorMessage" translate="yes" xml:space="preserve">
+          <source>Error Message</source>
+          <target state="translated">Feilmelding</target>
+        </trans-unit>
+        <trans-unit id="GrantRightsButtonText" translate="yes" xml:space="preserve">
+          <source>Grant Me Administrator Rights</source>
+          <target state="translated">Gi meg administratorrettigheter</target>
+        </trans-unit>
+        <trans-unit id="SecurityLock" translate="no" extype="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
+          <source>..\Resources\SecurityLock.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</source>
+          <target state="final">..\Resources\SecurityLock.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</target>
+        </trans-unit>
+        <trans-unit id="StackTrace" translate="yes" xml:space="preserve">
+          <source>Stack Trace</source>
+          <target state="new">Stack Trace</target>
+        </trans-unit>
+        <trans-unit id="UIMessageAddedToGroup" translate="yes" xml:space="preserve">
+          <source>You are now a member of the {0} group.</source>
+          <target state="translated">Du er nå medlem av {0}-gruppa</target>
+        </trans-unit>
+        <trans-unit id="UIMessageAddingToGroup" translate="yes" xml:space="preserve">
+          <source>Adding you to the {0} group.</source>
+          <target state="translated">Legger deg til i {0}-gruppa</target>
+        </trans-unit>
+        <trans-unit id="UIMessageAlreadyHaveRights" translate="yes" xml:space="preserve">
+          <source>You already have administrator rights.</source>
+          <target state="translated">Du har allerede administratorrettigheter</target>
+        </trans-unit>
+        <trans-unit id="UIMessageEnsureServiceRunning" translate="yes" xml:space="preserve">
+          <source>Please make sure the Make Me Admin service is running.</source>
+          <target state="translated">Sjekk at Make Me Admin-tjenesten kjører</target>
+        </trans-unit>
+        <trans-unit id="UIMessageErrorWhileAdding" translate="yes" xml:space="preserve">
+          <source>An error occurred while adding you to the Administrators group.</source>
+          <target state="translated">Det skjedde noe feil ved ileggelse i Administrator-gruppa</target>
+        </trans-unit>
+        <trans-unit id="UIMessageErrorWhileRemoving" translate="yes" xml:space="preserve">
+          <source>An error occurred while removing you from the Administrators group.</source>
+          <target state="translated">Det skjedde en feil ved fjerning fra Administrator-gruppa</target>
+        </trans-unit>
+        <trans-unit id="UIMessageRemovedFromGroup" translate="yes" xml:space="preserve">
+          <source>You are no longer a member of the {0} group.</source>
+          <target state="translated">Du er nå fjernet fra {0}-gruppa</target>
+        </trans-unit>
+        <trans-unit id="UIMessageRemovingFromGroup" translate="yes" xml:space="preserve">
+          <source>Removing you from the {0} group.</source>
+          <target state="translated">Fjerner deg fra {0}-gruppa</target>
+        </trans-unit>
+        <trans-unit id="UIMessageUnauthorized" translate="yes" xml:space="preserve">
+          <source>You are not authorized to use this application.</source>
+          <target state="translated">Du har ikke lov til å bruke denne applikasjonen</target>
+        </trans-unit>
+        <trans-unit id="MandatoryReasonNotProvided" translate="yes" xml:space="preserve">
+          <source>Unable to provide you with administrator rights.
+A reason is required in order to obtain administrator rights, but you did not provide one.</source>
+          <target state="translated">Kunne ikke tildele administratorrettigheter.
+Det er krav om at det angis en grunn, men det ser ikke ut til at du spesifiserte en.</target>
+        </trans-unit>
+        <trans-unit id="OtherReason" translate="yes" xml:space="preserve">
+          <source>Other</source>
+          <target state="translated">Annen</target>
+        </trans-unit>
+        <trans-unit id="ReasonDialogBoxPrevented" translate="yes" xml:space="preserve">
+          <source>Unable to provide you with administrator rights.
+A reason is required in order to obtain administrator rights, but your administrator has not allowed you to provide a reason.</source>
+          <target state="translated">Kunne ikke tildele administratorrettigheter.
+Det er påkrevd å angi et grunnlag, men IT-administratoren din tillater deg ikke å skrive en grunn</target>
+        </trans-unit>
+        <trans-unit id="ReasonDialogEmpty" translate="yes" xml:space="preserve">
+          <source>User could not be prompted for a reason. No methods for doing so are enabled.</source>
+          <target state="translated">Brukeren kunne ikke bli spurt om å angi grunn. Ingen metode for å gjøre det er aktivert</target>
+        </trans-unit>
+        <trans-unit id="ReasonProvidedByUser" translate="yes" xml:space="preserve">
+          <source>The user provided the following reason for administrator rights: {0}</source>
+          <target state="translated">Brukeren oppga følgende begrunnelse for administratorrettigheter: {0}</target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+  <file datatype="xml" source-language="en-US" target-language="nb" original="LOCALUI/SUBMITREQUESTFORM.RESX" tool-id="MultilingualAppToolkit" product-name="n/a" product-version="n/a" build-num="n/a">
+    <header>
+      <tool tool-id="MultilingualAppToolkit" tool-name="Multilingual App Toolkit" tool-version="4.0.6916.0" tool-company="Microsoft" />
+    </header>
+    <body>
+      <group id="LOCALUI/SUBMITREQUESTFORM.RESX" datatype="resx">
+        <trans-unit id="addMeButton.Anchor" translate="no" extype="System.Windows.Forms.AnchorStyles, System.Windows.Forms" xml:space="preserve">
+          <source>Top, Left, Right</source>
+          <target state="final">Top, Left, Right</target>
+        </trans-unit>
+        <trans-unit id="addMeButton.Location" translate="no" extype="System.Drawing.Point, System.Drawing" xml:space="preserve">
+          <source>18, 18</source>
+          <target state="final">18, 18</target>
+        </trans-unit>
+        <trans-unit id="addMeButton.Size" translate="no" extype="System.Drawing.Size, System.Drawing" xml:space="preserve">
+          <source>470, 69</source>
+          <target state="final">470, 69</target>
+        </trans-unit>
+        <trans-unit id="addMeButton.TabIndex" translate="no" extype="System.Int32, mscorlib" xml:space="preserve">
+          <source>0</source>
+          <target state="final">0</target>
+        </trans-unit>
+        <trans-unit id="addMeButton.Text" translate="yes" xml:space="preserve">
+          <source>&amp;Grant Me Administrator Rights</source>
+          <target state="translated">&amp;Gi meg administratorrettigheter</target>
+        </trans-unit>
+        <trans-unit id="addMeButton.ToolTip" translate="yes" xml:space="preserve">
+          <source>Add the current Windows user to the Administrators group.</source>
+          <target state="translated">Legg den påloggede brukeren i Administrator-gruppa</target>
+        </trans-unit>
+        <trans-unit id="removeMeButton.Anchor" translate="no" extype="System.Windows.Forms.AnchorStyles, System.Windows.Forms" xml:space="preserve">
+          <source>Top, Left, Right</source>
+          <target state="final">Top, Left, Right</target>
+        </trans-unit>
+        <trans-unit id="removeMeButton.Location" translate="no" extype="System.Drawing.Point, System.Drawing" xml:space="preserve">
+          <source>18, 100</source>
+          <target state="final">18, 100</target>
+        </trans-unit>
+        <trans-unit id="removeMeButton.Size" translate="no" extype="System.Drawing.Size, System.Drawing" xml:space="preserve">
+          <source>470, 69</source>
+          <target state="final">470, 69</target>
+        </trans-unit>
+        <trans-unit id="removeMeButton.TabIndex" translate="no" extype="System.Int32, mscorlib" xml:space="preserve">
+          <source>1</source>
+          <target state="final">1</target>
+        </trans-unit>
+        <trans-unit id="removeMeButton.Text" translate="yes" xml:space="preserve">
+          <source>&amp;Remove My Administrator Rights</source>
+          <target state="translated">&amp;Fjern mine administratorrettigheter</target>
+        </trans-unit>
+        <trans-unit id="removeMeButton.ToolTip" translate="yes" xml:space="preserve">
+          <source>Remove the current Windows user from the Administrators group.</source>
+          <target state="translated">Fjerner pålogget bruker fra Administrator-gruppa</target>
+        </trans-unit>
+        <trans-unit id="appStatus.Size" translate="no" extype="System.Drawing.Size, System.Drawing" xml:space="preserve">
+          <source>483, 25</source>
+          <target state="final">483, 25</target>
+        </trans-unit>
+        <trans-unit id="appStatus.Text" translate="yes" xml:space="preserve">
+          <source>Ready.</source>
+          <target state="translated">Klar</target>
+        </trans-unit>
+        <trans-unit id="appStatus.TextAlign" translate="no" extype="System.Drawing.ContentAlignment, System.Drawing" xml:space="preserve">
+          <source>MiddleLeft</source>
+          <target state="final">MiddleLeft</target>
+        </trans-unit>
+        <trans-unit id="statusStrip1.Location" translate="no" extype="System.Drawing.Point, System.Drawing" xml:space="preserve">
+          <source>0, 188</source>
+          <target state="final">0, 188</target>
+        </trans-unit>
+        <trans-unit id="statusStrip1.Size" translate="no" extype="System.Drawing.Size, System.Drawing" xml:space="preserve">
+          <source>506, 32</source>
+          <target state="final">506, 32</target>
+        </trans-unit>
+        <trans-unit id="statusStrip1.TabIndex" translate="no" extype="System.Int32, mscorlib" xml:space="preserve">
+          <source>2</source>
+          <target state="final">2</target>
+        </trans-unit>
+        <trans-unit id="statusStrip1.Text" translate="no" xml:space="preserve">
+          <source>statusStrip1</source>
+          <target state="final">statusStrip1</target>
+        </trans-unit>
+        <trans-unit id="notifyIcon.Text" translate="yes" xml:space="preserve">
+          <source>Make Me Admin</source>
+          <target state="new">Make Me Admin</target>
+        </trans-unit>
+        <trans-unit id="$this.AutoScaleDimensions" translate="no" extype="System.Drawing.SizeF, System.Drawing" xml:space="preserve">
+          <source>9, 20</source>
+          <target state="final">9, 20</target>
+        </trans-unit>
+        <trans-unit id="$this.ClientSize" translate="no" extype="System.Drawing.Size, System.Drawing" xml:space="preserve">
+          <source>506, 220</source>
+          <target state="final">506, 220</target>
+        </trans-unit>
+        <trans-unit id="$this.Text" translate="yes" xml:space="preserve">
+          <source>Make Me Admin</source>
+          <target state="new">Make Me Admin</target>
+        </trans-unit>
+        <trans-unit id="toolTip.TrayLocation" translate="no" extype="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" extradata="metadata" xml:space="preserve">
+          <source>17, 17</source>
+          <target state="final">17, 17</target>
+        </trans-unit>
+        <trans-unit id="statusStrip1.TrayLocation" translate="no" extype="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" extradata="metadata" xml:space="preserve">
+          <source>354, 17</source>
+          <target state="final">354, 17</target>
+        </trans-unit>
+        <trans-unit id="buttonStateWorker.TrayLocation" translate="no" extype="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" extradata="metadata" xml:space="preserve">
+          <source>136, 17</source>
+          <target state="final">136, 17</target>
+        </trans-unit>
+        <trans-unit id="addUserBackgroundWorker.TrayLocation" translate="no" extype="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" extradata="metadata" xml:space="preserve">
+          <source>512, 17</source>
+          <target state="final">512, 17</target>
+        </trans-unit>
+        <trans-unit id="removeUserBackgroundWorker.TrayLocation" translate="no" extype="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" extradata="metadata" xml:space="preserve">
+          <source>799, 17</source>
+          <target state="final">799, 17</target>
+        </trans-unit>
+        <trans-unit id="notifyIcon.TrayLocation" translate="no" extype="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" extradata="metadata" xml:space="preserve">
+          <source>1117, 17</source>
+          <target state="final">1117, 17</target>
+        </trans-unit>
+        <trans-unit id="$this.Localizable" translate="no" extype="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" extradata="metadata" xml:space="preserve">
+          <source>True</source>
+          <target state="final">True</target>
+        </trans-unit>
+        <trans-unit id="addMeButton.Margin" translate="yes" xml:space="preserve" extype="System.Windows.Forms.Padding, System.Windows.Forms">
+          <source>4, 5, 4, 5</source>
+          <target state="needs-review-translation">4, 5, 4, 5</target>
+        </trans-unit>
+        <trans-unit id="removeMeButton.Margin" translate="yes" xml:space="preserve" extype="System.Windows.Forms.Padding, System.Windows.Forms">
+          <source>4, 5, 4, 5</source>
+          <target state="needs-review-translation">4, 5, 4, 5</target>
+        </trans-unit>
+        <trans-unit id="statusStrip1.Padding" translate="yes" xml:space="preserve" extype="System.Windows.Forms.Padding, System.Windows.Forms">
+          <source>2, 0, 21, 0</source>
+          <target state="needs-review-translation">2, 0, 21, 0</target>
+        </trans-unit>
+        <trans-unit id="$this.Margin" translate="yes" xml:space="preserve" extype="System.Windows.Forms.Padding, System.Windows.Forms">
+          <source>4, 5, 4, 5</source>
+          <target state="needs-review-translation">4, 5, 4, 5</target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+  <file datatype="xml" source-language="en-US" target-language="nb" original="LOCALUI/REQUESTREASONDIALOG.RESX" tool-id="MultilingualAppToolkit" product-name="n/a" product-version="n/a" build-num="n/a">
+    <header>
+      <tool tool-id="MultilingualAppToolkit" tool-name="Multilingual App Toolkit" tool-version="4.0.6916.0" tool-company="Microsoft" />
+    </header>
+    <body>
+      <group id="LOCALUI/REQUESTREASONDIALOG.RESX" datatype="resx" />
+    </body>
+  </file>
+</xliff>
