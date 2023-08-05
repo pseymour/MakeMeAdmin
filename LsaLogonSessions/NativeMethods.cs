@@ -67,6 +67,29 @@ namespace LsaLogonSessions
         [DllImport("wtsapi32.dll", SetLastError = true)]
         internal static extern int WTSEnumerateSessions(System.IntPtr serverHandle, [MarshalAs(UnmanagedType.U4)] int reserved, [MarshalAs(UnmanagedType.U4)] int version, ref IntPtr sessionInfoPointer, [MarshalAs(UnmanagedType.U4)] ref int count);
 
+
+        [DllImport("wtsapi32.dll", SetLastError = true)]
+        internal static extern int WTSSendMessage(
+          IntPtr hServer,
+          [MarshalAs(UnmanagedType.U4)] int SessionId,
+          /* [MarshalAs(UnmanagedType.LPWStr)] */ string Title,
+          [MarshalAs(UnmanagedType.U4)] int TitleLength,
+          /* [MarshalAs(UnmanagedType.LPWStr)] */ string Message,
+          [MarshalAs(UnmanagedType.U4)] int MessageLength,
+          [MarshalAs(UnmanagedType.U4)] int Style,
+          [MarshalAs(UnmanagedType.U4)] int Timeout,
+          [MarshalAs(UnmanagedType.U4)] out int Response,
+          bool Wait
+        );
+
+
+        [DllImport("wtsapi32.dll", SetLastError = true)]
+        internal static extern int WTSLogoffSession(
+          IntPtr hServer,
+          [MarshalAs(UnmanagedType.U4)] int SessionId,
+          bool Wait
+        );
+
         /*
         /// <summary>
         /// Retrieves session information for the specified session on the specified Remote Desktop Session

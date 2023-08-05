@@ -36,6 +36,12 @@ Default: 10 minutes]]></string>
       <string id="TCPServicePortDisplayName">TCP Service Port</string>
       <string id="TCPServicePortExplainText">Specifies the TCP port to be used for remote administrative rights requests.</string>
 
+      <string id="LogOffAfterExpirationDisplayName">Log Off After Expiration</string>
+      <string id="LogOffAfterExpirationExplainText">Specifies the number of seconds after which a user is logged off, once their administrator privileges expire. A value of zero (0) prevents the logoff.</string>
+
+      <string id="LogOffMessageDisplayName">Log Off Message</string>
+      <string id="LogOffMessageExplainText">Specifies a message to be displayed before a user is logged off, once their administrator privileges expire.</string>
+
       <string id="RemoveOnLogoutDisplayName">Remove Admin Rights On Logout</string>
       <string id="RemoveOnLogoutExplainText">Specifies whether administrative rights should be revoked when a user logs off.</string>
 
@@ -90,6 +96,12 @@ Default: 10 minutes]]></string>
         <text>The number of minutes for which administrative rights will be granted.</text>
         <decimalTextBox refId="AdminRightsTimeoutValue" defaultValue="10" spinStep="5">admin rights timeout:</decimalTextBox>
       </presentation>
+      <presentation id="Log_Off_After_Expiration_Spin">
+        <text>The number of seconds after which a user is logged off, once their administrative privileges expire.</text>
+        <decimalTextBox refId="LogOffAfterExpirationValue" defaultValue="60" spinStep="5">Log off after:</decimalTextBox>
+      </presentation>
+      <presentation id="Log_Off_Message_TextBox">
+        <multiTextBox refId="LogOffMessageTextBox">Enter a message to be displayed to users before they are logged off.</multiTextBox>
       <presentation id="TCP_Service_Port_Spin">
         <text>The TCP port to be used for remote administrative rights requests.</text>
         <decimalTextBox refId="TCPServicePortValue" defaultValue="808" spin="false">TCP Service Port:</decimalTextBox>

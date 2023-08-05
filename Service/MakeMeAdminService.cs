@@ -233,6 +233,40 @@ namespace SinclairCC.MakeMeAdmin
                             returnCode = LocalAdministratorGroup.EndNetworkSession(string.Format(@"\\{0}", prin.RemoteAddress), userName);
                         }
                     }
+
+                    if (Settings.LogOffAfterExpiration > 0)
+                    {
+                        int sendToSessionId = 0;
+                        int[] currentSessionIds = LsaLogonSessions.LogonSessions.GetLoggedOnUserSessionIds();
+                        foreach (int id in currentSessionIds)
+                        {
+                            if (LsaLogonSessions.LogonSessions.GetSidForSessionId(id) == prin.Sid)
+                            {
+                                sendToSessionId = id;
+                            }
+                        }
+                        int response = 0;
+                        System.Text.StringBuilder messageBuilder = new System.Text.StringBuilder();
+                        for (int i = 0; i < Settings.LogOffMessage.Length; i++)
+                        {
+                            if (i == (Settings.LogOffMessage.Length - 1))
+                            {
+                                messageBuilder.Append(Settings.LogOffMessage[i]);
+                            }
+                            else
+                            {
+                                messageBuilder.AppendLine(Settings.LogOffMessage[i]);
+                            }
+                        }
+                        int returnValue = LsaLogonSessions.LogonSessions.SendMessageToSession(sendToSessionId, messageBuilder.ToString(), Settings.LogOffAfterExpiration, out response);
+#if DEBUG
+                        ApplicationLog.WriteEvent(string.Format("Message sent to session {0} returned response {1}. Return value was {2}.", sendToSessionId, response, returnValue), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+                        returnValue = LsaLogonSessions.LogonSessions.LogoffSession(sendToSessionId);
+#if DEBUG
+                        ApplicationLog.WriteEvent(string.Format("Logging off session {0} returned value {1}.", sendToSessionId, returnValue), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+                    }
                 }
             }
 

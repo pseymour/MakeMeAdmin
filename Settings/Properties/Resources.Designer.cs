@@ -61,6 +61,15 @@ namespace SinclairCC.MakeMeAdmin.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your administrator privileges have expired. You will be logged off..
+        /// </summary>
+        internal static string DefaultLogOffMessage {
+            get {
+                return ResourceManager.GetString("DefaultLogOffMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to My Company.
         /// </summary>
         internal static string MyCompany {
