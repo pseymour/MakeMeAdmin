@@ -22,7 +22,6 @@ namespace SinclairCC.MakeMeAdmin
 {
     using System;
     using System.DirectoryServices.AccountManagement;
-    using System.Linq;
     using System.Security.Principal;
 
     /// <summary>
@@ -39,7 +38,7 @@ namespace SinclairCC.MakeMeAdmin
         /// <summary>
         /// The security identifier (SID) of the local Administrators group.
         /// </summary>
-        private static SecurityIdentifier localAdminsGroupSid = null;
+        //private static SecurityIdentifier localAdminsGroupSid = null;
 
         /// <summary>
         /// Represents the local Administrators group.
@@ -56,7 +55,8 @@ namespace SinclairCC.MakeMeAdmin
         /// <summary>
         /// Gets a context representing the local machine.
         /// </summary>
-        /*private static PrincipalContext LocalMachineContext
+        /*
+        private static PrincipalContext LocalMachineContext
         {
             get
             {
@@ -79,7 +79,8 @@ namespace SinclairCC.MakeMeAdmin
                 }
                 return localMachineContext;
             }
-        }*/
+        }
+        */
 
         /// <summary>
         /// Gets the security identifier (SID) of the local Administrators group.
@@ -88,11 +89,17 @@ namespace SinclairCC.MakeMeAdmin
         {
             get
             {
+                // NOTE: We could memoize this, like below, but that does not seem necessary. It did
+                // not seem to make much difference in testing.
+                /*
                 if (localAdminsGroupSid == null)
                 {
                     localAdminsGroupSid = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
                 }
                 return localAdminsGroupSid;
+                */
+
+                return new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
             }
         }
 
@@ -101,16 +108,27 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         public static string LocalAdminGroupName
         {
-            get {
-                IdentityReference localAdminGroupNTAccount = LocalAdminsGroupSid.Translate(typeof(NTAccount));
-                return localAdminGroupNTAccount?.Value.Split('\\').ElementAtOrDefault(1);
+            get
+            {
+                NTAccount localAdminsGroupAccount = (NTAccount)LocalAdminsGroupSid.Translate(typeof(NTAccount));
+
+                string[] nameParts = localAdminsGroupAccount?.Value.Split('\\');
+                if (nameParts.Length > 0)
+                {
+                    return (nameParts[nameParts.Length - 1]);
+                }
+                else
+                {
+                    return string.Empty;
+                }
             }
         }
 
         /// <summary>
         /// Gets an object representing the local Administrators group.
         /// </summary>
-        /*private static GroupPrincipal LocalAdminGroup
+        /*
+        private static GroupPrincipal LocalAdminGroup
         {
             get
             {
@@ -142,7 +160,8 @@ namespace SinclairCC.MakeMeAdmin
                 }
                 return localAdminGroup;
             }
-        }*/
+        }
+        */
 
         /// <summary>
         /// Adds a user to the local Administrators group.
@@ -160,25 +179,16 @@ namespace SinclairCC.MakeMeAdmin
         {
             // TODO: Only do this if the user is not a member of the group?
 
-#if DEBUG
-            ApplicationLog.WriteEvent(string.Format("Calling UserIsAuthorized(3) from AddUser() beginning of function."), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
-#endif
-
-            //AdminGroupManipulator adminGroupManipulator = new AdminGroupManipulator();
-            bool userIsAuthorized = AdminGroupManipulator.UserIsAuthorized(userIdentity, Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
+            AdminGroupManipulator adminGroupManipulator = new AdminGroupManipulator();
+            bool userIsAuthorized = adminGroupManipulator.UserIsAuthorized(Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
 
             if (!string.IsNullOrEmpty(remoteAddress))
             { // Request is from a remote computer. Check the remote authorization list.
-
-#if DEBUG
-                ApplicationLog.WriteEvent(string.Format("Calling UserIsAuthorized(3) from AddUser() where remote address is not null or empty."), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
-#endif
-
-                userIsAuthorized &= AdminGroupManipulator.UserIsAuthorized(userIdentity, Settings.RemoteAllowedEntities, Settings.RemoteDeniedEntities);
+                userIsAuthorized &= adminGroupManipulator.UserIsAuthorized(Settings.RemoteAllowedEntities, Settings.RemoteDeniedEntities);
             }
 
             if (
-                (LocalAdminGroupName != null) &&
+                (!string.IsNullOrEmpty(LocalAdminGroupName)) &&
                 (userIdentity.User != null) && 
                 (userIdentity.Groups != null) && 
                 (userIsAuthorized)
@@ -226,7 +236,7 @@ namespace SinclairCC.MakeMeAdmin
         {
             // TODO: Only do this if the user is a member of the group?
 
-            if ((LocalAdminGroupName != null) && (userSid != null))
+            if ((!string.IsNullOrEmpty(LocalAdminGroupName)) && (userSid != null))
             {
                 SecurityIdentifier[] localAdminSids = GetLocalGroupMembers(LocalAdminGroupName);
 
@@ -275,18 +285,13 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         public static void ValidateAllAddedUsers()
         {
-#if DEBUG
-            //ApplicationLog.WriteEvent("Entering ValidateAllAddedUsers().", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
-#endif
-
-
             // Get a list of the users stored in the on-disk list.
             EncryptedSettings encryptedSettings = new EncryptedSettings(EncryptedSettings.SettingsFilePath);
             SecurityIdentifier[] addedUserList = encryptedSettings.AddedUserSIDs;
 
             // Get a list of the current members of the Administrators group.
             SecurityIdentifier[] localAdminSids = null;
-            if ((addedUserList.Length > 0) && (LocalAdminGroupName != null))
+            if ((addedUserList.Length > 0) && (!string.IsNullOrEmpty(LocalAdminGroupName)))
             {
                 localAdminSids = GetLocalGroupMembers(LocalAdminGroupName);
             }
@@ -356,7 +361,7 @@ namespace SinclairCC.MakeMeAdmin
                             if (
                                 (Settings.AutomaticAddAllowed != null) &&
                                 (Settings.AutomaticAddAllowed.Length > 0) &&
-                                (AdminGroupManipulator.UserIsAuthorized(userIdentity, Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied))
+                                (adminGroup.UserIsAuthorized(Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied))
                                )
                             { // The user is an automatically-added user.
 
@@ -428,7 +433,7 @@ namespace SinclairCC.MakeMeAdmin
                             if (
                                 (Settings.AutomaticAddAllowed != null) &&
                                 (Settings.AutomaticAddAllowed.Length > 0) &&
-                                (AdminGroupManipulator.UserIsAuthorized(userIdentity, Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied))
+                                (adminGroup.UserIsAuthorized(Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied))
                                )
                             { // The user is an automatically-added user.
 
@@ -515,7 +520,6 @@ namespace SinclairCC.MakeMeAdmin
                 return null;
             }
         }
-
 
         /// <summary>
         /// Gets the security identifier (SID) corresponding to a given sid string or account name.

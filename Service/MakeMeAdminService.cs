@@ -660,7 +660,8 @@ namespace SinclairCC.MakeMeAdmin
                         ApplicationLog.WriteEvent(string.Format("Calling UserIsAuthorized(3) from Service's OnSessionChange event."), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
 #endif
 
-                        bool userIsAuthorizedForAutoAdd = AdminGroupManipulator.UserIsAuthorized(userIdentity, Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied);
+                        AdminGroupManipulator adminGroupManipulator = new AdminGroupManipulator();
+                        bool userIsAuthorizedForAutoAdd = adminGroupManipulator.UserIsAuthorized(Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied);
                         /*
                         NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
                         ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(binding, Settings.NamedPipeServiceBaseAddress);
