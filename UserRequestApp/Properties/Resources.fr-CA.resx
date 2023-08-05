@@ -19,7 +19,7 @@
     <value>Make Me Admin</value>
   </data>
   <data name="CheckingAdminStatus" xml:space="preserve">
-    <value>Vérification du status d'administrateur...</value>
+    <value>Vérification du statut d'administrateur...</value>
   </data>
   <data name="GrantRightsButtonText" xml:space="preserve">
     <value>M'&amp;attribuer les droits administrateur</value>

@@ -16,7 +16,7 @@
         </trans-unit>
         <trans-unit id="CheckingAdminStatus" translate="yes" xml:space="preserve">
           <source>Checking administrator status...</source>
-          <target state="final">Vérification du status d'administrateur...</target>
+          <target state="final">Vérification du statut d'administrateur...</target>
         </trans-unit>
         <trans-unit id="GrantRightsButtonText" translate="yes" xml:space="preserve">
           <source>Grant Me Administrator Rights</source>
