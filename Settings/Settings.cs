@@ -20,8 +20,8 @@
 
 namespace SinclairCC.MakeMeAdmin
 {
-    using System;
     using Microsoft.Win32;
+    using System;
     using System.Collections.Generic;
     /*
     using System.Security.Cryptography;
@@ -35,8 +35,8 @@ namespace SinclairCC.MakeMeAdmin
         /// <summary>
         /// The top-level registry key in which the settings will be stored.
         /// </summary>
-        private static RegistryKey rootRegistryKey = Registry.LocalMachine;
-        
+        private readonly static RegistryKey rootRegistryKey = Registry.LocalMachine;
+
         /// <summary>
         /// Gets the base address for the service host that is available via TCP.
         /// </summary>
@@ -44,7 +44,7 @@ namespace SinclairCC.MakeMeAdmin
         {
             get
             {
-                return string.Format("net.tcp://{0}/MakeMeAdmin/Service", FullyQualifiedHostName);
+                return string.Format("net.tcp://{0}:{1}/MakeMeAdmin/Service", FullyQualifiedHostName, Settings.TCPServicePort);
             }
         }
 
@@ -318,7 +318,7 @@ namespace SinclairCC.MakeMeAdmin
                 SetKeyValuePairs(PreferenceRegistryKeyPath, "Timeout Overrides", value);
             }
         }
-        
+
         // TODO: Remove this registry value from PCs.
         /*
         public static string[] SIDs
@@ -421,7 +421,7 @@ namespace SinclairCC.MakeMeAdmin
                 int? preferenceRemovalSetting = GetDWord(PreferenceRegistryKeyPath, null, "Remove Admin Rights On Logout");
                 if (policyRemovalSetting.HasValue)
                 { // The policy setting has a value. Go with whatever it says.
-                    
+
                     return Convert.ToBoolean(policyRemovalSetting.Value);
                 }
                 else if (preferenceRemovalSetting.HasValue)
@@ -456,13 +456,39 @@ namespace SinclairCC.MakeMeAdmin
                     return Convert.ToBoolean(preferenceOverrideSetting.Value);
                 }
                 else
-                { // Neither the policy nor the preference registry entries had a value. Return a default value of true.
+                { // Neither the policy nor the preference registry entries had a value. Return a default value of false.
                     return false;
                 }
             }
             set
             {
                 SetDWord(PreferenceRegistryKeyPath, null, "Override Removal By Outside Process", Convert.ToInt32(value));
+            }
+        }
+
+        // TODO: i18n.
+        public static bool RequireAuthenticationForPrivileges
+        {
+            get
+            {
+                int? policyOverrideSetting = GetDWord(PolicyRegistryKeyPath, null, "Require Authentication For Privileges");
+                int? preferenceOverrideSetting = GetDWord(PreferenceRegistryKeyPath, null, "Require Authentication For Privileges");
+                if (policyOverrideSetting.HasValue)
+                { // The policy setting has a value. Go with whatever it says.
+                    return Convert.ToBoolean(policyOverrideSetting.Value);
+                }
+                else if (preferenceOverrideSetting.HasValue)
+                { // The preference setting has a value. Go with whatever it says.
+                    return Convert.ToBoolean(preferenceOverrideSetting.Value);
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value. Return a default value of false.
+                    return false;
+                }
+            }
+            set
+            {
+                SetDWord(PreferenceRegistryKeyPath, null, "Require Authentication For Privileges", Convert.ToInt32(value));
             }
         }
 
@@ -515,6 +541,225 @@ namespace SinclairCC.MakeMeAdmin
             set
             {
                 SetDWord(PreferenceRegistryKeyPath, null, "End Remote Sessions Upon Expiration", Convert.ToInt32(value));
+            }
+        }
+
+        // TODO: i18n.
+        public static bool CloseApplicationOnExpiration
+        {
+            get
+            {
+                int? policyCloseApplicationSetting = GetDWord(PolicyRegistryKeyPath, null, "Close Application Upon Expiration");
+                int? preferenceCloseApplicationSetting = GetDWord(PreferenceRegistryKeyPath, null, "Close Application Upon Expiration");
+                if (policyCloseApplicationSetting.HasValue)
+                { // The policy setting has a value. Go with whatever it says.
+                    return Convert.ToBoolean(policyCloseApplicationSetting.Value);
+                }
+                else if (preferenceCloseApplicationSetting.HasValue)
+                { // The preference setting has a value. Go with whatever it says.
+                    return Convert.ToBoolean(preferenceCloseApplicationSetting.Value);
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value. Return a default value of true.
+                    return true;
+                }
+            }
+            set
+            {
+                SetDWord(PreferenceRegistryKeyPath, null, "Close Application Upon Expiration", Convert.ToInt32(value));
+            }
+        }
+
+        public static ReasonPrompt PromptForReason
+        {
+            get
+            {
+
+                int? policySetting = GetDWord(PolicyRegistryKeyPath, null, "Prompt For Reason");
+                int? preferenceSetting = GetDWord(PreferenceRegistryKeyPath, null, "Prompt For Reason");
+                if (policySetting.HasValue)
+                { // The policy setting has a value. Go with whatever it says.
+                    ReasonPrompt convertedValue = ReasonPrompt.None;
+                    if (Enum.TryParse<ReasonPrompt>(Convert.ToString(policySetting.Value), true, out convertedValue))
+                    {
+                        if (!Enum.IsDefined(typeof(ReasonPrompt), convertedValue))
+                        {
+                            convertedValue = ReasonPrompt.None;
+                        }
+                    }
+                    else
+                    {
+                        convertedValue = ReasonPrompt.None;
+                    }
+                    return convertedValue;
+                }
+                else if (preferenceSetting.HasValue)
+                { // The preference setting has a value. Go with whatever it says.
+                    ReasonPrompt convertedValue = ReasonPrompt.None;
+                    if (Enum.TryParse<ReasonPrompt>(Convert.ToString(preferenceSetting.Value), true, out convertedValue))
+                    {
+                        if (!Enum.IsDefined(typeof(ReasonPrompt), convertedValue))
+                        {
+                            convertedValue = ReasonPrompt.None;
+                        }
+                    }
+                    else
+                    {
+                        convertedValue = ReasonPrompt.None;
+                    }
+                    return convertedValue;
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value. Return a default value of None.
+                    return ReasonPrompt.None;
+                }
+            }
+            set
+            {
+                SetDWord(PreferenceRegistryKeyPath, null, "Prompt For Reason", Convert.ToInt32(value));
+            }
+        }
+
+
+        public static bool AllowFreeFormReason
+        {
+            get
+            {
+
+                int? policySetting = GetDWord(PolicyRegistryKeyPath, null, "Allow Free-Form Reason");
+                int? preferenceSetting = GetDWord(PreferenceRegistryKeyPath, null, "Allow Free-Form Reason");
+                if (policySetting.HasValue)
+                { // The policy setting has a value. Go with whatever it says.
+                    return Convert.ToBoolean(policySetting.Value);
+                }
+                else if (preferenceSetting.HasValue)
+                { // The preference setting has a value. Go with whatever it says.
+                    return Convert.ToBoolean(preferenceSetting.Value);
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value. Return a default value of true.
+                    return true;
+                }
+            }
+            set
+            {
+                SetDWord(PreferenceRegistryKeyPath, null, "Allow Free-Form Reason", Convert.ToInt32(value));
+            }
+        }
+
+
+        // TODO: i18n.
+        public static string[] CannedReasons
+        {
+            get
+            {
+                string[] policySetting = GetMultiString(PolicyRegistryKeyPath, null, "Canned Reasons");
+                string[] preferenceSetting = GetMultiString(PreferenceRegistryKeyPath, null, "Canned Reasons");
+                if (policySetting != null)
+                { // The policy setting has a value. Go with whatever it says.
+                    return policySetting;
+                }
+                else
+                { // Go with whatever the preference setting says, even if it is null.
+                    return preferenceSetting;
+                }
+            }
+            set
+            {
+                SetMultiString(PreferenceRegistryKeyPath, null, "Canned Reasons", value);
+            }
+        }
+
+        // TODO: i18n.
+        public static ElevatedProcessLogging LogElevatedProcesses
+        {
+            get
+            {
+                int? policyTimeoutSetting = GetDWord(PolicyRegistryKeyPath, null, "Log Elevated Processes");
+                int? preferenceTimeoutSetting = GetDWord(PreferenceRegistryKeyPath, null, "Log Elevated Processes");
+                if (policyTimeoutSetting.HasValue)
+                { // The policy setting has a value. Go with whatever it says.
+                    if (Enum.IsDefined(typeof(ElevatedProcessLogging), policyTimeoutSetting.Value))
+                    {
+                        return (ElevatedProcessLogging)policyTimeoutSetting.Value;
+                    }
+                    else
+                    {
+                        return ElevatedProcessLogging.OnlyWhenAdmin;
+                    }
+                }
+                else if (preferenceTimeoutSetting.HasValue)
+                { // The preference setting has a value. Go with whatever it says.
+                    if (Enum.IsDefined(typeof(ElevatedProcessLogging), preferenceTimeoutSetting.Value))
+                    {
+                        return (ElevatedProcessLogging)preferenceTimeoutSetting.Value;
+                    }
+                    else
+                    {
+                        return ElevatedProcessLogging.OnlyWhenAdmin;
+                    }
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value.
+                  // Return a default value indicating that logging should not be done.
+                    return ElevatedProcessLogging.Never;
+                }
+            }
+            set
+            {
+                SetDWord(PreferenceRegistryKeyPath, null, "Log Elevated Processes", (int)value);
+            }
+        }
+
+        // TODO: i18n.
+        public static int MaximumReasonLength
+        {
+            get
+            {
+                int? policyTimeoutSetting = GetDWord(PolicyRegistryKeyPath, null, "Maximum Reason Length");
+                int? preferenceTimeoutSetting = GetDWord(PreferenceRegistryKeyPath, null, "Maximum Reason Length");
+                if (policyTimeoutSetting.HasValue)
+                { // The policy setting has a value. Go with whatever it says.
+                    return policyTimeoutSetting.Value;
+                }
+                else if (preferenceTimeoutSetting.HasValue)
+                { // The preference setting has a value. Go with whatever it says.
+                    return preferenceTimeoutSetting.Value;
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value. Return a default timeout value of 333.
+                    return 333;
+                }
+            }
+            set
+            {
+                SetDWord(PreferenceRegistryKeyPath, null, "Maximum Reason Length", value);
+            }
+        }
+
+        // TODO: i18n.
+        public static int TCPServicePort
+        {
+            get
+            {
+                int? policyPortSetting = GetDWord(PolicyRegistryKeyPath, null, "TCP Service Port");
+                int? preferencePortSetting = GetDWord(PreferenceRegistryKeyPath, null, "TCP Service Port");
+                if (policyPortSetting.HasValue)
+                { // The policy setting has a value. Go with whatever it says.
+                    return policyPortSetting.Value;
+                }
+                else if (preferencePortSetting.HasValue)
+                { // The preference setting has a value. Go with whatever it says.
+                    return preferencePortSetting.Value;
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value. Return a default timeout value of 808.
+                    return 808;
+                }
+            }
+            set
+            {
+                SetDWord(PreferenceRegistryKeyPath, null, "TCP Service Port", value);
             }
         }
 

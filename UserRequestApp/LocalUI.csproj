@@ -86,6 +86,16 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="RequestReasonDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RequestReasonDialog.designer.cs">
+      <DependentUpon>RequestReasonDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NativeMethods.cs" />
     <Compile Include="SubmitRequestForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -94,8 +104,22 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Properties\Resources.da.resx" />
     <EmbeddedResource Include="Properties\Resources.fr.resx">
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RequestReasonDialog.da.resx">
+      <DependentUpon>RequestReasonDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RequestReasonDialog.fr.resx">
+      <DependentUpon>RequestReasonDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RequestReasonDialog.resx">
+      <DependentUpon>RequestReasonDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SubmitRequestForm.da.resx">
+      <DependentUpon>SubmitRequestForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SubmitRequestForm.fr.resx">
       <DependentUpon>SubmitRequestForm.cs</DependentUpon>
@@ -115,7 +139,6 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.config" />
-    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -131,6 +154,10 @@
       <Project>{5fb1809b-b0fd-48e9-9e47-3cb048369433}</Project>
       <Name>Enumerations</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Logging\Logging.csproj">
+      <Project>{f5a53b43-5d6d-48ec-bc44-c0c1a0cefa8d}</Project>
+      <Name>Logging</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UserList\UserList.csproj">
       <Project>{9cfd5fa4-5ad6-463c-87e5-3f42133b5da8}</Project>
       <Name>UserList</Name>
@@ -143,9 +170,6 @@
       <Project>{8a516d69-ba38-429f-affe-c571b5c1e482}</Project>
       <Name>Settings</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SecurityLock.ico" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
@@ -170,7 +194,16 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <XliffResource Include="MultilingualResources\LocalUI.da.xlf" />
     <XliffResource Include="MultilingualResources\LocalUI.fr.xlf" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SecurityLock.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="SyslogNet.Client">
+      <Version>0.3.3</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Multilingual App Toolkit\Microsoft.Multilingual.ResxResources.targets" Label="MultilingualAppToolkit" Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\Multilingual App Toolkit\v$(MultilingualAppToolkitVersion)\Microsoft.Multilingual.ResxResources.targets')" />

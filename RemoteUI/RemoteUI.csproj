@@ -82,7 +82,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Settings.cs" />
+    <Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="SubmitRequestForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -91,6 +93,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Properties\Resources.da.resx" />
     <EmbeddedResource Include="Properties\Resources.fr.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -102,6 +105,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="SubmitRequestForm.da.resx">
+      <DependentUpon>SubmitRequestForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SubmitRequestForm.fr.resx">
       <DependentUpon>SubmitRequestForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -126,11 +132,16 @@
       <Project>{77612014-2e37-4e17-aafe-9ad4f08b4263}</Project>
       <Name>ProcessCommunication</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Settings\Settings.csproj">
+      <Project>{8a516d69-ba38-429f-affe-c571b5c1e482}</Project>
+      <Name>Settings</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\SecurityLock.ico" />
   </ItemGroup>
   <ItemGroup>
+    <XliffResource Include="MultilingualResources\RemoteUI.da.xlf" />
     <XliffResource Include="MultilingualResources\RemoteUI.fr.xlf" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

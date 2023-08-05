@@ -20,10 +20,18 @@
 
 namespace SinclairCC.MakeMeAdmin
 {
+    using Microsoft.Diagnostics.Tracing.Parsers;
+    using Microsoft.Diagnostics.Tracing.Parsers.Kernel;
+    using Microsoft.Diagnostics.Tracing.Session;
     using System;
+    using System.ComponentModel;
+    using System.Linq;
+    using System.Runtime.Serialization.Formatters.Binary;
+    using System.Collections.Generic;
     using System.Security.Principal;
     using System.ServiceModel;
     using System.ServiceProcess;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// This class is the Windows Service, which does privileged work
@@ -34,7 +42,7 @@ namespace SinclairCC.MakeMeAdmin
         /// <summary>
         /// A timer to monitor when administrator rights should be removed.
         /// </summary>
-        private System.Timers.Timer removalTimer;
+        private readonly System.Timers.Timer removalTimer;
 
         /// <summary>
         /// A Windows Communication Foundation (WCF) service host which communicates over named pipes.
@@ -54,6 +62,16 @@ namespace SinclairCC.MakeMeAdmin
         /// </remarks>
         private ServiceHost tcpServiceHost = null;
 
+        private TraceEventSession processWatchSession = null;
+
+        private readonly static List<ProcessInformation> processList = new List<ProcessInformation>();
+
+        private readonly static Queue<ElevatedProcessInformation> elevatedProcessList = new Queue<ElevatedProcessInformation>();
+
+
+        private readonly string portSharingServiceName = "NetTcpPortSharing";
+
+
 
         /// <summary>
         /// Instantiate a new instance of the Make Me Admin Windows service.
@@ -66,14 +84,118 @@ namespace SinclairCC.MakeMeAdmin
             this.CanHandleSessionChangeEvent = true;
             */
 
+            this.EventLog.Source = "Make Me Admin";
+            this.AutoLog = false;
+
             this.removalTimer = new System.Timers.Timer()
             {
                 Interval = 10000,   // Raise the Elapsed event every ten seconds.
                 AutoReset = true    // Raise the Elapsed event repeatedly.
             };
             this.removalTimer.Elapsed += RemovalTimerElapsed;
+
+
+#if DEBUG
+            ApplicationLog.WriteEvent(string.Format("process logging setting: {0:N0}", (int)Settings.LogElevatedProcesses), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+
+
         }
 
+        private void Dynamic_All(Microsoft.Diagnostics.Tracing.TraceEvent obj)
+        {
+            if ((obj.Opcode == Microsoft.Diagnostics.Tracing.TraceEventOpcode.Start) && (string.Compare(obj.TaskName, "ProcessStart", true) == 0))
+            {
+                int processIsElevated = 0;
+                int processElevationType = 0;
+                int processId = int.MinValue;
+                int sessionId = int.MinValue;
+                DateTime createTime = DateTime.MinValue;
+                int index = int.MinValue;
+
+                index = obj.PayloadIndex("ProcessTokenIsElevated");
+                if (index >= 0)
+                {
+                    processIsElevated = (int)obj.PayloadValue(index);
+                }
+
+                if (processIsElevated == 1)
+                {
+                    index = obj.PayloadIndex("ProcessID");
+                    if (index >= 0)
+                    {
+                        processId = (int)obj.PayloadValue(index);
+                    }
+
+                    ElevatedProcessInformation elevatedProcess = new ElevatedProcessInformation
+                    {
+                        ProcessID = processId
+                    };
+
+                    index = obj.PayloadIndex("ProcessTokenElevationType");
+                    if (index >= 0)
+                    {
+                        processElevationType = (int)obj.PayloadValue(index);
+                        elevatedProcess.ElevationType = (TokenElevationType)processElevationType;
+                    }
+
+                    index = obj.PayloadIndex("SessionID");
+                    if (index >= 0)
+                    {
+                        sessionId = (int)obj.PayloadValue(index);
+                        elevatedProcess.SessionID = sessionId;
+                    }
+
+                    index = obj.PayloadIndex("CreateTime");
+                    if (index >= 0)
+                    {
+                        createTime = (DateTime)obj.PayloadValue(index);
+                        elevatedProcess.CreateTime = createTime;
+                    }
+
+                    // Determine whether the process should be logged. It should be logged if
+                    // 1. The process logging setting is set to always, or
+                    // 2. The process logging is set to "Only When Admin" and the user is in the admins group.
+                    bool processShouldBeLogged = (Settings.LogElevatedProcesses == ElevatedProcessLogging.Always);
+                    if (Settings.LogElevatedProcesses == ElevatedProcessLogging.OnlyWhenAdmin)
+                    {
+                        NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
+                        ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(binding, Settings.NamedPipeServiceBaseAddress);
+                        IAdminGroup channel = namedPipeFactory.CreateChannel();
+                        processShouldBeLogged = channel.UserSessionIsInList(elevatedProcess.SessionID);
+                        namedPipeFactory.Close();
+                    }
+
+                    if (processShouldBeLogged)
+                    {
+                        elevatedProcessList.Enqueue(elevatedProcess);
+                    }
+                }
+            }
+        }
+
+        private void Kernel_ProcessStart(ProcessTraceData processInfo)
+        {
+            if (processInfo.Opcode == Microsoft.Diagnostics.Tracing.TraceEventOpcode.Start)
+            {
+                ProcessInformation startedProcess = new ProcessInformation()
+                {
+                    CommandLine = processInfo.CommandLine,
+                    ImageFileName = processInfo.ImageFileName,
+                    ProcessID = processInfo.ProcessID,
+                    SessionID = processInfo.SessionID,
+                    CreateTime = processInfo.TimeStamp,
+                };
+
+                SecurityIdentifier sid = LsaLogonSessions.LogonSessions.GetSidForSessionId(startedProcess.SessionID);
+                if (sid != null)
+                {
+                    startedProcess.UserSIDString = sid.Value;
+                }
+
+                processList.Add(startedProcess);
+            }
+        }
 
         /// <summary>
         /// Handles the Elapsed event for the rights removal timer.
@@ -104,6 +226,7 @@ namespace SinclairCC.MakeMeAdmin
                             userName = userName.Substring(userName.LastIndexOf("\\") + 1);
                         }
 
+                        // TODO: Log this return code if it's not a success?
                         int returnCode = 0;
                         if (!string.IsNullOrEmpty(userName))
                         {
@@ -148,6 +271,44 @@ namespace SinclairCC.MakeMeAdmin
             }
 
             LocalAdministratorGroup.ValidateAllAddedUsers();
+
+            if (Settings.LogElevatedProcesses != ElevatedProcessLogging.Never)
+            {
+                if (this.processWatchSession == null) { StartTracing(); }
+                if (this.processWatchSession != null) { LogProcesses(); }
+            }
+        }
+
+
+        private void LogProcesses()
+        {
+            processList.RemoveAll(pi => DateTime.Now.Subtract(pi.CreateTime).TotalMinutes > 2);
+
+            bool itemDequeued = false;
+            do
+            {
+                itemDequeued = false;
+                if (elevatedProcessList.Count > 0)
+                {
+                    ElevatedProcessInformation nextProcess = elevatedProcessList.Peek();
+                    if (DateTime.Now.Subtract(nextProcess.CreateTime).TotalSeconds >= 60)
+                    {
+                        // TODO: Process has been in the queue longer than 60 seconds. Log that it could not be matched, and move on.
+                        elevatedProcessList.Dequeue();
+                        itemDequeued = true;
+                    }
+                    else
+                    {
+                        nextProcess = elevatedProcessList.Dequeue();
+                        itemDequeued = true;
+
+                        processList.FindAll(p => (p.ProcessID == nextProcess.ProcessID) && (p.SessionID == nextProcess.SessionID)).ForEach(action =>
+                        {
+                            LoggingProvider.Log.ElevatedProcessDetected(nextProcess.ElevationType, action);
+                        });
+                    }
+                }
+            } while ((itemDequeued) && (elevatedProcessList.Count > 0));
         }
 
 
@@ -156,6 +317,10 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         private void OpenNamedPipeServiceHost()
         {
+            if (null != this.namedPipeServiceHost)
+            {
+                this.namedPipeServiceHost.Close();
+            }
             this.namedPipeServiceHost = new ServiceHost(typeof(AdminGroupManipulator), new Uri(Settings.NamedPipeServiceBaseAddress));
             this.namedPipeServiceHost.Faulted += ServiceHostFaulted;
             NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
@@ -169,13 +334,130 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         private void OpenTcpServiceHost()
         {
+            if ((null != this.tcpServiceHost) && (this.tcpServiceHost.State == CommunicationState.Opened))
+            {
+                this.tcpServiceHost.Close();
+            }
+
             this.tcpServiceHost = new ServiceHost(typeof(AdminGroupManipulator), new Uri(Settings.TcpServiceBaseAddress));
             this.tcpServiceHost.Faulted += ServiceHostFaulted;
-            NetTcpBinding binding = new NetTcpBinding(SecurityMode.Transport);
+            NetTcpBinding binding = new NetTcpBinding(SecurityMode.Transport)
+            {
+                PortSharingEnabled = true
+            };
+
+            // If port sharing is enabled, then the Net.Tcp Port Sharing Service must be available as well.
+            if (PortSharingServiceExists)
+            {
+                ServiceController controller = new ServiceController(portSharingServiceName);
+                switch (controller.StartType)
+                {
+                    case ServiceStartMode.Disabled:
+                        ApplicationLog.WriteEvent("The Net.Tcp Port Sharing Service is disabled. Remote access will not be available.", EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
+                        return;
+                    /*
+                    case ServiceStartMode.Automatic:
+#if DEBUG
+                        ApplicationLog.WriteEvent("Port sharing service is set to start automatically.", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+                        break;
+                    case ServiceStartMode.Manual:
+#if DEBUG
+                        ApplicationLog.WriteEvent("Port sharing service is set to start manually.", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+                        int waitCount = 0;
+                        while ((controller.Status != ServiceControllerStatus.Running) && (waitCount < 10))
+                        {
+                            switch (controller.Status)
+                            {
+                                case ServiceControllerStatus.Paused:
+                                    controller.Continue();
+                                    controller.WaitForStatus(ServiceControllerStatus.Running, new TimeSpan(0, 0, 5));
+                                    break;
+                                case ServiceControllerStatus.Stopped:
+                                    try
+                                    {
+                                        controller.Start();
+                                        controller.WaitForStatus(ServiceControllerStatus.Running, new TimeSpan(0, 0, 5));
+                                    }
+                                    catch (Win32Exception win32Exception)
+                                    {
+                                        ApplicationLog.WriteEvent(win32Exception.Message, EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Error);
+                                    }
+                                    catch (InvalidOperationException invalidOpException)
+                                    {
+                                        ApplicationLog.WriteEvent(invalidOpException.Message, EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Error);
+                                    }
+                                    break;
+                            }
+                            System.Threading.Thread.Sleep(1000);
+                            waitCount++;
+                        }
+
+                        if (controller.Status != ServiceControllerStatus.Running)
+                        {
+                            ApplicationLog.WriteEvent(string.Format("Port {0} is already in use, but the Net.Tcp Port Sharing Service is not running. Remote access will not be available.", Settings.TCPServicePort), EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
+                        }
+
+                        break;
+                    */
+                }
+                controller.Close();
+            }
+            else
+            {
+                ApplicationLog.WriteEvent(string.Format("Port {0} is already in use, but the Net.Tcp Port Sharing Service does not exist. Remote access will not be available.", Settings.TCPServicePort), EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
+                return;
+            }
+
             this.tcpServiceHost.AddServiceEndpoint(typeof(IAdminGroup), binding, Settings.TcpServiceBaseAddress);
-            this.tcpServiceHost.Open();
+
+            try
+            {
+                this.tcpServiceHost.Open();
+            }
+            catch (ObjectDisposedException)
+            {
+                ApplicationLog.WriteEvent("The communication object is in a Closing or Closed state and cannot be modified.", EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
+            }
+            catch (InvalidOperationException)
+            {
+                ApplicationLog.WriteEvent("The communication object is not in a Opened or Opening state and cannot be modified.", EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
+            }
+            catch (CommunicationObjectFaultedException)
+            {
+                ApplicationLog.WriteEvent("The communication object is in a Faulted state and cannot be modified.", EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
+            }
+            catch (System.TimeoutException)
+            {
+                ApplicationLog.WriteEvent("The default interval of time that was allotted for the operation was exceeded before the operation was completed.", EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
+            }
         }
 
+        private bool PortSharingServiceExists
+        {
+            get
+            {
+                bool serviceExists = false;
+                ServiceController[] services = ServiceController.GetServices();
+                for (int i = 0; (i < services.Length) && (!serviceExists); i++)
+                {
+                    serviceExists |= (string.Compare(services[i].ServiceName, portSharingServiceName, true) == 0);
+                }
+                return serviceExists;
+            }
+        }
+
+        /*
+        private bool TcpPortInUse
+        {
+            get
+            {
+                System.Net.NetworkInformation.IPGlobalProperties globalIPProps = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties();
+                return globalIPProps.GetActiveTcpListeners().Where(n => n.Port == Settings.TCPServicePort).Count() > 0;
+            }
+        }
+        */
 
         /// <summary>
         /// Handles the faulted event for a WCF service host.
@@ -221,22 +503,80 @@ namespace SinclairCC.MakeMeAdmin
             // is accessible via TCP.
             if (Settings.AllowRemoteRequests)
             {
-                this.OpenTcpServiceHost();
+                try
+                {
+                    this.OpenTcpServiceHost();
+                }
+                catch (AddressAlreadyInUseException addressInUseException)
+                {
+                    System.Text.StringBuilder logMessage = new System.Text.StringBuilder(addressInUseException.Message);
+                    logMessage.Append(System.Environment.NewLine);
+                    logMessage.Append(string.Format("Determine whether another application is using TCP port {0:N0}.", Settings.TCPServicePort));
+                    ApplicationLog.WriteEvent(logMessage.ToString(), EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
+                }
+                catch (Exception)
+                {
+                    ApplicationLog.WriteEvent("Unhandled exception while opening the remote request handler. Remote requests may not be honored.", EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
+                }
+            }
+
+            if ((Settings.LogElevatedProcesses != ElevatedProcessLogging.Never) && (this.processWatchSession == null))
+            {
+                StartTracing();
             }
 
             // Start the timer that watches for expired administrator rights.
             this.removalTimer.Start();
         }
 
+        private void StartTracing()
+        {
+            Task.Factory.StartNew(
+                () =>
+                {
+                    if (this.processWatchSession == null)
+                    {
+                        processWatchSession = new TraceEventSession("Make Me Admin Process Watch")
+                        {
+                            StopOnDispose = true
+                        };
+
+                        try
+                        {
+                            // Turn on the process events (includes starts and stops).  
+                            processWatchSession.EnableKernelProvider(KernelTraceEventParser.Keywords.Process);
+
+                            // Enable the Microsoft-Windows-Kernel-Process provider.
+                            processWatchSession.EnableProvider(Guid.Parse("22fb2cd6-0e7b-422b-a0c7-2fad1fd0e716"));
+
+                            // Ask the DynamicTraceEventParser to raise an event for all events that it knows about.
+                            processWatchSession.Source.Dynamic.All += Dynamic_All;
+
+                            // Raise an event for every process start event that the kernel knows about.
+                            processWatchSession.Source.Kernel.ProcessStart += Kernel_ProcessStart;
+
+                            // Listen for events.
+                            processWatchSession.Source.Process();
+                        }
+                        catch (Exception exxx)
+                        {
+                            ApplicationLog.WriteEvent(exxx.Message, EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Error);
+                        }
+                    }
+                },
+                TaskCreationOptions.LongRunning);
+        }
 
         /// <summary>
         /// Handles the stopping of the service.
         /// </summary>
         /// <remarks>
-        /// Executes when a stop command is sent to the service by the Serivce Control Manager (SCM).
+        /// Executes when a stop command is sent to the service by the Service Control Manager (SCM).
         /// </remarks>
         protected override void OnStop()
         {
+            EncryptedSettings.RemoveOldUsersFile();
+
             if ((this.namedPipeServiceHost != null) && (this.namedPipeServiceHost.State == CommunicationState.Opened))
             {
                 this.namedPipeServiceHost.Close();
@@ -254,6 +594,18 @@ namespace SinclairCC.MakeMeAdmin
             for (int i = 0; i < sids.Length; i++)
             {
                 LocalAdministratorGroup.RemoveUser(sids[i], RemovalReason.ServiceStopped);
+            }
+
+            if (processWatchSession != null)
+            {
+                try
+                {
+                    processWatchSession.Dispose();
+                }
+                catch (Exception e)
+                {
+                    ApplicationLog.WriteEvent(string.Format("{0} exception while stopping process watcher. Message: {1}", e.GetType().Name, e.Message), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Error);
+                }
             }
 
             base.OnStop();
@@ -322,22 +674,41 @@ namespace SinclairCC.MakeMeAdmin
                 // The user has logged on to a session, either locally or remotely.
                 case SessionChangeReason.SessionLogon:
 
+#if DEBUG
+                    ApplicationLog.WriteEvent(string.Format("In OnSessionChange(), the SessionLogon case. The session logging on is session #{0}.", changeDescription.SessionId), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+
                     WindowsIdentity userIdentity = LsaLogonSessions.LogonSessions.GetWindowsIdentityForSessionId(changeDescription.SessionId);
 
-                    if (userIdentity != null)
+#if DEBUG
+                    if (null != userIdentity)
+                    {
+                        ApplicationLog.WriteEvent(string.Format(string.Format("User Identity is \"{0}.\"", userIdentity.Name)), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+                    }
+#endif
+
+                    if (null != userIdentity)
                     {
 
+#if DEBUG
+                        ApplicationLog.WriteEvent(string.Format("Calling UserIsAuthorized(3) from Service's OnSessionChange event."), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+
+                        AdminGroupManipulator adminGroupManipulator = new AdminGroupManipulator();
+                        bool userIsAuthorizedForAutoAdd = adminGroupManipulator.UserIsAuthorized(Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied);
+                        /*
                         NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
                         ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(binding, Settings.NamedPipeServiceBaseAddress);
                         IAdminGroup channel = namedPipeFactory.CreateChannel();
                         bool userIsAuthorizedForAutoAdd = channel.UserIsAuthorized(Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied);
                         namedPipeFactory.Close();
+                        */
 
                         // If the user is in the automatic add list, then add them to the Administrators group.
                         if (
                             (Settings.AutomaticAddAllowed != null) &&
                             (Settings.AutomaticAddAllowed.Length > 0) &&
-                            (userIsAuthorizedForAutoAdd /*UserIsAuthorized(userIdentity, Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied)*/)
+                            (userIsAuthorizedForAutoAdd)
                            )
                         {
                             LocalAdministratorGroup.AddUser(userIdentity, null, null);
@@ -350,33 +721,33 @@ namespace SinclairCC.MakeMeAdmin
 
                     break;
 
-                /*
-                // The user has reconnected or logged on to a remote session.
-                case SessionChangeReason.RemoteConnect:
-                    ApplicationLog.WriteInformationEvent(string.Format("Remote connect. Session ID: {0}", changeDescription.SessionId), EventID.SessionChangeEvent);
-                    break;
-                */
+                    /*
+                    // The user has reconnected or logged on to a remote session.
+                    case SessionChangeReason.RemoteConnect:
+                        ApplicationLog.WriteInformationEvent(string.Format("Remote connect. Session ID: {0}", changeDescription.SessionId), EventID.SessionChangeEvent);
+                        break;
+                    */
 
-                /*
-                // The user has disconnected or logged off from a remote session.
-                case SessionChangeReason.RemoteDisconnect:
-                    ApplicationLog.WriteInformationEvent(string.Format("Remote disconnect. Session ID: {0}", changeDescription.SessionId), EventID.SessionChangeEvent);
-                    break;
-                */
+                    /*
+                    // The user has disconnected or logged off from a remote session.
+                    case SessionChangeReason.RemoteDisconnect:
+                        ApplicationLog.WriteInformationEvent(string.Format("Remote disconnect. Session ID: {0}", changeDescription.SessionId), EventID.SessionChangeEvent);
+                        break;
+                    */
 
-                /*
-                // The user has locked their session.
-                case SessionChangeReason.SessionLock:
-                    ApplicationLog.WriteInformationEvent(string.Format("Session lock. Session ID: {0}", changeDescription.SessionId), EventID.SessionChangeEvent);
-                    break;
-                */
+                    /*
+                    // The user has locked their session.
+                    case SessionChangeReason.SessionLock:
+                        ApplicationLog.WriteInformationEvent(string.Format("Session lock. Session ID: {0}", changeDescription.SessionId), EventID.SessionChangeEvent);
+                        break;
+                    */
 
-                /*
-                // The user has unlocked their session.
-                case SessionChangeReason.SessionUnlock:
-                    ApplicationLog.WriteInformationEvent(string.Format("Session unlock. Session ID: {0}", changeDescription.SessionId), EventID.SessionChangeEvent);
-                    break;
-                */
+                    /*
+                    // The user has unlocked their session.
+                    case SessionChangeReason.SessionUnlock:
+                        ApplicationLog.WriteInformationEvent(string.Format("Session unlock. Session ID: {0}", changeDescription.SessionId), EventID.SessionChangeEvent);
+                        break;
+                    */
 
             }
 

@@ -9,3 +9,7 @@ This is the official list of the Make Me Admin project contributors.
 * **Etienne Croteau**
 
   * French localization
+
+* **Bjørn Kelsen**
+
+  * Danish localization

@@ -11,26 +11,30 @@
       <string id="MakeMeAdminDisplayName">Make Me Admin</string>
       <string id="MakeMeAdminExplainText">Make Me Admin allows users to grant themselves administrator privileges for a defined period of time.</string>
 
-      <string id="AllowedEntitiesDisplayName">Allowed Security IDs (Local)</string>
-      <string id="AllowedEntitiesExplainText">Specifies the security IDs (SIDs) of the users or groups allowed to gain administrative rights on the local computer.</string>
+      <string id="AllowedEntitiesDisplayName">Allowed Entities</string>
+      <string id="AllowedEntitiesExplainText">List of SIDs or names for users or groups that are allowed to obtain administrator rights on the local machine.</string>
 
-      <string id="RemoteAllowedEntitiesDisplayName">Allowed Security IDs (Remote)</string>
-      <string id="RemoteAllowedEntitiesExplainText">Specifies the security IDs (SIDs) of the users or groups allowed to gain administrative rights remotely.</string>
+      <string id="RemoteAllowedEntitiesDisplayName">Remote Allowed Entities</string>
+      <string id="RemoteAllowedEntitiesExplainText">List of SIDs or names for users or groups that are allowed to obtain administrator rights from a remote computer.</string>
 
-      <string id="AutomaticallyAddAllowedEntitiesDisplayName">Automatically Added Security IDs</string>
-      <string id="AutomaticallyAddAllowedEntitiesExplainText">Specifies the security IDs (SIDs) of the users or groups to be added to the Administrators group automatically upon logon.</string>
-	  
-      <string id="DeniedEntitiesDisplayName">Denied Security IDs (Local)</string>
-      <string id="DeniedEntitiesExplainText">Specifies the security IDs (SIDs) of the users or groups denied the ability to gain administrative rights on the local computer.</string>
+      <string id="AutomaticallyAddAllowedEntitiesDisplayName">Automatic Add Allowed</string>
+      <string id="AutomaticallyAddAllowedEntitiesExplainText">List of SIDs or names for users or groups that are automatically added to the Administrators group upon logon.</string>
 
-      <string id="RemoteDeniedEntitiesDisplayName">Denied Security IDs (Remote)</string>
-      <string id="RemoteDeniedEntitiesExplainText">Specifies the security IDs (SIDs) of the users or groups denied the ability to gain administrative rights remotely.</string>
+      <string id="DeniedEntitiesDisplayName">Denied Entities</string>
+      <string id="DeniedEntitiesExplainText">List of SIDs or names for users or groups that are not allowed to obtain administrator rights on the local machine. Denials take precedence over allowed entities.</string>
 
-      <string id="AutomaticallyAddDeniedEntitiesDisplayName">Never Automatically Added Security IDs</string>
-      <string id="AutomaticallyAddDeniedEntitiesExplainText">Specifies the security IDs (SIDs) of the users or groups NEVER to be added to the Administrators group automatically upon logon.</string>
-	  
+      <string id="RemoteDeniedEntitiesDisplayName">Remote Denied Entities</string>
+      <string id="RemoteDeniedEntitiesExplainText">List of SIDs or names for users or groups that are not allowed to obtain administrator rights from a remote computer. Denials take precedence over allowed entities.</string>
+
+      <string id="AutomaticallyAddDeniedEntitiesDisplayName">Automatic Add Denied</string>
+      <string id="AutomaticallyAddDeniedEntitiesExplainText">List of SIDs or names for users or groups that are never allowed to be added automatically to the Administrators group upon logon. Denials take precedence over allowed entities.</string>
+
       <string id="AdminRightsTimeoutDisplayName">Admin Rights Timeout</string>
-      <string id="AdminRightsTimeoutExplainText">Specifies the amount of time, in minutes, for which administrative rights will be granted.</string>
+      <string id="AdminRightsTimeoutExplainText"><![CDATA[Specifies the amount of time, in minutes, for which administrative rights will be granted.
+Default: 10 minutes]]></string>
+
+      <string id="TCPServicePortDisplayName">TCP Service Port</string>
+      <string id="TCPServicePortExplainText">Specifies the TCP port to be used for remote administrative rights requests.</string>
 
       <string id="LogOffAfterExpirationDisplayName">Log Off After Expiration</string>
       <string id="LogOffAfterExpirationExplainText">Specifies the number of seconds after which a user is logged off, once their administrator privileges expire. A value of zero (0) prevents the logoff.</string>
@@ -44,17 +48,48 @@
       <string id="OverrideOutsideProcessDisplayName">Override Removal By Outside Process</string>
       <string id="OverrideOutsideProcessExplainText">Specifies whether administrative rights should be added back if an outside process removes them before the timeout has expired.</string>
 
+      <string id="RequireAuthForPrivilegesDisplayName">Require Authentication to Obtain Privileges</string>
+      <string id="RequireAuthForPrivilegesExplainText">Specifies whether the user must authenticate before being granted administrative privileges.</string>
+
       <string id="AllowRemoteRequestsDisplayName">Allow Remote Requests</string>
       <string id="AllowRemoteRequestsExplainText">Specifies whether administrative rights can be requested by authorized users on a remote computer.</string>
 
       <string id="EndRemoteSessionsDisplayName">End Remote Sessions When Rights Expire</string>
       <string id="EndRemoteSessionsExplainText">Specifies whether remote sessions are closed when the corresponding user's rights expire.</string>
 
+      <string id="CloseApplicationDisplayName">Close Application When Rights Expire</string>
+      <string id="CloseApplicationExplainText">Specifies whether the application is closed when the user's rights expire.</string>
+
       <string id="TimeoutOverrideDisplayName">Admin Rights Timeout Overrides</string>
       <string id="TimeoutOverrideExplainText">Specifies different timeout values for particular users or groups.</string>
 
       <string id="SyslogServersDisplayName">Syslog Servers</string>
       <string id="SyslogServersExplainText">Specifies information about syslog servers to which logged information should be sent.</string>
+
+      <string id="PromptForReasonDisplayName">Prompt for Reason</string>
+      <string id="PromptForReasonExplainText">Specifies whether to prompt the user for the reason that they require administrator privileges.</string>
+
+      <string id="RequireReasonDisplayName">Require Reason</string>
+      <string id="RequireReasonExplainText">Specifies whether to require the user to provide a reason for administrator privileges.</string>
+
+      <string id="AllowFreeFormReasonDisplayName">Allow Free-Form Reason</string>
+      <string id="AllowFreeFormReasonExplainText">Allow the user to enter a free-form text string in the administrator rights reason dialog box.</string>
+
+      <string id="CannedReasonsDisplayName">Canned Responses for Reason Dialog</string>
+      <string id="CannedReasonsExplainText">Pre-populated reasons to be shown on the administrator rights reason dialog box.</string>
+
+      <string id="MaximumReasonLengthDisplayName">Maximum Reason Length</string>
+      <string id="MaximumReasonLengthExplainText">Specifies the maximum number of characters that a user may enter in the reason dialog box.</string>
+
+      <string id="None">None</string>
+      <string id="Optional">Optional</string>
+      <string id="Required">Required</string>
+      <string id="LogElevatedProcessesDisplayName">Log Elevated Processes</string>
+      <string id="LogElevatedProcessesExplainText">Determines when Make Me Admin logs processes that are run with elevated privileges.</string>
+      <string id="ProcessLogging_Never">Never</string>
+      <string id="ProcessLogging_OnlyWhenAdmin">Only While Administrator</string>
+      <string id="ProcessLogging_Always">Always</string>
+
     </stringTable>
     <presentationTable>
       <presentation id="Admin_Rights_Timeout_Spin">
@@ -67,28 +102,38 @@
       </presentation>
       <presentation id="Log_Off_Message_TextBox">
         <multiTextBox refId="LogOffMessageTextBox">Enter a message to be displayed to users before they are logged off.</multiTextBox>
+      <presentation id="TCP_Service_Port_Spin">
+        <text>The TCP port to be used for remote administrative rights requests.</text>
+        <decimalTextBox refId="TCPServicePortValue" defaultValue="808" spin="false">TCP Service Port:</decimalTextBox>
       </presentation>
       <presentation id="AllowedEntitiesMultiText_Presentation">
-        <multiTextBox refId="AllowedEntitiesMultiText">Enter allowed SIDs:</multiTextBox>
+        <multiTextBox refId="AllowedEntitiesMultiText">Enter allowed SIDs or names:</multiTextBox>
       </presentation>
       <presentation id="RemoteAllowedEntitiesMultiText_Presentation">
-        <multiTextBox refId="RemoteAllowedEntitiesMultiText">Enter allowed SIDs:</multiTextBox>
+        <multiTextBox refId="RemoteAllowedEntitiesMultiText">Enter allowed SIDs or names:</multiTextBox>
       </presentation>
       <presentation id="AllowedAutomaticallyAddMultiText_Presentation">
-        <multiTextBox refId="AllowedAutomaticallyAddEntitiesMultiText">Enter allowed SIDs:</multiTextBox>
+        <multiTextBox refId="AllowedAutomaticallyAddEntitiesMultiText">Enter allowed SIDs or names:</multiTextBox>
       </presentation>
       <presentation id="DeniedEntitiesMultiText_Presentation">
-        <multiTextBox refId="DeniedEntitiesMultiText">Enter denied SIDs:</multiTextBox>
+        <multiTextBox refId="DeniedEntitiesMultiText">Enter denied SIDs or names:</multiTextBox>
       </presentation>
       <presentation id="RemoteDeniedEntitiesMultiText_Presentation">
-        <multiTextBox refId="RemoteDeniedEntitiesMultiText">Enter denied SIDs:</multiTextBox>
+        <multiTextBox refId="RemoteDeniedEntitiesMultiText">Enter denied SIDs or names:</multiTextBox>
+      </presentation>
+      <presentation id="CannedReasonsMultiText_Presentation">
+        <multiTextBox refId="CannedReasonsMultiText">Enter the canned responses for the reason dialog box, one per line:</multiTextBox>
+      </presentation>
+      <presentation id="Maximum_Reason_Length_Spin">
+        <text>The maximum number of characters that a user may enter in the free-form portion of the reason dialog box.</text>
+        <decimalTextBox refId="MaximumReasonLengthValue" defaultValue="333" spinStep="5">maximum reason length:</decimalTextBox>
       </presentation>
       <presentation id="DeniedAutomaticallyAddMultiText_Presentation">
-        <multiTextBox refId="DeniedAutomaticallyAddEntitiesMultiText">Enter denied SIDs:</multiTextBox>
+        <multiTextBox refId="DeniedAutomaticallyAddEntitiesMultiText">Enter denied SIDs or names:</multiTextBox>
       </presentation>
       <presentation id="TimeoutOverrideList_Presentation">
-        <text>Specify a security identifier (SID) for each user or group, along with a timeout value for each.</text>
-        <listBox refId="TimeoutOverrideListBox">SIDs and Timeouts:</listBox>
+        <text>Specifies different timeout values for users or groups. For example, you can allow your help desk 60 minutes while allowing everyone else 15 minutes. The highest timeout value that applies to a given user wins.</text>
+        <listBox refId="TimeoutOverrideListBox">SIDs or names and Timeouts:</listBox>
       </presentation>
       <presentation id="SyslogMultiText_Presentation">
         <multiTextBox refId="SyslogMultiText">Enter syslog server information.</multiTextBox>
@@ -107,6 +152,13 @@
         <text>Example:</text>
         <text>syslogserver:udp</text>
         <text>Communicates with the server called syslogserver on port 514 via UDP using RFC 3164 messages.</text>
+      </presentation>
+      <presentation id="PromptForReasonEnum_Presentation">
+        <dropdownList refId="PromptForReasonEnum" noSort="true" defaultItem="0">Prompt the user to provide a reason for obtaining administrator rights.</dropdownList>
+      </presentation>
+      <presentation id="LogElevatedProcesses_Presentation">
+        <text>Choose when to log processes that are executed with elevated permissions.</text>
+        <dropdownList refId="ProcessLoggingDropDown" noSort="true" defaultItem="1">Log Elevated Processes:</dropdownList>
       </presentation>
     </presentationTable>
   </resources>

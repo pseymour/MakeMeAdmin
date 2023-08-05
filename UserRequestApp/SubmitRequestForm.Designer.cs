@@ -61,12 +61,12 @@ namespace SinclairCC.MakeMeAdmin
         private System.ComponentModel.BackgroundWorker buttonStateWorker;
 
         /// <summary>
-        /// A background workr to add the current user to the Administrators group.
+        /// A background worker to add the current user to the Administrators group.
         /// </summary>
         private System.ComponentModel.BackgroundWorker addUserBackgroundWorker;
 
         /// <summary>
-        /// A background workr to remove the current user from the Administrators group.
+        /// A background worker to remove the current user from the Administrators group.
         /// </summary>
         private System.ComponentModel.BackgroundWorker removeUserBackgroundWorker;
 
@@ -129,6 +129,7 @@ namespace SinclairCC.MakeMeAdmin
             // 
             // statusStrip1
             // 
+            this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.appStatus});
             resources.ApplyResources(this.statusStrip1, "statusStrip1");
@@ -160,6 +161,7 @@ namespace SinclairCC.MakeMeAdmin
             // 
             this.notifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             resources.ApplyResources(this.notifyIcon, "notifyIcon");
+            this.notifyIcon.BalloonTipClicked += new System.EventHandler(this.notifyIcon_BalloonTipClicked);
             this.notifyIcon.BalloonTipClosed += new System.EventHandler(this.notifyIcon_BalloonTipClosed);
             this.notifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_MouseDoubleClick);
             // 

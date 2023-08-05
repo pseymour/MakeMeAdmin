@@ -20,12 +20,12 @@
 
 namespace SinclairCC.MakeMeAdmin
 {
+    using SinclairCC.Collections.MruList;
     using System;
     using System.Reflection;
     using System.ServiceModel;
     using System.Threading.Tasks;
     using System.Windows.Forms;
-    using SinclairCC.Collections.MruList;
 
     /// <summary>
     /// This form allows a user to submit a request for administrator rights
@@ -63,7 +63,7 @@ namespace SinclairCC.MakeMeAdmin
             this.requestButton.Enabled = !string.IsNullOrEmpty(this.mruComboBox.Text.Trim());
 
             this.hostNameMruList = new MruItemCollection<string>(10);
-            string[] settingsMruList = RemoteUI.Settings.HostNameMru;
+            string[] settingsMruList = UserSettings.HostNameMru;
             if (settingsMruList != null)
             {
                 for (int i = settingsMruList.Length - 1; i >= 0; i--)
@@ -122,14 +122,14 @@ namespace SinclairCC.MakeMeAdmin
         private void RequestAdminRights(string hostName)
         {
             // The address of the remote computer's service host.
-            string remoteHostAddress = string.Format("net.tcp://{0}/MakeMeAdmin/Service", hostName);
+            string remoteHostAddress = string.Format("net.tcp://{0}:{1}/MakeMeAdmin/Service", hostName, Settings.TCPServicePort);
 
             // Open a connection to the remote host.
             NetTcpBinding binding = new NetTcpBinding(SecurityMode.Transport);
             ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(binding, remoteHostAddress);
             IAdminGroup channel = namedPipeFactory.CreateChannel();
 
-            // Submit a request for adminsitrator rights on the remote host.
+            // Submit a request for administrator rights on the remote host.
             try
             {
                 channel.AddUserToAdministratorsGroup();
@@ -182,7 +182,7 @@ namespace SinclairCC.MakeMeAdmin
                     else
                     {
                         MessageBox.Show(string.Format(Properties.Resources.AdminRightsRequestedOnHost, hostName), "Make Me Admin Remote", MessageBoxButtons.OK);
-                    }                    
+                    }
                 });
         }
 
@@ -198,7 +198,7 @@ namespace SinclairCC.MakeMeAdmin
         private void SubmitRequestForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             // Save the MRU list.
-            RemoteUI.Settings.HostNameMru = this.hostNameMruList.ToArray();
+            UserSettings.HostNameMru = this.hostNameMruList.ToArray();
         }
 
         /// <summary>

@@ -123,10 +123,13 @@
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="addMeButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 12</value>
+    <value>18, 18</value>
+  </data>
+  <data name="addMeButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 5, 4, 5</value>
   </data>
   <data name="addMeButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>313, 45</value>
+    <value>470, 69</value>
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="addMeButton.TabIndex" type="System.Int32, mscorlib">
@@ -157,10 +160,13 @@
     <value>Top, Left, Right</value>
   </data>
   <data name="removeMeButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 65</value>
+    <value>18, 100</value>
+  </data>
+  <data name="removeMeButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 5, 4, 5</value>
   </data>
   <data name="removeMeButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>313, 45</value>
+    <value>470, 69</value>
   </data>
   <data name="removeMeButton.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -184,10 +190,10 @@
     <value>1</value>
   </data>
   <metadata name="statusStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>263, 17</value>
+    <value>354, 17</value>
   </metadata>
   <data name="appStatus.Size" type="System.Drawing.Size, System.Drawing">
-    <value>322, 17</value>
+    <value>483, 25</value>
   </data>
   <data name="appStatus.Text" xml:space="preserve">
     <value>Ready.</value>
@@ -196,13 +202,16 @@
     <value>MiddleLeft</value>
   </data>
   <data name="statusStrip1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 121</value>
+    <value>0, 188</value>
+  </data>
+  <data name="statusStrip1.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>2, 0, 21, 0</value>
   </data>
   <data name="statusStrip1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>337, 22</value>
+    <value>506, 32</value>
   </data>
   <data name="statusStrip1.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
+    <value>2</value>
   </data>
   <data name="statusStrip1.Text" xml:space="preserve">
     <value>statusStrip1</value>
@@ -220,16 +229,16 @@
     <value>0</value>
   </data>
   <metadata name="buttonStateWorker.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>107, 17</value>
+    <value>136, 17</value>
   </metadata>
   <metadata name="addUserBackgroundWorker.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>379, 17</value>
+    <value>512, 17</value>
   </metadata>
   <metadata name="removeUserBackgroundWorker.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>581, 17</value>
+    <value>799, 17</value>
   </metadata>
   <metadata name="notifyIcon.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>803, 17</value>
+    <value>1117, 17</value>
   </metadata>
   <data name="notifyIcon.Text" xml:space="preserve">
     <value>Make Me Admin</value>
@@ -238,10 +247,13 @@
     <value>True</value>
   </metadata>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>6, 13</value>
+    <value>9, 20</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>337, 143</value>
+    <value>506, 220</value>
+  </data>
+  <data name="$this.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 5, 4, 5</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Make Me Admin</value>

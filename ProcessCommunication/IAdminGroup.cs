@@ -55,6 +55,9 @@ namespace SinclairCC.MakeMeAdmin
         bool UserIsInList();
 
         [OperationContract]
+        bool UserSessionIsInList(int sessionID);
+
+        [OperationContract]
         bool UserIsAuthorized(string[] allowedSidsList, string[] deniedSidsList);
     }
 }

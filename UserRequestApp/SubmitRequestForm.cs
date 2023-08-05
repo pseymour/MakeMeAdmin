@@ -151,11 +151,155 @@ namespace SinclairCC.MakeMeAdmin
         /// </param>
         private void ClickSubmitButton(object sender, EventArgs e)
         {
-            this.DisableButtons();
-            this.appStatus.Text = string.Format(Properties.Resources.UIMessageAddingToGroup, LocalAdministratorGroup.LocalAdminGroupName);
-            addUserBackgroundWorker.RunWorkerAsync();
+            if (AuthenticationSuccessful && ReasonDialogSatisfied)
+            {
+                this.DisableButtons();
+                this.appStatus.Text = string.Format(Properties.Resources.UIMessageAddingToGroup, LocalAdministratorGroup.LocalAdminGroupName);
+                addUserBackgroundWorker.RunWorkerAsync();
+            }
         }
 
+        private bool AuthenticationSuccessful
+        {
+            get
+            {
+                bool authenticationSuccessful = true;
+                if (Settings.RequireAuthenticationForPrivileges)
+                {
+                    authenticationSuccessful = false;
+
+                    System.Net.NetworkCredential credentials = null;
+                    int authenticationReturnCode = 0;
+                    WindowsIdentity currentIdentity = WindowsIdentity.GetCurrent();
+                    try
+                    {
+                        do
+                        {
+                            do
+                            {
+                                credentials = NativeMethods.GetCredentials(this.Handle, currentIdentity.Name, authenticationReturnCode);
+                            } while ((null != credentials) && (string.Compare(credentials.UserName, currentIdentity.Name, true) != 0));
+
+                            if (null != credentials)
+                            {
+                                authenticationReturnCode = NativeMethods.ValidateCredentials(credentials);
+                            }
+                        } while ((null != credentials) && (authenticationReturnCode != 0));
+                    }
+                    catch (ArgumentException excep)
+                    {
+                        MessageBox.Show(this, string.Format("{0}: {1}", excep.GetType().Name, excep.Message), Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, 0);
+                    }
+                    catch (System.ComponentModel.Win32Exception excep)
+                    {
+                        MessageBox.Show(this, string.Format("{0}: {1}", excep.GetType().Name, excep.Message), Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, 0);
+                    }
+                    catch (Exception excep)
+                    {
+                        MessageBox.Show(this, string.Format("{0}: {1}", excep.GetType().Name, excep.Message), Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, 0);
+                    }
+
+                    authenticationSuccessful = (null != credentials);
+                    authenticationSuccessful &= (authenticationReturnCode == 0);
+                }
+                return authenticationSuccessful;
+            }
+        }
+
+
+        private bool ReasonDialogSatisfied
+        {
+            get
+            {
+                bool dialogSatisfied = false;
+
+                switch (Settings.PromptForReason)
+                {
+                    case ReasonPrompt.None:
+                        // No reason dialog box required.
+                        dialogSatisfied = true;
+                        break;
+
+                    case ReasonPrompt.Optional:
+
+                        // The reason dialog is optional, so rights are always allowed.
+                        dialogSatisfied = true;
+
+                        if ((Settings.AllowFreeFormReason) || ((Settings.CannedReasons != null) && (Settings.CannedReasons.Length > 0)))
+                        {
+                            using (RequestReasonDialog reasonDialog = new RequestReasonDialog())
+                            {
+                                switch (reasonDialog.ShowDialog(this))
+                                {
+                                    case DialogResult.Cancel:
+                                        // User did not provide a reason, but is not obligated to do so.
+                                        break;
+                                    case DialogResult.OK:
+                                        ApplicationLog.WriteEvent(string.Format(Properties.Resources.ReasonProvidedByUser, reasonDialog.Reason), EventID.ReasonProvidedByUser, System.Diagnostics.EventLogEntryType.Information);
+                                        break;
+                                    default:
+                                        // Not sure how we got to this point, because it should never happen.
+                                        break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            ApplicationLog.WriteEvent(Properties.Resources.ReasonDialogEmpty, EventID.ReasonDialogEmpty, System.Diagnostics.EventLogEntryType.Warning);
+                        }
+
+                        break;
+
+                    case ReasonPrompt.Required:
+
+                        if ((Settings.AllowFreeFormReason) || ((Settings.CannedReasons != null) && (Settings.CannedReasons.Length > 0)))
+                        {
+                            using (RequestReasonDialog reasonDialog = new RequestReasonDialog())
+                            {
+                                switch (reasonDialog.ShowDialog(this))
+                                {
+                                    case DialogResult.Cancel:
+                                        dialogSatisfied = false;
+                                        MessageBox.Show(this, Properties.Resources.MandatoryReasonNotProvided, Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
+                                        break;
+                                    case DialogResult.OK:
+                                        if (string.Compare(reasonDialog.Reason, string.Format("{0}: ", Properties.Resources.OtherReason), true) == 0)
+                                        { // User didn't really provide a reason. The string is blank.
+                                            dialogSatisfied = false;
+                                            MessageBox.Show(this, Properties.Resources.MandatoryReasonNotProvided, Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
+                                        }
+                                        else
+                                        {
+                                            dialogSatisfied = true;
+                                            ApplicationLog.WriteEvent(string.Format(Properties.Resources.ReasonProvidedByUser, reasonDialog.Reason), EventID.ReasonProvidedByUser, System.Diagnostics.EventLogEntryType.Information);
+                                        }
+                                        break;
+                                    default:
+                                        // Not sure how we got to this point, because it should never happen.
+                                        // Better to be safe than sorry, so no admin rights.
+                                        dialogSatisfied = false;
+                                        break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show(this, Properties.Resources.ReasonDialogBoxPrevented, Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
+                            dialogSatisfied = false;
+                        }
+
+                        break;
+
+                    default:
+                        // TODO: i18n
+                        ApplicationLog.WriteEvent(string.Format("Unexpected value for the reason prompt setting: {0:N0}", ((int)(Settings.PromptForReason))), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Warning);
+                        dialogSatisfied = true;
+                        break;
+                }
+
+                return dialogSatisfied;
+            }
+        }
 
         /// <summary>
         /// This function runs when RunWorkerAsync() is called by the "grant admin rights" BackgroundWorker object.
@@ -219,7 +363,7 @@ namespace SinclairCC.MakeMeAdmin
                 this.appStatus.Text = Properties.Resources.ApplicationIsReady;
                 this.userWasAdminOnLastCheck = this.userIsAdmin;
                 this.notifyIconTimer.Start();
-                notifyIcon.Visible = true;
+                this.notifyIcon.Visible = true;
                 this.Visible = false;
                 this.ShowInTaskbar = false;
                 notifyIcon.ShowBalloonTip(5000, Properties.Resources.ApplicationName, string.Format(Properties.Resources.UIMessageAddedToGroup, LocalAdministratorGroup.LocalAdminGroupName), ToolTipIcon.Info);
@@ -380,12 +524,28 @@ namespace SinclairCC.MakeMeAdmin
             NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
             ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(binding, Settings.NamedPipeServiceBaseAddress);
             IAdminGroup channel = namedPipeFactory.CreateChannel();
-            bool userIsAuthorizedLocally = channel.UserIsAuthorized(Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
-            namedPipeFactory.Close();
-
-            /*
-            bool userIsAuthorizedLocally = UserIsAuthorized(WindowsIdentity.GetCurrent(), Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
-            */
+            bool userIsAuthorizedLocally = false;
+            try
+            {
+                userIsAuthorizedLocally = channel.UserIsAuthorized(Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
+                namedPipeFactory.Close();
+            }
+            catch (EndpointNotFoundException exception)
+            {
+                System.Text.StringBuilder message = new System.Text.StringBuilder(exception.Message);
+                if (null != exception.InnerException)
+                {
+                    message.Append(Environment.NewLine);
+                    message.Append("Inner Exception:");
+                    message.Append(Environment.NewLine);
+                    message.Append(exception.InnerException.Message);
+                }
+                MessageBox.Show(this, exception.Message, Properties.Resources.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
+            }
+            catch (CommunicationObjectFaultedException)
+            {
+                // This typically happens when trying to dispose of the ChannelFactory<> object.
+            }
 
             // Enable the "grant admin rights" button, if the user is not already
             // an administrator and is authorized to obtain those rights.
@@ -467,15 +627,33 @@ namespace SinclairCC.MakeMeAdmin
         /// </param>
         private void notifyIcon_BalloonTipClosed(object sender, EventArgs e)
         {
+            this.UpdateFormAfterBalloonTip();
+        }
+
+        private void notifyIcon_BalloonTipClicked(object sender, EventArgs e)
+        {
+            this.UpdateFormAfterBalloonTip();
+        }
+
+        private void UpdateFormAfterBalloonTip()
+        {
             if (!this.userIsAdmin)
             {
-                /*
-                notifyIcon.Visible = false;
-                this.Visible = true;
-                this.ShowInTaskbar = true;
-                */
-                this.Close();
-            }
+                if (Settings.CloseApplicationOnExpiration)
+                {
+                    this.Close();
+                }
+                else
+                { // Do not close the form.
+
+                    // Update the enabled/disabled state of the buttons, if the worker is not already doing so.
+                    if (!buttonStateWorker.IsBusy) { buttonStateWorker.RunWorkerAsync(); }
+
+                    this.notifyIcon.Visible = false;
+                    this.Visible = true;
+                    this.ShowInTaskbar = true;
+                }
+            }            
         }
     }
 }
