@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SinclairCC.MakeMeAdmin</RootNamespace>
     <AssemblyName>Logging</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -60,9 +60,6 @@
     <SuppressPseudoWarning Condition="'$(Configuration)' == 'Debug'">true</SuppressPseudoWarning>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SyslogNet.Client, Version=1.0.3.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SyslogNet.Client.0.3.3\lib\net40\SyslogNet.Client.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
