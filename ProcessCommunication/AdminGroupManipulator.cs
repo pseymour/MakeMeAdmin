@@ -249,7 +249,7 @@ namespace SinclairCC.MakeMeAdmin
         /// <returns>
         /// Returns the number of minutes at which the user's administrator rights should expire.
         /// </returns>
-        private static int GetTimeoutForUser(WindowsIdentity userIdentity)
+        public static int GetTimeoutForUser(WindowsIdentity userIdentity)
         {
             Dictionary<string, string> overrides = Settings.TimeoutOverrides;
 
@@ -279,6 +279,5 @@ namespace SinclairCC.MakeMeAdmin
 
             return timeoutMinutes;
         }
-
     }
 }

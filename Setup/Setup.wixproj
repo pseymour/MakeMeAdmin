@@ -161,7 +161,7 @@
     </CreateProperty>
     <!-- In debug configuration, name the .msi file after the solution platform, shortened version
          number, platform and configuration, e.g., MakeMeAdmin 1.2.3 x64 Debug.msi. -->
-    <CreateProperty Condition=" '$(Configuration)' == 'Debug' " Value="$(SolutionName) $(ShortVersionNumber) $(Platform) $(Configuration) - Log Off After Expiration (BETA)">
+    <CreateProperty Condition=" '$(Configuration)' == 'Debug' " Value="$(SolutionName) $(ShortVersionNumber) $(Platform) $(Configuration)">
       <Output TaskParameter="Value" PropertyName="TargetName" />
     </CreateProperty>
     <!-- In non-debug (release) configuration, name the .msi file after the solution platform,

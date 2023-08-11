@@ -35,6 +35,10 @@
           <source>Application</source>
           <target state="final">Application</target>
         </trans-unit>
+        <trans-unit id="RenewalAllowed" translate="yes" xml:space="preserve">
+          <source>Your administrative rights expired. Do you need additional time?</source>
+          <target state="new">Your administrative rights expired. Do you need additional time?</target>
+        </trans-unit>
       </group>
     </body>
   </file>

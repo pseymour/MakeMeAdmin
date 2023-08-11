@@ -269,6 +269,56 @@ namespace SinclairCC.MakeMeAdmin
                             }
                             string message = string.Format(Properties.Resources.UserRemoved, userSid, accountName, reasonString);
                             ApplicationLog.WriteEvent(message, EventID.UserRemovedFromAdminsSuccess, System.Diagnostics.EventLogEntryType.Information);
+
+
+
+                            if (Settings.LogOffAfterExpiration > 0)
+                            {
+                                int MB_OK = 0x0;
+                                int MB_ICONWARNING = 0x00000030;
+
+                                // Get a WindowsIdentity object for the user matching the added user SID.
+                                WindowsIdentity sessionIdentity = null;
+                                WindowsIdentity userIdentity = null;
+                                int sendToSessionId = 0;
+                                /*bool performRemoval = true;*/
+                                int[] currentSessionIds = LsaLogonSessions.LogonSessions.GetLoggedOnUserSessionIds();
+                                foreach (int sessionId in currentSessionIds)
+                                {
+                                    if (LsaLogonSessions.LogonSessions.GetSidForSessionId(sessionId) == userSid)
+                                    {
+                                        sendToSessionId = sessionId;
+                                    }
+                                    sessionIdentity = LsaLogonSessions.LogonSessions.GetWindowsIdentityForSessionId(sessionId);
+                                    if ((sessionIdentity != null) && (sessionIdentity.User == userSid))
+                                    {
+                                        userIdentity = sessionIdentity;
+                                    }
+                                }
+                                int response = 0;
+
+                                System.Text.StringBuilder messageBuilder = new System.Text.StringBuilder();
+                                for (int i = 0; i < Settings.LogOffMessage.Length; i++)
+                                {
+                                    if (i == (Settings.LogOffMessage.Length - 1))
+                                    {
+                                        messageBuilder.Append(Settings.LogOffMessage[i]);
+                                    }
+                                    else
+                                    {
+                                        messageBuilder.AppendLine(Settings.LogOffMessage[i]);
+                                    }
+                                }
+                                int returnValue = LsaLogonSessions.LogonSessions.SendMessageToSession(sendToSessionId, messageBuilder.ToString(), (MB_OK + MB_ICONWARNING), Settings.LogOffAfterExpiration, out response);
+#if DEBUG
+                                ApplicationLog.WriteEvent(string.Format("Message sent to session {0} returned response {1}. Return value was {2}.", sendToSessionId, response, returnValue), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+                                returnValue = LsaLogonSessions.LogonSessions.LogoffSession(sendToSessionId);
+#if DEBUG
+                                ApplicationLog.WriteEvent(string.Format("Logging off session {0} returned value {1}.", sendToSessionId, returnValue), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+                            }
+
                         }
                         else
                         {

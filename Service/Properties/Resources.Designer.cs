@@ -70,6 +70,15 @@ namespace SinclairCC.MakeMeAdmin.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your administrative rights expired. Do you need additional time?.
+        /// </summary>
+        internal static string RenewalAllowed {
+            get {
+                return ResourceManager.GetString("RenewalAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon SecurityLock {

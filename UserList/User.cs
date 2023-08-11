@@ -59,6 +59,8 @@ namespace SinclairCC.MakeMeAdmin
         /// </summary>
         private string remoteHostAddress;
 
+        private int renewalsUsed;
+
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -87,6 +89,7 @@ namespace SinclairCC.MakeMeAdmin
             this.userName = userIdentity.Name;
             this.expirationDateTime = expirationDateTime;
             this.remoteHostAddress = remoteHostAddress;
+            this.renewalsUsed = 0;
         }
 
         /// <summary>
@@ -126,6 +129,13 @@ namespace SinclairCC.MakeMeAdmin
         public string Name
         {
             get { return this.userName; }
+        }
+
+        [XmlElement(ElementName = "renewalsUsed")]
+        public int RenewalsUsed
+        {
+            get { return this.renewalsUsed; }
+            set { this.renewalsUsed = value; }
         }
 
         /// <summary>

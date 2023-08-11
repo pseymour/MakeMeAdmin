@@ -4,12 +4,12 @@
                            xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitions"
                            revision="1.0"
                            schemaVersion="1.0">
-  <displayName>Sinclair Community College base policy file</displayName>
-  <description>This file contains the Sinclair Community College parent category.</description>
-  <resources>
-    <stringTable>
-      <string id="SinclairRoot">Sinclair Community College</string>
-      <string id="SinclairRoot_Help">Contains Sinclair Community College company-specific configuration settings.</string>
-    </stringTable>
-  </resources>
+	<displayName>Sinclair Community College base policy file</displayName>
+	<description>This file contains the Sinclair Community College parent category.</description>
+	<resources>
+		<stringTable>
+			<string id="SinclairRoot">Sinclair Community College</string>
+			<string id="SinclairRoot_Help">Contains Sinclair Community College company-specific configuration settings.</string>
+		</stringTable>
+	</resources>
 </policyDefinitionResources>
