@@ -208,6 +208,11 @@ namespace SinclairCC.MakeMeAdmin
         /// </param>
         private void RemovalTimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
+            const int ID_YES = 0x00000006;
+            int MB_YESNO = 0x00000004;
+            int MB_ICONINFORMATION = 0x00000040;
+            int MB_DEFBUTTON2 = 0x00000100;
+
             EncryptedSettings encryptedSettings = new EncryptedSettings(EncryptedSettings.SettingsFilePath);
 
             User[] expiredUsers = encryptedSettings.GetExpiredUsers();
@@ -216,56 +221,61 @@ namespace SinclairCC.MakeMeAdmin
             {
                 foreach (User prin in expiredUsers)
                 {
-                    LocalAdministratorGroup.RemoveUser(prin.Sid, RemovalReason.Timeout);
-
-                    if ((Settings.EndRemoteSessionsUponExpiration) && (!string.IsNullOrEmpty(prin.RemoteAddress)))
+                    // Get a WindowsIdentity object for the user matching the added user SID.
+                    WindowsIdentity sessionIdentity = null;
+                    WindowsIdentity userIdentity = null;
+                    int response;
+                    int sendToSessionId = 0;
+                    bool performRemoval = true;
+                    int[] currentSessionIds = LsaLogonSessions.LogonSessions.GetLoggedOnUserSessionIds();
+                    foreach (int sessionId in currentSessionIds)
                     {
-                        string userName = prin.Name;
-                        while (userName.LastIndexOf("\\") >= 0)
+                        if (LsaLogonSessions.LogonSessions.GetSidForSessionId(sessionId) == prin.Sid)
                         {
-                            userName = userName.Substring(userName.LastIndexOf("\\") + 1);
+                            sendToSessionId = sessionId;
                         }
-
-                        // TODO: Log this return code if it's not a success?
-                        int returnCode = 0;
-                        if (!string.IsNullOrEmpty(userName))
+                        sessionIdentity = LsaLogonSessions.LogonSessions.GetWindowsIdentityForSessionId(sessionId);
+                        if ((sessionIdentity != null) && (sessionIdentity.User == prin.Sid))
                         {
-                            returnCode = LocalAdministratorGroup.EndNetworkSession(string.Format(@"\\{0}", prin.RemoteAddress), userName);
+                            userIdentity = sessionIdentity;
                         }
                     }
 
-                    if (Settings.LogOffAfterExpiration > 0)
+                    if ((Settings.RenewalsAllowed > 0) && (prin.RenewalsUsed < Settings.RenewalsAllowed))
                     {
-                        int sendToSessionId = 0;
-                        int[] currentSessionIds = LsaLogonSessions.LogonSessions.GetLoggedOnUserSessionIds();
-                        foreach (int id in currentSessionIds)
+                        // TODO: Might want something other than a hard 30 seconds here.
+                        int returnValue = LsaLogonSessions.LogonSessions.SendMessageToSession(sendToSessionId, Properties.Resources.RenewalAllowed, (MB_YESNO + MB_ICONINFORMATION + MB_DEFBUTTON2), 30, out response);
+                        switch (response)
                         {
-                            if (LsaLogonSessions.LogonSessions.GetSidForSessionId(id) == prin.Sid)
+                            case ID_YES:
+                                int timeoutMinutes = AdminGroupManipulator.GetTimeoutForUser(userIdentity);
+                                encryptedSettings.AddedUsers[prin.Sid].ExpirationTime = DateTime.Now.AddMinutes(timeoutMinutes);
+                                encryptedSettings.AddedUsers[prin.Sid].RenewalsUsed++;
+                                encryptedSettings.Save();
+                                performRemoval = false;
+                                break;
+                        }
+                    }
+
+                    if (performRemoval)
+                    {
+                        LocalAdministratorGroup.RemoveUser(prin.Sid, RemovalReason.Timeout);
+
+                        if ((Settings.EndRemoteSessionsUponExpiration) && (!string.IsNullOrEmpty(prin.RemoteAddress)))
+                        {
+                            string userName = prin.Name;
+                            while (userName.LastIndexOf("\\") >= 0)
                             {
-                                sendToSessionId = id;
+                                userName = userName.Substring(userName.LastIndexOf("\\") + 1);
+                            }
+
+                            // TODO: Log this return code if it's not a success?
+                            int returnCode = 0;
+                            if (!string.IsNullOrEmpty(userName))
+                            {
+                                returnCode = LocalAdministratorGroup.EndNetworkSession(string.Format(@"\\{0}", prin.RemoteAddress), userName);
                             }
                         }
-                        int response = 0;
-                        System.Text.StringBuilder messageBuilder = new System.Text.StringBuilder();
-                        for (int i = 0; i < Settings.LogOffMessage.Length; i++)
-                        {
-                            if (i == (Settings.LogOffMessage.Length - 1))
-                            {
-                                messageBuilder.Append(Settings.LogOffMessage[i]);
-                            }
-                            else
-                            {
-                                messageBuilder.AppendLine(Settings.LogOffMessage[i]);
-                            }
-                        }
-                        int returnValue = LsaLogonSessions.LogonSessions.SendMessageToSession(sendToSessionId, messageBuilder.ToString(), Settings.LogOffAfterExpiration, out response);
-#if DEBUG
-                        ApplicationLog.WriteEvent(string.Format("Message sent to session {0} returned response {1}. Return value was {2}.", sendToSessionId, response, returnValue), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
-#endif
-                        returnValue = LsaLogonSessions.LogonSessions.LogoffSession(sendToSessionId);
-#if DEBUG
-                        ApplicationLog.WriteEvent(string.Format("Logging off session {0} returned value {1}.", sendToSessionId, returnValue), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
-#endif
                     }
                 }
             }

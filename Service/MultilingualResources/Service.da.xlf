@@ -35,6 +35,10 @@
           <source>The identity of the user is null.</source>
           <target state="final">Brugerens identitet er null.</target>
         </trans-unit>
+        <trans-unit id="RenewalAllowed" translate="yes" xml:space="preserve">
+          <source>Your administrative rights expired. Do you need additional time?</source>
+          <target state="new">Your administrative rights expired. Do you need additional time?</target>
+        </trans-unit>
       </group>
     </body>
   </file>

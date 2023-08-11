@@ -334,6 +334,33 @@ namespace SinclairCC.MakeMeAdmin
         }
         */
 
+
+        // TODO: i18n.
+        public static int RenewalsAllowed
+        {
+            get
+            {
+                int? policyTimeoutSetting = GetDWord(PolicyRegistryKeyPath, null, "Renewals Allowed");
+                int? preferenceTimeoutSetting = GetDWord(PreferenceRegistryKeyPath, null, "Renewals Allowed");
+                if (policyTimeoutSetting.HasValue)
+                { // The policy setting has a value. Go with whatever it says.
+                    return policyTimeoutSetting.Value;
+                }
+                else if (preferenceTimeoutSetting.HasValue)
+                { // The preference setting has a value. Go with whatever it says.
+                    return preferenceTimeoutSetting.Value;
+                }
+                else
+                { // Neither the policy nor the preference registry entries had a value. Return a default timeout value of 0 renewals.
+                    return 0;
+                }
+            }
+            set
+            {
+                SetDWord(PreferenceRegistryKeyPath, null, "Renewals Allowed", value);
+            }
+        }
+
         // TODO: i18n.
         public static int AdminRightsTimeout
         {

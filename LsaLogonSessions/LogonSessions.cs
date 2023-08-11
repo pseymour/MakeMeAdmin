@@ -253,17 +253,15 @@ namespace LsaLogonSessions
             return returnArray;
         }
 
-        public static int SendMessageToSession(int sessionId, string message, int timeout, out int response)
+        public static int SendMessageToSession(int sessionId, string message, int messageStyle, int timeout, out int response)
         {
             // TODO: These should be customizable.
             string messageTitle = "Make Me Admin";
 
-            int MB_OK = 0x0;
-            int MB_ICONWARNING = 0x00000030;
             int MB_SYSTEMMODAL = 0x00001000;
-            int MB_SETFOREGROUND = 0x00010000;
+            int MB_SETFOREGROUND = 0x00010000; // The message box becomes the foreground window.
             /* int MB_SERVICE_NOTIFICATION = 0x00200000; */
-            int messageStyle = MB_OK + MB_ICONWARNING + MB_SYSTEMMODAL + MB_SETFOREGROUND + MB_SETFOREGROUND;
+            messageStyle += MB_SYSTEMMODAL + MB_SETFOREGROUND;
 
             // TODO: Change the style parameter to use MessageBoxButtons + MessageBoxIcons data types?
             // TODO: Change the response to be DialogResult data type?

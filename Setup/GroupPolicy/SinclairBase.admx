@@ -5,14 +5,14 @@
                    revision="1.0"
                    schemaVersion="1.0">
 
-  <policyNamespaces>
-    <target prefix="scc" namespace="SinclairCC.Policies.SCC" />
-  </policyNamespaces>
+	<policyNamespaces>
+		<target prefix="scc" namespace="SinclairCC.Policies.SCC" />
+	</policyNamespaces>
 
-  <resources minRequiredRevision="1.0" />
+	<resources minRequiredRevision="1.0" />
 
-  <categories>
-    <category name="SinclairRoot" displayName="$(string.SinclairRoot)" explainText="$(string.SinclairRoot_Help)" />
-  </categories>
+	<categories>
+		<category name="SinclairRoot" displayName="$(string.SinclairRoot)" explainText="$(string.SinclairRoot_Help)" />
+	</categories>
 
 </policyDefinitions>

@@ -291,7 +291,7 @@ namespace SinclairCC.MakeMeAdmin
         /// <summary>
         /// Saves the settings to the default file path.
         /// </summary>
-        private void Save()
+        public void Save()
         {
             this.Save(EncryptedSettings.SettingsFilePath);
         }
