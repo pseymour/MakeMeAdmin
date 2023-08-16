@@ -39,6 +39,10 @@
           <source>Your administrative rights expired. Do you need additional time?</source>
           <target state="new">Your administrative rights expired. Do you need additional time?</target>
         </trans-unit>
+        <trans-unit id="PortSharingServiceDisabledMessage" translate="yes" xml:space="preserve">
+          <source>The Net.Tcp Port Sharing Service is disabled. Remote access will not be available.</source>
+          <target state="new">The Net.Tcp Port Sharing Service is disabled. Remote access will not be available.</target>
+        </trans-unit>
       </group>
     </body>
   </file>

@@ -98,6 +98,14 @@ A reason is required in order to obtain administrator rights, but your administr
           <source>Inner Exception</source>
           <target state="new">Inner Exception</target>
         </trans-unit>
+        <trans-unit id="CredentialsPromptCaption" translate="yes" xml:space="preserve">
+          <source>Enter your credentials.</source>
+          <target state="new">Enter your credentials.</target>
+        </trans-unit>
+        <trans-unit id="CredentialsPromptMessage" translate="yes" xml:space="preserve">
+          <source>These credentials will confirm your identity before granting administrative privileges.</source>
+          <target state="new">These credentials will confirm your identity before granting administrative privileges.</target>
+        </trans-unit>
       </group>
     </body>
   </file>
