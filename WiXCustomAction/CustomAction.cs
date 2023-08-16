@@ -30,6 +30,7 @@ namespace SinclairCC.MakeMeAdmin
         [CustomAction]
         public static ActionResult RemoveUserList(Session session)
         {
+            // TODO: i18n
             session.Log(string.Format("Removing saved user list \"{0}\".", EncryptedSettings.SettingsFilePath));
 
             int tries = 5;
@@ -42,6 +43,7 @@ namespace SinclairCC.MakeMeAdmin
                 }
                 catch (Exception e)
                 {
+                    // TODO: i18n
                     session.Log("Error while trying to remove saved user list.");
                     session.Log(e.Message);
                 }
@@ -49,11 +51,13 @@ namespace SinclairCC.MakeMeAdmin
                 tries--;
                 if (tries > 0)
                 {
+                    // TODO: i18n
                     session.Log(string.Format("{0:N0} tries remaining.", tries));
                     System.Threading.Thread.Sleep(sleepTime);
                 }
             }
 
+            // TODO: i18n
             session.Log("Finished removing saved user list.");
 
             return ActionResult.Success;

@@ -536,7 +536,7 @@ namespace SinclairCC.MakeMeAdmin
                 if (null != exception.InnerException)
                 {
                     message.Append(Environment.NewLine);
-                    message.Append("Inner Exception:");
+                    message.Append(string.Format("{0}:", Properties.Resources.InnerException));
                     message.Append(Environment.NewLine);
                     message.Append(exception.InnerException.Message);
                 }

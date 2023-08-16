@@ -11,6 +11,22 @@
           <target state="final">Applikation</target>
           <note from="MultilingualEditor" annotates="source" priority="4">This is the name of the Windows Event Log to which events will be logged.</note>
         </trans-unit>
+        <trans-unit id="ElevationTypeDefault" translate="yes" xml:space="preserve">
+          <source>Default</source>
+          <target state="new">Default</target>
+        </trans-unit>
+        <trans-unit id="ElevationTypeFull" translate="yes" xml:space="preserve">
+          <source>Full</source>
+          <target state="new">Full</target>
+        </trans-unit>
+        <trans-unit id="ElevationTypeLimited" translate="yes" xml:space="preserve">
+          <source>Limited</source>
+          <target state="new">Limited</target>
+        </trans-unit>
+        <trans-unit id="ElevationTypeUnknown" translate="yes" xml:space="preserve">
+          <source>Unknown</source>
+          <target state="new">Unknown</target>
+        </trans-unit>
       </group>
     </body>
   </file>

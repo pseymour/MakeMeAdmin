@@ -88,6 +88,24 @@ namespace SinclairCC.MakeMeAdmin.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enter your credentials..
+        /// </summary>
+        public static string CredentialsPromptCaption {
+            get {
+                return ResourceManager.GetString("CredentialsPromptCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to These credentials will confirm your identity before granting administrative privileges..
+        /// </summary>
+        public static string CredentialsPromptMessage {
+            get {
+                return ResourceManager.GetString("CredentialsPromptMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error Message.
         /// </summary>
         public static string ErrorMessage {
@@ -102,6 +120,15 @@ namespace SinclairCC.MakeMeAdmin.Properties {
         public static string GrantRightsButtonText {
             get {
                 return ResourceManager.GetString("GrantRightsButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inner Exception.
+        /// </summary>
+        public static string InnerException {
+            get {
+                return ResourceManager.GetString("InnerException", resourceCulture);
             }
         }
         

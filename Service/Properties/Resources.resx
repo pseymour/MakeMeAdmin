@@ -120,6 +120,9 @@
   <data name="EventLogName" xml:space="preserve">
     <value>Application</value>
   </data>
+  <data name="PortSharingServiceDisabledMessage" xml:space="preserve">
+    <value>The Net.Tcp Port Sharing Service is disabled. Remote access will not be available.</value>
+  </data>
   <data name="RenewalAllowed" xml:space="preserve">
     <value>Your administrative rights expired. Do you need additional time?</value>
   </data>

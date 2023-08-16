@@ -128,8 +128,8 @@ namespace SinclairCC.MakeMeAdmin
         {
             CREDUI_INFO credui = new CREDUI_INFO();
             credui.hwndParent = parentWindow;
-            credui.pszCaptionText = "Enter your credentials.";
-            credui.pszMessageText = "These credentials will confirm your identity before granting administrative privileges.";
+            credui.pszCaptionText = Properties.Resources.CredentialsPromptCaption;
+            credui.pszMessageText = Properties.Resources.CredentialsPromptMessage;
             credui.cbSize = Marshal.SizeOf(credui);
             uint authPackage = 0;
             IntPtr outCredBuffer = new IntPtr();

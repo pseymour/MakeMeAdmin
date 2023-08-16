@@ -70,6 +70,15 @@ namespace SinclairCC.MakeMeAdmin.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Net.Tcp Port Sharing Service is disabled. Remote access will not be available..
+        /// </summary>
+        internal static string PortSharingServiceDisabledMessage {
+            get {
+                return ResourceManager.GetString("PortSharingServiceDisabledMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Your administrative rights expired. Do you need additional time?.
         /// </summary>
         internal static string RenewalAllowed {

@@ -126,11 +126,20 @@
   <data name="CheckingAdminStatus" xml:space="preserve">
     <value>Checking administrator status...</value>
   </data>
+  <data name="CredentialsPromptCaption" xml:space="preserve">
+    <value>Enter your credentials.</value>
+  </data>
+  <data name="CredentialsPromptMessage" xml:space="preserve">
+    <value>These credentials will confirm your identity before granting administrative privileges.</value>
+  </data>
   <data name="ErrorMessage" xml:space="preserve">
     <value>Error Message</value>
   </data>
   <data name="GrantRightsButtonText" xml:space="preserve">
     <value>Grant Me Administrator Rights</value>
+  </data>
+  <data name="InnerException" xml:space="preserve">
+    <value>Inner Exception</value>
   </data>
   <data name="MandatoryReasonNotProvided" xml:space="preserve">
     <value>Unable to provide you with administrator rights.

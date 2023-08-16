@@ -44,12 +44,6 @@ namespace SinclairCC.MakeMeAdmin
             if (ServiceSecurityContext.Current != null)
             {
                 userIdentity = ServiceSecurityContext.Current.WindowsIdentity;
-
-#if DEBUG
-                ApplicationLog.WriteEvent(string.Format("In AddUserToAdministratorsGroup(), WindowsIdentity.Name is {0} ({1})", ServiceSecurityContext.Current.WindowsIdentity.Name, ServiceSecurityContext.Current.WindowsIdentity.User.Value), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
-                ApplicationLog.WriteEvent(string.Format("In AddUserToAdministratorsGroup(), PrimaryIdentity.Name is {0}", ServiceSecurityContext.Current.PrimaryIdentity.Name), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
-#endif
-
             }
 
             if (OperationContext.Current != null)

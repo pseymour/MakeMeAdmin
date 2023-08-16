@@ -335,13 +335,6 @@ namespace SinclairCC.MakeMeAdmin
                 System.IO.FileStream ciphertextStream = new System.IO.FileStream(filePath, System.IO.FileMode.Create, System.IO.FileAccess.Write);
                 ciphertextStream.Write(ciphertextBytes, 0, ciphertextBytes.Length);
                 ciphertextStream.Close();
-
-                /*
-                string fileHashString = ComputeHash(filePath);
-                ApplicationLog.WriteEvent(string.Format("encrypted byte hash: {0}", byteHashString), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
-                ApplicationLog.WriteEvent(string.Format("user XML file hash: {0}", fileHashString), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
-                ApplicationLog.WriteEvent(string.Format("hashes match: {0}", (string.Compare(fileHashString, byteHashString, true) == 0)), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
-                */
             }
             catch (System.InvalidOperationException)
             {

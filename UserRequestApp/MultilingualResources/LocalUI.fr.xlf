@@ -94,6 +94,10 @@ A reason is required in order to obtain administrator rights, but your administr
           <source>The user provided the following reason for administrator rights: {0}</source>
           <target state="new">The user provided the following reason for administrator rights: {0}</target>
         </trans-unit>
+        <trans-unit id="InnerException" translate="yes" xml:space="preserve">
+          <source>Inner Exception</source>
+          <target state="new">Inner Exception</target>
+        </trans-unit>
       </group>
     </body>
   </file>

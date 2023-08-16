@@ -68,5 +68,41 @@ namespace SinclairCC.MakeMeAdmin.Properties {
                 return ResourceManager.GetString("ApplicationLogName", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default.
+        /// </summary>
+        internal static string ElevationTypeDefault {
+            get {
+                return ResourceManager.GetString("ElevationTypeDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Full.
+        /// </summary>
+        internal static string ElevationTypeFull {
+            get {
+                return ResourceManager.GetString("ElevationTypeFull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Limited.
+        /// </summary>
+        internal static string ElevationTypeLimited {
+            get {
+                return ResourceManager.GetString("ElevationTypeLimited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown.
+        /// </summary>
+        internal static string ElevationTypeUnknown {
+            get {
+                return ResourceManager.GetString("ElevationTypeUnknown", resourceCulture);
+            }
+        }
     }
 }

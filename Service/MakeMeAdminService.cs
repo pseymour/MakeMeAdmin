@@ -68,7 +68,7 @@ namespace SinclairCC.MakeMeAdmin
 
         private readonly static Queue<ElevatedProcessInformation> elevatedProcessList = new Queue<ElevatedProcessInformation>();
 
-
+        // TODO: Is this name the same on non-English Windows?
         private readonly string portSharingServiceName = "NetTcpPortSharing";
 
 
@@ -93,17 +93,11 @@ namespace SinclairCC.MakeMeAdmin
                 AutoReset = true    // Raise the Elapsed event repeatedly.
             };
             this.removalTimer.Elapsed += RemovalTimerElapsed;
-
-
-#if DEBUG
-            ApplicationLog.WriteEvent(string.Format("process logging setting: {0:N0}", (int)Settings.LogElevatedProcesses), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
-#endif
-
-
         }
 
         private void Dynamic_All(Microsoft.Diagnostics.Tracing.TraceEvent obj)
         {
+            // TODO: Is this name the same on non-English Windows?
             if ((obj.Opcode == Microsoft.Diagnostics.Tracing.TraceEventOpcode.Start) && (string.Compare(obj.TaskName, "ProcessStart", true) == 0))
             {
                 int processIsElevated = 0;
@@ -113,6 +107,7 @@ namespace SinclairCC.MakeMeAdmin
                 DateTime createTime = DateTime.MinValue;
                 int index = int.MinValue;
 
+                // TODO: Are these strings the same on non-English Windows?
                 index = obj.PayloadIndex("ProcessTokenIsElevated");
                 if (index >= 0)
                 {
@@ -121,6 +116,7 @@ namespace SinclairCC.MakeMeAdmin
 
                 if (processIsElevated == 1)
                 {
+                    // TODO: Are these strings the same on non-English Windows?
                     index = obj.PayloadIndex("ProcessID");
                     if (index >= 0)
                     {
@@ -132,6 +128,7 @@ namespace SinclairCC.MakeMeAdmin
                         ProcessID = processId
                     };
 
+                    // TODO: Are these strings the same on non-English Windows?
                     index = obj.PayloadIndex("ProcessTokenElevationType");
                     if (index >= 0)
                     {
@@ -139,6 +136,7 @@ namespace SinclairCC.MakeMeAdmin
                         elevatedProcess.ElevationType = (TokenElevationType)processElevationType;
                     }
 
+                    // TODO: Are these strings the same on non-English Windows?
                     index = obj.PayloadIndex("SessionID");
                     if (index >= 0)
                     {
@@ -146,6 +144,7 @@ namespace SinclairCC.MakeMeAdmin
                         elevatedProcess.SessionID = sessionId;
                     }
 
+                    // TODO: Are these strings the same on non-English Windows?
                     index = obj.PayloadIndex("CreateTime");
                     if (index >= 0)
                     {
@@ -363,18 +362,12 @@ namespace SinclairCC.MakeMeAdmin
                 switch (controller.StartType)
                 {
                     case ServiceStartMode.Disabled:
-                        ApplicationLog.WriteEvent("The Net.Tcp Port Sharing Service is disabled. Remote access will not be available.", EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
+                        ApplicationLog.WriteEvent(Properties.Resources.PortSharingServiceDisabledMessage, EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
                         return;
                     /*
                     case ServiceStartMode.Automatic:
-#if DEBUG
-                        ApplicationLog.WriteEvent("Port sharing service is set to start automatically.", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
-#endif
                         break;
                     case ServiceStartMode.Manual:
-#if DEBUG
-                        ApplicationLog.WriteEvent("Port sharing service is set to start manually.", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
-#endif
                         int waitCount = 0;
                         while ((controller.Status != ServiceControllerStatus.Running) && (waitCount < 10))
                         {
@@ -406,6 +399,7 @@ namespace SinclairCC.MakeMeAdmin
 
                         if (controller.Status != ServiceControllerStatus.Running)
                         {
+                            // TODO: i18n.
                             ApplicationLog.WriteEvent(string.Format("Port {0} is already in use, but the Net.Tcp Port Sharing Service is not running. Remote access will not be available.", Settings.TCPServicePort), EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
                         }
 
@@ -416,6 +410,7 @@ namespace SinclairCC.MakeMeAdmin
             }
             else
             {
+                // TODO: i18n.  
                 ApplicationLog.WriteEvent(string.Format("Port {0} is already in use, but the Net.Tcp Port Sharing Service does not exist. Remote access will not be available.", Settings.TCPServicePort), EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
                 return;
             }
@@ -428,18 +423,22 @@ namespace SinclairCC.MakeMeAdmin
             }
             catch (ObjectDisposedException)
             {
+                // TODO: i18n.
                 ApplicationLog.WriteEvent("The communication object is in a Closing or Closed state and cannot be modified.", EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
             }
             catch (InvalidOperationException)
             {
+                // TODO: i18n.
                 ApplicationLog.WriteEvent("The communication object is not in a Opened or Opening state and cannot be modified.", EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
             }
             catch (CommunicationObjectFaultedException)
             {
+                // TODO: i18n.
                 ApplicationLog.WriteEvent("The communication object is in a Faulted state and cannot be modified.", EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
             }
             catch (System.TimeoutException)
             {
+                // TODO: i18n.
                 ApplicationLog.WriteEvent("The default interval of time that was allotted for the operation was exceeded before the operation was completed.", EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
             }
         }
@@ -521,11 +520,13 @@ namespace SinclairCC.MakeMeAdmin
                 {
                     System.Text.StringBuilder logMessage = new System.Text.StringBuilder(addressInUseException.Message);
                     logMessage.Append(System.Environment.NewLine);
+                    // TODO: i18n.
                     logMessage.Append(string.Format("Determine whether another application is using TCP port {0:N0}.", Settings.TCPServicePort));
                     ApplicationLog.WriteEvent(logMessage.ToString(), EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
                 }
                 catch (Exception)
                 {
+                    // TODO: i18n.
                     ApplicationLog.WriteEvent("Unhandled exception while opening the remote request handler. Remote requests may not be honored.", EventID.RemoteAccessFailure, System.Diagnostics.EventLogEntryType.Warning);
                 }
             }
@@ -614,6 +615,7 @@ namespace SinclairCC.MakeMeAdmin
                 }
                 catch (Exception e)
                 {
+                    // TODO: i18n.
                     ApplicationLog.WriteEvent(string.Format("{0} exception while stopping process watcher. Message: {1}", e.GetType().Name, e.Message), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Error);
                 }
             }
@@ -684,26 +686,10 @@ namespace SinclairCC.MakeMeAdmin
                 // The user has logged on to a session, either locally or remotely.
                 case SessionChangeReason.SessionLogon:
 
-#if DEBUG
-                    ApplicationLog.WriteEvent(string.Format("In OnSessionChange(), the SessionLogon case. The session logging on is session #{0}.", changeDescription.SessionId), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
-#endif
-
                     WindowsIdentity userIdentity = LsaLogonSessions.LogonSessions.GetWindowsIdentityForSessionId(changeDescription.SessionId);
 
-#if DEBUG
                     if (null != userIdentity)
                     {
-                        ApplicationLog.WriteEvent(string.Format(string.Format("User Identity is \"{0}.\"", userIdentity.Name)), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
-                    }
-#endif
-
-                    if (null != userIdentity)
-                    {
-
-#if DEBUG
-                        ApplicationLog.WriteEvent(string.Format("Calling UserIsAuthorized(3) from Service's OnSessionChange event."), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
-#endif
-
                         AdminGroupManipulator adminGroupManipulator = new AdminGroupManipulator();
                         bool userIsAuthorizedForAutoAdd = adminGroupManipulator.UserIsAuthorized(Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied);
                         /*
@@ -744,7 +730,7 @@ namespace SinclairCC.MakeMeAdmin
                         ApplicationLog.WriteInformationEvent(string.Format("Remote disconnect. Session ID: {0}", changeDescription.SessionId), EventID.SessionChangeEvent);
                         break;
                     */
-
+                        
                     /*
                     // The user has locked their session.
                     case SessionChangeReason.SessionLock:

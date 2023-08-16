@@ -310,13 +310,7 @@ namespace SinclairCC.MakeMeAdmin
                                     }
                                 }
                                 int returnValue = LsaLogonSessions.LogonSessions.SendMessageToSession(sendToSessionId, messageBuilder.ToString(), (MB_OK + MB_ICONWARNING), Settings.LogOffAfterExpiration, out response);
-#if DEBUG
-                                ApplicationLog.WriteEvent(string.Format("Message sent to session {0} returned response {1}. Return value was {2}.", sendToSessionId, response, returnValue), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
-#endif
                                 returnValue = LsaLogonSessions.LogonSessions.LogoffSession(sendToSessionId);
-#if DEBUG
-                                ApplicationLog.WriteEvent(string.Format("Logging off session {0} returned value {1}.", sendToSessionId, returnValue), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
-#endif
                             }
 
                         }
@@ -348,11 +342,6 @@ namespace SinclairCC.MakeMeAdmin
 
             for (int i = 0; i < addedUserList.Length; i++)
             {
-
-#if DEBUG
-                ApplicationLog.WriteEvent(string.Format("Validating {0}.", addedUserList[i]), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
-#endif                
-
                 bool sidFoundInAdminsGroup = false;
                 if ((addedUserList[i] != null) && (localAdminSids != null))
                 {
@@ -403,11 +392,6 @@ namespace SinclairCC.MakeMeAdmin
                                 }
                             }
 
-#if DEBUG
-                            ApplicationLog.WriteEvent(string.Format("Calling UserIsAuthorized(3) from ValidateAllAddedUsers() line 351."), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
-#endif
-
-
                             if (
                                 (Settings.AutomaticAddAllowed != null) &&
                                 (Settings.AutomaticAddAllowed.Length > 0) &&
@@ -419,10 +403,6 @@ namespace SinclairCC.MakeMeAdmin
                             }
                             else
                             { // The user is not an automatically-added user.
-
-#if DEBUG
-                                ApplicationLog.WriteEvent(string.Format("Removing {0}. Not an automatically added user.", addedUserList[i]), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
-#endif                
 
                                 // Users who are not automatically added should not have non-expiring rights. Remove this user.
                                 LocalAdministratorGroup.RemoveUser(addedUserList[i], RemovalReason.Timeout);
@@ -476,10 +456,6 @@ namespace SinclairCC.MakeMeAdmin
                                 }
                             }
 
-#if DEBUG
-                            ApplicationLog.WriteEvent(string.Format("Calling UserIsAuthorized(3) from ValidateAllAddedUsers() line 418."), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
-#endif
-
                             if (
                                 (Settings.AutomaticAddAllowed != null) &&
                                 (Settings.AutomaticAddAllowed.Length > 0) &&
@@ -489,10 +465,6 @@ namespace SinclairCC.MakeMeAdmin
 
                                 // The users rights do not expire, but they are an automatically-added user and are missing
                                 // from the Administrators group. Add the user back in.
-
-#if DEBUG
-                                ApplicationLog.WriteEvent(string.Format("Adding {0}. User is an automatically added user.", addedUserList[i]), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
-#endif                
 
                                 AddUserToAdministrators(addedUserList[i]);
                             }
@@ -511,12 +483,6 @@ namespace SinclairCC.MakeMeAdmin
                     }
                 }
             }
-
-
-#if DEBUG
-            //ApplicationLog.WriteEvent("Leaving ValidateAllAddedUsers().", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
-#endif
-
         }
 
 

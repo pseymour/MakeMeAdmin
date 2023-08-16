@@ -120,4 +120,16 @@
   <data name="ApplicationLogName" xml:space="preserve">
     <value>Application</value>
   </data>
+  <data name="ElevationTypeDefault" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="ElevationTypeFull" xml:space="preserve">
+    <value>Full</value>
+  </data>
+  <data name="ElevationTypeLimited" xml:space="preserve">
+    <value>Limited</value>
+  </data>
+  <data name="ElevationTypeUnknown" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
 </root>

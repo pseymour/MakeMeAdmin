@@ -31,23 +31,24 @@ namespace SinclairCC.MakeMeAdmin
         [NonEvent]
         public void ElevatedProcessDetected(TokenElevationType elevationType, ProcessInformation elevatedProcess)
         {
-            string elevationTypeString = "Unknown";
+            string elevationTypeString = Properties.Resources.ElevationTypeUnknown;
             switch (elevationType)
             {
                 case TokenElevationType.Full:
-                    elevationTypeString = "Full";
+                    elevationTypeString = Properties.Resources.ElevationTypeFull;
                     break;
                 case TokenElevationType.Limited:
-                    elevationTypeString = "Limited";
+                    elevationTypeString = Properties.Resources.ElevationTypeLimited;
                     break;
                 case TokenElevationType.Default:
-                    elevationTypeString = "Default";
+                    elevationTypeString = Properties.Resources.ElevationTypeDefault;
                     break;
             }
 
             ElevatedProcessDetected(elevatedProcess.ImageFileName, elevatedProcess.CreateTime, elevatedProcess.UserSIDString, elevatedProcess.SessionID, elevationTypeString, elevatedProcess.CommandLine, elevatedProcess.ProcessID);
         }
         
+        // TODO: Localize the Message?
         [Event(
             (int)EventID.ElevatedProcess,
             Message = "Process {0} created at {1} by user {2} in session {3} with an elevation type of {4}." + "\r\ncommand line: \"{5}\"" + "\r\nprocess ID: \"{6}\"",
