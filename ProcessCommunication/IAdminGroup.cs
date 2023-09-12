@@ -20,6 +20,7 @@
 
 namespace SinclairCC.MakeMeAdmin
 {
+    using System.Security.Principal;
     using System.ServiceModel;
 
     /// <summary>
@@ -58,6 +59,6 @@ namespace SinclairCC.MakeMeAdmin
         bool UserSessionIsInList(int sessionID);
 
         [OperationContract]
-        bool UserIsAuthorized(string[] allowedSidsList, string[] deniedSidsList);
+        bool UserIsAuthorized(WindowsIdentity userIdentity, string[] allowedSidsList, string[] deniedSidsList);
     }
 }

@@ -32,6 +32,7 @@ namespace SinclairCC.MakeMeAdmin
     using System.ServiceModel;
     using System.ServiceProcess;
     using System.Threading.Tasks;
+    using System.Security.Cryptography;
 
     /// <summary>
     /// This class is the Windows Service, which does privileged work
@@ -686,12 +687,19 @@ namespace SinclairCC.MakeMeAdmin
                 // The user has logged on to a session, either locally or remotely.
                 case SessionChangeReason.SessionLogon:
 
+
                     WindowsIdentity userIdentity = LsaLogonSessions.LogonSessions.GetWindowsIdentityForSessionId(changeDescription.SessionId);
+
+                    /*
+#if DEBUG
+                    ApplicationLog.WriteEvent(string.Format("Session Logon : {0}", userIdentity.Name), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+                    */
 
                     if (null != userIdentity)
                     {
                         AdminGroupManipulator adminGroupManipulator = new AdminGroupManipulator();
-                        bool userIsAuthorizedForAutoAdd = adminGroupManipulator.UserIsAuthorized(Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied);
+                        bool userIsAuthorizedForAutoAdd = adminGroupManipulator.UserIsAuthorized(userIdentity, Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied);
                         /*
                         NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
                         ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(binding, Settings.NamedPipeServiceBaseAddress);

@@ -521,13 +521,17 @@ namespace SinclairCC.MakeMeAdmin
         /// </param>
         private void ButtonStateWorkCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
+            AdminGroupManipulator adminGroupManipulator = new AdminGroupManipulator();
+            bool userIsAuthorizedLocally = adminGroupManipulator.UserIsAuthorized(WindowsIdentity.GetCurrent(), Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
+
+            /*
             NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
             ChannelFactory<IAdminGroup> namedPipeFactory = new ChannelFactory<IAdminGroup>(binding, Settings.NamedPipeServiceBaseAddress);
             IAdminGroup channel = namedPipeFactory.CreateChannel();
             bool userIsAuthorizedLocally = false;
             try
             {
-                userIsAuthorizedLocally = channel.UserIsAuthorized(Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
+                userIsAuthorizedLocally = channel.UserIsAuthorized(WindowsIdentity.GetCurrent(), Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
                 namedPipeFactory.Close();
             }
             catch (EndpointNotFoundException exception)
@@ -546,6 +550,7 @@ namespace SinclairCC.MakeMeAdmin
             {
                 // This typically happens when trying to dispose of the ChannelFactory<> object.
             }
+            */
 
             // Enable the "grant admin rights" button, if the user is not already
             // an administrator and is authorized to obtain those rights.

@@ -155,10 +155,21 @@ namespace SinclairCC.MakeMeAdmin
                 foreach (string account in accountList)
                 {
                     SecurityIdentifier sid = LocalAdministratorGroup.GetSIDFromAccountName(account);
+                    /*
+#if DEBUG
+                    ApplicationLog.WriteEvent(string.Format("Checking user against SID {0}.", sid.Value), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+                    */
+
 
                     // If the user's SID or name is in the list, return true
                     if (userIdentity.User == sid)
                     {
+                        /*
+#if DEBUG
+                        ApplicationLog.WriteEvent(string.Format("User SID matches {0}.", sid.Value), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+                        */
                         return true;
                     }
 
@@ -168,11 +179,19 @@ namespace SinclairCC.MakeMeAdmin
                         // Translate the NT Account (Domain\User) to SID if needed, and check the resulting values.
                         if (sid == (SecurityIdentifier)groupsid.Translate(typeof(SecurityIdentifier)))
                         {
+                            /*
+#if DEBUG
+                            ApplicationLog.WriteEvent("SIDs match!", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+                            */
                             return true;
                         }
                     }
                 }
             }
+#if DEBUG
+            ApplicationLog.WriteEvent("Was not able to find a matching SID.", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
             return false;
         }
 
@@ -192,22 +211,30 @@ namespace SinclairCC.MakeMeAdmin
         /// <returns>
         /// Returns true if the user is authorized to obtain administrator rights.
         /// </returns>
-        public bool UserIsAuthorized(string[] allowedSidsList, string[] deniedSidsList)
+        public bool UserIsAuthorized(WindowsIdentity userIdentity, string[] allowedSidsList, string[] deniedSidsList)
         {
+            /*
             WindowsIdentity userIdentity = null;
 
             if (ServiceSecurityContext.Current != null)
             {
                 userIdentity = ServiceSecurityContext.Current.WindowsIdentity;
             }
+            */
 
             if (userIdentity == null)
             {
+#if DEBUG
+                ApplicationLog.WriteEvent("User identity is null.", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
                 return false;
             }
 
             if (((deniedSidsList != null) && (deniedSidsList.Length > 0)) && AccountListContainsIdentity(deniedSidsList, userIdentity))
             { // The denied list contains entries. Check the user against that list first.
+#if DEBUG
+                ApplicationLog.WriteEvent("User is denied.", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
                 return false;
             }
 
@@ -216,14 +243,25 @@ namespace SinclairCC.MakeMeAdmin
             // Check the authorization list.
             if (allowedSidsList == null)
             { // The allowed list is null, meaning everyone is allowed administrator rights.
+#if DEBUG
+                ApplicationLog.WriteEvent("Allowed SIDs list is null.", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+
                 return true;
             }
             else if (allowedSidsList.Length == 0)
             { // The allowed list is empty, meaning no one is allowed administrator rights.
+#if DEBUG
+                ApplicationLog.WriteEvent("Allowed SIDs list is empty.", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
+
                 return false;
             }
             else
             { // The allowed list has entries.
+#if DEBUG
+                ApplicationLog.WriteEvent("Made it to the allowed list check. That's good.", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+#endif
                 if (AccountListContainsIdentity(allowedSidsList, userIdentity))
                 {
                     return true;

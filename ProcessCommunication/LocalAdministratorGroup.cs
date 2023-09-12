@@ -180,11 +180,11 @@ namespace SinclairCC.MakeMeAdmin
             // TODO: Only do this if the user is not a member of the group?
 
             AdminGroupManipulator adminGroupManipulator = new AdminGroupManipulator();
-            bool userIsAuthorized = adminGroupManipulator.UserIsAuthorized(Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
+            bool userIsAuthorized = adminGroupManipulator.UserIsAuthorized(userIdentity, Settings.LocalAllowedEntities, Settings.LocalDeniedEntities);
 
             if (!string.IsNullOrEmpty(remoteAddress))
             { // Request is from a remote computer. Check the remote authorization list.
-                userIsAuthorized &= adminGroupManipulator.UserIsAuthorized(Settings.RemoteAllowedEntities, Settings.RemoteDeniedEntities);
+                userIsAuthorized &= adminGroupManipulator.UserIsAuthorized(userIdentity, Settings.RemoteAllowedEntities, Settings.RemoteDeniedEntities);
             }
 
             if (
@@ -194,6 +194,17 @@ namespace SinclairCC.MakeMeAdmin
                 (userIsAuthorized)
                )
             {
+#if DEBUG
+                if (expirationTime.HasValue)
+                {
+                    ApplicationLog.WriteEvent(string.Format("Adding user with expiration time of {0}.", expirationTime), EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+                }
+                else
+                {
+                    ApplicationLog.WriteEvent("Adding user with null expiration time.", EventID.DebugMessage, System.Diagnostics.EventLogEntryType.Information);
+                }
+#endif
+
                 // Save the user's information to the list of users.
                 EncryptedSettings encryptedSettings = new EncryptedSettings(EncryptedSettings.SettingsFilePath);
                 encryptedSettings.AddUser(userIdentity, expirationTime, remoteAddress);
@@ -395,7 +406,7 @@ namespace SinclairCC.MakeMeAdmin
                             if (
                                 (Settings.AutomaticAddAllowed != null) &&
                                 (Settings.AutomaticAddAllowed.Length > 0) &&
-                                (adminGroup.UserIsAuthorized(Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied))
+                                (adminGroup.UserIsAuthorized(userIdentity, Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied))
                                )
                             { // The user is an automatically-added user.
 
@@ -459,7 +470,7 @@ namespace SinclairCC.MakeMeAdmin
                             if (
                                 (Settings.AutomaticAddAllowed != null) &&
                                 (Settings.AutomaticAddAllowed.Length > 0) &&
-                                (adminGroup.UserIsAuthorized(Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied))
+                                (adminGroup.UserIsAuthorized(userIdentity, Settings.AutomaticAddAllowed, Settings.AutomaticAddDenied))
                                )
                             { // The user is an automatically-added user.
 
