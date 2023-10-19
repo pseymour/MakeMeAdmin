@@ -393,6 +393,19 @@
 			</elements>
 		</policy>
 
-	</policies>
+    <policy name="Instructions"
+				 class="Machine"
+				 displayName="$(string.InstructionsDisplayName)"
+				 explainText="$(string.InstructionsExplainText)"
+				 key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
+				 presentation="$(presentation.InstructionsMultiText_Presentation)" >
+      <parentCategory ref="makemeadmin:MakeMeAdmin" />
+      <supportedOn ref="windows:SUPPORTED_Windows7" />
+      <elements>
+        <multiText id="InstructionsMultiText" valueName="Instructions" required="false" maxLength="1000" maxStrings="0" />
+      </elements>
+    </policy>
+
+  </policies>
 
 </policyDefinitions>

@@ -76,6 +76,11 @@ namespace SinclairCC.MakeMeAdmin
         private System.Windows.Forms.NotifyIcon notifyIcon;
 
         /// <summary>
+        /// instructions label
+        /// </summary>
+        private System.Windows.Forms.Label instructionsLabel;
+
+        /// <summary>
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
@@ -108,6 +113,7 @@ namespace SinclairCC.MakeMeAdmin
             this.addUserBackgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.removeUserBackgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.instructionsLabel = new System.Windows.Forms.Label();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -165,10 +171,16 @@ namespace SinclairCC.MakeMeAdmin
             this.notifyIcon.BalloonTipClosed += new System.EventHandler(this.notifyIcon_BalloonTipClosed);
             this.notifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_MouseDoubleClick);
             // 
+            // instructionsLabel
+            // 
+            resources.ApplyResources(this.instructionsLabel, "instructionsLabel");
+            this.instructionsLabel.Name = "instructionsLabel";
+            // 
             // SubmitRequestForm
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.instructionsLabel);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.removeMeButton);
             this.Controls.Add(this.addMeButton);
