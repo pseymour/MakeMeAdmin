@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="en-us" xmlns="http://schemas.microsoft.com/wix/2006/localization" Codepage="1252">
+  <String Id='LANG'></String>
+  <String Id="SoftwareName">Make Me Admin</String>
+  <String Id="SoftwareManufacturer">Sinclair Community College</String>
+  <String Id="AdminRightsRequired">Sie müssen Adminstratorrechte besitzen um diese Software zu installieren.</String>
+  <String Id="NewerVersionInstalled">Eine neuere Version von [ProductName] ist bereits installiert.</String>
+  <String Id="Remote">Remote</String>
+  <String Id="ServiceDescription">Ermöglicht es Benutzern, sich selbst Rechte auf Administratorebene zu geben.</String>
+</WixLocalization>

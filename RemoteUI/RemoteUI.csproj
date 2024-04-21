@@ -95,6 +95,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.da.resx" />
     <EmbeddedResource Include="Properties\Resources.fr.resx" />
+    <EmbeddedResource Include="Properties\Resources.de.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -109,6 +110,9 @@
       <DependentUpon>SubmitRequestForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SubmitRequestForm.fr.resx">
+      <DependentUpon>SubmitRequestForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SubmitRequestForm.de.resx">
       <DependentUpon>SubmitRequestForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SubmitRequestForm.resx">
@@ -143,6 +147,7 @@
   <ItemGroup>
     <XliffResource Include="MultilingualResources\RemoteUI.da.xlf" />
     <XliffResource Include="MultilingualResources\RemoteUI.fr.xlf" />
+    <XliffResource Include="MultilingualResources\RemoteUI.de.xlf" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Multilingual App Toolkit\Microsoft.Multilingual.ResxResources.targets" Label="MultilingualAppToolkit" Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\Multilingual App Toolkit\v$(MultilingualAppToolkitVersion)\Microsoft.Multilingual.ResxResources.targets')" />

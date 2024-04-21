@@ -13,6 +13,7 @@
       <ComponentRef Id="ElevationUserInterface" />
       <ComponentRef Id="ElevationUserInterface_da" />
       <ComponentRef Id="ElevationUserInterface_fr" />
+      <ComponentRef Id="ElevationUserInterface_de" />
       <ComponentRef Id="LsaLogonSessionLibrary" />
       <ComponentRef Id="Service" />
       <ComponentRef Id="Service_da" />
@@ -28,11 +29,13 @@
       <ComponentRef Id="LoggingLibrary" />
       <ComponentRef Id="LoggingLibrary_da" />
       <ComponentRef Id="LoggingLibrary_fr" />
+      <ComponentRef Id="LoggingLibrary_de" />
       <ComponentRef Id="SettingsLibrary" />      
       <ComponentRef Id="UserListLibrary" />
       <ComponentRef Id="ProcessCommunicationLibrary" />
       <ComponentRef Id="ProcessCommunicationLibrary_da" />
       <ComponentRef Id="ProcessCommunicationLibrary_fr" />
+      <ComponentRef Id="ProcessCommunicationLibrary_de" />
       
       <Condition Level="0">INSTALLMAKEMEADMIN = "0"</Condition>
     </Feature>
@@ -41,15 +44,18 @@
       <ComponentRef Id="RemoteElevationUserInterface"/>
       <ComponentRef Id="RemoteElevation_da"/>
       <ComponentRef Id="RemoteElevation_fr"/>
+      <ComponentRef Id="RemoteElevation_de"/>
       <ComponentRef Id="EnumerationsLibrary" />
       <ComponentRef Id="MruListLibrary"/>
       <ComponentRef Id="LoggingLibrary" />
       <ComponentRef Id="LoggingLibrary_da" />
-      <ComponentRef Id="LoggingLibrary_fr" />      
+      <ComponentRef Id="LoggingLibrary_fr" />
+      <ComponentRef Id="LoggingLibrary_de" />      
       <ComponentRef Id="SettingsLibrary" />
       <ComponentRef Id="ProcessCommunicationLibrary" />
       <ComponentRef Id="ProcessCommunicationLibrary_da" />
       <ComponentRef Id="ProcessCommunicationLibrary_fr" />
+      <ComponentRef Id="ProcessCommunicationLibrary_de" />
       
       <Condition Level="1">(INSTALLREMOTE = "1") OR REMOVE</Condition>
     </Feature>
