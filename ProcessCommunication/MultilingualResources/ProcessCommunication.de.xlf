@@ -64,7 +64,7 @@
         </trans-unit>
         <trans-unit id="UserAddedToAdminsGroup" translate="yes" xml:space="preserve">
           <source>User {0} ({1}) added to the Administrators group.</source>
-          <target state="final">Benutzer (0) ({1}) zur Administratorengruppe hinzugefügt.</target>
+          <target state="final">Benutzer {0} ({1}) zur Administratorengruppe hinzugefügt.</target>
         </trans-unit>
         <trans-unit id="UserRemoved" translate="yes" xml:space="preserve">
           <source>User {0} ({1}) removed from the Administrators group. Reason: {2}.</source>
