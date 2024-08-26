@@ -61,6 +61,30 @@
     <TranslationReport Condition="'$(Configuration)' == 'Release'">true</TranslationReport>
     <SuppressPseudoWarning Condition="'$(Configuration)' == 'Debug'">true</SuppressPseudoWarning>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM64'">
+    <OutputPath>bin\$(Configuration) $(Platform)\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>ARM64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+	<GenerateSatelliteAssembliesForCore>true</GenerateSatelliteAssembliesForCore>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\$(Configuration) $(Platform)\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>ARM64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+	<GenerateSatelliteAssembliesForCore>true</GenerateSatelliteAssembliesForCore>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
@@ -172,6 +196,15 @@
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Multilingual App Toolkit\Microsoft.Multilingual.ResxResources.targets" Label="MultilingualAppToolkit" Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\Multilingual App Toolkit\v$(MultilingualAppToolkitVersion)\Microsoft.Multilingual.ResxResources.targets')" />
   <Target Name="MATPrerequisite" BeforeTargets="PrepareForBuild" Condition="!Exists('$(MSBuildExtensionsPath)\Microsoft\Multilingual App Toolkit\Microsoft.Multilingual.ResxResources.targets')" Label="MultilingualAppToolkit">
     <Warning Text="$(MSBuildProjectFile) is Multilingual build enabled, but the Multilingual App Toolkit is unavailable during the build. If building with Visual Studio, please check to ensure that toolkit is properly installed." />
+  </Target>
+  <Target Name="CustomGenerateSatelliteAssembliesForARM64" Condition="'$(Platform)' == 'ARM64'" AfterTargets="Compile">
+    <!-- Filter culture-specific resource files -->
+    <ItemGroup>
+      <CultureSpecificResources Include="@(EmbeddedResource)" Condition="'%(Filename)%(Extension)' != 'Resources.resx' And '%(Filename)%(Extension)' != 'MakeMeAdminService.resx' And '%(Filename)%(Extension)' != 'ProjectInstaller.resx'" />
+    </ItemGroup>
+    <!-- Generate satellite assemblies for each culture -->
+    <Exec Command='if not exist "$(IntermediateOutputPath)%(CultureSpecificResources.Culture)\" mkdir "$(IntermediateOutputPath)%(CultureSpecificResources.Culture)"' />
+    <Exec Command='"$(SDK40ToolsPath)al.exe" /culture:%(CultureSpecificResources.Culture) /out:$(IntermediateOutputPath)%(CultureSpecificResources.Culture)\$(AssemblyName).resources.dll /template:$(IntermediateOutputPath)$(TargetFileName)  /embed:"%(CultureSpecificResources.FullPath)"' />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
