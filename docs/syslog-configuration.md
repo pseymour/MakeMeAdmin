@@ -32,5 +32,3 @@ where
   * Logs to a server named syslogserver, using port 1468, the TCP protocol and sending messages conforming to RFC3164.
 * `syslogserver:1468:tcp:5424`
   * Logs to a server named syslogserver, using port 1468, the TCP protocol and sending messages conforming to RFC5424.
-
-[home](/ "Make Me Admin home page")

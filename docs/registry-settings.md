@@ -16,7 +16,7 @@ To enforce settings, you should use the Group Policy templates, which are locate
 | Automatic Add Allowed                 | *empty*   | `REG_MULTI_SZ`       | List of SIDs or names<sup>2</sup> for users or groups that are automatically added to the Administrators group upon logon. |
 | Automatic Add Denied                  | *empty*   | `REG_MULTI_SZ`       | List of SIDs or names<sup>2</sup> for users or groups that are never allowed to be added automatically to the Administrators group upon logon. Denials take precedence over allowed entities. |
 | Remote Allowed Entities               | *empty*   | `REG_MULTI_SZ`       | List of SIDs or names<sup>2</sup> for users or groups that are allowed to obtain administrator rights from a remote computer. |
-| Remote Denied Entities                | *empty*   | `REG_MULTI_SZ`       | List of SIDs or names<sup>2</sup>  for users or groups that are not allowed to obtain administrator rights from a remote computer. Denials take precedence over allowed entities. |
+| Remote Denied Entities                | *empty*   | `REG_MULTI_SZ`       | List of SIDs or names<sup>2</sup> for users or groups that are not allowed to obtain administrator rights from a remote computer. Denials take precedence over allowed entities. |
 | syslog servers                        | *empty*   | `REG_MULTI_SZ`       | See the [Syslog Configuration](syslog-configuration.md) page for a detailed explanation. |
 | Timeout Overrides                     | *empty*   | `REG_SZ`<sup>1</sup> | Specifies different timeout values for users or groups. For example, you can allow your help desk 60 minutes while allowing everyone else 15 minutes. The highest timeout value that applies to a given user wins. |
 | Admin Rights Timeout                  | 10        | `REG_DWORD`          | The default number of minutes that the user will be added to the Administrators group. |
@@ -40,5 +40,3 @@ To enforce settings, you should use the Group Policy templates, which are locate
 
 <sup>2</sup> : Names of users or groups should be in the format `DOMAIN\Name`. User principal names (e.g., user@<span></span>domain.com) will not work.  
 **NOTE:** If you are using local groups, `DOMAIN` should be either a single dot (`.`), the name of the computer (not recommended), or `%COMPUTERNAME%`.
-
-[home](/ "Make Me Admin home page")

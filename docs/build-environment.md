@@ -13,6 +13,4 @@ This is a list of the software you will need to successfully build Make Me Admin
 I also use some other tools while developing Make Me Admin. These are not strictly necessary to build the software, but I like them.
 
 * [GitHub Desktop](https://desktop.github.com/)
-* [WinMerge 2.16.4](https://winmerge.org/)
-
-[home](/ "Make Me Admin home page")
+* [WinMerge](https://winmerge.org/)
