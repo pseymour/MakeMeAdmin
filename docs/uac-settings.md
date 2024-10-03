@@ -20,5 +20,3 @@ If you are using Group Policy to configure these settings, they can be found in 
 `EnableLUA` corresponds to the setting "User Account Control: Run all administrators in Admin Approval Mode." Set this policy to Enabled.
 
 `ConsentPromptBehaviorUser` corresponds to the setting "User Account Control: Behavior of the elevation prompt for standard users." Set this policy to one of the two "Prompt for credentials" values.
-
-[home](/ "Make Me Admin home page")

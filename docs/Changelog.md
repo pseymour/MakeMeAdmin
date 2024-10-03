@@ -1,3 +1,22 @@
+## What's New In Version 2.3.8
+
+- Added support to extend administrator rights by prompting for renewal. This feature is configurable via Registry and GPO.
+
+- Added an option to prompt for the reason for needing administrator rights. This is configurable to include a free-form response window or a list of canned responses.
+
+- Added support to log elevated processes. This is configurable to never log(default), to only log while an account has been elevated, or always log.
+
+- Added support to log off after admin rights expiration along with a configurable message.
+
+- Added an option to close the application upon administrator rights expiration
+
+- TCP service port is now configurable.
+
+- Added an option to require authentication before privileges are granted.
+
+- Remove the "Exit" button. The UI will now automatically close when either granting or removing administrator rights.
+
+
 ## What's New In Version 2.3
 
 - Work on internationalization and localization is (mostly) done, with the first translation being French. Big thanks to Etienne Croteau, both for translating the English strings into French and for nudging me into internationalization.
@@ -23,5 +42,3 @@
 - Creating the Event Log source name has been moved from the service installer to the service itself (on startup). It seems that internationalization has somehow caused the creation of the source name at installation time to fail.
 
 - Added installer (`.msi`) files to source control, so that they would appear in the git repository.
-
-[home](/ "Make Me Admin home page") 
