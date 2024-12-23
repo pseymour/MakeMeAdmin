@@ -114,6 +114,9 @@
     <EmbeddedResource Include="RequestReasonDialog.fr.resx">
       <DependentUpon>RequestReasonDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="RequestReasonDialog.de.resx">
+      <DependentUpon>RequestReasonDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="RequestReasonDialog.resx">
       <DependentUpon>RequestReasonDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
