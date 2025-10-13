@@ -33,6 +33,7 @@
       <ComponentRef Id="ProcessCommunicationLibrary" />
       <ComponentRef Id="ProcessCommunicationLibrary_da" />
       <ComponentRef Id="ProcessCommunicationLibrary_fr" />
+      <ComponentRef Id="RemoveMMADataFolder"/>
       
       <Condition Level="0">INSTALLMAKEMEADMIN = "0"</Condition>
     </Feature>
@@ -52,6 +53,7 @@
       <ComponentRef Id="ProcessCommunicationLibrary_fr" />
       
       <Condition Level="1">(INSTALLREMOTE = "1") OR REMOVE</Condition>
+
     </Feature>
     
     <Icon Id="SecurityLock.ico" SourceFile="..\SecurityLock.ico"/>
@@ -109,7 +111,11 @@
           <Component Id="ElevationUserInterface" Guid="562B228B-6029-457D-96C9-6B4BCA69660D">
             <File Id="ElevationUserInterfaceExe" Name="$(var.LocalUI.TargetFileName)" Source="$(var.LocalUI.TargetPath)" KeyPath="yes" />
             <Shortcut Id="LocalUserInferfaceShortcut" Directory="ProgramMenuFolder" Name="Make Me Admin" Description="Make Me Admin Local User Interface" Advertise="yes" WorkingDirectory="INSTALLDIR" Icon="SecurityLock.ico" IconIndex="0" />
-          </Component>
+
+            <?if $(var.Configuration) = Debug ?>
+			  <RegistryValue Action="write" Id="AdminRightsTimeout" Key="Software\Sinclair Community College\Make Me Admin" Root="HKLM" Value="2" Type="integer" Name="Admin Rights Timeout" />
+            <?endif ?>
+		  </Component>
           <Component Id="EnumerationsLibrary" Guid="D41B7874-D819-479B-9C90-248A1563FDA4">
             <File Id="EnumerationsDll" Name="$(var.Enumerations.TargetFileName)" Source="$(var.Enumerations.TargetPath)" KeyPath="yes" />
           </Component>
@@ -134,7 +140,7 @@
             <File Id="LoggingManifest" Name="$(var.Logging.TargetName).MakeMeAdmin.etwManifest.man" Source="$(var.Logging.TargetDir)$(var.Logging.TargetName).MakeMeAdmin.etwManifest.man" KeyPath="no">
               <util:EventManifest  MessageFile="[#LoggingManifestDll]"  ResourceFile="[#LoggingManifestDll]"></util:EventManifest>            
               <!--
-              <util:EventManifest  MessageFile="[INSTALLFOLDER]Logging.MakeMeAdmin.etwManifest.man" ResourceFile="[INSTALLFOLDER]Logging.MakeMeAdmin.etwManifest.dll"></util:EventManifest>            
+			  <util:EventManifest  MessageFile="[INSTALLFOLDER]Logging.MakeMeAdmin.etwManifest.man" ResourceFile="[INSTALLFOLDER]Logging.MakeMeAdmin.etwManifest.dll"></util:EventManifest>            
               -->
             </File>
             <File Id="SyslogNetClientDll"  Source="$(var.Logging.TargetDir)\SyslogNet.Client.dll" KeyPath="no" />
@@ -215,6 +221,16 @@
       </Directory>
       
       <Directory Id="ProgramMenuFolder" Name="Programs" />
-    </Directory>
+		
+      <Directory Id="CommonAppDataFolder">
+        <Directory Id="MMADataFolder" Name="Make Me Admin">
+          <Component Id="RemoveMMADataFolder" Guid="CDFEE69D-6D52-45E6-801E-B2ED74C86F5C">
+	            <RemoveFile Id="RemoveAllFiles" Name="*.xml" Directory="MMADataFolder" On="uninstall" />
+				<RemoveFolder Id="RemoveMMADataFolder" Directory="MMADataFolder" On="uninstall"/>
+          </Component>
+        </Directory>
+      </Directory>
+
+	</Directory>
   </Product>
 </Wix>

@@ -11,11 +11,10 @@ https://github.com/pseymour/MakeMeAdmin/commits/master
 
 
 
-## [2.4] - 2025-MM-dd
+## [2.4] - release pending... 2025-MM-dd
 
 ### Added - for new features.
 
-- Added a custom action to the .msi that removes the added user file upon uninstallation. **[DOES THIS STILL EXIST?]**
 - Added an optional dialog box to prompt the user to enter their reason for needing administrator rights. (**DOCUMENT THIS**) [2019-09-23]
 - Added the ability to log off a user when their administrator rights expire. The message displayed before log off is customizable. [2019-11-15]
 - Added logging of elevated processes. [2022-03-15]
@@ -24,6 +23,7 @@ https://github.com/pseymour/MakeMeAdmin/commits/master
 - Added feature to allow renewal of rights after expiration. [2023-08-11]
 - Added a setting to control whether the UI closes after the user's rights expire. [2022-09-11]
 - Added Danish translation, thanks to **Bjørn Kelsen**.
+- Modified the installer to remove the added user XML file upon uninstallation.
 
 ### Changed - for changes in existing functionality.
 
