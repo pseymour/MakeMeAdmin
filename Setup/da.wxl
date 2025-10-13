@@ -7,4 +7,8 @@
   <String Id="NewerVersionInstalled">En nyere version af [ProductName] er allerede installeret.</String>
   <String Id="Remote">Remote</String>
   <String Id="ServiceDescription">Gør det muligt for brugerne at opnå midlertidge administrator rettigheder.</String>
+  <String Id="msierrXmlFileFailedRead" Overridable="yes">There was a failure while configuring XML files.</String>
+  <String Id="msierrXmlFileFailedOpen" Overridable="yes">Failed to open XML file [3], system error: [2]</String>
+  <String Id="msierrXmlFileFailedSelect" Overridable="yes">Failed to find node: [3] in XML file: [4], system error: [2]</String>
+  <String Id="msierrXmlFileFailedSave" Overridable="yes">Failed to save changes to XML file [3], system error: [2]</String>
 </WixLocalization>

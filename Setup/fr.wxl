@@ -7,4 +7,8 @@
   <String Id="NewerVersionInstalled">Une version plus récente de [ProductName] est déjà installée.</String>
   <String Id="Remote">Éloigné</String>
   <String Id="ServiceDescription">Permet aux utilisateurs d'élever eux-mêmes leurs privilèges au niveau administrateur.</String>
+  <String Id="msierrXmlFileFailedRead" Overridable="yes">Un problème est survenu lors de la configuration des fichiers XML.</String>
+  <String Id="msierrXmlFileFailedOpen" Overridable="yes">Echec de l'ouverture des fichiers XML [3], erreur systeme: [2]</String>
+  <String Id="msierrXmlFileFailedSelect" Overridable="yes">Echec de la recherche du noeud: [3] dans le fichier XML: [4], erreur systeme: [2]</String>
+  <String Id="msierrXmlFileFailedSave" Overridable="yes">Echec lors de la sauvegarde des modifications dans le fichier XML [3], erreur systeme: [2]</String>
 </WixLocalization>
