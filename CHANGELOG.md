@@ -15,45 +15,38 @@ https://github.com/pseymour/MakeMeAdmin/commits/master
 
 ### Added - for new features.
 
-- Added an optional dialog box to prompt the user to enter their reason for needing administrator rights. (**DOCUMENT THIS**) [2019-09-23]
-- Added the ability to log off a user when their administrator rights expire. The message displayed before log off is customizable. [2019-11-15]
-- Added logging of elevated processes. [2022-03-15]
-- Added settings and code to prompt the user for authentication before rights are granted. [2021-04-05]
-- Added a setting to control which port the remote feature uses.
-- Added feature to allow renewal of rights after expiration. [2023-08-11]
-- Added a setting to control whether the UI closes after the user's rights expire. [2022-09-11]
+- Added an optional dialog box to prompt the user to enter their reason for needing administrator rights.
+- Added the ability to log off a user when their administrator rights expire. The message displayed before log off is customizable.
+- Added logging of elevated processes.
+- Added the ability to prompt the user for authentication before rights are granted.
+- ***[UNTESTED]*** Added a setting to control which port the remote feature uses. 
+- Added feature to allow renewal of rights after expiration.
+- Added a setting to control whether the UI closes after the user's rights expire.
 - Added Danish translation, thanks to **Bjørn Kelsen**.
 - Modified the installer to remove the added user XML file upon uninstallation.
 
-### Changed - for changes in existing functionality.
+### Changed
 
 - Significant speed improvement in the code that checks the user against the allowed and denied lists, thanks to [Martin Sheppard](https://github.com/martshep).
-- Changed the service's Event Log source name to "Make Me Admin," adding spacing between the words. [2020-03-08]
-- Updated group policy templates to reflect change from SIDs only to SIDs or names. (**Jakob Dahl**) [2022-02-17]
+- ***[UNDO THIS]*** Changed the service's Event Log source name to "Make Me Admin," adding spacing between the words.
+- Updated group policy templates to reflect change from SIDs only to SIDs or names, thanks to **Jakob Dahl**.
 - Migrated from .NET Framework version 4.5.2 to version 4.8.
 
+<!--- ### Deprecated --->
 
-### Deprecated - for soon-to-be removed features.
+### Removed
 
-- 
+- Removed the Exit button from the UI.
+- Turned off automatic logging for service start and stop events.
 
-### Removed - for now removed features.
+### Fixed
 
-- Removed the Exit button from the UI. [2019-09-08]
-- Turned off automatic logging for service start and stop events. [2020-03-08]
+- Fixed an issue that would prevent syslogging from working if the syslog server was not in DNS.
+- Fixed an issue where the service would check the authorization of the wrong principal, in automatic-add scenarios. (Issue #50)
+- Fixed typos in French translation.
+- Added better error handling in the UI app if the service is not listening.
 
-### Fixed - for any bug fixes.
-
-- Fixed an issue that would prevent syslogging from working if the syslog server was not in DNS. [2022-06-15]
-- Fixed an issue where the service would check the authorization of the wrong principal, in automatic-add scenarios. (Issue #50) [2022-02-25]
-- Fixed typos in French translation. [2023-03-07]
-- Added better error handling in the UI app if the service is not listening. [2021-04-16]
-
-
-
-### Security - in case of vulnerabilities.
-
-- 
+<!--- ### Security --->
 
 
 
@@ -68,27 +61,27 @@ https://github.com/pseymour/MakeMeAdmin/commits/master
 
 ### Added
 
-- Added localization for French. Initially, this was mistakenly coded as fr-CA, but it was later changed to fr. [2019-01-28]
+- Added localization for French. Initially, this was mistakenly coded as fr-CA, but it was later changed to fr. Big thanks to **Etienne Croteau**, both for translating the English strings into French and for nudging me into internationalization.
 - Added elements to the installer project so that the Make Me Admin service would be restarted
-upon first/second/third failure. [2018-02-20]
-- Added syslog functionality. [2019-01-20]
-- Changed the added user file to use encryption, to discourage tampering. [2019-01-20]
-- Specified a license of GPLv3. [2018-05-12]
-- Added the ability to automatically add certain users when they log on. [2018-05-12]
-- The UI now checks to see if the user is an administrator at all, instead of directly in the Administrators group, for the purposes of enabling "Grant Me Rights" button. [2018-05-12]
-- The application now supports names of users or groups, in addition to the previous option of SIDs. [2018-05-12]
+upon first/second/third failure.
+- Added syslog functionality.
+- Changed the added user file to use encryption, to discourage tampering.
+- Specified a license of GPLv3.
+- Added the ability to automatically add certain users when they log on.
+- The UI now checks to see if the user is an administrator at all, instead of directly in the Administrators group, for the purposes of enabling "Grant Me Rights" button.
+- The application now supports names of users or groups, in addition to the previous option of SIDs.
 
 ### Changed
 
 - Changed the path of the encrypted added user list from the CommonApplicationData folder to the user's Application Data folder. In this case, the user is the System account.
-- Updated code related to users whose rights do not expire. [2019-01-23]
-- Simplified logging code by removing separate Information, Warning and Error logging functions. [2019-01-23]
-- Changed the default timeout for admin rights to ten minutes, rather than two. [2018-05-12]
-- Slight change to the way membership in the local Administrators group is checked. [2019-01-21]
+- Updated code related to users whose rights do not expire.
+- Simplified logging code by removing separate Information, Warning and Error logging functions.
+- Changed the default timeout for admin rights to ten minutes, rather than two.
+- Slight change to the way membership in the local Administrators group is checked.
 
 ### Fixed
 
-- Added explanatory text in the ADML file for the syslog server settings. [2019-01-23]
+- Added explanatory text in the ADML file for the syslog server settings.
 
 
 ## [2.2.1] - 2018-01-18

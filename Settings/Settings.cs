@@ -648,13 +648,13 @@ namespace SinclairCC.MakeMeAdmin
         }
 
 
-        public static bool AllowFreeFormReason
+        public static bool AllowFreeTextReason
         {
             get
             {
 
-                int? policySetting = GetDWord(PolicyRegistryKeyPath, null, "Allow Free-Form Reason");
-                int? preferenceSetting = GetDWord(PreferenceRegistryKeyPath, null, "Allow Free-Form Reason");
+                int? policySetting = GetDWord(PolicyRegistryKeyPath, null, "Allow Free Text Reason");
+                int? preferenceSetting = GetDWord(PreferenceRegistryKeyPath, null, "Allow Free Text Reason");
                 if (policySetting.HasValue)
                 { // The policy setting has a value. Go with whatever it says.
                     return Convert.ToBoolean(policySetting.Value);
@@ -670,7 +670,7 @@ namespace SinclairCC.MakeMeAdmin
             }
             set
             {
-                SetDWord(PreferenceRegistryKeyPath, null, "Allow Free-Form Reason", Convert.ToInt32(value));
+                SetDWord(PreferenceRegistryKeyPath, null, "Allow Free Text Reason", Convert.ToInt32(value));
             }
         }
 

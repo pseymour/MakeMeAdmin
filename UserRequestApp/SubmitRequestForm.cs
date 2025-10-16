@@ -225,7 +225,7 @@ namespace SinclairCC.MakeMeAdmin
                         // The reason dialog is optional, so rights are always allowed.
                         dialogSatisfied = true;
 
-                        if ((Settings.AllowFreeFormReason) || ((Settings.CannedReasons != null) && (Settings.CannedReasons.Length > 0)))
+                        if ((Settings.AllowFreeTextReason) || ((Settings.CannedReasons != null) && (Settings.CannedReasons.Length > 0)))
                         {
                             using (RequestReasonDialog reasonDialog = new RequestReasonDialog())
                             {
@@ -252,7 +252,7 @@ namespace SinclairCC.MakeMeAdmin
 
                     case ReasonPrompt.Required:
 
-                        if ((Settings.AllowFreeFormReason) || ((Settings.CannedReasons != null) && (Settings.CannedReasons.Length > 0)))
+                        if ((Settings.AllowFreeTextReason) || ((Settings.CannedReasons != null) && (Settings.CannedReasons.Length > 0)))
                         {
                             using (RequestReasonDialog reasonDialog = new RequestReasonDialog())
                             {

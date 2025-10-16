@@ -109,7 +109,7 @@
 			<parentCategory ref="makemeadmin:MakeMeAdmin"></parentCategory>
 			<supportedOn ref="windows:SUPPORTED_Windows7" />
 			<elements>
-				<decimal id="RenewalsAllowedValue" required="true" valueName="Renewals Allowed" minValue="0" maxValue="128" storeAsText="false" />
+				<decimal id="RenewalsAllowedValue" required="true" valueName="Renewals Allowed" minValue="0" maxValue="100" storeAsText="false" />
 			</elements>
 		</policy>
 
@@ -146,7 +146,6 @@
 			 displayName="$(string.LogOffMessageDisplayName)"
 			 explainText="$(string.LogOffMessageExplainText)"
 			 key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
-			 valueName="Log Off Message"
 			 presentation="$(presentation.Log_Off_Message_TextBox)" >
 			<parentCategory ref="makemeadmin:MakeMeAdmin"></parentCategory>
 			<supportedOn ref="windows:SUPPORTED_Windows7" />
@@ -321,12 +320,12 @@
 			</elements>
 		</policy>
 
-		<policy name="AllowFreeFormReason"
+		<policy name="AllowFreeTextReason"
 				 class="Machine"
-				 displayName="$(string.AllowFreeFormReasonDisplayName)"
-				 explainText="$(string.AllowFreeFormReasonExplainText)"
+				 displayName="$(string.AllowFreeTextReasonDisplayName)"
+				 explainText="$(string.AllowFreeTextReasonExplainText)"
 				 key="SOFTWARE\Policies\Sinclair Community College\Make Me Admin"
-				 valueName="Allow Free-Form Reason">
+				 valueName="Allow Free Form Reason">
 			<parentCategory ref="makemeadmin:MakeMeAdmin"></parentCategory>
 			<supportedOn ref="windows:SUPPORTED_Windows7" />
 			<enabledValue>

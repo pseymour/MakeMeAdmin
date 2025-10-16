@@ -37,7 +37,7 @@ namespace SinclairCC.MakeMeAdmin
                 this.responseComboBox.Items.AddRange(Settings.CannedReasons);
             }
 
-            this.reasonTextBox.Enabled = Settings.AllowFreeFormReason;
+            this.reasonTextBox.Enabled = Settings.AllowFreeTextReason;
 
             if (this.reasonTextBox.Enabled)
             {
