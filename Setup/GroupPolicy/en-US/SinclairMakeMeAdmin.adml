@@ -83,7 +83,10 @@
 			<string id="MaximumReasonLengthDisplayName">Maximum Reason Length</string>
 			<string id="MaximumReasonLengthExplainText">Specifies the maximum number of characters that a user may enter in the reason dialog box.</string>
 
-			<string id="None">None</string>
+      <string id="InstructionsDisplayName">Instructions</string>
+      <string id="InstructionsExplainText">Specifies instructions that will be displayed to the user in the main window.</string>
+
+      <string id="None">None</string>
 			<string id="Optional">Optional</string>
 			<string id="Required">Required</string>
 			<string id="LogElevatedProcessesDisplayName">Log Elevated Processes</string>
@@ -142,6 +145,9 @@
 				<text>Specify a security identifier (SID) or name for each user or group, along with a timeout value for each.</text>
 				<listBox refId="TimeoutOverrideListBox">SIDs or names and Timeouts:</listBox>
 			</presentation>
+      <presentation id="InstructionsMultiText_Presentation">
+        <multiTextBox refId="InstructionsMultiText">Enter instructions to be displayed to user:</multiTextBox>
+      </presentation>
 			<presentation id="SyslogMultiText_Presentation">
 				<multiTextBox refId="SyslogMultiText">Enter syslog server information.</multiTextBox>
 				<text>Syntax:</text>
