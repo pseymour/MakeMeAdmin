@@ -8,12 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 https://github.com/pseymour/MakeMeAdmin/commits/master
 
 
-
-
-
 ## [2.4] - release pending... 2025-MM-dd
 
-### Added - for new features.
+### Added
 
 - Added an optional dialog box to prompt the user to enter their reason for needing administrator rights.
 - Added the ability to log off a user when their administrator rights expire. The message displayed before log off is customizable.
