@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
-  <Product Id="*" Name="!(loc.SoftwareName)" Language="!(loc.LANG)" Version="2.3.81" Manufacturer="!(loc.SoftwareManufacturer)" UpgradeCode="9c690479-3987-48a8-8bda-118ef1f93cdd">
+  <Product Id="*" Name="!(loc.SoftwareName)" Language="!(loc.LANG)" Version="2.3.91" Manufacturer="!(loc.SoftwareManufacturer)" UpgradeCode="9c690479-3987-48a8-8bda-118ef1f93cdd">
     <Package InstallerVersion="400" Compressed="yes" InstallScope="perMachine" />
     <Condition Message="!(loc.AdminRightsRequired)">Privileged</Condition>
     <MajorUpgrade DowngradeErrorMessage="!(loc.NewerVersionInstalled)" />
     <MediaTemplate EmbedCab="yes" />
 
-	<Feature Id="MakeMeAdmin" Title="[ProductName]" Level="1">
+    <Feature Id="MakeMeAdmin" Title="[ProductName]" Level="1">
       <ComponentRef Id="ADMXFiles" />
       <ComponentRef Id="ADMLFiles" />
       <ComponentRef Id="EnumerationsLibrary" />
@@ -18,13 +18,13 @@
       <ComponentRef Id="Service_da" />
       <ComponentRef Id="Service_fr" />
       <ComponentRef Id="MicrosoftTraceEventNuGetCommon" />
-		
+
       <?if $(var.Platform) = x64 ?>
         <ComponentRef Id="MicrosoftTraceEventNuGet_amd64" />
       <?else ?>
         <ComponentRef Id="MicrosoftTraceEventNuGet_x86" />
       <?endif ?>
-		
+
       <ComponentRef Id="LoggingLibrary" />
       <ComponentRef Id="LoggingLibrary_da" />
       <ComponentRef Id="LoggingLibrary_fr" />
@@ -34,7 +34,9 @@
       <ComponentRef Id="ProcessCommunicationLibrary_da" />
       <ComponentRef Id="ProcessCommunicationLibrary_fr" />
       <ComponentRef Id="RemoveMMADataFolder"/>
-      
+
+      <ComponentGroupRef Id="RegistryEntries" />
+
       <Condition Level="0">INSTALLMAKEMEADMIN = "0"</Condition>
     </Feature>
     
@@ -113,9 +115,9 @@
             <Shortcut Id="LocalUserInferfaceShortcut" Directory="ProgramMenuFolder" Name="Make Me Admin" Description="Make Me Admin Local User Interface" Advertise="yes" WorkingDirectory="INSTALLDIR" Icon="SecurityLock.ico" IconIndex="0" />
 
             <?if $(var.Configuration) = Debug ?>
-			  <RegistryValue Action="write" Id="AdminRightsTimeout" Key="Software\Sinclair Community College\Make Me Admin" Root="HKLM" Value="2" Type="integer" Name="Admin Rights Timeout" />
+              <RegistryValue Action="write" Id="AdminRightsTimeout" Key="Software\Sinclair Community College\Make Me Admin" Root="HKLM" Value="2" Type="integer" Name="Admin Rights Timeout" />
             <?endif ?>
-		  </Component>
+          </Component>
           <Component Id="EnumerationsLibrary" Guid="D41B7874-D819-479B-9C90-248A1563FDA4">
             <File Id="EnumerationsDll" Name="$(var.Enumerations.TargetFileName)" Source="$(var.Enumerations.TargetPath)" KeyPath="yes" />
           </Component>
@@ -140,7 +142,7 @@
             <File Id="LoggingManifest" Name="$(var.Logging.TargetName).MakeMeAdmin.etwManifest.man" Source="$(var.Logging.TargetDir)$(var.Logging.TargetName).MakeMeAdmin.etwManifest.man" KeyPath="no">
               <util:EventManifest  MessageFile="[#LoggingManifestDll]"  ResourceFile="[#LoggingManifestDll]"></util:EventManifest>            
               <!--
-			  <util:EventManifest  MessageFile="[INSTALLFOLDER]Logging.MakeMeAdmin.etwManifest.man" ResourceFile="[INSTALLFOLDER]Logging.MakeMeAdmin.etwManifest.dll"></util:EventManifest>            
+              <util:EventManifest  MessageFile="[INSTALLFOLDER]Logging.MakeMeAdmin.etwManifest.man" ResourceFile="[INSTALLFOLDER]Logging.MakeMeAdmin.etwManifest.dll"></util:EventManifest>            
               -->
             </File>
             <File Id="SyslogNetClientDll"  Source="$(var.Logging.TargetDir)\SyslogNet.Client.dll" KeyPath="no" />
@@ -180,8 +182,8 @@
             <!-- <File Id="System.Buffers.dll" Source="$(var.Logging.TargetDir)\System.Buffers.dll" KeyPath="no" /> -->
             <!-- <File Id="System.Memory.dll" Source="$(var.Logging.TargetDir)\System.Memory.dll" KeyPath="no" /> -->
             <!-- <File Id="System.Numerics.Vectors.dll" Source="$(var.Logging.TargetDir)\System.Numerics.Vectors.dll" KeyPath="no" /> -->
-			<File Id="Microsoft.Win32.Registry.dll" Source="$(var.Logging.TargetDir)\Microsoft.Win32.Registry.dll" KeyPath="no" />
-			<File Id="System.Runtime.CompilerServices.Unsafe.dll" Source="$(var.Logging.TargetDir)\System.Runtime.CompilerServices.Unsafe.dll" KeyPath="no" />
+            <File Id="Microsoft.Win32.Registry.dll" Source="$(var.Logging.TargetDir)\Microsoft.Win32.Registry.dll" KeyPath="no" />
+            <File Id="System.Runtime.CompilerServices.Unsafe.dll" Source="$(var.Logging.TargetDir)\System.Runtime.CompilerServices.Unsafe.dll" KeyPath="no" />
             <!-- <File Id="System.Runtime.CompilerServices.Unsafe.xml" Source="$(var.Logging.TargetDir)\System.Runtime.CompilerServices.Unsafe.xml" KeyPath="no" /> -->
             <File Id="TraceReloggerLib.dll" Source="$(var.Logging.TargetDir)\TraceReloggerLib.dll" KeyPath="no" />
           </Component>
@@ -221,16 +223,31 @@
       </Directory>
       
       <Directory Id="ProgramMenuFolder" Name="Programs" />
-		
+    
       <Directory Id="CommonAppDataFolder">
         <Directory Id="MMADataFolder" Name="Make Me Admin">
           <Component Id="RemoveMMADataFolder" Guid="CDFEE69D-6D52-45E6-801E-B2ED74C86F5C">
-	            <RemoveFile Id="RemoveAllFiles" Name="*.xml" Directory="MMADataFolder" On="uninstall" />
-				<RemoveFolder Id="RemoveMMADataFolder" Directory="MMADataFolder" On="uninstall"/>
+              <RemoveFile Id="RemoveAllFiles" Name="*.xml" Directory="MMADataFolder" On="uninstall" />
+              <RemoveFolder Id="RemoveMMADataFolder" Directory="MMADataFolder" On="uninstall"/>
           </Component>
         </Directory>
       </Directory>
 
-	</Directory>
+  </Directory>
   </Product>
+
+  <Fragment>
+    <ComponentGroup Id="RegistryEntries">
+      <Component Id="RegAppVersion" Guid="*" Directory="INSTALLFOLDER">
+        <RegistryValue
+          Root="HKLM"
+          Key="SOFTWARE\!(loc.SoftwareManufacturer)\!(loc.SoftwareName)"
+          Name="InstalledVersion"
+          Type="string"
+          Value="[ProductVersion]"
+          KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+
 </Wix>

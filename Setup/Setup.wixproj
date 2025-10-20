@@ -6,7 +6,7 @@
     <ProductVersion>3.9</ProductVersion>
     <ProjectGuid>8dac9832-d464-4916-b102-9efa913bdc44</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>Make Me Admin 2.3.80 $(Platform)</OutputName>
+    <OutputName>Make Me Admin 2.3.91 $(Platform)</OutputName>
     <OutputType>Package</OutputType>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
@@ -161,12 +161,12 @@
       <Output TaskParameter="Value" PropertyName="ShortVersionNumber" />
     </CreateProperty>
     <!-- In debug configuration, name the .msi file after the solution platform, shortened version
-         number, platform and configuration, e.g., MakeMeAdmin 2.3.80 x64 Debug.msi. -->
+         number, platform and configuration, e.g., MakeMeAdmin 2.3.91 x64 Debug.msi. -->
     <CreateProperty Condition=" '$(Configuration)' == 'Debug' " Value="$(SolutionName) $(ShortVersionNumber) $(Platform) $(Configuration)">
       <Output TaskParameter="Value" PropertyName="TargetName" />
     </CreateProperty>
     <!-- In non-debug (release) configuration, name the .msi file after the solution platform,
-         shortened version number and platform, e.g., MakeMeAdmin 2.3.80 x64.msi. -->
+         shortened version number and platform, e.g., MakeMeAdmin 2.3.91 x64.msi. -->
     <CreateProperty Condition=" '$(Configuration)' != 'Debug' " Value="$(SolutionName) $(ShortVersionNumber) $(Platform)">
       <Output TaskParameter="Value" PropertyName="TargetName" />
     </CreateProperty>

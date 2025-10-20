@@ -568,7 +568,8 @@ namespace SinclairCC.MakeMeAdmin
         {
             try
             {
-                string sidPattern = @"^S-\d-\d+-(\d+-){1,14}\d+$";
+                /*string sidPattern = @"^S-\d-\d+-(\d+-){1,14}\d+$";*/ // Does not match SIDs such as S-1-5-113
+                string sidPattern = @"^S-\d-\d+(-\d+){1,15}$";
                 bool isSid = System.Text.RegularExpressions.Regex.IsMatch(accountName, sidPattern);
 
                 if (isSid)
