@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 https://github.com/pseymour/MakeMeAdmin/commits/master
 
 
-## [2.4] - release pending... 2025-MM-dd
+## [2.4.0] - 2025-10-31
 
 ### Added
 
@@ -16,20 +16,20 @@ https://github.com/pseymour/MakeMeAdmin/commits/master
 - Added the ability to log off a user when their administrator rights expire. The message displayed before log off is customizable.
 - Added logging of elevated processes.
 - Added the ability to prompt the user for authentication before rights are granted.
-- ***[UNTESTED]*** Added a setting to control which port the remote feature uses. 
+- Added a setting to control which port the remote feature uses. 
 - Added feature to allow renewal of rights after expiration.
 - Added a setting to control whether the UI closes after the user's rights expire.
 - Added Danish translation, thanks to **Bjørn Kelsen**.
 - Modified the installer to remove the added user XML file upon uninstallation.
+- Modified the installer to add the product version to the registry.
+  - The version number will be stored in the value ``InstalledVersion`` at ``HKEY_LOCAL_MACHINE\SOFTWARE\Sinclair Community College\Make Me Admin``.
 
 ### Changed
 
 - Significant speed improvement in the code that checks the user against the allowed and denied lists, thanks to [Martin Sheppard](https://github.com/martshep).
-- ***[UNDO THIS]*** Changed the service's Event Log source name to "Make Me Admin," adding spacing between the words.
+- Changed the service's Event Log source name to "Make Me Admin," adding spacing between the words.
 - Updated group policy templates to reflect change from SIDs only to SIDs or names, thanks to **Jakob Dahl**.
 - Migrated from .NET Framework version 4.5.2 to version 4.8.
-
-<!--- ### Deprecated --->
 
 ### Removed
 
@@ -42,8 +42,6 @@ https://github.com/pseymour/MakeMeAdmin/commits/master
 - Fixed an issue where the service would check the authorization of the wrong principal, in automatic-add scenarios. (Issue #50)
 - Fixed typos in French translation.
 - Added better error handling in the UI app if the service is not listening.
-
-<!--- ### Security --->
 
 
 
