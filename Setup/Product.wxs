@@ -21,6 +21,8 @@
 
       <?if $(var.Platform) = x64 ?>
         <ComponentRef Id="MicrosoftTraceEventNuGet_amd64" />
+      <?elseif $(var.Platform) = arm64 ?>
+        <ComponentRef Id="MicrosoftTraceEventNuGet_arm64" />
       <?else ?>
         <ComponentRef Id="MicrosoftTraceEventNuGet_x86" />
       <?endif ?>
@@ -66,7 +68,7 @@
     <Directory Id="TARGETDIR" Name="SourceDir">
 
       <!-- Create the structure in the appropriate Program Files folder. -->
-      <?if $(var.Platform) = x64 ?>
+      <?if $(var.Platform) = x64 OR $(var.Platform) = arm64 ?>
         <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
       <?else ?>
         <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
@@ -195,6 +197,16 @@
                 <File Id="amd64_msvcp140.dll" Source="$(var.Logging.TargetDir)\amd64\msvcp140.dll" KeyPath="no" />
                 <File Id="amd64_vcruntime140.dll" Source="$(var.Logging.TargetDir)\amd64\vcruntime140.dll" KeyPath="no" />
                 <File Id="amd64_vcruntime140_1.dll" Source="$(var.Logging.TargetDir)\amd64\vcruntime140_1.dll" KeyPath="no" />
+              </Component>
+            </Directory>
+          <?elseif $(var.Platform) = arm64 ?>
+            <Directory Id="MicrosoftTraceEventNuGet_arm64" Name="arm64">
+              <Component Id="MicrosoftTraceEventNuGet_arm64" Guid="44a6bc46-6203-42c4-bfd6-1efdb34dab6b">
+                <File Id="arm64_KernelTraceControl.dll" Source="$(var.Logging.TargetDir)\arm64\KernelTraceControl.dll" KeyPath="no" />
+                <File Id="arm64_msdia140.dll" Source="$(var.Logging.TargetDir)\arm64\msdia140.dll" KeyPath="no" />
+                <File Id="arm64_msvcp140.dll" Source="$(var.Logging.TargetDir)\arm64\msvcp140.dll" KeyPath="no" />
+                <File Id="arm64_vcruntime140.dll" Source="$(var.Logging.TargetDir)\arm64\vcruntime140.dll" KeyPath="no" />
+                <File Id="arm64_vcruntime140_1.dll" Source="$(var.Logging.TargetDir)\arm64\vcruntime140_1.dll" KeyPath="no" />
               </Component>
             </Directory>
           <?else ?>

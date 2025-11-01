@@ -41,6 +41,18 @@
     <SuppressIces>ICE57</SuppressIces>
     <Cultures>en-US</Cultures>
   </PropertyGroup>
+<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|arm64' ">
+    <DefineConstants>Debug</DefineConstants>
+    <OutputPath>bin\$(Configuration) $(Platform)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration) $(Platform)\</IntermediateOutputPath>
+    <SuppressValidation>False</SuppressValidation>
+    <SuppressIces>ICE57</SuppressIces>
+</PropertyGroup>
+<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|arm64' ">
+    <OutputPath>bin\$(Configuration) $(Platform)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration) $(Platform)\</IntermediateOutputPath>
+    <SuppressIces>ICE57</SuppressIces>
+</PropertyGroup>
   <ItemGroup>
     <Compile Include="Product.wxs" />
   </ItemGroup>
