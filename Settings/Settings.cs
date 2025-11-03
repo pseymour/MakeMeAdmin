@@ -239,6 +239,23 @@ namespace SinclairCC.MakeMeAdmin
             */
         }
 
+        public static string[] Instructions
+        {
+            get
+            {
+                string[] policyInstructions = GetMultiString(PolicyRegistryKeyPath, null, "Instructions");
+                string[] preferenceInstructions = GetMultiString(PreferenceRegistryKeyPath, null, "Instructions");
+                if (policyInstructions != null)
+                { // The policy setting has a value. Go with whatever it says.
+                    return policyInstructions;
+                }
+                else
+                { // The preference setting has a value. Go with whatever it says.
+                    return preferenceInstructions;
+                }
+            }
+        }
+
         /// <summary>
         /// Processes the array of strings, retrieved from the registry, containing
         /// the syslog server information.

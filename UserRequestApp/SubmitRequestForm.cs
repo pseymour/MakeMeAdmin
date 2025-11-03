@@ -21,6 +21,7 @@
 namespace SinclairCC.MakeMeAdmin
 {
     using System;
+    using System.Drawing;
     using System.Reflection;
     using System.Security.Principal;
     using System.ServiceModel;
@@ -73,6 +74,7 @@ namespace SinclairCC.MakeMeAdmin
             this.notifyIcon.Icon = Properties.Resources.SecurityLock;
 
             this.SetFormText();
+            this.SetInstructions();
 
             // Configure the notification timer.
             this.notifyIconTimer = new System.Timers.Timer()
@@ -137,6 +139,24 @@ namespace SinclairCC.MakeMeAdmin
 
             this.Text = formText.ToString();
             this.notifyIcon.Text = formText.ToString();
+        }
+
+
+        /// <summary>
+        /// Sets the instructions label to the value specified in Settings.
+        /// </summary>
+        private void SetInstructions()
+        {
+            this.instructionsLabel.Text = string.Join(Environment.NewLine, Settings.Instructions);
+
+            // Calculate the preferred label height based on the content and maximum width
+            int preferredHeight = TextRenderer.MeasureText(instructionsLabel.Text, instructionsLabel.Font, new Size(instructionsLabel.Width, int.MaxValue), TextFormatFlags.WordBreak).Height;
+
+            // Set the calculated height for the label
+            instructionsLabel.Height = preferredHeight;
+
+            // Set the calculated height for the form
+            this.Height = this.Height + preferredHeight;
         }
 
 
