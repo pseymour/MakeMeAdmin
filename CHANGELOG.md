@@ -8,6 +8,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 https://github.com/pseymour/MakeMeAdmin/commits/master
 
 
+## [2.4.1] - 2025-11-13
+
+### Added
+
+- Added localization for German.
+
+### Removed
+
+- Removed references to the Multilingual App Toolkit, which is now out of support.
+
+### Fixed
+
+- Globalized the remote UI, so the German translations would be displayed.
+
+
+
 ## [2.4.0] - 2025-10-31
 
 ### Added
