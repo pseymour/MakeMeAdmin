@@ -13,3 +13,7 @@ This is the official list of the Make Me Admin project contributors.
 * **Bjørn Kelsen**
 
   * Danish localization
+
+* **Dillon Gortmaker ([@DeadlyVirez](https://github.com/DeadlyVirez))**
+
+  * German localization

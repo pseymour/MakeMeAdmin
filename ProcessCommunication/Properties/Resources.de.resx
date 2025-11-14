@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,32 +117,55 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AdminRightsRequestedOnHost" xml:space="preserve">
-    <value>Administrator rights requested on {0}.</value>
+  <data name="RemovalReasonUnknown" xml:space="preserve">
+    <value>Unbekannt</value>
   </data>
-  <data name="ClearHistoryButtonText" xml:space="preserve">
-    <value>&amp;Clear History</value>
+  <data name="AddingUserBackToAdministrators" xml:space="preserve">
+    <value>Füge den Benutzer wieder zur Administratorengruppe hinzu.</value>
   </data>
-  <data name="ErrorMessage" xml:space="preserve">
-    <value>Error Message</value>
+  <data name="AddingUserReturnedError" xml:space="preserve">
+    <value>Hinzufügen des Benutzers {0} ({1}) zur Administratorengruppe erzeugte Fehlercode {2}.</value>
   </data>
-  <data name="ErrorRequestingRightsOn" xml:space="preserve">
-    <value>An error occurred while requesting administrator rights on </value>
+  <data name="Exception" xml:space="preserve">
+    <value>Ausnahme</value>
   </data>
-  <data name="HostNameLabelText" xml:space="preserve">
-    <value>Host Name</value>
+  <data name="LocalAdminsGroupSIDIsNull" xml:space="preserve">
+    <value>SID der lokalen Administratorengruppe ist null.</value>
   </data>
-  <data name="MyCompany" xml:space="preserve">
-    <value>My Company</value>
+  <data name="LocalMachineContextIsNull" xml:space="preserve">
+    <value>Lokaler Maschinenkontext ist null.</value>
   </data>
-  <data name="MyProduct" xml:space="preserve">
-    <value>My Product</value>
+  <data name="RemovalReasonServiceStopped" xml:space="preserve">
+    <value>Make Me Admin Dienst gestoppt</value>
   </data>
-  <data name="RequestRightsButtonText" xml:space="preserve">
-    <value>&amp;Request Admin Rights</value>
+  <data name="RemovalReasonTimeout" xml:space="preserve">
+    <value>Zeitüberschreitung abgelaufen</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="SecurityLock" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\SecurityLock.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="RemovalReasonUserLogoff" xml:space="preserve">
+    <value>Benutzer abgemeldet</value>
+  </data>
+  <data name="RemovalReasonUserRequest" xml:space="preserve">
+    <value>Benutzer hat Entfernung angefordert</value>
+  </data>
+  <data name="RemovingUserFromList" xml:space="preserve">
+    <value>Entferne den Benutzer aus Make Me Admin's Liste.</value>
+  </data>
+  <data name="RemovingUserReturnedError" xml:space="preserve">
+    <value>Entfernen des Benutzers {0} ({1}) aus der Administratorengruppe erzeugte Fehlercode {1}.</value>
+  </data>
+  <data name="RequestSentFromHost" xml:space="preserve">
+    <value>Anfrage gesendet von Host {0}.</value>
+  </data>
+  <data name="UnknownAccount" xml:space="preserve">
+    <value>Unbekanntes Konto</value>
+  </data>
+  <data name="UserAddedToAdminsGroup" xml:space="preserve">
+    <value>Benutzer {0} ({1}) zur Administratorengruppe hinzugefügt.</value>
+  </data>
+  <data name="UserRemoved" xml:space="preserve">
+    <value>Benutzer {0} ({1}) aus Administratorengruppe entfernt. Grund: {2}.</value>
+  </data>
+  <data name="UserRemovedByOutsideProcess" xml:space="preserve">
+    <value>Benutzer {0} ({1}) wurde durch einen externen Prozess aus der Administratorengruppe entfernt.</value>
   </data>
 </root>

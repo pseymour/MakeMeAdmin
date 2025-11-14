@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="de" xmlns="http://schemas.microsoft.com/wix/2006/localization" Codepage="1252">
+  <String Id='LANG'>1031</String>
+  <String Id="SoftwareName">Make Me Admin</String>
+  <String Id="SoftwareManufacturer">Sinclair Community College</String>
+  <String Id="AdminRightsRequired">Sie müssen Adminstratorrechte besitzen um diese Software zu installieren.</String>
+  <String Id="NewerVersionInstalled">Eine neuere Version von [ProductName] ist bereits installiert.</String>
+  <String Id="Remote">Remote</String>
+  <String Id="ServiceDescription">Ermöglicht es Benutzern, sich selbst Rechte auf Administratorebene zu geben.</String>
+  <String Id="msierrXmlFileFailedRead" Overridable="yes">Beim Lesen der XML Dateien trat ein Fehler auf.</String>
+  <String Id="msierrXmlFileFailedOpen" Overridable="yes">Konnte XML Datei [3] nicht öffnen, System Fehler: [2]</String>
+  <String Id="msierrXmlFileFailedSelect" Overridable="yes">Konnte Knoten [3] in der XML Datei [4] nicht finden, System Fehler: [2]</String>
+  <String Id="msierrXmlFileFailedSave" Overridable="yes">Beim Speichern der Änderungen an der XML Datei [3] trat ein Fehler auf, System Fehler: [2]</String>
+</WixLocalization>

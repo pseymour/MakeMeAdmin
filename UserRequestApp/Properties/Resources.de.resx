@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,32 +117,75 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AdminRightsRequestedOnHost" xml:space="preserve">
-    <value>Administrator rights requested on {0}.</value>
-  </data>
-  <data name="ClearHistoryButtonText" xml:space="preserve">
-    <value>&amp;Clear History</value>
-  </data>
   <data name="ErrorMessage" xml:space="preserve">
-    <value>Error Message</value>
+    <value>Fehlermeldung</value>
   </data>
-  <data name="ErrorRequestingRightsOn" xml:space="preserve">
-    <value>An error occurred while requesting administrator rights on </value>
+  <data name="UIMessageUnauthorized" xml:space="preserve">
+    <value>Sie sind nicht autorisiert diese Anwendung zu nutzen.</value>
   </data>
-  <data name="HostNameLabelText" xml:space="preserve">
-    <value>Host Name</value>
+  <data name="UIMessageRemovingFromGroup" xml:space="preserve">
+    <value>Entferne aus {0} Gruppe.</value>
   </data>
-  <data name="MyCompany" xml:space="preserve">
-    <value>My Company</value>
+  <data name="UIMessageRemovedFromGroup" xml:space="preserve">
+    <value>Sie sind nicht länger Mitglied der {0} Gruppe.</value>
   </data>
-  <data name="MyProduct" xml:space="preserve">
-    <value>My Product</value>
+  <data name="UIMessageErrorWhileRemoving" xml:space="preserve">
+    <value>Beim Entfernen aus der Administratorengruppe ist ein Fehler aufgetreten.</value>
   </data>
-  <data name="RequestRightsButtonText" xml:space="preserve">
-    <value>&amp;Request Admin Rights</value>
+  <data name="UIMessageErrorWhileAdding" xml:space="preserve">
+    <value>Beim Hinzufügen zur Gruppe "Administratoren" ist ein Fehler aufgetreten.</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="SecurityLock" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\SecurityLock.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="UIMessageEnsureServiceRunning" xml:space="preserve">
+    <value>Stellen Sie sicher, dass der Make Me Admin Dienst gestartet ist.</value>
+  </data>
+  <data name="UIMessageAlreadyHaveRights" xml:space="preserve">
+    <value>Sie haben bereits Administratorrechte.</value>
+  </data>
+  <data name="UIMessageAddingToGroup" xml:space="preserve">
+    <value>Füge Sie zu Gruppe {0} hinzu.</value>
+  </data>
+  <data name="UIMessageAddedToGroup" xml:space="preserve">
+    <value>Sie sind jetzt Mitglied der {0} Gruppe.</value>
+  </data>
+  <data name="GrantRightsButtonText" xml:space="preserve">
+    <value>Mir Administratorrechte geben</value>
+  </data>
+  <data name="CheckingAdminStatus" xml:space="preserve">
+    <value>Prüfe Administratorstatus...</value>
+  </data>
+  <data name="ApplicationIsReady" xml:space="preserve">
+    <value>Bereit.</value>
+  </data>
+  <data name="ApplicationName" xml:space="preserve">
+    <value>Make Me Admin</value>
+  </data>
+  <data name="StackTrace" xml:space="preserve">
+    <value>Stapelverfolgung</value>
+  </data>
+  <data name="MandatoryReasonNotProvided" xml:space="preserve">
+    <value>Nicht möglich, Ihnen Administratorrechte zu erteilen.
+Es ist ein Grund erforderlich, um Administratorrechte zu erhalten, aber Sie haben keinen angegeben.</value>
+  </data>
+  <data name="OtherReason" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="ReasonDialogBoxPrevented" xml:space="preserve">
+    <value>Es ist nicht möglich, Ihnen Administratorrechte zu erteilen.
+Ein Grund ist erforderlich, um Administratorrechte zu erhalten, aber Ihr Administrator hat Ihnen nicht erlaubt, einen Grund anzugeben.</value>
+  </data>
+  <data name="ReasonDialogEmpty" xml:space="preserve">
+    <value>Der Benutzer konnte nicht nach einem Grund gefragt werden. Es sind keine Methoden für diese Abfrage aktiviert.</value>
+  </data>
+  <data name="ReasonProvidedByUser" xml:space="preserve">
+    <value>Der Benutzer hat folgenden Grund für die Administratorrechte angegeben: {0}</value>
+  </data>
+  <data name="InnerException" xml:space="preserve">
+    <value>Interne Ausnahme</value>
+  </data>
+  <data name="CredentialsPromptCaption" xml:space="preserve">
+    <value>Geben Sie Ihre Anmeldedaten ein.</value>
+  </data>
+  <data name="CredentialsPromptMessage" xml:space="preserve">
+    <value>Mit diesen Anmeldedaten wird Ihre Identität bestätigt, bevor administrative Rechte gewährt werden.</value>
   </data>
 </root>

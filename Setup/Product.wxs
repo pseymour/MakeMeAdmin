@@ -11,12 +11,14 @@
       <ComponentRef Id="ADMLFiles" />
       <ComponentRef Id="EnumerationsLibrary" />
       <ComponentRef Id="ElevationUserInterface" />
-      <ComponentRef Id="ElevationUserInterface_da" />
-      <ComponentRef Id="ElevationUserInterface_fr" />
+		<ComponentRef Id="ElevationUserInterface_da" />
+		<ComponentRef Id="ElevationUserInterface_de" />
+		<ComponentRef Id="ElevationUserInterface_fr" />
       <ComponentRef Id="LsaLogonSessionLibrary" />
       <ComponentRef Id="Service" />
-      <ComponentRef Id="Service_da" />
-      <ComponentRef Id="Service_fr" />
+		<ComponentRef Id="Service_da" />
+		<ComponentRef Id="Service_de" />
+		<ComponentRef Id="Service_fr" />
       <ComponentRef Id="MicrosoftTraceEventNuGetCommon" />
 
       <?if $(var.Platform) = x64 ?>
@@ -26,13 +28,15 @@
       <?endif ?>
 
       <ComponentRef Id="LoggingLibrary" />
-      <ComponentRef Id="LoggingLibrary_da" />
-      <ComponentRef Id="LoggingLibrary_fr" />
+		<ComponentRef Id="LoggingLibrary_da" />
+		<ComponentRef Id="LoggingLibrary_de" />
+		<ComponentRef Id="LoggingLibrary_fr" />
       <ComponentRef Id="SettingsLibrary" />      
       <ComponentRef Id="UserListLibrary" />
       <ComponentRef Id="ProcessCommunicationLibrary" />
-      <ComponentRef Id="ProcessCommunicationLibrary_da" />
-      <ComponentRef Id="ProcessCommunicationLibrary_fr" />
+		<ComponentRef Id="ProcessCommunicationLibrary_da" />
+		<ComponentRef Id="ProcessCommunicationLibrary_de" />
+		<ComponentRef Id="ProcessCommunicationLibrary_fr" />
       <ComponentRef Id="RemoveMMADataFolder"/>
 
       <ComponentGroupRef Id="RegistryEntries" />
@@ -42,17 +46,20 @@
     
     <Feature Id="MakeMeAdminRemote" Title="[ProductName] !(loc.Remote)" Level="0">
       <ComponentRef Id="RemoteElevationUserInterface"/>
-      <ComponentRef Id="RemoteElevation_da"/>
-      <ComponentRef Id="RemoteElevation_fr"/>
+		<ComponentRef Id="RemoteElevation_da"/>
+		<ComponentRef Id="RemoteElevation_de"/>
+		<ComponentRef Id="RemoteElevation_fr"/>
       <ComponentRef Id="EnumerationsLibrary" />
       <ComponentRef Id="MruListLibrary"/>
       <ComponentRef Id="LoggingLibrary" />
-      <ComponentRef Id="LoggingLibrary_da" />
-      <ComponentRef Id="LoggingLibrary_fr" />      
+		<ComponentRef Id="LoggingLibrary_da" />
+		<ComponentRef Id="LoggingLibrary_de" />
+		<ComponentRef Id="LoggingLibrary_fr" />      
       <ComponentRef Id="SettingsLibrary" />
       <ComponentRef Id="ProcessCommunicationLibrary" />
-      <ComponentRef Id="ProcessCommunicationLibrary_da" />
-      <ComponentRef Id="ProcessCommunicationLibrary_fr" />
+		<ComponentRef Id="ProcessCommunicationLibrary_da" />
+		<ComponentRef Id="ProcessCommunicationLibrary_de" />
+		<ComponentRef Id="ProcessCommunicationLibrary_fr" />
       
       <Condition Level="1">(INSTALLREMOTE = "1") OR REMOVE</Condition>
 
@@ -74,7 +81,44 @@
 
       <Directory Id="$(var.PlatformProgramFilesFolder)">
         <Directory Id="INSTALLFOLDER" Name="Make Me Admin">
-          <Directory Id="fr_Localization" Name="fr">
+
+			<Directory Id="da_Localization" Name="da">
+				<Component Id="RemoteElevation_da" Guid="B4496726-831F-4EC4-A2A5-6E5C2A85FF97">
+					<File Id="RemoteElevationResources_da" Name="$(var.RemoteUI.TargetName).resources.dll" Source="$(var.RemoteUI.TargetDir)da\$(var.RemoteUI.TargetName).resources.dll" KeyPath="no" />
+				</Component>
+				<Component Id="LoggingLibrary_da" Guid="6D790CA9-0B8A-405F-9655-2F3C906C5972">
+					<File Id="LoggingResources_da" Name="$(var.Logging.TargetName).resources.dll" Source="$(var.Logging.TargetDir)da\$(var.Logging.TargetName).resources.dll" KeyPath="no" />
+				</Component>
+				<Component Id="Service_da" Guid="53AF34B4-05E1-4C1E-8802-753588AA32AF">
+					<File Id="ServiceResources_da" Name="$(var.Service.TargetName).resources.dll" Source="$(var.Service.TargetDir)da\$(var.Service.TargetName).resources.dll" KeyPath="no" />
+				</Component>
+				<Component Id="ProcessCommunicationLibrary_da" Guid="483459F8-4CE3-4DA7-ADFE-AD7D5DFCB2F7">
+					<File Id="ProcessCommunicationLibraryResources_da" Name="$(var.ProcessCommunication.TargetName).resources.dll" Source="$(var.ProcessCommunication.TargetDir)da\$(var.ProcessCommunication.TargetName).resources.dll" KeyPath="no" />
+				</Component>
+				<Component Id="ElevationUserInterface_da" Guid="F81A3F6F-8DF7-4842-A919-F43CA9C0A632">
+					<File Id="ElevationUserInterfaceResources_da" Name="$(var.LocalUI.TargetName).resources.dll" Source="$(var.LocalUI.TargetDir)da\$(var.LocalUI.TargetName).resources.dll" KeyPath="no" />
+				</Component>
+			</Directory>
+
+			<Directory Id="de_Localization" Name="de">
+				<Component Id="RemoteElevation_de" Guid="669DB74E-C708-4068-A464-D8C74380C4F9">
+					<File Id="RemoteElevationResources_de" Name="$(var.RemoteUI.TargetName).resources.dll" Source="$(var.RemoteUI.TargetDir)de\$(var.RemoteUI.TargetName).resources.dll" KeyPath="no" />
+				</Component>
+				<Component Id="LoggingLibrary_de" Guid="9FE9D70F-1292-403E-A733-F23009FD0A2E">
+					<File Id="LoggingResources_de" Name="$(var.Logging.TargetName).resources.dll" Source="$(var.Logging.TargetDir)de\$(var.Logging.TargetName).resources.dll" KeyPath="no" />
+				</Component>
+				<Component Id="Service_de" Guid="2772CC33-2246-4E94-B3EC-4CE0712D78CB">
+					<File Id="ServiceResources_de" Name="$(var.Service.TargetName).resources.dll" Source="$(var.Service.TargetDir)de\$(var.Service.TargetName).resources.dll" KeyPath="no" />
+				</Component>
+				<Component Id="ProcessCommunicationLibrary_de" Guid="95033014-412F-4079-AF92-07E7DF299D8A">
+					<File Id="ProcessCommunicationLibraryResources_de" Name="$(var.ProcessCommunication.TargetName).resources.dll" Source="$(var.ProcessCommunication.TargetDir)de\$(var.ProcessCommunication.TargetName).resources.dll" KeyPath="no" />
+				</Component>
+				<Component Id="ElevationUserInterface_de" Guid="ADFFB5CC-5C47-4649-95BB-2AC874D63161">
+					<File Id="ElevationUserInterfaceResources_de" Name="$(var.LocalUI.TargetName).resources.dll" Source="$(var.LocalUI.TargetDir)de\$(var.LocalUI.TargetName).resources.dll" KeyPath="no" />
+				</Component>
+			</Directory>
+
+			<Directory Id="fr_Localization" Name="fr">
             <Component Id="RemoteElevation_fr" Guid="1152E967-8A78-4684-A401-0CBDFC47D34F">
               <File Id="RemoteElevationResources_fr" Name="$(var.RemoteUI.TargetName).resources.dll" Source="$(var.RemoteUI.TargetDir)fr\$(var.RemoteUI.TargetName).resources.dll" KeyPath="no" />
             </Component>
@@ -92,23 +136,6 @@
             </Component>
           </Directory>
 
-          <Directory Id="da_Localization" Name="da">
-            <Component Id="RemoteElevation_da" Guid="B4496726-831F-4EC4-A2A5-6E5C2A85FF97">
-              <File Id="RemoteElevationResources_da" Name="$(var.RemoteUI.TargetName).resources.dll" Source="$(var.RemoteUI.TargetDir)da\$(var.RemoteUI.TargetName).resources.dll" KeyPath="no" />
-            </Component>
-            <Component Id="LoggingLibrary_da" Guid="6D790CA9-0B8A-405F-9655-2F3C906C5972">
-              <File Id="LoggingResources_da" Name="$(var.Logging.TargetName).resources.dll" Source="$(var.Logging.TargetDir)da\$(var.Logging.TargetName).resources.dll" KeyPath="no" />
-            </Component>
-            <Component Id="Service_da" Guid="53AF34B4-05E1-4C1E-8802-753588AA32AF">
-              <File Id="ServiceResources_da" Name="$(var.Service.TargetName).resources.dll" Source="$(var.Service.TargetDir)da\$(var.Service.TargetName).resources.dll" KeyPath="no" />
-            </Component>
-            <Component Id="ProcessCommunicationLibrary_da" Guid="483459F8-4CE3-4DA7-ADFE-AD7D5DFCB2F7">
-              <File Id="ProcessCommunicationLibraryResources_da" Name="$(var.ProcessCommunication.TargetName).resources.dll" Source="$(var.ProcessCommunication.TargetDir)da\$(var.ProcessCommunication.TargetName).resources.dll" KeyPath="no" />
-            </Component>
-            <Component Id="ElevationUserInterface_da" Guid="F81A3F6F-8DF7-4842-A919-F43CA9C0A632">
-              <File Id="ElevationUserInterfaceResources_da" Name="$(var.LocalUI.TargetName).resources.dll" Source="$(var.LocalUI.TargetDir)da\$(var.LocalUI.TargetName).resources.dll" KeyPath="no" />
-            </Component>
-          </Directory>
           
           <Component Id="ElevationUserInterface" Guid="562B228B-6029-457D-96C9-6B4BCA69660D">
             <File Id="ElevationUserInterfaceExe" Name="$(var.LocalUI.TargetFileName)" Source="$(var.LocalUI.TargetPath)" KeyPath="yes" />

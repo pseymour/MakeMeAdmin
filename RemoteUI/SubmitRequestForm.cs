@@ -74,6 +74,10 @@ namespace SinclairCC.MakeMeAdmin
 
             this.Icon = Properties.Resources.SecurityLock;
 
+            this.hostNameLabel.Text = Properties.Resources.HostNameLabelText;
+            this.requestButton.Text = Properties.Resources.RequestRightsButtonText;
+            this.clearHistoryButton.Text = Properties.Resources.ClearHistoryButtonText;
+
             this.SetFormText();
         }
 

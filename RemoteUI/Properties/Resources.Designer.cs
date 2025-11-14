@@ -19,7 +19,7 @@ namespace SinclairCC.MakeMeAdmin.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -70,6 +70,15 @@ namespace SinclairCC.MakeMeAdmin.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &amp;Clear History.
+        /// </summary>
+        internal static string ClearHistoryButtonText {
+            get {
+                return ResourceManager.GetString("ClearHistoryButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error Message.
         /// </summary>
         internal static string ErrorMessage {
@@ -88,6 +97,15 @@ namespace SinclairCC.MakeMeAdmin.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Host Name.
+        /// </summary>
+        internal static string HostNameLabelText {
+            get {
+                return ResourceManager.GetString("HostNameLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to My Company.
         /// </summary>
         internal static string MyCompany {
@@ -102,6 +120,15 @@ namespace SinclairCC.MakeMeAdmin.Properties {
         internal static string MyProduct {
             get {
                 return ResourceManager.GetString("MyProduct", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Request Admin Rights.
+        /// </summary>
+        internal static string RequestRightsButtonText {
+            get {
+                return ResourceManager.GetString("RequestRightsButtonText", resourceCulture);
             }
         }
         

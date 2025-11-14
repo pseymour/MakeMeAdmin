@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,32 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AdminRightsRequestedOnHost" xml:space="preserve">
-    <value>Administrator rights requested on {0}.</value>
+  <data name="ApplicationLogName" xml:space="preserve">
+    <value>Application</value>
   </data>
-  <data name="ClearHistoryButtonText" xml:space="preserve">
-    <value>&amp;Clear History</value>
+  <data name="ElevationTypeDefault" xml:space="preserve">
+    <value>Standard</value>
   </data>
-  <data name="ErrorMessage" xml:space="preserve">
-    <value>Error Message</value>
+  <data name="ElevationTypeFull" xml:space="preserve">
+    <value>Vollständig</value>
   </data>
-  <data name="ErrorRequestingRightsOn" xml:space="preserve">
-    <value>An error occurred while requesting administrator rights on </value>
+  <data name="ElevationTypeLimited" xml:space="preserve">
+    <value>Begrenzt</value>
   </data>
-  <data name="HostNameLabelText" xml:space="preserve">
-    <value>Host Name</value>
-  </data>
-  <data name="MyCompany" xml:space="preserve">
-    <value>My Company</value>
-  </data>
-  <data name="MyProduct" xml:space="preserve">
-    <value>My Product</value>
-  </data>
-  <data name="RequestRightsButtonText" xml:space="preserve">
-    <value>&amp;Request Admin Rights</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="SecurityLock" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\SecurityLock.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ElevationTypeUnknown" xml:space="preserve">
+    <value>Unbekannt</value>
   </data>
 </root>

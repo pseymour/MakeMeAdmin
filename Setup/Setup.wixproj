@@ -39,7 +39,8 @@
     <IntermediateOutputPath>obj\$(Configuration) $(Platform)\</IntermediateOutputPath>
     <SuppressValidation>False</SuppressValidation>
     <SuppressIces>ICE57</SuppressIces>
-    <Cultures>en-US</Cultures>
+    <Cultures>
+    </Cultures>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Product.wxs" />
@@ -136,6 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="da.wxl" />
+    <EmbeddedResource Include="de.wxl" />
     <EmbeddedResource Include="en-US.wxl" />
     <EmbeddedResource Include="fr.wxl" />
   </ItemGroup>
