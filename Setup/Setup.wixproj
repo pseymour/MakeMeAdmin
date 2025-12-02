@@ -6,7 +6,7 @@
     <ProductVersion>3.9</ProductVersion>
     <ProjectGuid>8dac9832-d464-4916-b102-9efa913bdc44</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>Make Me Admin 2.3.80 $(Platform)</OutputName>
+    <OutputName>Make Me Admin 2.4.1 $(Platform)</OutputName>
     <OutputType>Package</OutputType>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
@@ -30,7 +30,8 @@
     <OutputPath>bin\$(Configuration) $(Platform)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration) $(Platform)\</IntermediateOutputPath>
     <SuppressIces>ICE57</SuppressIces>
-    <Cultures>en-US</Cultures>
+    <Cultures>
+    </Cultures>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <DefineConstants>Debug</DefineConstants>
@@ -38,7 +39,8 @@
     <IntermediateOutputPath>obj\$(Configuration) $(Platform)\</IntermediateOutputPath>
     <SuppressValidation>False</SuppressValidation>
     <SuppressIces>ICE57</SuppressIces>
-    <Cultures>en-US</Cultures>
+    <Cultures>
+    </Cultures>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Product.wxs" />
@@ -135,6 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="da.wxl" />
+    <EmbeddedResource Include="de.wxl" />
     <EmbeddedResource Include="en-US.wxl" />
     <EmbeddedResource Include="fr.wxl" />
   </ItemGroup>
@@ -160,13 +163,13 @@
       <Output TaskParameter="Value" PropertyName="ShortVersionNumber" />
     </CreateProperty>
     <!-- In debug configuration, name the .msi file after the solution platform, shortened version
-         number, platform and configuration, e.g., MakeMeAdmin 2.3.80 x64 Debug.msi. -->
-    <CreateProperty Condition=" '$(Configuration)' == 'Debug' " Value="$(SolutionName) $(ShortVersionNumber) $(Platform) $(Configuration)">
+         number, platform and configuration, e.g., MakeMeAdmin-2.4.1-x64 Debug.msi. -->
+    <CreateProperty Condition=" '$(Configuration)' == 'Debug' " Value="$(SolutionName)-$(ShortVersionNumber)-$(Platform) $(Configuration)">
       <Output TaskParameter="Value" PropertyName="TargetName" />
     </CreateProperty>
     <!-- In non-debug (release) configuration, name the .msi file after the solution platform,
-         shortened version number and platform, e.g., MakeMeAdmin 2.3.80 x64.msi. -->
-    <CreateProperty Condition=" '$(Configuration)' != 'Debug' " Value="$(SolutionName) $(ShortVersionNumber) $(Platform)">
+         shortened version number and platform, e.g., MakeMeAdmin-2.4.1-x64.msi. -->
+    <CreateProperty Condition=" '$(Configuration)' != 'Debug' " Value="$(SolutionName)-$(ShortVersionNumber)-$(Platform)">
       <Output TaskParameter="Value" PropertyName="TargetName" />
     </CreateProperty>
     <!-- Name the .wixpdb file after the .msi file, e.g., [MSI file base name].wixpdb. -->

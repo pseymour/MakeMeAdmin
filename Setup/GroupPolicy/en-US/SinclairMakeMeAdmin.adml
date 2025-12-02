@@ -74,8 +74,8 @@
 			<string id="RequireReasonDisplayName">Require Reason</string>
 			<string id="RequireReasonExplainText">Specifies whether to require the user to provide a reason for administrator privileges.</string>
 
-			<string id="AllowFreeFormReasonDisplayName">Allow Free-Form Reason</string>
-			<string id="AllowFreeFormReasonExplainText">Allow the user to enter a free-form text string in the administrator rights reason dialog box.</string>
+			<string id="AllowFreeTextReasonDisplayName">Allow Free Text Reason</string>
+			<string id="AllowFreeTextReasonExplainText">Allow the user to enter a free text string in the administrator rights reason dialog box.</string>
 
 			<string id="CannedReasonsDisplayName">Canned Responses for Reason Dialog</string>
 			<string id="CannedReasonsExplainText">Pre-populated reasons to be shown on the administrator rights reason dialog box.</string>
@@ -96,7 +96,7 @@
 		<presentationTable>
 			<presentation id="Renewals_Allowed_Spin">
 				<text>The number of times administrative rights can be renewed.</text>
-				<decimalTextBox refId="RenewalsAllowedValue" defaultValue="0" spinStep="5">number of renewals allowed:</decimalTextBox>
+				<decimalTextBox refId="RenewalsAllowedValue" defaultValue="0" spinStep="1">number of renewals allowed:</decimalTextBox>
 			</presentation>
 			<presentation id="Admin_Rights_Timeout_Spin">
 				<text>The number of minutes for which administrative rights will be granted.</text>
@@ -132,7 +132,7 @@
 				<multiTextBox refId="CannedReasonsMultiText">Enter the canned responses for the reason dialog box, one per line:</multiTextBox>
 			</presentation>
 			<presentation id="Maximum_Reason_Length_Spin">
-				<text>The maximum number of characters that a user may enter in the free-form portion of the reason dialog box.</text>
+				<text>The maximum number of characters that a user may enter in the free text portion of the reason dialog box.</text>
 				<decimalTextBox refId="MaximumReasonLengthValue" defaultValue="333" spinStep="5">maximum reason length:</decimalTextBox>
 			</presentation>
 			<presentation id="DeniedAutomaticallyAddMultiText_Presentation">

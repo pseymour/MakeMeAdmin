@@ -190,3 +190,6 @@ GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
 /DELETE THIS FOLDER packages
+
+# Ignore the Installers folder at the root
+/Installers/

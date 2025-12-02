@@ -1,5 +1,5 @@
 ﻿// 
-// Copyright © 2010-2019, Sinclair Community College
+// Copyright © 2010-2025, Sinclair Community College
 // Licensed under the GNU General Public License, version 3.
 // See the LICENSE file in the project root for full license information.  
 //
@@ -648,13 +648,13 @@ namespace SinclairCC.MakeMeAdmin
         }
 
 
-        public static bool AllowFreeFormReason
+        public static bool AllowFreeTextReason
         {
             get
             {
 
-                int? policySetting = GetDWord(PolicyRegistryKeyPath, null, "Allow Free-Form Reason");
-                int? preferenceSetting = GetDWord(PreferenceRegistryKeyPath, null, "Allow Free-Form Reason");
+                int? policySetting = GetDWord(PolicyRegistryKeyPath, null, "Allow Free Text Reason");
+                int? preferenceSetting = GetDWord(PreferenceRegistryKeyPath, null, "Allow Free Text Reason");
                 if (policySetting.HasValue)
                 { // The policy setting has a value. Go with whatever it says.
                     return Convert.ToBoolean(policySetting.Value);
@@ -670,7 +670,7 @@ namespace SinclairCC.MakeMeAdmin
             }
             set
             {
-                SetDWord(PreferenceRegistryKeyPath, null, "Allow Free-Form Reason", Convert.ToInt32(value));
+                SetDWord(PreferenceRegistryKeyPath, null, "Allow Free Text Reason", Convert.ToInt32(value));
             }
         }
 

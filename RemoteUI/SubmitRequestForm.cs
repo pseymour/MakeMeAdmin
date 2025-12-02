@@ -1,5 +1,5 @@
 ﻿// 
-// Copyright © 2010-2019, Sinclair Community College
+// Copyright © 2010-2025, Sinclair Community College
 // Licensed under the GNU General Public License, version 3.
 // See the LICENSE file in the project root for full license information.  
 //
@@ -73,6 +73,10 @@ namespace SinclairCC.MakeMeAdmin
             }
 
             this.Icon = Properties.Resources.SecurityLock;
+
+            this.hostNameLabel.Text = Properties.Resources.HostNameLabelText;
+            this.requestButton.Text = Properties.Resources.RequestRightsButtonText;
+            this.clearHistoryButton.Text = Properties.Resources.ClearHistoryButtonText;
 
             this.SetFormText();
         }
