@@ -1,14 +1,13 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<WixLocalization Culture="fr" xmlns="http://schemas.microsoft.com/wix/2006/localization" Codepage="1252">
-  <String Id='LANG'>3084</String>
-  <String Id="SoftwareName">Make Me Admin</String>
-  <String Id="SoftwareManufacturer">Sinclair Community College</String>
-  <String Id="AdminRightsRequired">Vous devez disposer des droits d'administrateur pour installer ce logiciel.</String>
-  <String Id="NewerVersionInstalled">Une version plus récente de [ProductName] est déjà installée.</String>
-  <String Id="Remote">Éloigné</String>
-  <String Id="ServiceDescription">Permet aux utilisateurs d'élever eux-mêmes leurs privilèges au niveau administrateur.</String>
-  <String Id="msierrXmlFileFailedRead" Overridable="yes">Un problème est survenu lors de la configuration des fichiers XML.</String>
-  <String Id="msierrXmlFileFailedOpen" Overridable="yes">Echec de l'ouverture des fichiers XML [3], erreur systeme: [2]</String>
-  <String Id="msierrXmlFileFailedSelect" Overridable="yes">Echec de la recherche du noeud: [3] dans le fichier XML: [4], erreur systeme: [2]</String>
-  <String Id="msierrXmlFileFailedSave" Overridable="yes">Echec lors de la sauvegarde des modifications dans le fichier XML [3], erreur systeme: [2]</String>
+﻿<WixLocalization Culture="fr" xmlns="http://wixtoolset.org/schemas/v4/wxl" Codepage="1252">
+  <String Id="LANG" Value="3084" />
+  <String Id="SoftwareName" Value="Make Me Admin" />
+  <String Id="SoftwareManufacturer" Value="Sinclair Community College" />
+  <String Id="AdminRightsRequired" Value="Vous devez disposer des droits d'administrateur pour installer ce logiciel." />
+  <String Id="NewerVersionInstalled" Value="Une version plus récente de [ProductName] est déjà installée." />
+  <String Id="Remote" Value="Éloigné" />
+  <String Id="ServiceDescription" Value="Permet aux utilisateurs d'élever eux-mêmes leurs privilèges au niveau administrateur." />
+  <String Id="msierrXmlFileFailedRead" Overridable="yes" Value="Un problème est survenu lors de la configuration des fichiers XML." />
+  <String Id="msierrXmlFileFailedOpen" Overridable="yes" Value="Echec de l'ouverture des fichiers XML [3], erreur systeme: [2]" />
+  <String Id="msierrXmlFileFailedSelect" Overridable="yes" Value="Echec de la recherche du noeud: [3] dans le fichier XML: [4], erreur systeme: [2]" />
+  <String Id="msierrXmlFileFailedSave" Overridable="yes" Value="Echec lors de la sauvegarde des modifications dans le fichier XML [3], erreur systeme: [2]" />
 </WixLocalization>
