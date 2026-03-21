@@ -1,0 +1,17 @@
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
+	<Package Name="!(loc.SoftwareName)" Language="!(loc.LANG)" Version="2.4.1" Manufacturer="!(loc.SoftwareManufacturer)" UpgradeCode="9c690479-3987-48a8-8bda-118ef1f93cdd" InstallerVersion="400" Scope="perMachine">
+		<Launch Condition="Privileged" Message="!(loc.AdminRightsRequired)" />
+		<MajorUpgrade DowngradeErrorMessage="!(loc.NewerVersionInstalled)" />
+		<MediaTemplate EmbedCab="yes" />
+		<Icon Id="SecurityLock.ico" SourceFile="..\SecurityLock.ico" />
+
+		<Property Id="ARPPRODUCTICON" Value="SecurityLock.ico" />
+		<Property Id="ARPNOMODIFY" Value="yes" Secure="yes" />
+		<Property Id="DISABLEADVTSHORTCUTS" Value="1" />
+		<Property Id="INSTALLREMOTESHORTCUT" Secure="yes" Value="0" />
+
+		<Feature Id="MakeMeAdmin" Title="[ProductName]" Level="1">
+			<ComponentGroupRef Id="EveryComponent" />
+		</Feature>
+	</Package>
+</Wix>

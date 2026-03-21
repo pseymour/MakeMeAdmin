@@ -1,0 +1,35 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Fragment>
+    <ComponentGroup Id="EveryComponent" Directory="INSTALLFOLDER">
+		
+		<ComponentRef Id="ADMLFiles" />
+		<ComponentRef Id="ADMXFiles" />
+		<ComponentRef Id="ApplicationFiles" />
+
+		<?if $(var.Platform) = x64 ?>
+		<ComponentRef Id="MicrosoftTraceEventNuGet_amd64" />
+		<?else?>
+		<ComponentRef Id="MicrosoftTraceEventNuGet_x86" />
+		<?endif?>
+
+		<ComponentRef Id="da_Translation" />
+		<ComponentRef Id="de_Translation" />
+		<ComponentRef Id="fr_Translation" />
+		<ComponentRef Id="RemoteElevationUIShortcut" />
+		<ComponentRef Id="RemoteElevationUserInterface" />
+		<ComponentRef Id="RemoveMMADataFolder" />
+		<ComponentRef Id="Service" />
+
+		<ComponentGroupRef Id="RegistryEntries" />
+
+	</ComponentGroup>
+  </Fragment>
+
+	<Fragment>
+		<ComponentGroup Id="RegistryEntries">
+			<Component Id="RegAppVersion" Directory="INSTALLFOLDER">
+				<RegistryValue Root="HKLM" Key="SOFTWARE\!(loc.SoftwareManufacturer)\!(loc.SoftwareName)" Name="InstalledVersion" Type="string" Value="[ProductVersion]" KeyPath="yes" />
+			</Component>
+		</ComponentGroup>
+	</Fragment>	
+</Wix>

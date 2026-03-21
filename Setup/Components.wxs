@@ -1,0 +1,118 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
+	<Fragment>
+		<Component Id="ApplicationFiles" Guid="9D432F10-34F3-4C55-9C15-FD11961AAE84">
+			<File Id="ElevationUserInterfaceExe" Name="$(var.LocalUI.TargetFileName)" Source="$(var.LocalUI.TargetPath)" KeyPath="yes" />
+			<Shortcut Id="LocalUserInferfaceShortcut" Directory="ProgramMenuFolder" Name="Make Me Admin" Description="Make Me Admin Local User Interface" Advertise="true" WorkingDirectory="INSTALLFOLDER" Icon="SecurityLock.ico" IconIndex="0" />
+
+			<File Id="EnumerationsDll" Name="$(var.Enumerations.TargetFileName)" Source="$(var.Enumerations.TargetPath)" KeyPath="no" />
+			<File Id="MruLibrary" Name="MruList.dll" Source="$(var.RemoteUI.TargetDir)\MruList.dll" KeyPath="no" />
+			<File Id="SettingsDll" Name="$(var.Settings.TargetFileName)" Source="$(var.Settings.TargetPath)" KeyPath="no" />
+			<File Id="UserListDll" Name="$(var.UserList.TargetFileName)" Source="$(var.UserList.TargetPath)" KeyPath="no" />
+			<File Id="UserListDllConfig" Name="$(var.UserList.TargetFileName).config" Source="$(var.UserList.TargetPath).config" KeyPath="no" />
+			<File Id="LoggingDll" Name="$(var.Logging.TargetFileName)" Source="$(var.Logging.TargetPath)" KeyPath="no" />
+			<File Id="LoggingDllConfig" Name="$(var.Logging.TargetFileName).config" Source="$(var.Logging.TargetPath).config" KeyPath="no" />
+			<File Id="LoggingManifestDll" Name="$(var.Logging.TargetName).MakeMeAdmin.etwManifest$(var.Logging.TargetExt)" Source="$(var.Logging.TargetDir)$(var.Logging.TargetName).MakeMeAdmin.etwManifest$(var.Logging.TargetExt)" KeyPath="no" />
+			<File Id="LoggingManifest" Name="$(var.Logging.TargetName).MakeMeAdmin.etwManifest.man" Source="$(var.Logging.TargetDir)$(var.Logging.TargetName).MakeMeAdmin.etwManifest.man" KeyPath="no">
+				<util:EventManifest MessageFile="[#LoggingManifestDll]" ResourceFile="[#LoggingManifestDll]"></util:EventManifest>
+				<!-- <util:EventManifest  MessageFile="[INSTALLFOLDER]Logging.MakeMeAdmin.etwManifest.man" ResourceFile="[INSTALLFOLDER]Logging.MakeMeAdmin.etwManifest.dll"></util:EventManifest> -->
+			</File>
+			<File Id="SyslogNetClientDll" Source="$(var.Logging.TargetDir)\SyslogNet.Client.dll" KeyPath="no" />
+			<File Id="LsaLogonSessionDll" Name="$(var.LsaLogonSessions.TargetFileName)" Source="$(var.LsaLogonSessions.TargetPath)" KeyPath="no" />
+			<File Id="ProcessCommunicationDll" Name="$(var.ProcessCommunication.TargetFileName)" Source="$(var.ProcessCommunication.TargetPath)" KeyPath="no" />
+			<File Id="ProcessCommunicationDllConfig" Name="$(var.ProcessCommunication.TargetFileName).config" Source="$(var.ProcessCommunication.TargetPath).config" KeyPath="no" />
+
+			<!-- Microsoft Trace Event NuGet common files -->
+			<File Id="Dia2Lib.dll" Source="$(var.Logging.TargetDir)\Dia2Lib.dll" KeyPath="no" />
+			<File Id="Microsoft.Diagnostics.FastSerialization.dll" Source="$(var.Logging.TargetDir)\Microsoft.Diagnostics.FastSerialization.dll" KeyPath="no" />
+			<File Id="Microsoft.Diagnostics.Tracing.EventSource.dll" Source="$(var.Logging.TargetDir)\Microsoft.Diagnostics.Tracing.EventSource.dll" KeyPath="no" />
+			<File Id="Microsoft.Diagnostics.Tracing.TraceEvent.dll" Source="$(var.Logging.TargetDir)\Microsoft.Diagnostics.Tracing.TraceEvent.dll" KeyPath="no" />
+			<File Id="Microsoft.Win32.Registry.dll" Source="$(var.Logging.TargetDir)\Microsoft.Win32.Registry.dll" KeyPath="no" />
+			<File Id="System.Runtime.CompilerServices.Unsafe.dll" Source="$(var.Logging.TargetDir)\System.Runtime.CompilerServices.Unsafe.dll" KeyPath="no" />
+			<File Id="TraceReloggerLib.dll" Source="$(var.Logging.TargetDir)\TraceReloggerLib.dll" KeyPath="no" />
+
+			<?if $(var.Configuration) = Debug ?>
+			<RegistryValue Action="write" Id="AdminRightsTimeout" Key="Software\Sinclair Community College\Make Me Admin" Root="HKLM" Value="2" Type="integer" Name="Admin Rights Timeout" />
+			<?endif?>
+		</Component>
+
+		<Component Id="RemoteElevationUserInterface" Guid="*">
+			<File Id="RemoteElevationUserInterfaceExe" Name="$(var.RemoteUI.TargetFileName)" Source="$(var.RemoteUI.TargetPath)" KeyPath="yes" />
+		</Component>
+		<Component Id="RemoteElevationUIShortcut" Guid="A8D789B0-115A-468E-85E7-64EA31FE948E" Condition="INSTALLREMOTESHORTCUT = 1" >
+			<Shortcut Id="RemoteUserInterfaceShortcut" Directory="ProgramMenuFolder" Name="Make Me Admin Remote" Target="[#RemoteElevationUserInterfaceExe]" Description="Make Me Admin Remote User Interface" Advertise="false" WorkingDirectory="INSTALLFOLDER" Icon="SecurityLock.ico" IconIndex="0" />
+			<RegistryValue Root="HKCU" Key="Software\Sinclair Community College\Make Me Admin" Name="RemoteUIShortcutInstalled" Type="integer" Value="1" KeyPath="yes" />
+		</Component>
+
+		<Component Id="Service" Guid="DE98A440-7542-4394-9CAB-086B2906D29A">
+			<File Id="ServiceExe" Name="$(var.Service.TargetFileName)" Source="$(var.Service.TargetPath)" KeyPath="yes" />
+			<File Id="ServiceExeConfig" Name="$(var.Service.TargetFileName).config" Source="$(var.Service.TargetPath).config" KeyPath="no" />
+
+			<ServiceInstall DisplayName="[ProductName]" Name="MakeMeAdmin" Start="auto" Type="shareProcess" Vital="yes" Description="!(loc.ServiceDescription)" EraseDescription="no" ErrorControl="normal">
+
+				<util:ServiceConfig FirstFailureActionType="restart" SecondFailureActionType="restart" ThirdFailureActionType="restart" ResetPeriodInDays="1" RestartServiceDelayInSeconds="60" />
+
+				<!-- Add a dependency on the Server service. -->
+				<ServiceDependency Group="no" Id="LanmanServer" />
+			</ServiceInstall>
+			<ServiceControl Id="MakeMeAdmin" Name="MakeMeAdmin" Remove="uninstall" Start="install" Stop="both" Wait="yes" />
+			<RemoveRegistryKey Action="removeOnUninstall" Id="AddedSIDsValue" Key="Software\Sinclair Community College\Make Me Admin" Root="HKLM" />
+			<RemoveFolder Id="INSTALLFOLDER" On="uninstall" />
+		</Component>
+
+		<Component Id="da_Translation" Guid="B4496726-831F-4EC4-A2A5-6E5C2A85FF97" Directory="da_Localization">
+			<File Id="RemoteElevationResources_da" Name="$(var.RemoteUI.TargetName).resources.dll" Source="$(var.RemoteUI.TargetDir)da\$(var.RemoteUI.TargetName).resources.dll" KeyPath="no" />
+			<File Id="LoggingResources_da" Name="$(var.Logging.TargetName).resources.dll" Source="$(var.Logging.TargetDir)da\$(var.Logging.TargetName).resources.dll" KeyPath="no" />
+			<File Id="ServiceResources_da" Name="$(var.Service.TargetName).resources.dll" Source="$(var.Service.TargetDir)da\$(var.Service.TargetName).resources.dll" KeyPath="no" />
+			<File Id="ProcessCommunicationLibraryResources_da" Name="$(var.ProcessCommunication.TargetName).resources.dll" Source="$(var.ProcessCommunication.TargetDir)da\$(var.ProcessCommunication.TargetName).resources.dll" KeyPath="no" />
+			<File Id="ElevationUserInterfaceResources_da" Name="$(var.LocalUI.TargetName).resources.dll" Source="$(var.LocalUI.TargetDir)da\$(var.LocalUI.TargetName).resources.dll" KeyPath="no" />
+		</Component>
+
+		<Component Id="de_Translation" Guid="669DB74E-C708-4068-A464-D8C74380C4F9" Directory="de_Localization">
+			<File Id="RemoteElevationResources_de" Name="$(var.RemoteUI.TargetName).resources.dll" Source="$(var.RemoteUI.TargetDir)de\$(var.RemoteUI.TargetName).resources.dll" KeyPath="no" />
+			<File Id="LoggingResources_de" Name="$(var.Logging.TargetName).resources.dll" Source="$(var.Logging.TargetDir)de\$(var.Logging.TargetName).resources.dll" KeyPath="no" />
+			<File Id="ServiceResources_de" Name="$(var.Service.TargetName).resources.dll" Source="$(var.Service.TargetDir)de\$(var.Service.TargetName).resources.dll" KeyPath="no" />
+			<File Id="ProcessCommunicationLibraryResources_de" Name="$(var.ProcessCommunication.TargetName).resources.dll" Source="$(var.ProcessCommunication.TargetDir)de\$(var.ProcessCommunication.TargetName).resources.dll" KeyPath="no" />
+			<File Id="ElevationUserInterfaceResources_de" Name="$(var.LocalUI.TargetName).resources.dll" Source="$(var.LocalUI.TargetDir)de\$(var.LocalUI.TargetName).resources.dll" KeyPath="no" />
+		</Component>
+
+		<Component Id="fr_Translation" Guid="1152E967-8A78-4684-A401-0CBDFC47D34F" Directory="fr_Localization">
+			<File Id="RemoteElevationResources_fr" Name="$(var.RemoteUI.TargetName).resources.dll" Source="$(var.RemoteUI.TargetDir)fr\$(var.RemoteUI.TargetName).resources.dll" KeyPath="no" />
+			<File Id="LoggingResources_fr" Name="$(var.Logging.TargetName).resources.dll" Source="$(var.Logging.TargetDir)fr\$(var.Logging.TargetName).resources.dll" KeyPath="no" />
+			<File Id="ServiceResources_fr" Name="$(var.Service.TargetName).resources.dll" Source="$(var.Service.TargetDir)fr\$(var.Service.TargetName).resources.dll" KeyPath="no" />
+			<File Id="ProcessCommunicationLibraryResources_fr" Name="$(var.ProcessCommunication.TargetName).resources.dll" Source="$(var.ProcessCommunication.TargetDir)fr\$(var.ProcessCommunication.TargetName).resources.dll" KeyPath="no" />
+			<File Id="ElevationUserInterfaceResources_fr" Name="$(var.LocalUI.TargetName).resources.dll" Source="$(var.LocalUI.TargetDir)fr\$(var.LocalUI.TargetName).resources.dll" KeyPath="no" />
+		</Component>
+
+		<Component Id="ADMXFiles" Guid="EDA86667-B67E-4156-BF25-C6005BA05DAB" KeyPath="yes" Directory="GroupPolicyFolder">
+			<File Id="SinclairBase.admx" Source="GroupPolicy\SinclairBase.admx" />
+			<File Id="SinclairMakeMeAdmin.admx" Source="GroupPolicy\SinclairMakeMeAdmin.admx" />
+		</Component>
+
+		<Component Id="ADMLFiles" Guid="1F2E6AE4-F602-418A-8318-9EFE665A5877" KeyPath="yes" Directory="GroupPolicyEnUSFolder">
+			<File Id="SinclairBase.adml" Source="GroupPolicy\en-US\SinclairBase.adml" />
+			<File Id="SinclairMakeMeAdmin.adml" Source="GroupPolicy\en-US\SinclairMakeMeAdmin.adml" />
+		</Component>
+
+
+		<?if $(var.Platform) = x64 ?>
+
+		<Component Id="MicrosoftTraceEventNuGet_amd64" Guid="D94C30C0-A979-47BA-895C-ABB5EC619C5B" Directory="MicrosoftTraceEventNuGet_amd64">
+			<File Id="amd64_KernelTraceControl.dll" Source="$(var.Logging.TargetDir)\amd64\KernelTraceControl.dll" KeyPath="no" />
+			<File Id="amd64_msdia140.dll" Source="$(var.Logging.TargetDir)\amd64\msdia140.dll" KeyPath="no" />
+			<File Id="amd64_msvcp140.dll" Source="$(var.Logging.TargetDir)\amd64\msvcp140.dll" KeyPath="no" />
+			<File Id="amd64_vcruntime140.dll" Source="$(var.Logging.TargetDir)\amd64\vcruntime140.dll" KeyPath="no" />
+			<File Id="amd64_vcruntime140_1.dll" Source="$(var.Logging.TargetDir)\amd64\vcruntime140_1.dll" KeyPath="no" />
+		</Component>
+
+		<?else?>
+
+		<Component Id="MicrosoftTraceEventNuGet_x86" Guid="8B5C1067-9130-4C1E-8D81-9415520D368E" Directory="MicrosoftTraceEventNuGet_x86">
+			<File Id="x86_KernelTraceControl.dll" Source="$(var.Logging.TargetDir)\x86\KernelTraceControl.dll" KeyPath="no" />
+			<File Id="x86_KernelTraceControl.Win61.dll" Source="$(var.Logging.TargetDir)\x86\KernelTraceControl.Win61.dll" KeyPath="no" />
+			<File Id="x86_msdia140.dll" Source="$(var.Logging.TargetDir)\x86\msdia140.dll" KeyPath="no" />
+		</Component>
+
+		<?endif?>
+
+	</Fragment>
+</Wix>

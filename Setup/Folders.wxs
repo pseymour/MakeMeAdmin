@@ -1,0 +1,34 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+	<Fragment>
+
+		<StandardDirectory Id="ProgramFiles6432Folder">
+			<Directory Id="INSTALLFOLDER" Name="Make Me Admin">
+				<Directory Id="da_Localization" Name="da" />
+				<Directory Id="de_Localization" Name="de" />
+				<Directory Id="fr_Localization" Name="fr" />
+				<Directory Id="GroupPolicyFolder" Name="Group Policy">
+					<Directory Id="GroupPolicyEnUSFolder" Name="en-US" />
+				</Directory>
+				
+				<?if $(var.Platform) = x64 ?>
+				<Directory Id="MicrosoftTraceEventNuGet_amd64" Name="amd64" />
+				<?else?>
+				<Directory Id="MicrosoftTraceEventNuGet_x86" Name="x86" />
+				<?endif?>
+
+			</Directory>
+		</StandardDirectory>
+
+		<StandardDirectory Id="ProgramMenuFolder" />
+
+		<StandardDirectory Id="CommonAppDataFolder">
+			<Directory Id="MMADataFolder" Name="Make Me Admin">
+				<Component Id="RemoveMMADataFolder" Guid="CDFEE69D-6D52-45E6-801E-B2ED74C86F5C">
+					<RemoveFile Id="RemoveAllFiles" Name="*.xml" Directory="MMADataFolder" On="uninstall" />
+					<RemoveFolder Id="RemoveMMADataFolder" Directory="MMADataFolder" On="uninstall" />
+				</Component>
+			</Directory>
+		</StandardDirectory>
+
+	</Fragment>
+</Wix>
