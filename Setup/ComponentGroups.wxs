@@ -8,8 +8,6 @@
 
 		<?if $(var.Platform) = x64 ?>
 		<ComponentRef Id="MicrosoftTraceEventNuGet_amd64" />
-		<?else?>
-		<ComponentRef Id="MicrosoftTraceEventNuGet_x86" />
 		<?endif?>
 
 		<ComponentRef Id="da_Translation" />

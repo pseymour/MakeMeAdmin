@@ -12,8 +12,6 @@
 				
 				<?if $(var.Platform) = x64 ?>
 				<Directory Id="MicrosoftTraceEventNuGet_amd64" Name="amd64" />
-				<?else?>
-				<Directory Id="MicrosoftTraceEventNuGet_x86" Name="x86" />
 				<?endif?>
 
 			</Directory>

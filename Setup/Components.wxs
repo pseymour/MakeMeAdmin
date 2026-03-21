@@ -104,14 +104,6 @@
 			<File Id="amd64_vcruntime140_1.dll" Source="$(var.Logging.TargetDir)\amd64\vcruntime140_1.dll" KeyPath="no" />
 		</Component>
 
-		<?else?>
-
-		<Component Id="MicrosoftTraceEventNuGet_x86" Guid="8B5C1067-9130-4C1E-8D81-9415520D368E" Directory="MicrosoftTraceEventNuGet_x86">
-			<File Id="x86_KernelTraceControl.dll" Source="$(var.Logging.TargetDir)\x86\KernelTraceControl.dll" KeyPath="no" />
-			<File Id="x86_KernelTraceControl.Win61.dll" Source="$(var.Logging.TargetDir)\x86\KernelTraceControl.Win61.dll" KeyPath="no" />
-			<File Id="x86_msdia140.dll" Source="$(var.Logging.TargetDir)\x86\msdia140.dll" KeyPath="no" />
-		</Component>
-
 		<?endif?>
 
 	</Fragment>

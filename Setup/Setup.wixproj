@@ -5,19 +5,6 @@
     <OutputName>Make Me Admin 2.4.1 $(Platform)</OutputName>
     <IncludeSearchPaths></IncludeSearchPaths>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <OutputPath>bin\$(Configuration) $(Platform)\</OutputPath>
-    <IntermediateOutputPath>obj\$(Configuration) $(Platform)\</IntermediateOutputPath>
-    <DefineConstants>Debug</DefineConstants>
-    <SuppressIces>ICE57</SuppressIces>
-    <Cultures>en-US</Cultures>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <OutputPath>bin\$(Configuration) $(Platform)\</OutputPath>
-    <IntermediateOutputPath>obj\$(Configuration) $(Platform)\</IntermediateOutputPath>
-    <SuppressIces>ICE57</SuppressIces>
-    <Cultures>en-US</Cultures>
-  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <OutputPath>bin\$(Configuration) $(Platform)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration) $(Platform)\</IntermediateOutputPath>
